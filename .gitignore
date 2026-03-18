@@ -1,0 +1,68 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch.json and settings.json helper files for VS Code users.
+# You may wish to check these into source control if you want to shared settings with your team.
+# Otherwise, uncomment the line below.
+# .vscode/
+
+# Flutter/Dart related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+__pycache__/
+build/
+
+# Symbolication logging
+flutter_*.png
+flutter_*.symbol
+
+# Obfuscation mapping files
+app.*.symbols
+
+# Android Studio will create this file for logs and caches
+.cxx/
+
+# iOS/macOS related
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.h
+**/ios/Runner/GeneratedPluginRegistrant.m
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Runner/GeneratedPluginRegistrant.h
+**/macos/Runner/GeneratedPluginRegistrant.m
+**/macos/Runner/GeneratedPluginRegistrant.swift
+**/linux/flutter/generated_plugin_registrant.cc
+**/linux/flutter/generated_plugin_registrant.h
+**/windows/flutter/generated_plugin_registrant.cc
+**/windows/flutter/generated_plugin_registrant.h
+
+# Exceptions to above
+!**/ios/Runner/GeneratedPluginRegistrant.h
+!**/ios/Runner/GeneratedPluginRegistrant.m
+!**/macos/Runner/GeneratedPluginRegistrant.h
+!**/macos/Runner/GeneratedPluginRegistrant.m
+!**/macos/Runner/GeneratedPluginRegistrant.swift
+
+# Custom for this project
+.env
