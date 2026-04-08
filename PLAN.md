@@ -1,12 +1,12 @@
-# Starbound Exodus — Implementation Plan
+# Stellar Broadcast — Implementation Plan
 
 ## 1. App ID & Theme
 
 | Field         | Value                                           |
 |---------------|-------------------------------------------------|
 | Package name  | `com.quickapps.starboundexodus`                 |
-| App name      | Starbound Exodus                                |
-| Display name  | Starbound Exodus                                |
+| App name      | Stellar Broadcast                                |
+| Display name  | Stellar Broadcast                                |
 | Seed color    | Deep space blue (`#0B1426`)                     |
 | Accent color  | Cyan holographic (`#00E5FF`)                    |
 | Path          | `apps/starbound_exodus/`                        |

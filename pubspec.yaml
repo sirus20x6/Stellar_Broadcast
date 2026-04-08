@@ -1,26 +1,75 @@
-name: starbound_exodus
+name: stellar_broadcast
 description: "Humanity's last colony ship searches for a new home among the stars."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.9.3+74
 
 environment:
-  sdk: ^3.11.1
+  sdk: ^3.8.0
+  flutter: ^3.32.0
+
+resolution: workspace
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   cupertino_icons: ^1.0.8
+  games_services: ^5.0.0
+  firebase_core: ^3.0.0
   flutter_riverpod: ^2.6.1
-  shared_preferences: ^2.3.4
-  google_mobile_ads: ^5.3.0
   audioplayers: ^6.1.0
+  flame_audio: ^2.12.0
+  onnxruntime_v2: ^1.23.2
+
+  # Shared packages
+  package_info_plus: ^8.0.0
+  share_plus: ^10.0.0
+  app_links: ^6.0.0
+
+  quickapps_storage:
+    path: ../../packages/quickapps_storage
+  quickapps_ui:
+    path: ../../packages/quickapps_ui
+  quickapps_ads:
+    path: ../../packages/quickapps_ads
+  quickapps_analytics:
+    path: ../../packages/quickapps_analytics
+  quickapps_onboarding:
+    path: ../../packages/quickapps_onboarding
+  quickapps_audio:
+    path: ../../packages/quickapps_audio
+  quickapps_logging:
+    path: ../../packages/quickapps_logging
+  quickapps_game_ui:
+    path: ../../packages/quickapps_game_ui
+  quickapps_fx:
+    path: ../../packages/quickapps_fx
+  quickapps_iap:
+    path: ../../packages/quickapps_iap
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/Icon_512.png"
+  adaptive_icon_background: "#0a0e1a"
+  adaptive_icon_foreground: "assets/Icon_512.png"
 
 flutter:
+  generate: true
   uses-material-design: true
+
+  assets:
+    - assets/audio/
+    - assets/models/planet_namer_fp16.onnx
+    - assets/models/vocab.json

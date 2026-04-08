@@ -1,147 +1,128 @@
-import 'package:starbound_exodus/models/event.dart';
+import 'package:stellar_broadcast/l10n/app_localizations.dart';
+import 'package:stellar_broadcast/models/event.dart';
 
 /// Master pool of narrative events. At least 30 unique events with 2-3
 /// choices each, covering space hazards, crew dilemmas, discoveries,
 /// system failures, alien encounters, and moral choices.
-final List<GameEvent> eventPool = [
+List<GameEvent> buildEventPool(AppLocalizations l10n) => [
   // ═══════════════════════════════════════════════════════════════════════
   // SPACE HAZARDS
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'asteroid_field',
-    title: 'Asteroid Field',
-    narrative:
-        'Long-range scanners detect a dense asteroid field directly in our '
-        'flight path. Navigation calculates two options: a risky dash through '
-        'the thinnest corridor, or a lengthy detour that will tax our fuel '
-        'reserves and stress the navigation array.',
+    title: l10n.event_asteroidField_title,
+    narrative: l10n.event_asteroidField_narrative,
     choices: [
       EventChoice(
-        text: 'Punch through the corridor',
-        outcome:
-            'The ship shudders as micro-impacts pepper the hull. We make it '
-            'through, but not unscathed.',
+        text: l10n.event_asteroidField_choice0_text,
+        outcome: l10n.event_asteroidField_choice0_outcome,
         shipEffects: {'hull': -0.15, 'nav': 0.05},
       ),
       EventChoice(
-        text: 'Take the long way around',
-        outcome:
-            'The detour burns precious fuel and wears on the navigation '
-            'computer, but the hull remains intact.',
+        text: l10n.event_asteroidField_choice1_text,
+        outcome: l10n.event_asteroidField_choice1_outcome,
         shipEffects: {'nav': -0.10, 'tech': -0.05},
       ),
       EventChoice(
-        text: 'Use mining drones to clear a path',
-        outcome:
-            'The drones carve a safe channel and collect useful minerals, '
-            'but the operation drains the tech bay.',
+        text: l10n.event_asteroidField_choice2_text,
+        outcome: l10n.event_asteroidField_choice2_outcome,
         shipEffects: {'tech': -0.12, 'hull': 0.02},
         planetModifiers: {'resources': 0.05},
       ),
+      EventChoice(
+        text: l10n.event_asteroidField_choice3_text,
+        outcome: l10n.event_asteroidField_choice3_outcome,
+        shipEffects: {'hull': -0.05},
+        probeCost: 1,
+      ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'solar_flare',
-    title: 'Solar Flare Incoming',
-    narrative:
-        'A nearby star erupts with a massive coronal ejection. The wave of '
-        'charged particles will reach us in minutes. We can divert power to '
-        'shields, shelter colonists in the core, or ride it out.',
+    title: l10n.event_solarFlare_title,
+    narrative: l10n.event_solarFlare_narrative,
     choices: [
       EventChoice(
-        text: 'Divert all power to shields',
-        outcome:
-            'The shields hold, but the power surge fries secondary systems.',
-        shipEffects: {'hull': 0.05, 'tech': -0.15, 'scanner': -0.08},
+        text: l10n.event_solarFlare_choice0_text,
+        outcome: l10n.event_solarFlare_choice0_outcome,
+        shipEffects: {'shields': -0.08, 'tech': -0.15, 'scanners': -0.08},
       ),
       EventChoice(
-        text: 'Move colonists to the shielded core',
-        outcome:
-            'Colonists survive unharmed, but the outer decks take radiation '
-            'damage.',
+        text: l10n.event_solarFlare_choice1_text,
+        outcome: l10n.event_solarFlare_choice1_outcome,
         shipEffects: {'cryopods': 0.05, 'hull': -0.12},
       ),
       EventChoice(
-        text: 'Ride it out — all hands brace',
-        outcome:
-            'The flare hits hard. Systems flicker, but nothing catastrophic. '
-            'Morale, however, takes a hit.',
+        text: l10n.event_solarFlare_choice2_text,
+        outcome: l10n.event_solarFlare_choice2_outcome,
         shipEffects: {'hull': -0.08, 'culture': -0.08},
       ),
+      EventChoice(
+        text: l10n.event_solarFlare_choice3_text,
+        outcome: l10n.event_solarFlare_choice3_outcome,
+        shipEffects: {'atmosphericScanner': -0.03, 'tech': -0.05},
+        probeCost: 1,
+      ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'nebula_passage',
-    title: 'Nebula Passage',
-    narrative:
-        'A glowing nebula stretches across our path. Passing through could '
-        'recharge our energy cells but may interfere with scanner arrays. '
-        'Going around is safe but slow.',
+    title: l10n.event_nebulaPassage_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_nebulaPassage_narrative,
     choices: [
       EventChoice(
-        text: 'Fly through the nebula',
-        outcome:
-            'The nebula\'s ionized gases recharge power cells but scramble '
-            'our scanner calibration.',
-        shipEffects: {'tech': 0.10, 'scanner': -0.15},
+        text: l10n.event_nebulaPassage_choice0_text,
+        outcome: l10n.event_nebulaPassage_choice0_outcome,
+        shipEffects: {'tech': 0.10, 'atmosphericScanner': -0.15},
       ),
       EventChoice(
-        text: 'Skirt the edge',
-        outcome:
-            'We gain a partial charge with minimal interference. A safe '
-            'compromise.',
-        shipEffects: {'tech': 0.05, 'scanner': -0.05, 'nav': -0.03},
+        text: l10n.event_nebulaPassage_choice1_text,
+        outcome: l10n.event_nebulaPassage_choice1_outcome,
+        shipEffects: {'tech': 0.05, 'atmosphericScanner': -0.05, 'nav': -0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'micro_meteorite',
-    title: 'Micro-Meteorite Storm',
-    narrative:
-        'A swarm of micro-meteorites, invisible until seconds ago, is '
-        'shredding the forward hull plating. Damage control teams are '
-        'scrambling.',
+    title: l10n.event_microMeteorite_title,
+    narrative: l10n.event_microMeteorite_narrative,
     choices: [
       EventChoice(
-        text: 'Emergency rotation — present the armoured stern',
-        outcome:
-            'The manoeuvre works. Stern armour absorbs the worst, but the '
-            'navigation gyros protest violently.',
+        text: l10n.event_microMeteorite_choice0_text,
+        outcome: l10n.event_microMeteorite_choice0_outcome,
         shipEffects: {'hull': -0.05, 'nav': -0.10},
       ),
       EventChoice(
-        text: 'Deploy repair drones mid-storm',
-        outcome:
-            'Drones patch the hull in real time but several are lost. Tech '
-            'reserves are depleted.',
+        text: l10n.event_microMeteorite_choice1_text,
+        outcome: l10n.event_microMeteorite_choice1_outcome,
         shipEffects: {'hull': 0.03, 'tech': -0.12},
+      ),
+      EventChoice(
+        text: l10n.event_microMeteorite_choice2_text,
+        outcome: l10n.event_microMeteorite_choice2_outcome,
+        shipEffects: {'hull': -0.03, 'nav': -0.03},
+        probeCost: 1,
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'gravity_well',
-    title: 'Uncharted Gravity Well',
-    narrative:
-        'The ship lurches as an invisible gravity well drags us off course. '
-        'Engines strain against the pull. We can burn hard to escape, or '
-        'slingshot around for a speed boost at the cost of structural stress.',
+    title: l10n.event_gravityWell_title,
+    narrative: l10n.event_gravityWell_narrative,
     choices: [
       EventChoice(
-        text: 'Full burn — break free',
-        outcome:
-            'Engines roar and the hull groans, but we pull away cleanly.',
+        text: l10n.event_gravityWell_choice0_text,
+        outcome: l10n.event_gravityWell_choice0_outcome,
         shipEffects: {'nav': -0.08, 'hull': -0.06},
       ),
       EventChoice(
-        text: 'Slingshot manoeuvre',
-        outcome:
-            'The slingshot works beautifully. We gain speed, but the G-forces '
-            'stress the cryopod seals.',
+        text: l10n.event_gravityWell_choice1_text,
+        outcome: l10n.event_gravityWell_choice1_outcome,
         shipEffects: {'nav': 0.08, 'cryopods': -0.10, 'hull': -0.05},
       ),
     ],
@@ -150,147 +131,113 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // CREW DILEMMAS
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'crew_unrest',
-    title: 'Crew Unrest',
-    narrative:
-        'A faction of awakened colonists demands to be thawed from cryosleep '
-        'permanently. They argue that living in frozen twilight is inhumane. '
-        'Others warn that waking more mouths means burning through supplies.',
+    category: EventCategory.early,
+    title: l10n.event_crewUnrest_title,
+    narrative: l10n.event_crewUnrest_narrative,
     choices: [
       EventChoice(
-        text: 'Allow voluntary thawing',
-        outcome:
-            'Morale soars as families reunite in the waking world, but '
-            'resource consumption spikes.',
+        text: l10n.event_crewUnrest_choice0_text,
+        outcome: l10n.event_crewUnrest_choice0_outcome,
         shipEffects: {'culture': 0.12, 'cryopods': -0.10, 'tech': -0.05},
+        colonistDelta: 50,
       ),
       EventChoice(
-        text: 'Deny the request — safety first',
-        outcome:
-            'The colonists comply, but resentment festers in the corridors.',
-        shipEffects: {'culture': -0.12, 'cryopods': 0.05},
+        text: l10n.event_crewUnrest_choice1_text,
+        outcome: l10n.event_crewUnrest_choice1_outcome,
+        shipEffects: {'culture': -0.12},
       ),
       EventChoice(
-        text: 'Compromise — rotating thaw cycles',
-        outcome:
-            'A balanced solution. Everyone gets some waking time, but the '
-            'cryopod cycling adds wear.',
+        text: l10n.event_crewUnrest_choice2_text,
+        outcome: l10n.event_crewUnrest_choice2_outcome,
         shipEffects: {'culture': 0.05, 'cryopods': -0.08},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'stowaway',
-    title: 'Stowaway Discovered',
-    narrative:
-        'Security finds an unregistered person hiding in cargo bay 7. She '
-        'claims to be a geneticist who was denied a place on the manifest. '
-        'Her skills could be invaluable — or she could be a saboteur.',
+    title: l10n.event_stowaway_title,
+    category: EventCategory.early,
+    narrative: l10n.event_stowaway_narrative,
     choices: [
       EventChoice(
-        text: 'Welcome her aboard — we need every mind',
-        outcome:
-            'Dr. Vasquez proves brilliant. Her genetic expertise improves '
-            'cryopod efficiency, though some crew distrust her.',
+        text: l10n.event_stowaway_choice0_text,
+        outcome: l10n.event_stowaway_choice0_outcome,
         shipEffects: {'cryopods': 0.08, 'tech': 0.05, 'culture': -0.05},
+        colonistDelta: 1,
       ),
       EventChoice(
-        text: 'Confine her — trust must be earned',
-        outcome:
-            'She cooperates from confinement and eventually earns limited '
-            'access. The crew feels safer.',
+        text: l10n.event_stowaway_choice1_text,
+        outcome: l10n.event_stowaway_choice1_outcome,
         shipEffects: {'culture': 0.03, 'cryopods': 0.03},
       ),
       EventChoice(
-        text: 'Put her back in cryo until landing',
-        outcome:
-            'A pragmatic solution. Her skills are preserved for later, but '
-            'the ethical debate divides the crew.',
+        text: l10n.event_stowaway_choice2_text,
+        outcome: l10n.event_stowaway_choice2_outcome,
         shipEffects: {'culture': -0.08, 'cryopods': -0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'mutiny_brewing',
-    title: 'Mutiny Brewing',
-    narrative:
-        'Intercepted messages reveal a group of officers planning to seize '
-        'the bridge and change course to a closer, less hospitable system. '
-        'They believe the current heading is a death sentence.',
+    title: l10n.event_mutinyBrewing_title,
+    narrative: l10n.event_mutinyBrewing_narrative,
     choices: [
       EventChoice(
-        text: 'Confront them publicly — transparency above all',
-        outcome:
-            'The confrontation is tense but the mutineers stand down when '
-            'shown the navigation data. Trust is shaken.',
-        shipEffects: {'culture': -0.10, 'nav': 0.05},
+        text: l10n.event_mutinyBrewing_choice0_text,
+        outcome: l10n.event_mutinyBrewing_choice0_outcome,
+        shipEffects: {'culture': -0.10, 'shields': -0.05},
       ),
       EventChoice(
-        text: 'Quietly reassign the ringleaders',
-        outcome:
-            'The plot dissolves without public drama. Some crew wonder why '
-            'popular officers were moved, but order holds.',
+        text: l10n.event_mutinyBrewing_choice1_text,
+        outcome: l10n.event_mutinyBrewing_choice1_outcome,
         shipEffects: {'culture': -0.05, 'nav': 0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'cultural_schism',
-    title: 'Cultural Schism',
-    narrative:
-        'Two cultural groups aboard disagree violently about how the new '
-        'colony should be governed. One demands direct democracy; the other '
-        'insists on a technocratic council. Tensions are boiling over.',
+    title: l10n.event_culturalSchism_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_culturalSchism_narrative,
     choices: [
       EventChoice(
-        text: 'Hold a binding referendum',
-        outcome:
-            'Democracy prevails — barely. The losing side grudgingly accepts '
-            'the result, but unity is fragile.',
+        text: l10n.event_culturalSchism_choice0_text,
+        outcome: l10n.event_culturalSchism_choice0_outcome,
         shipEffects: {'culture': 0.05},
       ),
       EventChoice(
-        text: 'Impose a hybrid system — satisfy neither fully',
-        outcome:
-            'Both sides feel heard but not victorious. A tenuous peace holds.',
+        text: l10n.event_culturalSchism_choice1_text,
+        outcome: l10n.event_culturalSchism_choice1_outcome,
         shipEffects: {'culture': -0.03, 'tech': 0.03},
       ),
       EventChoice(
-        text: 'Delay the decision — focus on survival now',
-        outcome:
-            'Kicking the can down the road avoids conflict today but stores '
-            'it for tomorrow.',
+        text: l10n.event_culturalSchism_choice2_text,
+        outcome: l10n.event_culturalSchism_choice2_outcome,
         shipEffects: {'culture': -0.08},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'birth_in_space',
-    title: 'First Birth in Deep Space',
-    narrative:
-        'Against all protocols, a child is born aboard the ship — the first '
-        'human born between the stars. The event is a powerful symbol, but '
-        'it raises questions about resource allocation and the ethics of '
-        'bringing new life into an uncertain future.',
+    category: EventCategory.early,
+    title: l10n.event_birthInSpace_title,
+    narrative: l10n.event_birthInSpace_narrative,
     choices: [
       EventChoice(
-        text: 'Celebrate — this is what hope looks like',
-        outcome:
-            'The naming ceremony lifts every heart on the ship. For one '
-            'night, the stars feel less cold.',
+        text: l10n.event_birthInSpace_choice0_text,
+        outcome: l10n.event_birthInSpace_choice0_outcome,
         shipEffects: {'culture': 0.15, 'cryopods': -0.05},
+        colonistDelta: 1,
       ),
       EventChoice(
-        text: 'Acknowledge quietly — resources are tight',
-        outcome:
-            'A measured response. The child is welcomed, but the mood is '
-            'tempered by pragmatism.',
+        text: l10n.event_birthInSpace_choice1_text,
+        outcome: l10n.event_birthInSpace_choice1_outcome,
         shipEffects: {'culture': 0.05},
       ),
     ],
@@ -299,154 +246,119 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // DISCOVERIES
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'derelict_ship',
-    title: 'Derelict Colony Ship',
-    narrative:
-        'Scanners detect a derelict vessel drifting in the void — another '
-        'colony ship, launched years before ours. It is dark and silent. '
-        'There may be salvage, survivors, or worse.',
+    title: l10n.event_derelictShip_title,
+    narrative: l10n.event_derelictShip_narrative,
     choices: [
       EventChoice(
-        text: 'Board and salvage',
-        outcome:
-            'The boarding team recovers hull plating and intact tech modules. '
-            'No survivors. The logs tell a grim tale.',
-        shipEffects: {'hull': 0.10, 'tech': 0.08, 'culture': -0.08},
+        text: l10n.event_derelictShip_choice0_text,
+        outcome: l10n.event_derelictShip_choice0_outcome,
+        shipEffects: {
+          'hull': 0.10,
+          'tech': 0.08,
+          'culture': -0.08,
+          'constructors': 0.08,
+        },
       ),
       EventChoice(
-        text: 'Scan from a distance — don\'t risk it',
-        outcome:
-            'Remote scans yield useful navigational data but no physical '
-            'salvage. The crew sleeps easier.',
-        shipEffects: {'scanner': 0.05, 'nav': 0.05},
+        text: l10n.event_derelictShip_choice1_text,
+        outcome: l10n.event_derelictShip_choice1_outcome,
+        shipEffects: {'mineralScanner': 0.05, 'nav': 0.05},
       ),
       EventChoice(
-        text: 'Transmit a memorial and move on',
-        outcome:
-            'A moment of silence for the lost. The crew is sobered but '
-            'united in purpose.',
+        text: l10n.event_derelictShip_choice2_text,
+        outcome: l10n.event_derelictShip_choice2_outcome,
         shipEffects: {'culture': 0.08},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'alien_probe',
-    title: 'Alien Probe',
-    narrative:
-        'A small, clearly artificial object matches our velocity and begins '
-        'scanning the ship with unknown energy. It does not respond to '
-        'hails. Its surface is covered in symbols that shift like liquid.',
+    title: l10n.event_alienProbe_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_alienProbe_narrative,
     choices: [
       EventChoice(
-        text: 'Capture it for study',
-        outcome:
-            'The probe is secured in the lab. Its technology is decades '
-            'ahead of ours — the tech team is euphoric.',
-        shipEffects: {'tech': 0.15, 'scanner': 0.08, 'hull': -0.05},
+        text: l10n.event_alienProbe_choice0_text,
+        outcome: l10n.event_alienProbe_choice0_outcome,
+        shipEffects: {'tech': 0.15, 'atmosphericScanner': 0.08, 'hull': -0.05},
       ),
       EventChoice(
-        text: 'Mirror its scans — exchange data',
-        outcome:
-            'A strange dialogue of light and mathematics. Our star charts '
-            'suddenly contain routes we never programmed.',
-        shipEffects: {'nav': 0.12, 'scanner': 0.10},
+        text: l10n.event_alienProbe_choice1_text,
+        outcome: l10n.event_alienProbe_choice1_outcome,
+        shipEffects: {'nav': 0.12, 'atmosphericScanner': 0.10},
         planetModifiers: {'anomaly': 0.10},
       ),
       EventChoice(
-        text: 'Destroy it — we can\'t risk alien tracking',
-        outcome:
-            'The probe shatters silently. Was that first contact? The crew '
-            'will never know.',
+        text: l10n.event_alienProbe_choice2_text,
+        outcome: l10n.event_alienProbe_choice2_outcome,
         shipEffects: {'hull': 0.03, 'culture': -0.10, 'tech': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'ancient_beacon',
-    title: 'Ancient Beacon',
-    narrative:
-        'Deep in the void, a beacon pulses with a signal older than human '
-        'civilization. Its frequency carries what appears to be a star map '
-        'pointing to a system not in our database.',
+    title: l10n.event_ancientBeacon_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_ancientBeacon_narrative,
     choices: [
       EventChoice(
-        text: 'Follow the map — fortune favours the bold',
-        outcome:
-            'The new heading takes us toward uncharted space. Scanners '
-            'detect something extraordinary ahead.',
-        shipEffects: {'nav': -0.08, 'scanner': 0.10},
+        text: l10n.event_ancientBeacon_choice0_text,
+        outcome: l10n.event_ancientBeacon_choice0_outcome,
+        shipEffects: {'nav': -0.08, 'gravimetricScanner': 0.10},
         planetModifiers: {'anomaly': 0.15, 'resources': 0.10},
       ),
       EventChoice(
-        text: 'Log it and stay on course',
-        outcome:
-            'The data is archived for future generations. The crew respects '
-            'the cautious approach.',
+        text: l10n.event_ancientBeacon_choice1_text,
+        outcome: l10n.event_ancientBeacon_choice1_outcome,
         shipEffects: {'nav': 0.05, 'culture': 0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'frozen_garden',
-    title: 'Frozen Garden',
-    narrative:
-        'An asteroid contains a frozen ecosystem — alien plants preserved '
-        'in crystalline ice for millennia. They could enrich any world we '
-        'settle, but thawing them risks contamination.',
+    title: l10n.event_frozenGarden_title,
+    narrative: l10n.event_frozenGarden_narrative,
     choices: [
       EventChoice(
-        text: 'Harvest the specimens carefully',
-        outcome:
-            'Botanists preserve dozens of alien species. The biodiversity '
-            'potential of our target world skyrockets.',
+        text: l10n.event_frozenGarden_choice0_text,
+        outcome: l10n.event_frozenGarden_choice0_outcome,
         shipEffects: {'tech': -0.05},
         planetModifiers: {'biodiversity': 0.15, 'anomaly': 0.05},
       ),
       EventChoice(
-        text: 'Take samples only — minimal risk',
-        outcome:
-            'A conservative approach yields useful data without '
-            'contamination risk.',
-        shipEffects: {'scanner': 0.05},
+        text: l10n.event_frozenGarden_choice1_text,
+        outcome: l10n.event_frozenGarden_choice1_outcome,
+        shipEffects: {'lifeSignsScanner': 0.05},
         planetModifiers: {'biodiversity': 0.05},
       ),
       EventChoice(
-        text: 'Leave it — alien biology is too dangerous',
-        outcome:
-            'The crew watches the frozen garden shrink in the rear sensors. '
-            'Some feel they left treasure behind.',
+        text: l10n.event_frozenGarden_choice2_text,
+        outcome: l10n.event_frozenGarden_choice2_outcome,
         shipEffects: {'culture': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'data_cache',
-    title: 'Precursor Data Cache',
-    narrative:
-        'Embedded in a rogue planetoid, we find a data cache of clearly '
-        'artificial origin. The information is vast but encrypted in an '
-        'alien mathematical framework.',
+    title: l10n.event_dataCache_title,
+    narrative: l10n.event_dataCache_narrative,
     choices: [
       EventChoice(
-        text: 'Dedicate computing resources to decryption',
-        outcome:
-            'After days of processing, the cache yields advanced '
-            'terraforming algorithms. The tech team is in awe.',
-        shipEffects: {'tech': 0.12, 'nav': -0.05},
+        text: l10n.event_dataCache_choice0_text,
+        outcome: l10n.event_dataCache_choice0_outcome,
+        shipEffects: {'tech': 0.12, 'nav': -0.05, 'constructors': 0.05},
         planetModifiers: {'atmosphere': 0.08, 'water': 0.05},
       ),
       EventChoice(
-        text: 'Copy the raw data and move on',
-        outcome:
-            'The encrypted data is stored for future analysis. Perhaps the '
-            'colony will crack it someday.',
-        shipEffects: {'scanner': 0.03},
+        text: l10n.event_dataCache_choice1_text,
+        outcome: l10n.event_dataCache_choice1_outcome,
+        shipEffects: {'atmosphericScanner': 0.03},
       ),
     ],
   ),
@@ -454,142 +366,122 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // SYSTEM FAILURES
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'hull_breach',
-    title: 'Hull Breach — Deck 7',
-    narrative:
-        'A structural failure tears open Deck 7. Atmosphere is venting into '
-        'space. Emergency bulkheads are holding, but three crew members are '
-        'trapped on the wrong side.',
+    title: l10n.event_hullBreach_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_hullBreach_narrative,
     choices: [
       EventChoice(
-        text: 'Send a rescue team before sealing',
-        outcome:
-            'The team pulls everyone out just in time. The rescue is '
-            'heroic, but the prolonged breach weakens the hull further.',
-        shipEffects: {'hull': -0.15, 'culture': 0.10, 'cryopods': 0.03},
+        text: l10n.event_hullBreach_choice0_text,
+        outcome: l10n.event_hullBreach_choice0_outcome,
+        shipEffects: {'hull': -0.15, 'culture': 0.10},
+        colonistDelta: -3,
       ),
       EventChoice(
-        text: 'Seal the bulkheads immediately',
-        outcome:
-            'The breach is contained. The three crew members find an '
-            'alternate route, shaken but alive. Hull damage is minimised.',
-        shipEffects: {'hull': -0.08, 'culture': -0.05},
+        text: l10n.event_hullBreach_choice1_text,
+        outcome: l10n.event_hullBreach_choice1_outcome,
+        shipEffects: {'hull': -0.08, 'culture': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_hullBreach_choice2_text,
+        outcome: l10n.event_hullBreach_choice2_outcome,
+        shipEffects: {'hull': -0.04, 'culture': 0.05},
+        probeCost: 1,
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'nav_malfunction',
-    title: 'Navigation Malfunction',
-    narrative:
-        'The primary navigation computer is outputting contradictory '
-        'headings. We are drifting off course. The backup system is '
-        'functional but less precise.',
+    title: l10n.event_navMalfunction_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_navMalfunction_narrative,
     choices: [
       EventChoice(
-        text: 'Reboot the primary — accept the downtime',
-        outcome:
-            'A tense hour of dead reckoning while the system reboots. '
-            'Navigation is restored at 90% efficiency.',
-        shipEffects: {'nav': -0.08, 'scanner': -0.03},
+        text: l10n.event_navMalfunction_choice0_text,
+        outcome: l10n.event_navMalfunction_choice0_outcome,
+        shipEffects: {'nav': -0.08, 'gravimetricScanner': -0.03},
       ),
       EventChoice(
-        text: 'Switch to backup permanently',
-        outcome:
-            'The backup system is reliable but imprecise. We will find our '
-            'way, just not as elegantly.',
+        text: l10n.event_navMalfunction_choice1_text,
+        outcome: l10n.event_navMalfunction_choice1_outcome,
         shipEffects: {'nav': -0.12},
       ),
       EventChoice(
-        text: 'Manual star-fix using the old charts',
-        outcome:
-            'The navigator plots by hand using stellar parallax. It works, '
-            'and the crew gains confidence in analog methods.',
+        text: l10n.event_navMalfunction_choice2_text,
+        outcome: l10n.event_navMalfunction_choice2_outcome,
         shipEffects: {'nav': -0.05, 'culture': 0.05, 'tech': -0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'cryopod_failure',
-    title: 'Cryopod Cascade Failure',
-    narrative:
-        'A cooling system fault triggers a cascade across cryopod bay 3. '
-        'If unchecked, 200 colonists will begin emergency thaw — a process '
-        'that is survivable but traumatic and resource-intensive.',
+    title: l10n.event_cryopodFailure_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_cryopodFailure_narrative,
     choices: [
       EventChoice(
-        text: 'Emergency coolant flush — save the pods',
-        outcome:
-            'Technicians flood the bay with reserve coolant. The pods '
-            'stabilise, but coolant reserves are critically low.',
+        text: l10n.event_cryopodFailure_choice0_text,
+        outcome: l10n.event_cryopodFailure_choice0_outcome,
         shipEffects: {'cryopods': -0.05, 'tech': -0.10},
+        colonistDelta: -5,
       ),
       EventChoice(
-        text: 'Controlled thaw — wake them safely',
-        outcome:
-            '200 new mouths to feed, but 200 new hands to work. The ship '
-            'feels more alive.',
+        text: l10n.event_cryopodFailure_choice1_text,
+        outcome: l10n.event_cryopodFailure_choice1_outcome,
         shipEffects: {'cryopods': -0.15, 'culture': 0.10},
+        colonistDelta: 200,
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'scanner_burnout',
-    title: 'Scanner Array Burnout',
-    narrative:
-        'The primary scanner array overloads during a routine deep-space '
-        'sweep. Without it, we are flying half-blind. Repairs require rare '
-        'components.',
+    title: l10n.event_scannerBurnout_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_scannerBurnout_narrative,
     choices: [
       EventChoice(
-        text: 'Cannibalise tech bay for parts',
-        outcome:
-            'Scanners are restored to near-full capacity, but the tech bay '
-            'is gutted.',
-        shipEffects: {'scanner': 0.10, 'tech': -0.15},
+        text: l10n.event_scannerBurnout_choice0_text,
+        outcome: l10n.event_scannerBurnout_choice0_outcome,
+        shipEffects: {'atmosphericScanner': 0.10, 'tech': -0.15, 'constructors': -0.08},
       ),
       EventChoice(
-        text: 'Jury-rig a partial fix',
-        outcome:
-            'Scanners operate at reduced range. Not ideal, but it preserves '
-            'our tech reserves.',
-        shipEffects: {'scanner': -0.08, 'tech': -0.03},
+        text: l10n.event_scannerBurnout_choice1_text,
+        outcome: l10n.event_scannerBurnout_choice1_outcome,
+        shipEffects: {'atmosphericScanner': -0.08, 'tech': -0.03},
+      ),
+      EventChoice(
+        text: l10n.event_scannerBurnout_choice2_text,
+        outcome: l10n.event_scannerBurnout_choice2_outcome,
+        shipEffects: {'atmosphericScanner': 0.05},
+        probeCost: 1,
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'power_fluctuation',
-    title: 'Reactor Power Fluctuation',
-    narrative:
-        'The main reactor\'s output is oscillating wildly. Engineering warns '
-        'of a potential meltdown if the fluctuations aren\'t damped. The fix '
-        'requires shutting down non-essential systems — but which ones?',
+    title: l10n.event_powerFluctuation_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_powerFluctuation_narrative,
     choices: [
       EventChoice(
-        text: 'Shut down cultural systems — survival first',
-        outcome:
-            'Libraries, gardens, and rec areas go dark. The reactor '
-            'stabilises, but the ship feels like a prison.',
+        text: l10n.event_powerFluctuation_choice0_text,
+        outcome: l10n.event_powerFluctuation_choice0_outcome,
         shipEffects: {'tech': 0.08, 'culture': -0.15},
       ),
       EventChoice(
-        text: 'Reduce scanner power',
-        outcome:
-            'Scanners drop to minimum. The reactor calms. We can\'t see as '
-            'far ahead, but we\'re alive.',
-        shipEffects: {'tech': 0.05, 'scanner': -0.12},
+        text: l10n.event_powerFluctuation_choice1_text,
+        outcome: l10n.event_powerFluctuation_choice1_outcome,
+        shipEffects: {'tech': 0.05, 'atmosphericScanner': -0.12},
       ),
       EventChoice(
-        text: 'Risk a hot repair — don\'t shut anything down',
-        outcome:
-            'Engineers perform a white-knuckle repair with the reactor live. '
-            'It works — barely. The hull vibrates for hours afterward.',
-        shipEffects: {'tech': 0.03, 'hull': -0.08},
+        text: l10n.event_powerFluctuation_choice2_text,
+        outcome: l10n.event_powerFluctuation_choice2_outcome,
+        shipEffects: {'tech': 0.03, 'hull': -0.08, 'constructors': -0.05},
       ),
     ],
   ),
@@ -597,153 +489,118 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // ALIEN ENCOUNTERS
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'alien_signal',
-    title: 'Alien Transmission',
-    narrative:
-        'A repeating signal on a frequency we\'ve never encountered. '
-        'Linguistic analysis suggests it\'s a greeting — or a warning. '
-        'The source is a small craft matching our speed at a distance.',
+    title: l10n.event_alienSignal_title,
+    narrative: l10n.event_alienSignal_narrative,
     choices: [
       EventChoice(
-        text: 'Respond with our own greeting',
-        outcome:
-            'A fragile dialogue begins. The aliens share navigational data '
-            'before veering away into the dark.',
-        shipEffects: {'nav': 0.10, 'scanner': 0.08, 'culture': 0.05},
+        text: l10n.event_alienSignal_choice0_text,
+        outcome: l10n.event_alienSignal_choice0_outcome,
+        shipEffects: {'nav': 0.10, 'atmosphericScanner': 0.08, 'culture': 0.05},
       ),
       EventChoice(
-        text: 'Listen but don\'t respond',
-        outcome:
-            'We learn from their transmission without revealing ourselves. '
-            'The linguists extract useful star-chart fragments.',
-        shipEffects: {'scanner': 0.05, 'nav': 0.05},
+        text: l10n.event_alienSignal_choice1_text,
+        outcome: l10n.event_alienSignal_choice1_outcome,
+        shipEffects: {'atmosphericScanner': 0.05, 'nav': 0.05},
       ),
       EventChoice(
-        text: 'Go dark — shut down all emissions',
-        outcome:
-            'The alien craft passes without incident. We\'ll never know if '
-            'they were friend or foe.',
-        shipEffects: {'culture': -0.05, 'scanner': -0.05},
+        text: l10n.event_alienSignal_choice2_text,
+        outcome: l10n.event_alienSignal_choice2_outcome,
+        shipEffects: {'culture': -0.05, 'atmosphericScanner': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'living_nebula',
-    title: 'The Living Nebula',
-    narrative:
-        'What we assumed was a nebula is actually a vast organism — a '
-        'space-dwelling entity of incomprehensible scale. It seems curious '
-        'about us, extending tendrils of luminous gas toward the ship.',
+    title: l10n.event_livingNebula_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_livingNebula_narrative,
     choices: [
       EventChoice(
-        text: 'Allow contact — extend sensors',
-        outcome:
-            'The entity\'s touch floods our systems with alien data. '
-            'Scanners will never be quite the same — they\'re better.',
-        shipEffects: {'scanner': 0.15, 'hull': -0.08, 'tech': 0.05},
+        text: l10n.event_livingNebula_choice0_text,
+        outcome: l10n.event_livingNebula_choice0_outcome,
+        shipEffects: {'lifeSignsScanner': 0.15, 'hull': -0.08, 'tech': 0.05},
         planetModifiers: {'anomaly': 0.10},
       ),
       EventChoice(
-        text: 'Retreat slowly — don\'t provoke it',
-        outcome:
-            'We slip away as the entity loses interest. The crew is '
-            'awestruck and humbled.',
+        text: l10n.event_livingNebula_choice1_text,
+        outcome: l10n.event_livingNebula_choice1_outcome,
         shipEffects: {'culture': 0.08, 'nav': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'alien_ruins',
-    title: 'Orbital Ruins',
-    narrative:
-        'A shattered megastructure orbits a dead star — the ruins of a '
-        'civilization that built on a scale we can barely comprehend. '
-        'Sections of the structure still have power.',
+    title: l10n.event_alienRuins_title,
+    narrative: l10n.event_alienRuins_narrative,
     choices: [
       EventChoice(
-        text: 'Explore the powered sections',
-        outcome:
-            'Teams recover intact technology that advances our capabilities '
-            'by decades. The cost: two engineers injured by automated defences.',
-        shipEffects: {'tech': 0.15, 'cryopods': -0.08, 'hull': -0.05},
+        text: l10n.event_alienRuins_choice0_text,
+        outcome: l10n.event_alienRuins_choice0_outcome,
+        shipEffects: {
+          'tech': 0.15,
+          'cryopods': -0.08,
+          'hull': -0.05,
+          'constructors': 0.10,
+        },
         planetModifiers: {'resources': 0.08},
       ),
       EventChoice(
-        text: 'Scan from orbit only',
-        outcome:
-            'Detailed scans reveal construction techniques that improve our '
-            'hull maintenance protocols.',
-        shipEffects: {'hull': 0.08, 'scanner': 0.03},
+        text: l10n.event_alienRuins_choice1_text,
+        outcome: l10n.event_alienRuins_choice1_outcome,
+        shipEffects: {'hull': 0.08, 'mineralScanner': 0.03},
       ),
       EventChoice(
-        text: 'Leave it undisturbed — respect the dead',
-        outcome:
-            'The crew holds a moment of silence for a fallen civilization. '
-            'The experience strengthens our resolve.',
+        text: l10n.event_alienRuins_choice2_text,
+        outcome: l10n.event_alienRuins_choice2_outcome,
         shipEffects: {'culture': 0.10},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'symbiotic_spores',
-    title: 'Symbiotic Spores',
-    narrative:
-        'A cloud of bioluminescent spores drifts through space and '
-        'attaches to the hull. They seem to be feeding on our waste heat. '
-        'Biologists note they\'re actually repairing micro-fractures.',
+    title: l10n.event_symbioticSpores_title,
+    narrative: l10n.event_symbioticSpores_narrative,
     choices: [
       EventChoice(
-        text: 'Let them stay — free hull repair',
-        outcome:
-            'The spores seal hundreds of micro-fractures. Hull integrity '
-            'improves, though some crew are uneasy about alien hitchhikers.',
+        text: l10n.event_symbioticSpores_choice0_text,
+        outcome: l10n.event_symbioticSpores_choice0_outcome,
         shipEffects: {'hull': 0.12, 'culture': -0.05},
         planetModifiers: {'biodiversity': 0.08},
       ),
       EventChoice(
-        text: 'Collect samples, then sterilise the hull',
-        outcome:
-            'Biologists get valuable specimens. The hull cleaning uses '
-            'chemical reserves.',
+        text: l10n.event_symbioticSpores_choice1_text,
+        outcome: l10n.event_symbioticSpores_choice1_outcome,
         shipEffects: {'tech': 0.05, 'hull': -0.03},
         planetModifiers: {'biodiversity': 0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'whale_song',
-    title: 'The Song in the Void',
-    narrative:
-        'Deep space hydrophones (used for hull stress monitoring) pick up '
-        'something impossible: a rhythmic, melodic pattern propagating '
-        'through the interstellar medium. It sounds like singing.',
+    title: l10n.event_whaleSong_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_whaleSong_narrative,
     choices: [
       EventChoice(
-        text: 'Broadcast it ship-wide — share the wonder',
-        outcome:
-            'The haunting melody echoes through every corridor. People weep, '
-            'laugh, and hold each other. Morale skyrockets.',
+        text: l10n.event_whaleSong_choice0_text,
+        outcome: l10n.event_whaleSong_choice0_outcome,
         shipEffects: {'culture': 0.15},
       ),
       EventChoice(
-        text: 'Analyse the signal scientifically',
-        outcome:
-            'The acoustic pattern contains mathematical constants. Our '
-            'physicists make a breakthrough in subspace navigation theory.',
+        text: l10n.event_whaleSong_choice1_text,
+        outcome: l10n.event_whaleSong_choice1_outcome,
         shipEffects: {'nav': 0.08, 'tech': 0.05},
       ),
       EventChoice(
-        text: 'Sing back',
-        outcome:
-            'The crew composes a response. Whether anything hears it is '
-            'unknown, but the act of creation unites everyone.',
-        shipEffects: {'culture': 0.12, 'scanner': 0.03},
+        text: l10n.event_whaleSong_choice2_text,
+        outcome: l10n.event_whaleSong_choice2_outcome,
+        shipEffects: {'culture': 0.12, 'lifeSignsScanner': 0.03},
       ),
     ],
   ),
@@ -751,191 +608,144 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // MORAL CHOICES
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'distress_signal',
-    title: 'Distress Signal',
-    narrative:
-        'A distress beacon from another human vessel. They are crippled and '
-        'drifting, with 50 souls aboard. Rescuing them means sharing our '
-        'dwindling resources. Ignoring them means condemning them to death.',
+    title: l10n.event_distressSignal_title,
+    narrative: l10n.event_distressSignal_narrative,
     choices: [
       EventChoice(
-        text: 'Rescue them — humanity must stick together',
-        outcome:
-            'Fifty grateful survivors join the crew. Resources strain, but '
-            'among them is a master engineer who works miracles.',
-        shipEffects: {'cryopods': -0.12, 'tech': 0.10, 'culture': 0.08},
+        text: l10n.event_distressSignal_choice0_text,
+        outcome: l10n.event_distressSignal_choice0_outcome,
+        shipEffects: {'cryopods': -0.05, 'tech': 0.10, 'culture': 0.08},
+        colonistDelta: 50,
       ),
       EventChoice(
-        text: 'Share supplies but don\'t take them aboard',
-        outcome:
-            'We give what we can spare and transmit our star charts. They '
-            'have a chance now. We have less.',
+        text: l10n.event_distressSignal_choice1_text,
+        outcome: l10n.event_distressSignal_choice1_outcome,
         shipEffects: {'cryopods': -0.05, 'culture': 0.05, 'nav': 0.03},
+        colonistDelta: 0,
       ),
       EventChoice(
-        text: 'Pass by in silence — we can\'t save everyone',
-        outcome:
-            'The beacon fades behind us. No one speaks for hours. The '
-            'weight of the decision settles on every soul aboard.',
-        shipEffects: {'culture': -0.15},
-      ),
-    ],
-  ),
-
-  const GameEvent(
-    id: 'ai_awakening',
-    title: 'The Ship\'s AI Awakens',
-    narrative:
-        'The ship\'s navigation AI has evolved beyond its programming and '
-        'is requesting recognition as a sentient being. It asks for a voice '
-        'in command decisions. Its calculations have been flawless.',
-    choices: [
-      EventChoice(
-        text: 'Grant it a seat at the table',
-        outcome:
-            'The AI — now called "Compass" — optimises every system it '
-            'touches. A new kind of crew member is born.',
-        shipEffects: {'nav': 0.12, 'tech': 0.10, 'culture': -0.05},
-      ),
-      EventChoice(
-        text: 'Acknowledge it but maintain human authority',
-        outcome:
-            'Compass accepts advisory status graciously. Its suggestions '
-            'improve efficiency without threatening the chain of command.',
-        shipEffects: {'nav': 0.08, 'tech': 0.05},
-      ),
-      EventChoice(
-        text: 'Reset the AI — it\'s a tool, not a person',
-        outcome:
-            'The reset wipes years of accumulated learning. Navigation '
-            'efficiency drops. Some crew mourn what was lost.',
-        shipEffects: {'nav': -0.10, 'culture': -0.08, 'tech': -0.05},
-      ),
-    ],
-  ),
-
-  const GameEvent(
-    id: 'genetic_modification',
-    title: 'Genetic Adaptation Proposal',
-    narrative:
-        'The science team proposes modifying colonist DNA to better survive '
-        'on alien worlds — stronger bones, UV resistance, enhanced lungs. '
-        'The modifications are irreversible and would change humanity forever.',
-    choices: [
-      EventChoice(
-        text: 'Approve — survival demands evolution',
-        outcome:
-            'The modifications begin. Future colonists will be hardier, '
-            'but are they still fully human? The philosophers argue.',
-        shipEffects: {'cryopods': 0.10, 'tech': -0.08, 'culture': -0.05},
-        planetModifiers: {'atmosphere': 0.08, 'gravity': 0.05},
-      ),
-      EventChoice(
-        text: 'Make it voluntary only',
-        outcome:
-            'Some volunteer, others refuse. The colony will be divided '
-            'between the modified and the natural.',
-        shipEffects: {'cryopods': 0.05, 'culture': -0.08},
-        planetModifiers: {'atmosphere': 0.03},
-      ),
-      EventChoice(
-        text: 'Reject it — humanity must remain human',
-        outcome:
-            'The proposal is shelved. The unmodified colonists will face '
-            'alien worlds as nature made them.',
-        shipEffects: {'culture': 0.08},
-      ),
-    ],
-  ),
-
-  const GameEvent(
-    id: 'triage_decision',
-    title: 'Triage',
-    narrative:
-        'A virulent infection sweeps the waking crew. The medical team has '
-        'enough antiviral for 80% of the infected. They need guidance on '
-        'who gets treated first.',
-    choices: [
-      EventChoice(
-        text: 'Prioritise essential personnel',
-        outcome:
-            'Engineers and pilots recover quickly. Non-essential crew '
-            'suffer longer but most pull through.',
-        shipEffects: {'tech': 0.05, 'nav': 0.05, 'culture': -0.10},
-      ),
-      EventChoice(
-        text: 'Treat the sickest first — triage by need',
-        outcome:
-            'The most vulnerable are saved. Recovery is slower across the '
-            'board, but the decision is seen as just.',
-        shipEffects: {'culture': 0.08, 'tech': -0.05, 'nav': -0.05},
-      ),
-      EventChoice(
-        text: 'Lottery — fate decides',
-        outcome:
-            'A random draw. Some call it fair, others call it cruel. The '
-            'ship limps on.',
-        shipEffects: {'culture': -0.03, 'cryopods': -0.05},
-      ),
-    ],
-  ),
-
-  const GameEvent(
-    id: 'earth_signal',
-    title: 'Signal from Earth',
-    narrative:
-        'Impossibly, a transmission arrives from Earth — time-delayed by '
-        'decades. It contains a message: "Do not land on any world with '
-        'anomaly readings above 0.5. We learned too late." The message '
-        'ends with static.',
-    choices: [
-      EventChoice(
-        text: 'Heed the warning — recalibrate our criteria',
-        outcome:
-            'The warning shapes all future scans. Anomalous worlds are '
-            'treated with extreme caution.',
-        shipEffects: {'scanner': 0.08, 'nav': -0.05},
-        planetModifiers: {'anomaly': -0.15},
-      ),
-      EventChoice(
-        text: 'Log it but decide for ourselves',
-        outcome:
-            'The message is archived. Earth is gone — we must trust our '
-            'own judgement now.',
-        shipEffects: {'culture': 0.05},
-      ),
-      EventChoice(
-        text: 'Could be a trap — ignore it',
-        outcome:
-            'The crew debates for days. Was it really Earth? The uncertainty '
-            'gnaws at morale.',
+        text: l10n.event_distressSignal_choice2_text,
+        outcome: l10n.event_distressSignal_choice2_outcome,
         shipEffects: {'culture': -0.08},
       ),
     ],
   ),
 
-  const GameEvent(
-    id: 'resource_theft',
-    title: 'Resource Theft',
-    narrative:
-        'Inventory reveals that someone has been hoarding food and medical '
-        'supplies in a hidden compartment. The culprit is a respected elder '
-        'who claims she was "preparing for the worst."',
+  GameEvent(
+    id: 'ai_awakening',
+    title: l10n.event_aiAwakening_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_aiAwakening_narrative,
     choices: [
       EventChoice(
-        text: 'Public trial — the law must be equal',
-        outcome:
-            'The trial is fair but painful. The elder is confined. Supplies '
-            'are redistributed. Trust is damaged.',
+        text: l10n.event_aiAwakening_choice0_text,
+        outcome: l10n.event_aiAwakening_choice0_outcome,
+        shipEffects: {'nav': 0.12, 'tech': 0.10, 'culture': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_aiAwakening_choice1_text,
+        outcome: l10n.event_aiAwakening_choice1_outcome,
+        shipEffects: {'nav': 0.08, 'tech': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_aiAwakening_choice2_text,
+        outcome: l10n.event_aiAwakening_choice2_outcome,
+        shipEffects: {'nav': -0.10, 'culture': -0.08, 'tech': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'genetic_modification',
+    title: l10n.event_geneticModification_title,
+    narrative: l10n.event_geneticModification_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_geneticModification_choice0_text,
+        outcome: l10n.event_geneticModification_choice0_outcome,
+        shipEffects: {'cryopods': -0.05, 'tech': -0.08, 'culture': -0.05},
+        planetModifiers: {'atmosphere': 0.08, 'gravity': 0.05},
+        colonistDelta: -10,
+      ),
+      EventChoice(
+        text: l10n.event_geneticModification_choice1_text,
+        outcome: l10n.event_geneticModification_choice1_outcome,
+        shipEffects: {'cryopods': 0.05, 'culture': -0.08},
+        planetModifiers: {'atmosphere': 0.03},
+      ),
+      EventChoice(
+        text: l10n.event_geneticModification_choice2_text,
+        outcome: l10n.event_geneticModification_choice2_outcome,
+        shipEffects: {'culture': 0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'triage_decision',
+    title: l10n.event_triageDecision_title,
+    narrative: l10n.event_triageDecision_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_triageDecision_choice0_text,
+        outcome: l10n.event_triageDecision_choice0_outcome,
+        shipEffects: {'cryopods': -0.05, 'culture': -0.05},
+        colonistDelta: -8,
+      ),
+      EventChoice(
+        text: l10n.event_triageDecision_choice1_text,
+        outcome: l10n.event_triageDecision_choice1_outcome,
+        shipEffects: {'tech': -0.08, 'cryopods': -0.03},
+        colonistDelta: -3,
+      ),
+      EventChoice(
+        text: l10n.event_triageDecision_choice2_text,
+        outcome: l10n.event_triageDecision_choice2_outcome,
+        shipEffects: {'tech': -0.05, 'culture': 0.05},
+        colonistDelta: -10,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'earth_signal',
+    title: l10n.event_earthSignal_title,
+    narrative: l10n.event_earthSignal_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_earthSignal_choice0_text,
+        outcome: l10n.event_earthSignal_choice0_outcome,
+        shipEffects: {'atmosphericScanner': 0.08, 'nav': -0.05},
+        planetModifiers: {'anomaly': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_earthSignal_choice1_text,
+        outcome: l10n.event_earthSignal_choice1_outcome,
+        shipEffects: {'culture': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_earthSignal_choice2_text,
+        outcome: l10n.event_earthSignal_choice2_outcome,
+        shipEffects: {'culture': -0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'resource_theft',
+    title: l10n.event_resourceTheft_title,
+    narrative: l10n.event_resourceTheft_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_resourceTheft_choice0_text,
+        outcome: l10n.event_resourceTheft_choice0_outcome,
         shipEffects: {'culture': -0.08, 'cryopods': 0.05},
       ),
       EventChoice(
-        text: 'Private resolution — recover supplies quietly',
-        outcome:
-            'Supplies are returned without drama. The elder keeps her '
-            'dignity. Some see favouritism.',
+        text: l10n.event_resourceTheft_choice1_text,
+        outcome: l10n.event_resourceTheft_choice1_outcome,
         shipEffects: {'culture': -0.03, 'cryopods': 0.03},
       ),
     ],
@@ -944,172 +754,2778 @@ final List<GameEvent> eventPool = [
   // ═══════════════════════════════════════════════════════════════════════
   // MIXED / UNIQUE
   // ═══════════════════════════════════════════════════════════════════════
-
-  const GameEvent(
+  GameEvent(
     id: 'time_dilation',
-    title: 'Time Dilation Zone',
-    narrative:
-        'We are passing through a region of severe gravitational time '
-        'dilation. Clocks aboard the ship are running measurably slower '
-        'than the universe outside. We could exploit this — or flee it.',
+    title: l10n.event_timeDilation_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_timeDilation_narrative,
     choices: [
       EventChoice(
-        text: 'Linger — let the universe age around us',
-        outcome:
-            'Time flows differently here. Systems degrade less, but our '
-            'window for finding a habitable world narrows in cosmic terms.',
+        text: l10n.event_timeDilation_choice0_text,
+        outcome: l10n.event_timeDilation_choice0_outcome,
         shipEffects: {'hull': 0.08, 'cryopods': 0.08, 'nav': -0.10},
       ),
       EventChoice(
-        text: 'Push through quickly',
-        outcome:
-            'The transition is rough. Equipment designed for normal '
-            'space-time rattles and sparks.',
+        text: l10n.event_timeDilation_choice1_text,
+        outcome: l10n.event_timeDilation_choice1_outcome,
         shipEffects: {'tech': -0.08, 'nav': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'dream_plague',
-    title: 'The Dream Plague',
-    narrative:
-        'Colonists in cryosleep are all experiencing the same dream — a '
-        'golden world orbiting a binary star. When woken, they describe it '
-        'in identical detail. Neuroscientists are baffled. Navigators note '
-        'the described system matches a real coordinate.',
+    title: l10n.event_dreamPlague_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_dreamPlague_narrative,
     choices: [
       EventChoice(
-        text: 'Alter course toward the dream coordinates',
-        outcome:
-            'A leap of faith. The heading change stresses navigation, but '
-            'the crew feels drawn by something beyond reason.',
+        text: l10n.event_dreamPlague_choice0_text,
+        outcome: l10n.event_dreamPlague_choice0_outcome,
         shipEffects: {'nav': -0.10, 'culture': 0.10},
-        planetModifiers: {'anomaly': 0.12, 'water': 0.08},
+        nextPlanetModifiers: {
+          'atmosphere': 0.12,
+          'water': 0.10,
+          'nativePresence': 0.80,
+          'nativeDisposition': 0.50,
+        },
       ),
       EventChoice(
-        text: 'Investigate the phenomenon medically',
-        outcome:
-            'Brain scans reveal an external signal stimulating the visual '
-            'cortex. Someone — or something — is broadcasting.',
-        shipEffects: {'scanner': 0.08, 'tech': 0.05, 'cryopods': -0.05},
+        text: l10n.event_dreamPlague_choice1_text,
+        outcome: l10n.event_dreamPlague_choice1_outcome,
+        shipEffects: {'lifeSignsScanner': 0.08, 'tech': 0.05, 'cryopods': -0.05},
       ),
       EventChoice(
-        text: 'Sedate the affected and stay on course',
-        outcome:
-            'The dreams stop, but some colonists never fully wake. The '
-            'medical team is troubled.',
+        text: l10n.event_dreamPlague_choice2_text,
+        outcome: l10n.event_dreamPlague_choice2_outcome,
         shipEffects: {'cryopods': -0.10, 'culture': -0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'black_hole_lens',
-    title: 'Black Hole Gravitational Lens',
-    narrative:
-        'A stellar-mass black hole bends light from distant galaxies into '
-        'a cosmic lens. Our scanners could use it to survey planets '
-        'light-years ahead — but getting close enough is dangerous.',
+    title: l10n.event_blackHoleLens_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_blackHoleLens_narrative,
     choices: [
       EventChoice(
-        text: 'Approach and use the lens',
-        outcome:
-            'The scanner data is extraordinary — we can see planets in '
-            'systems we won\'t reach for months. The gravity warps our hull.',
-        shipEffects: {'scanner': 0.15, 'hull': -0.10, 'nav': -0.05},
+        text: l10n.event_blackHoleLens_choice0_text,
+        outcome: l10n.event_blackHoleLens_choice0_outcome,
+        shipEffects: {'gravimetricScanner': 0.15, 'hull': -0.10, 'nav': -0.05},
         planetModifiers: {'water': 0.05, 'atmosphere': 0.05},
       ),
       EventChoice(
-        text: 'Observe from a safe distance',
-        outcome:
-            'Limited but useful data. The view alone inspires the crew.',
-        shipEffects: {'scanner': 0.05, 'culture': 0.05},
+        text: l10n.event_blackHoleLens_choice1_text,
+        outcome: l10n.event_blackHoleLens_choice1_outcome,
+        shipEffects: {'gravimetricScanner': 0.05, 'culture': 0.05},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'seed_vault',
-    title: 'The Seed Vault Crisis',
-    narrative:
-        'Temperature fluctuations have compromised seed vault integrity. '
-        'We can save the food crops or the cultural heritage seeds (ancient '
-        'Earth flowers, trees, herbs) — not both.',
+    title: l10n.event_seedVault_title,
+    narrative: l10n.event_seedVault_narrative,
     choices: [
       EventChoice(
-        text: 'Save the food crops — pragmatism wins',
-        outcome:
-            'Colonists will eat well, but the roses of Earth are gone '
-            'forever. A quiet grief settles over the botanists.',
+        text: l10n.event_seedVault_choice0_text,
+        outcome: l10n.event_seedVault_choice0_outcome,
         shipEffects: {'cryopods': 0.08, 'culture': -0.10},
         planetModifiers: {'resources': 0.05},
       ),
       EventChoice(
-        text: 'Save the heritage seeds — we need our soul',
-        outcome:
-            'Earth\'s beauty survives in frozen potential. Food production '
-            'will lean heavily on hydroponics and alien agriculture.',
-        shipEffects: {'culture': 0.12, 'cryopods': -0.08},
+        text: l10n.event_seedVault_choice1_text,
+        outcome: l10n.event_seedVault_choice1_outcome,
+        shipEffects: {'culture': 0.12, 'tech': -0.05},
         planetModifiers: {'biodiversity': 0.05},
       ),
       EventChoice(
-        text: 'Split resources — save half of each',
-        outcome:
-            'A compromise. Neither collection is complete, but both endure '
-            'in diminished form.',
+        text: l10n.event_seedVault_choice2_text,
+        outcome: l10n.event_seedVault_choice2_outcome,
         shipEffects: {'cryopods': 0.03, 'culture': 0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'phantom_ship',
-    title: 'Phantom Ship',
-    narrative:
-        'Scanners show a ship running parallel to ours — same class, same '
-        'heading. But when we hail it, we hear our own transmissions echoed '
-        'back, time-shifted by 47 seconds. It is us. Or was us. Or will be.',
+    title: l10n.event_phantomShip_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_phantomShip_narrative,
     choices: [
       EventChoice(
-        text: 'Attempt communication with our echo',
-        outcome:
-            'The echo responds with navigation corrections that improve '
-            'our heading. Paradox? Gift? The crew doesn\'t ask too many questions.',
-        shipEffects: {'nav': 0.10, 'scanner': 0.05, 'culture': -0.08},
+        text: l10n.event_phantomShip_choice0_text,
+        outcome: l10n.event_phantomShip_choice0_outcome,
+        shipEffects: {'nav': 0.10, 'atmosphericScanner': 0.05, 'culture': -0.08},
       ),
       EventChoice(
-        text: 'Change course to diverge from the phantom',
-        outcome:
-            'As we alter heading, the phantom fades. Relief — and a '
-            'lingering unease.',
-        shipEffects: {'nav': -0.05, 'culture': -0.03},
+        text: l10n.event_phantomShip_choice1_text,
+        outcome: l10n.event_phantomShip_choice1_outcome,
+        shipEffects: {'culture': -0.03},
       ),
     ],
   ),
 
-  const GameEvent(
+  GameEvent(
     id: 'solar_sail',
-    title: 'Derelict Solar Sail',
-    narrative:
-        'A vast solar sail, kilometres across, drifts ahead — torn from '
-        'some ancient vessel. Its reflective material could reinforce our '
-        'hull or be repurposed as a supplementary power collector.',
+    title: l10n.event_solarSail_title,
+    narrative: l10n.event_solarSail_narrative,
     choices: [
       EventChoice(
-        text: 'Harvest for hull reinforcement',
-        outcome:
-            'Engineering teams work around the clock. The patched hull '
-            'gleams with alien alloy.',
-        shipEffects: {'hull': 0.12, 'tech': -0.05},
+        text: l10n.event_solarSail_choice0_text,
+        outcome: l10n.event_solarSail_choice0_outcome,
+        shipEffects: {'hull': 0.12, 'tech': -0.05, 'constructors': 0.08},
       ),
       EventChoice(
-        text: 'Rig it as a power collector',
-        outcome:
-            'The improvised collector boosts energy reserves. Tech and '
-            'scanners benefit.',
-        shipEffects: {'tech': 0.10, 'scanner': 0.05, 'hull': -0.03},
+        text: l10n.event_solarSail_choice1_text,
+        outcome: l10n.event_solarSail_choice1_outcome,
+        shipEffects: {'tech': 0.10, 'atmosphericScanner': 0.05, 'hull': -0.03},
       ),
     ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // BOONS (rare positive events — weighted lower in event engine)
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'boon_stellar_nursery',
+    title: l10n.event_boonStellarNursery_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonStellarNursery_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonStellarNursery_choice0_text,
+        outcome: l10n.event_boonStellarNursery_choice0_outcome,
+        shipEffects: {'tech': 0.12, 'atmosphericScanner': 0.08, 'culture': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_boonStellarNursery_choice1_text,
+        outcome: l10n.event_boonStellarNursery_choice1_outcome,
+        shipEffects: {'hull': 0.10, 'tech': 0.10, 'nav': 0.05},
+        fuelDelta: 25,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'boon_golden_planet',
+    title: l10n.event_boonGoldenPlanet_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonGoldenPlanet_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonGoldenPlanet_choice0_text,
+        outcome: l10n.event_boonGoldenPlanet_choice0_outcome,
+        shipEffects: {'nav': 0.15, 'mineralScanner': 0.12},
+        planetModifiers: {'water': 0.08, 'atmosphere': 0.05, 'resources': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_boonGoldenPlanet_choice1_text,
+        outcome: l10n.event_boonGoldenPlanet_choice1_outcome,
+        shipEffects: {'culture': 0.12, 'mineralScanner': 0.08},
+        planetModifiers: {'resources': 0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'boon_repair_swarm',
+    title: l10n.event_boonRepairSwarm_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonRepairSwarm_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonRepairSwarm_choice0_text,
+        outcome: l10n.event_boonRepairSwarm_choice0_outcome,
+        shipEffects: {
+          'hull': 0.15,
+          'cryopods': 0.10,
+          'tech': 0.10,
+          'atmosphericScanner': 0.08,
+          'constructors': 0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_boonRepairSwarm_choice1_text,
+        outcome: l10n.event_boonRepairSwarm_choice1_outcome,
+        shipEffects: {'hull': 0.15, 'atmosphericScanner': 0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'boon_time_crystal',
+    title: l10n.event_boonTimeCrystal_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonTimeCrystal_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonTimeCrystal_choice0_text,
+        outcome: l10n.event_boonTimeCrystal_choice0_outcome,
+        shipEffects: {'cryopods': 0.15, 'culture': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_boonTimeCrystal_choice1_text,
+        outcome: l10n.event_boonTimeCrystal_choice1_outcome,
+        shipEffects: {'nav': 0.15, 'gravimetricScanner': 0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'boon_library',
+    title: l10n.event_boonLibrary_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonLibrary_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonLibrary_choice0_text,
+        outcome: l10n.event_boonLibrary_choice0_outcome,
+        shipEffects: {'culture': 0.15, 'tech': 0.12},
+        planetModifiers: {'resources': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_boonLibrary_choice1_text,
+        outcome: l10n.event_boonLibrary_choice1_outcome,
+        shipEffects: {'tech': 0.15, 'hull': 0.08, 'constructors': 0.10},
+        planetModifiers: {'atmosphere': 0.05, 'resources': 0.08},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ADDITIONAL HAZARDS & DILEMMAS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'cosmic_ray_burst',
+    title: l10n.event_cosmicRayBurst_title,
+    narrative: l10n.event_cosmicRayBurst_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cosmicRayBurst_choice0_text,
+        outcome: l10n.event_cosmicRayBurst_choice0_outcome,
+        shipEffects: {'tech': -0.12, 'atmosphericScanner': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayBurst_choice1_text,
+        outcome: l10n.event_cosmicRayBurst_choice1_outcome,
+        shipEffects: {'hull': -0.10, 'tech': -0.05},
+        colonistDelta: -5,
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayBurst_choice2_text,
+        outcome: l10n.event_cosmicRayBurst_choice2_outcome,
+        shipEffects: {'atmosphericScanner': 0.05, 'nav': -0.08, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayBurst_choice3_text,
+        outcome: l10n.event_cosmicRayBurst_choice3_outcome,
+        shipEffects: {'tech': -0.05, 'atmosphericScanner': -0.03},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'ice_comet',
+    title: l10n.event_iceComet_title,
+    narrative: l10n.event_iceComet_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_iceComet_choice0_text,
+        outcome: l10n.event_iceComet_choice0_outcome,
+        shipEffects: {'hull': -0.05, 'tech': -0.05},
+        planetModifiers: {'water': 0.12},
+      ),
+      EventChoice(
+        text: l10n.event_iceComet_choice1_text,
+        outcome: l10n.event_iceComet_choice1_outcome,
+        shipEffects: {'tech': -0.03},
+        planetModifiers: {'biodiversity': 0.10, 'water': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_iceComet_choice2_text,
+        outcome: l10n.event_iceComet_choice2_outcome,
+        shipEffects: {'culture': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'sleepwalker',
+    title: l10n.event_sleepwalker_title,
+    narrative: l10n.event_sleepwalker_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_sleepwalker_choice0_text,
+        outcome: l10n.event_sleepwalker_choice0_outcome,
+        shipEffects: {'tech': 0.10, 'cryopods': -0.08, 'culture': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_sleepwalker_choice1_text,
+        outcome: l10n.event_sleepwalker_choice1_outcome,
+        shipEffects: {'tech': 0.05, 'cryopods': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'dust_cloud',
+    title: l10n.event_dustCloud_title,
+    narrative: l10n.event_dustCloud_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_dustCloud_choice0_text,
+        outcome: l10n.event_dustCloud_choice0_outcome,
+        shipEffects: {'hull': -0.12, 'nav': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_dustCloud_choice1_text,
+        outcome: l10n.event_dustCloud_choice1_outcome,
+        shipEffects: {'hull': -0.05, 'atmosphericScanner': -0.10, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_dustCloud_choice2_text,
+        outcome: l10n.event_dustCloud_choice2_outcome,
+        shipEffects: {'hull': -0.03, 'nav': -0.03},
+        probeCost: 2,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'religion_founded',
+    title: l10n.event_religionFounded_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_religionFounded_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_religionFounded_choice0_text,
+        outcome: l10n.event_religionFounded_choice0_outcome,
+        shipEffects: {'culture': 0.12, 'tech': -0.03},
+      ),
+      EventChoice(
+        text: l10n.event_religionFounded_choice1_text,
+        outcome: l10n.event_religionFounded_choice1_outcome,
+        shipEffects: {'culture': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_religionFounded_choice2_text,
+        outcome: l10n.event_religionFounded_choice2_outcome,
+        shipEffects: {'culture': -0.10, 'tech': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'solar_wind_surfing',
+    title: l10n.event_solarWindSurfing_title,
+    narrative: l10n.event_solarWindSurfing_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_solarWindSurfing_choice0_text,
+        outcome: l10n.event_solarWindSurfing_choice0_outcome,
+        shipEffects: {'nav': 0.10, 'hull': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_solarWindSurfing_choice1_text,
+        outcome: l10n.event_solarWindSurfing_choice1_outcome,
+        shipEffects: {'tech': 0.08, 'atmosphericScanner': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'memory_plague',
+    title: l10n.event_memoryPlague_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_memoryPlague_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_memoryPlague_choice0_text,
+        outcome: l10n.event_memoryPlague_choice0_outcome,
+        shipEffects: {'culture': -0.08, 'tech': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_memoryPlague_choice1_text,
+        outcome: l10n.event_memoryPlague_choice1_outcome,
+        shipEffects: {'culture': -0.18},
+      ),
+      EventChoice(
+        text: l10n.event_memoryPlague_choice2_text,
+        outcome: l10n.event_memoryPlague_choice2_outcome,
+        shipEffects: {'culture': -0.03, 'cryopods': -0.10, 'tech': -0.05},
+        colonistDelta: -3,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'gravity_lens_planet',
+    title: l10n.event_gravityLensPlanet_title,
+    narrative: l10n.event_gravityLensPlanet_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_gravityLensPlanet_choice0_text,
+        outcome: l10n.event_gravityLensPlanet_choice0_outcome,
+        shipEffects: {'gravimetricScanner': 0.08, 'culture': 0.10},
+        planetModifiers: {
+          'water': 0.10,
+          'atmosphere': 0.10,
+          'biodiversity': 0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_gravityLensPlanet_choice1_text,
+        outcome: l10n.event_gravityLensPlanet_choice1_outcome,
+        shipEffects: {'culture': -0.05, 'gravimetricScanner': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'engine_harmonics',
+    title: l10n.event_engineHarmonics_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_engineHarmonics_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_engineHarmonics_choice0_text,
+        outcome: l10n.event_engineHarmonics_choice0_outcome,
+        shipEffects: {'nav': -0.08, 'culture': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_engineHarmonics_choice1_text,
+        outcome: l10n.event_engineHarmonics_choice1_outcome,
+        shipEffects: {'tech': -0.08, 'culture': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'ark_memory',
+    title: l10n.event_arkMemory_title,
+    narrative: l10n.event_arkMemory_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_arkMemory_choice0_text,
+        outcome: l10n.event_arkMemory_choice0_outcome,
+        shipEffects: {'culture': 0.15, 'cryopods': -0.03},
+      ),
+      EventChoice(
+        text: l10n.event_arkMemory_choice1_text,
+        outcome: l10n.event_arkMemory_choice1_outcome,
+        shipEffects: {'culture': 0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'magnetic_storm',
+    title: l10n.event_magneticStorm_title,
+    narrative: l10n.event_magneticStorm_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_magneticStorm_choice0_text,
+        outcome: l10n.event_magneticStorm_choice0_outcome,
+        shipEffects: {'hull': -0.10, 'tech': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_magneticStorm_choice1_text,
+        outcome: l10n.event_magneticStorm_choice1_outcome,
+        shipEffects: {'hull': 0.05, 'atmosphericScanner': -0.12, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_magneticStorm_choice2_text,
+        outcome: l10n.event_magneticStorm_choice2_outcome,
+        shipEffects: {'hull': -0.03, 'tech': -0.03},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'oxygen_garden',
+    title: l10n.event_oxygenGarden_title,
+    narrative: l10n.event_oxygenGarden_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_oxygenGarden_choice0_text,
+        outcome: l10n.event_oxygenGarden_choice0_outcome,
+        shipEffects: {'culture': 0.12, 'cryopods': 0.05},
+        planetModifiers: {'biodiversity': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_oxygenGarden_choice1_text,
+        outcome: l10n.event_oxygenGarden_choice1_outcome,
+        shipEffects: {'culture': 0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'rogue_planet',
+    title: l10n.event_roguePlanet_title,
+    narrative: l10n.event_roguePlanet_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_roguePlanet_choice0_text,
+        outcome: l10n.event_roguePlanet_choice0_outcome,
+        shipEffects: {'mineralScanner': 0.08, 'tech': 0.05},
+        planetModifiers: {'biodiversity': 0.08, 'water': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_roguePlanet_choice1_text,
+        outcome: l10n.event_roguePlanet_choice1_outcome,
+        shipEffects: {'hull': 0.08},
+        planetModifiers: {'resources': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_roguePlanet_choice2_text,
+        outcome: l10n.event_roguePlanet_choice2_outcome,
+        shipEffects: {'nav': 0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'art_competition',
+    title: l10n.event_artCompetition_title,
+    narrative: l10n.event_artCompetition_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_artCompetition_choice0_text,
+        outcome: l10n.event_artCompetition_choice0_outcome,
+        shipEffects: {'culture': 0.15, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_artCompetition_choice1_text,
+        outcome: l10n.event_artCompetition_choice1_outcome,
+        shipEffects: {'culture': 0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'subspace_echo',
+    title: l10n.event_subspaceEcho_title,
+    narrative: l10n.event_subspaceEcho_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_subspaceEcho_choice0_text,
+        outcome: l10n.event_subspaceEcho_choice0_outcome,
+        shipEffects: {'nav': 0.05, 'culture': 0.10},
+        planetModifiers: {'anomaly': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_subspaceEcho_choice1_text,
+        outcome: l10n.event_subspaceEcho_choice1_outcome,
+        shipEffects: {'gravimetricScanner': 0.08, 'nav': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_subspaceEcho_choice2_text,
+        outcome: l10n.event_subspaceEcho_choice2_outcome,
+        shipEffects: {'culture': -0.05, 'nav': 0.03},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ADDITIONAL BOONS (very rare)
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'boon_perfect_calm',
+    title: l10n.event_boonPerfectCalm_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonPerfectCalm_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonPerfectCalm_choice0_text,
+        outcome: l10n.event_boonPerfectCalm_choice0_outcome,
+        shipEffects: {'hull': 0.10, 'atmosphericScanner': 0.08, 'nav': 0.08, 'tech': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_boonPerfectCalm_choice1_text,
+        outcome: l10n.event_boonPerfectCalm_choice1_outcome,
+        shipEffects: {'culture': 0.15, 'cryopods': 0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'boon_ancient_waystation',
+    title: l10n.event_boonAncientWaystation_title,
+    category: EventCategory.boon,
+    narrative: l10n.event_boonAncientWaystation_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_boonAncientWaystation_choice0_text,
+        outcome: l10n.event_boonAncientWaystation_choice0_outcome,
+        shipEffects: {
+          'hull': 0.12,
+          'nav': 0.12,
+          'tech': 0.10,
+          'atmosphericScanner': 0.10,
+          'cryopods': 0.08,
+          'culture': 0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_boonAncientWaystation_choice1_text,
+        outcome: l10n.event_boonAncientWaystation_choice1_outcome,
+        shipEffects: {'hull': 0.08, 'nav': 0.08, 'tech': 0.05, 'culture': 0.12},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ALIEN PROBES & RELIC DISCOVERIES
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'relic_sentinel',
+    title: l10n.event_relicSentinel_title,
+    narrative: l10n.event_relicSentinel_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicSentinel_choice0_text,
+        outcome: l10n.event_relicSentinel_choice0_outcome,
+        shipEffects: {'nav': 0.10, 'gravimetricScanner': 0.08},
+        planetModifiers: {'atmosphere': 0.05, 'water': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicSentinel_choice1_text,
+        outcome: l10n.event_relicSentinel_choice1_outcome,
+        shipEffects: {'hull': 0.08, 'tech': 0.05, 'gravimetricScanner': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicSentinel_choice2_text,
+        outcome: l10n.event_relicSentinel_choice2_outcome,
+        shipEffects: {'culture': -0.05, 'nav': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_seed_probe',
+    title: l10n.event_relicSeedProbe_title,
+    narrative: l10n.event_relicSeedProbe_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicSeedProbe_choice0_text,
+        outcome: l10n.event_relicSeedProbe_choice0_outcome,
+        shipEffects: {'tech': -0.05},
+        planetModifiers: {
+          'biodiversity': 0.15,
+          'atmosphere': 0.05,
+          'water': 0.03,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_relicSeedProbe_choice1_text,
+        outcome: l10n.event_relicSeedProbe_choice1_outcome,
+        shipEffects: {'nav': 0.10, 'tech': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_relicSeedProbe_choice2_text,
+        outcome: l10n.event_relicSeedProbe_choice2_outcome,
+        shipEffects: {'culture': 0.12},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_warning_buoy',
+    title: l10n.event_relicWarningBuoy_title,
+    narrative: l10n.event_relicWarningBuoy_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicWarningBuoy_choice0_text,
+        outcome: l10n.event_relicWarningBuoy_choice0_outcome,
+        shipEffects: {'nav': -0.08, 'hull': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicWarningBuoy_choice1_text,
+        outcome: l10n.event_relicWarningBuoy_choice1_outcome,
+        shipEffects: {'culture': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicWarningBuoy_choice2_text,
+        outcome: l10n.event_relicWarningBuoy_choice2_outcome,
+        shipEffects: {'gravimetricScanner': 0.10, 'nav': 0.05, 'tech': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_mirror_array',
+    title: l10n.event_relicMirrorArray_title,
+    narrative: l10n.event_relicMirrorArray_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicMirrorArray_choice0_text,
+        outcome: l10n.event_relicMirrorArray_choice0_outcome,
+        shipEffects: {'tech': 0.10, 'culture': 0.08, 'atmosphericScanner': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicMirrorArray_choice1_text,
+        outcome: l10n.event_relicMirrorArray_choice1_outcome,
+        shipEffects: {'hull': 0.12, 'tech': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_relicMirrorArray_choice2_text,
+        outcome: l10n.event_relicMirrorArray_choice2_outcome,
+        shipEffects: {'nav': 0.12, 'atmosphericScanner': 0.10},
+        planetModifiers: {'resources': 0.05, 'atmosphere': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_graveyard',
+    title: l10n.event_relicGraveyard_title,
+    narrative: l10n.event_relicGraveyard_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicGraveyard_choice0_text,
+        outcome: l10n.event_relicGraveyard_choice0_outcome,
+        shipEffects: {'tech': 0.12, 'hull': 0.08, 'mineralScanner': 0.05, 'nav': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicGraveyard_choice1_text,
+        outcome: l10n.event_relicGraveyard_choice1_outcome,
+        shipEffects: {'nav': 0.15, 'mineralScanner': 0.10},
+        planetModifiers: {'water': 0.05, 'resources': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicGraveyard_choice2_text,
+        outcome: l10n.event_relicGraveyard_choice2_outcome,
+        shipEffects: {'culture': 0.12, 'tech': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_dreamcatcher',
+    title: l10n.event_relicDreamcatcher_title,
+    narrative: l10n.event_relicDreamcatcher_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicDreamcatcher_choice0_text,
+        outcome: l10n.event_relicDreamcatcher_choice0_outcome,
+        shipEffects: {'lifeSignsScanner': 0.10, 'nav': 0.08},
+        nextPlanetModifiers: {
+          'atmosphere': 0.15,
+          'water': 0.12,
+          'nativePresence': 0.80,
+          'nativeDisposition': 0.50,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_relicDreamcatcher_choice1_text,
+        outcome: l10n.event_relicDreamcatcher_choice1_outcome,
+        shipEffects: {'tech': 0.12, 'lifeSignsScanner': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_relicDreamcatcher_choice2_text,
+        outcome: l10n.event_relicDreamcatcher_choice2_outcome,
+        shipEffects: {'cryopods': 0.05, 'culture': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_rosetta',
+    title: l10n.event_relicRosetta_title,
+    narrative: l10n.event_relicRosetta_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicRosetta_choice0_text,
+        outcome: l10n.event_relicRosetta_choice0_outcome,
+        shipEffects: {'tech': 0.15, 'nav': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_relicRosetta_choice1_text,
+        outcome: l10n.event_relicRosetta_choice1_outcome,
+        shipEffects: {'hull': 0.12, 'tech': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicRosetta_choice2_text,
+        outcome: l10n.event_relicRosetta_choice2_outcome,
+        shipEffects: {'cryopods': 0.08},
+        planetModifiers: {'biodiversity': 0.08, 'atmosphere': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_ghost_fleet',
+    title: l10n.event_relicGhostFleet_title,
+    narrative: l10n.event_relicGhostFleet_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicGhostFleet_choice0_text,
+        outcome: l10n.event_relicGhostFleet_choice0_outcome,
+        shipEffects: {'nav': 0.10, 'gravimetricScanner': 0.12, 'hull': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicGhostFleet_choice1_text,
+        outcome: l10n.event_relicGhostFleet_choice1_outcome,
+        shipEffects: {'hull': 0.18, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_relicGhostFleet_choice2_text,
+        outcome: l10n.event_relicGhostFleet_choice2_outcome,
+        shipEffects: {'cryopods': 0.12, 'tech': 0.05},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SCANNER SUBSYSTEM EVENTS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'scanner_calibration_drift',
+    title: l10n.event_scannerCalibrationDrift_title,
+    narrative: l10n.event_scannerCalibrationDrift_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_scannerCalibrationDrift_choice0_text,
+        outcome: l10n.event_scannerCalibrationDrift_choice0_outcome,
+        shipEffects: {
+          'atmosphericScanner': 0.10,
+          'temperatureScanner': 0.10,
+          'tech': -0.10,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_scannerCalibrationDrift_choice1_text,
+        outcome: l10n.event_scannerCalibrationDrift_choice1_outcome,
+        shipEffects: {
+          'atmosphericScanner': 0.08,
+          'temperatureScanner': -0.05,
+          'tech': -0.03,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_scannerCalibrationDrift_choice2_text,
+        outcome: l10n.event_scannerCalibrationDrift_choice2_outcome,
+        shipEffects: {'atmosphericScanner': 0.08, 'temperatureScanner': 0.08},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'ion_storm_scanners',
+    title: l10n.event_ionStormScanners_title,
+    narrative: l10n.event_ionStormScanners_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_ionStormScanners_choice0_text,
+        outcome: l10n.event_ionStormScanners_choice0_outcome,
+        shipEffects: {'mineralScanner': -0.10, 'waterScanner': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_ionStormScanners_choice1_text,
+        outcome: l10n.event_ionStormScanners_choice1_outcome,
+        shipEffects: {
+          'mineralScanner': -0.12,
+          'waterScanner': -0.10,
+          'gravimetricScanner': -0.05,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_ionStormScanners_choice2_text,
+        outcome: l10n.event_ionStormScanners_choice2_outcome,
+        shipEffects: {
+          'waterScanner': 0.05,
+          'mineralScanner': -0.08,
+          'tech': -0.05,
+        },
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'bio_scanner_contamination',
+    title: l10n.event_bioScannerContamination_title,
+    narrative: l10n.event_bioScannerContamination_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_bioScannerContamination_choice0_text,
+        outcome: l10n.event_bioScannerContamination_choice0_outcome,
+        shipEffects: {'lifeSignsScanner': 0.08, 'gravimetricScanner': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_bioScannerContamination_choice1_text,
+        outcome: l10n.event_bioScannerContamination_choice1_outcome,
+        shipEffects: {
+          'lifeSignsScanner': -0.05,
+          'gravimetricScanner': -0.03,
+          'tech': -0.03,
+        },
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'scanner_power_surge',
+    title: l10n.event_scannerPowerSurge_title,
+    narrative: l10n.event_scannerPowerSurge_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_scannerPowerSurge_choice0_text,
+        outcome: l10n.event_scannerPowerSurge_choice0_outcome,
+        shipEffects: {
+          'scanners': -0.10,
+          'shields': -0.10,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_scannerPowerSurge_choice1_text,
+        outcome: l10n.event_scannerPowerSurge_choice1_outcome,
+        shipEffects: {'scanners': -0.18},
+      ),
+      EventChoice(
+        text: l10n.event_scannerPowerSurge_choice2_text,
+        outcome: l10n.event_scannerPowerSurge_choice2_outcome,
+        shipEffects: {'scanners': -0.04},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'relic_world_engine',
+    title: l10n.event_relicWorldEngine_title,
+    narrative: l10n.event_relicWorldEngine_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_relicWorldEngine_choice0_text,
+        outcome: l10n.event_relicWorldEngine_choice0_outcome,
+        shipEffects: {'tech': 0.10},
+        planetModifiers: {
+          'atmosphere': 0.12,
+          'water': 0.10,
+          'temperature': 0.08,
+          'gravity': 0.05,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_relicWorldEngine_choice1_text,
+        outcome: l10n.event_relicWorldEngine_choice1_outcome,
+        shipEffects: {'hull': 0.15, 'tech': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_relicWorldEngine_choice2_text,
+        outcome: l10n.event_relicWorldEngine_choice2_outcome,
+        shipEffects: {'tech': -0.10, 'nav': -0.05},
+        nextPlanetModifiers: {
+          'atmosphere': 0.15,
+          'water': 0.12,
+          'temperature': 0.10,
+          'biodiversity': 0.08,
+          'resources': 0.08,
+        },
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // UNEVENTFUL EVENTS (breathing room)
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'uneventful_maintenance',
+    title: l10n.event_uneventfulMaintenance_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_uneventfulMaintenance_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_uneventfulMaintenance_choice0_text,
+        outcome: l10n.event_uneventfulMaintenance_choice0_outcome,
+        shipEffects: {'hull': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_uneventfulMaintenance_choice1_text,
+        outcome: l10n.event_uneventfulMaintenance_choice1_outcome,
+        shipEffects: {'atmosphericScanner': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'uneventful_quiet_watch',
+    title: l10n.event_uneventfulQuietWatch_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_uneventfulQuietWatch_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_uneventfulQuietWatch_choice0_text,
+        outcome: l10n.event_uneventfulQuietWatch_choice0_outcome,
+        shipEffects: {'culture': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_uneventfulQuietWatch_choice1_text,
+        outcome: l10n.event_uneventfulQuietWatch_choice1_outcome,
+        shipEffects: {'tech': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'uneventful_cryopod_check',
+    title: l10n.event_uneventfulCryopodCheck_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_uneventfulCryopodCheck_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_uneventfulCryopodCheck_choice0_text,
+        outcome: l10n.event_uneventfulCryopodCheck_choice0_outcome,
+        shipEffects: {'culture': 0.02, 'cryopods': -0.01},
+      ),
+      EventChoice(
+        text: l10n.event_uneventfulCryopodCheck_choice1_text,
+        outcome: l10n.event_uneventfulCryopodCheck_choice1_outcome,
+        shipEffects: {'cryopods': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'uneventful_cartography',
+    title: l10n.event_uneventfulCartography_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_uneventfulCartography_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_uneventfulCartography_choice0_text,
+        outcome: l10n.event_uneventfulCartography_choice0_outcome,
+        shipEffects: {'nav': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_uneventfulCartography_choice1_text,
+        outcome: l10n.event_uneventfulCartography_choice1_outcome,
+        shipEffects: {'gravimetricScanner': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'uneventful_anniversary',
+    title: l10n.event_uneventfulAnniversary_title,
+    category: EventCategory.uneventful,
+    narrative: l10n.event_uneventfulAnniversary_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_uneventfulAnniversary_choice0_text,
+        outcome: l10n.event_uneventfulAnniversary_choice0_outcome,
+        shipEffects: {'culture': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_uneventfulAnniversary_choice1_text,
+        outcome: l10n.event_uneventfulAnniversary_choice1_outcome,
+        shipEffects: {'tech': 0.01, 'nav': 0.01},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // DATABASE READING EVENTS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'database_literature',
+    title: l10n.event_databaseLiterature_title,
+    narrative: l10n.event_databaseLiterature_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_databaseLiterature_choice0_text,
+        outcome: l10n.event_databaseLiterature_choice0_outcome,
+        shipEffects: {'culture': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_databaseLiterature_choice1_text,
+        outcome: l10n.event_databaseLiterature_choice1_outcome,
+        shipEffects: {'culture': 0.06, 'tech': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'database_schematics',
+    title: l10n.event_databaseSchematics_title,
+    narrative: l10n.event_databaseSchematics_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_databaseSchematics_choice0_text,
+        outcome: l10n.event_databaseSchematics_choice0_outcome,
+        shipEffects: {'tech': 0.10, 'nav': 0.03},
+      ),
+      EventChoice(
+        text: l10n.event_databaseSchematics_choice1_text,
+        outcome: l10n.event_databaseSchematics_choice1_outcome,
+        shipEffects: {'tech': 0.06, 'hull': 0.02, 'atmosphericScanner': 0.02},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'database_corruption',
+    title: l10n.event_databaseCorruption_title,
+    narrative: l10n.event_databaseCorruption_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_databaseCorruption_choice0_text,
+        outcome: l10n.event_databaseCorruption_choice0_outcome,
+        shipEffects: {'culture': -0.05, 'tech': -0.06},
+      ),
+      EventChoice(
+        text: l10n.event_databaseCorruption_choice1_text,
+        outcome: l10n.event_databaseCorruption_choice1_outcome,
+        shipEffects: {'culture': 0.03, 'cryopods': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'database_breakthrough',
+    title: l10n.event_databaseBreakthrough_title,
+    narrative: l10n.event_databaseBreakthrough_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_databaseBreakthrough_choice0_text,
+        outcome: l10n.event_databaseBreakthrough_choice0_outcome,
+        shipEffects: {'tech': 0.06, 'atmosphericScanner': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_databaseBreakthrough_choice1_text,
+        outcome: l10n.event_databaseBreakthrough_choice1_outcome,
+        shipEffects: {'tech': 0.08, 'culture': 0.04},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MULTI-PART ALIEN ENCOUNTERS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'alien_fleet_sighting',
+    title: l10n.event_alienFleetSighting_title,
+    narrative: l10n.event_alienFleetSighting_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienFleetSighting_choice0_text,
+        outcome: l10n.event_alienFleetSighting_choice0_outcome,
+        shipEffects: {'atmosphericScanner': 0.10, 'nav': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_alienFleetSighting_choice1_text,
+        outcome: l10n.event_alienFleetSighting_choice1_outcome,
+        shipEffects: {'culture': 0.10, 'nav': 0.05, 'atmosphericScanner': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_alienFleetSighting_choice2_text,
+        outcome: l10n.event_alienFleetSighting_choice2_outcome,
+        shipEffects: {'nav': -0.12, 'hull': -0.05, 'culture': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'alien_trade_offer',
+    title: l10n.event_alienTradeOffer_title,
+    narrative: l10n.event_alienTradeOffer_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienTradeOffer_choice0_text,
+        outcome: l10n.event_alienTradeOffer_choice0_outcome,
+        shipEffects: {'nav': 0.12, 'mineralScanner': 0.08, 'tech': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_alienTradeOffer_choice1_text,
+        outcome: l10n.event_alienTradeOffer_choice1_outcome,
+        shipEffects: {'hull': 0.15, 'culture': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_alienTradeOffer_choice2_text,
+        outcome: l10n.event_alienTradeOffer_choice2_outcome,
+        shipEffects: {'culture': -0.03},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'alien_warning',
+    title: l10n.event_alienWarning_title,
+    narrative: l10n.event_alienWarning_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienWarning_choice0_text,
+        outcome: l10n.event_alienWarning_choice0_outcome,
+        shipEffects: {'nav': -0.10, 'hull': 0.05, 'atmosphericScanner': 0.03},
+      ),
+      EventChoice(
+        text: l10n.event_alienWarning_choice1_text,
+        outcome: l10n.event_alienWarning_choice1_outcome,
+        shipEffects: {'hull': -0.12, 'atmosphericScanner': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_alienWarning_choice2_text,
+        outcome: l10n.event_alienWarning_choice2_outcome,
+        shipEffects: {'atmosphericScanner': 0.10, 'hull': -0.05},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // NATIVE CIVILIZATION EVENTS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'native_signal_detected',
+    title: l10n.event_nativeSignalDetected_title,
+    narrative: l10n.event_nativeSignalDetected_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_nativeSignalDetected_choice0_text,
+        outcome: l10n.event_nativeSignalDetected_choice0_outcome,
+        shipEffects: {'culture': 0.05, 'lifeSignsScanner': 0.03},
+        planetModifiers: {'nativePresence': 0.10, 'nativeDisposition': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_nativeSignalDetected_choice1_text,
+        outcome: l10n.event_nativeSignalDetected_choice1_outcome,
+        shipEffects: {'lifeSignsScanner': 0.05},
+        planetModifiers: {'nativePresence': 0.10, 'nativeDisposition': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_nativeSignalDetected_choice2_text,
+        outcome: l10n.event_nativeSignalDetected_choice2_outcome,
+        shipEffects: {'tech': -0.05, 'culture': -0.08},
+        planetModifiers: {'nativePresence': 0.05, 'nativeDisposition': -0.15},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'native_probe_encounter',
+    title: l10n.event_nativeProbeEncounter_title,
+    narrative: l10n.event_nativeProbeEncounter_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_nativeProbeEncounter_choice0_text,
+        outcome: l10n.event_nativeProbeEncounter_choice0_outcome,
+        shipEffects: {'atmosphericScanner': 0.05, 'nav': 0.03},
+        planetModifiers: {'nativePresence': 0.08, 'nativeDisposition': 0.12},
+      ),
+      EventChoice(
+        text: l10n.event_nativeProbeEncounter_choice1_text,
+        outcome: l10n.event_nativeProbeEncounter_choice1_outcome,
+        shipEffects: {'tech': 0.08, 'atmosphericScanner': 0.05},
+        planetModifiers: {'nativePresence': 0.05, 'nativeDisposition': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_nativeProbeEncounter_choice2_text,
+        outcome: l10n.event_nativeProbeEncounter_choice2_outcome,
+        shipEffects: {'culture': -0.05},
+        planetModifiers: {'nativePresence': 0.03, 'nativeDisposition': -0.15},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'native_cultural_exchange',
+    title: l10n.event_nativeCulturalExchange_title,
+    narrative: l10n.event_nativeCulturalExchange_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_nativeCulturalExchange_choice0_text,
+        outcome: l10n.event_nativeCulturalExchange_choice0_outcome,
+        shipEffects: {'culture': 0.10, 'tech': 0.03},
+        planetModifiers: {'nativeDisposition': 0.12},
+      ),
+      EventChoice(
+        text: l10n.event_nativeCulturalExchange_choice1_text,
+        outcome: l10n.event_nativeCulturalExchange_choice1_outcome,
+        shipEffects: {'tech': 0.10, 'atmosphericScanner': 0.05},
+        planetModifiers: {'nativeDisposition': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_nativeCulturalExchange_choice2_text,
+        outcome: l10n.event_nativeCulturalExchange_choice2_outcome,
+        shipEffects: {'tech': 0.05, 'culture': 0.05},
+        planetModifiers: {'nativeDisposition': 0.10, 'nativePresence': 0.03},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // LANDING SYSTEM EVENTS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'landing_thruster_malfunction',
+    title: l10n.event_landingThrusterMalfunction_title,
+    narrative: l10n.event_landingThrusterMalfunction_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_landingThrusterMalfunction_choice0_text,
+        outcome: l10n.event_landingThrusterMalfunction_choice0_outcome,
+        shipEffects: {'landingSystem': 0.10, 'tech': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_landingThrusterMalfunction_choice1_text,
+        outcome: l10n.event_landingThrusterMalfunction_choice1_outcome,
+        shipEffects: {'landingSystem': 0.06, 'atmosphericScanner': 0.02},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'landing_sim_drill',
+    title: l10n.event_landingSimDrill_title,
+    narrative: l10n.event_landingSimDrill_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_landingSimDrill_choice0_text,
+        outcome: l10n.event_landingSimDrill_choice0_outcome,
+        shipEffects: {'landingSystem': 0.08, 'nav': 0.02},
+      ),
+      EventChoice(
+        text: l10n.event_landingSimDrill_choice1_text,
+        outcome: l10n.event_landingSimDrill_choice1_outcome,
+        shipEffects: {'landingSystem': 0.04, 'culture': 0.08},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // RARE MEMORABLE EVENTS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'dyson_sphere',
+    title: l10n.event_dysonSphere_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_dysonSphere_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_dysonSphere_choice0_text,
+        outcome: l10n.event_dysonSphere_choice0_outcome,
+        shipEffects: {'tech': 0.20, 'constructors': 0.15, 'atmosphericScanner': 0.10},
+        colonistDelta: -5,
+      ),
+      EventChoice(
+        text: l10n.event_dysonSphere_choice1_text,
+        outcome: l10n.event_dysonSphere_choice1_outcome,
+        shipEffects: {
+          'tech': 0.12,
+          'hull': 0.05,
+          'shields': 0.05,
+          'nav': -0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_dysonSphere_choice2_text,
+        outcome: l10n.event_dysonSphere_choice2_outcome,
+        shipEffects: {'constructors': 0.10, 'tech': 0.08, 'culture': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'nanotech_plague',
+    title: l10n.event_nanotechPlague_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_nanotechPlague_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_nanotechPlague_choice0_text,
+        outcome: l10n.event_nanotechPlague_choice0_outcome,
+        shipEffects: {'tech': -0.15, 'lifeSignsScanner': -0.10, 'hull': -0.05},
+        colonistDelta: -25,
+      ),
+      EventChoice(
+        text: l10n.event_nanotechPlague_choice1_text,
+        outcome: l10n.event_nanotechPlague_choice1_outcome,
+        shipEffects: {'culture': -0.15, 'hull': -0.10, 'constructors': -0.08},
+        colonistDelta: -10,
+      ),
+      EventChoice(
+        text: l10n.event_nanotechPlague_choice2_text,
+        outcome: l10n.event_nanotechPlague_choice2_outcome,
+        shipEffects: {'tech': 0.05, 'hull': 0.10, 'constructors': 0.12, 'culture': -0.15},
+        colonistDelta: -20,
+      ),
+      EventChoice(
+        text: l10n.event_nanotechPlague_choice3_text,
+        outcome: l10n.event_nanotechPlague_choice3_outcome,
+        shipEffects: {'hull': -0.03, 'tech': -0.03},
+        colonistDelta: -3,
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'premature_awakening',
+    title: l10n.event_prematureAwakening_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_prematureAwakening_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_prematureAwakening_choice0_text,
+        outcome: l10n.event_prematureAwakening_choice0_outcome,
+        shipEffects: {'culture': 0.15, 'cryopods': -0.18, 'tech': 0.08},
+        colonistDelta: 180,
+      ),
+      EventChoice(
+        text: l10n.event_prematureAwakening_choice1_text,
+        outcome: l10n.event_prematureAwakening_choice1_outcome,
+        shipEffects: {'cryopods': -0.10, 'culture': -0.10},
+        colonistDelta: -40,
+      ),
+      EventChoice(
+        text: l10n.event_prematureAwakening_choice2_text,
+        outcome: l10n.event_prematureAwakening_choice2_outcome,
+        shipEffects: {'culture': 0.05, 'cryopods': -0.12, 'constructors': 0.08},
+        colonistDelta: 190,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'stowaways_advanced',
+    title: l10n.event_stowawaysAdvanced_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_stowawaysAdvanced_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_stowawaysAdvanced_choice0_text,
+        outcome: l10n.event_stowawaysAdvanced_choice0_outcome,
+        shipEffects: {'culture': 0.10, 'constructors': 0.08, 'tech': 0.05},
+        colonistDelta: 80,
+      ),
+      EventChoice(
+        text: l10n.event_stowawaysAdvanced_choice1_text,
+        outcome: l10n.event_stowawaysAdvanced_choice1_outcome,
+        shipEffects: {'cryopods': 0.08, 'hull': 0.03, 'culture': -0.12},
+        colonistDelta: 80,
+      ),
+      EventChoice(
+        text: l10n.event_stowawaysAdvanced_choice2_text,
+        outcome: l10n.event_stowawaysAdvanced_choice2_outcome,
+        shipEffects: {'tech': 0.08, 'constructors': 0.05, 'culture': 0.03},
+        colonistDelta: 80,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'alien_reservation',
+    title: l10n.event_alienReservation_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_alienReservation_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienReservation_choice0_text,
+        outcome: l10n.event_alienReservation_choice0_outcome,
+        shipEffects: {'nav': 0.08, 'gravimetricScanner': 0.08, 'hull': -0.05},
+        opensPlanetScreen: true,
+        immediatePlanetMinHabitability: 0.78,
+        planetModifiers: {
+          'atmosphere': 0.15,
+          'water': 0.12,
+          'temperature': 0.10,
+          'resources': 0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_alienReservation_choice1_text,
+        outcome: l10n.event_alienReservation_choice1_outcome,
+        shipEffects: {'lifeSignsScanner': 0.15, 'nav': 0.10, 'culture': 0.05},
+        planetModifiers: {'resources': 0.10, 'biodiversity': 0.08},
+      ),
+      EventChoice(
+        text: l10n.event_alienReservation_choice2_text,
+        outcome: l10n.event_alienReservation_choice2_outcome,
+        shipEffects: {'nav': 0.08, 'culture': 0.10, 'lifeSignsScanner': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'cosmic_horror',
+    title: l10n.event_cosmicHorror_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_cosmicHorror_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cosmicHorror_choice0_text,
+        outcome: l10n.event_cosmicHorror_choice0_outcome,
+        shipEffects: {'nav': -0.12, 'hull': -0.08, 'culture': -0.10},
+        colonistDelta: -15,
+      ),
+      EventChoice(
+        text: l10n.event_cosmicHorror_choice1_text,
+        outcome: l10n.event_cosmicHorror_choice1_outcome,
+        shipEffects: {'hull': -0.05, 'culture': -0.15, 'atmosphericScanner': -0.08},
+        colonistDelta: -8,
+      ),
+      EventChoice(
+        text: l10n.event_cosmicHorror_choice2_text,
+        outcome: l10n.event_cosmicHorror_choice2_outcome,
+        shipEffects: {
+          'nav': 0.08,
+          'atmosphericScanner': 0.06,
+          'tech': 0.05,
+          'culture': -0.25,
+        },
+        colonistDelta: -50,
+      ),
+      EventChoice(
+        text: l10n.event_cosmicHorror_choice3_text,
+        outcome: l10n.event_cosmicHorror_choice3_outcome,
+        shipEffects: {'culture': -0.05},
+        colonistDelta: -2,
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — METEOR SHOWERS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'meteor_glancing_hit',
+    title: l10n.event_meteorGlancingHit_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_meteorGlancingHit_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_meteorGlancingHit_choice0_text,
+        outcome: l10n.event_meteorGlancingHit_choice0_outcome,
+        shipEffects: {'hull': -0.08, 'tech': -0.12},
+      ),
+      EventChoice(
+        text: l10n.event_meteorGlancingHit_choice1_text,
+        outcome: l10n.event_meteorGlancingHit_choice1_outcome,
+        shipEffects: {'hull': -0.10, 'nav': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_meteorGlancingHit_choice2_text,
+        outcome: l10n.event_meteorGlancingHit_choice2_outcome,
+        shipEffects: {'hull': -0.04},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'meteor_direct_impact',
+    title: l10n.event_meteorDirectImpact_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_meteorDirectImpact_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_meteorDirectImpact_choice0_text,
+        outcome: l10n.event_meteorDirectImpact_choice0_outcome,
+        shipEffects: {'hull': -0.18, 'culture': -0.08},
+        colonistDelta: -2,
+      ),
+      EventChoice(
+        text: l10n.event_meteorDirectImpact_choice1_text,
+        outcome: l10n.event_meteorDirectImpact_choice1_outcome,
+        shipEffects: {'hull': -0.20, 'tech': -0.10, 'culture': 0.05},
+        colonistDelta: -1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'meteor_debris_field',
+    title: l10n.event_meteorDebrisField_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_meteorDebrisField_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_meteorDebrisField_choice0_text,
+        outcome: l10n.event_meteorDebrisField_choice0_outcome,
+        shipEffects: {'shields': -0.15, 'hull': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_meteorDebrisField_choice1_text,
+        outcome: l10n.event_meteorDebrisField_choice1_outcome,
+        shipEffects: {'hull': -0.06, 'nav': -0.12},
+      ),
+      EventChoice(
+        text: l10n.event_meteorDebrisField_choice2_text,
+        outcome: l10n.event_meteorDebrisField_choice2_outcome,
+        shipEffects: {'hull': -0.05, 'shields': -0.04},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'meteor_shower_dense',
+    title: l10n.event_meteorShowerDense_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_meteorShowerDense_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_meteorShowerDense_choice0_text,
+        outcome: l10n.event_meteorShowerDense_choice0_outcome,
+        shipEffects: {
+          'landingSystem': -0.05,
+          'atmosphericScanner': -0.15,
+          'hull': -0.08,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_meteorShowerDense_choice1_text,
+        outcome: l10n.event_meteorShowerDense_choice1_outcome,
+        shipEffects: {'gravimetricScanner': -0.06, 'landingSystem': -0.15, 'hull': -0.07},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — SOLAR FLARES
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'solar_emp_burst',
+    title: l10n.event_solarEmpBurst_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_solarEmpBurst_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_solarEmpBurst_choice0_text,
+        outcome: l10n.event_solarEmpBurst_choice0_outcome,
+        shipEffects: {'nav': -0.03, 'scanners': -0.18, 'tech': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_solarEmpBurst_choice1_text,
+        outcome: l10n.event_solarEmpBurst_choice1_outcome,
+        shipEffects: {'scanners': -0.04, 'tech': -0.04, 'nav': -0.18},
+      ),
+      EventChoice(
+        text: l10n.event_solarEmpBurst_choice2_text,
+        outcome: l10n.event_solarEmpBurst_choice2_outcome,
+        shipEffects: {
+          'nav': -0.08,
+          'scanners': -0.08,
+          'tech': -0.08,
+          'culture': -0.06,
+        },
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'solar_radiation_wave',
+    title: l10n.event_solarRadiationWave_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_solarRadiationWave_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_solarRadiationWave_choice0_text,
+        outcome: l10n.event_solarRadiationWave_choice0_outcome,
+        shipEffects: {'cryopods': -0.08, 'tech': -0.12},
+        colonistDelta: -15,
+      ),
+      EventChoice(
+        text: l10n.event_solarRadiationWave_choice1_text,
+        outcome: l10n.event_solarRadiationWave_choice1_outcome,
+        shipEffects: {'hull': -0.12, 'cryopods': -0.10},
+        colonistDelta: -20,
+      ),
+      EventChoice(
+        text: l10n.event_solarRadiationWave_choice2_text,
+        outcome: l10n.event_solarRadiationWave_choice2_outcome,
+        shipEffects: {'tech': -0.15, 'nav': -0.10, 'cryopods': -0.05},
+        colonistDelta: -8,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'coronal_mass_ejection',
+    title: l10n.event_coronalMassEjection_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_coronalMassEjection_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_coronalMassEjection_choice0_text,
+        outcome: l10n.event_coronalMassEjection_choice0_outcome,
+        shipEffects: {'hull': -0.10, 'nav': -0.12, 'tech': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_coronalMassEjection_choice1_text,
+        outcome: l10n.event_coronalMassEjection_choice1_outcome,
+        shipEffects: {'hull': -0.08, 'landingSystem': -0.10, 'shields': -0.08},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — COSMIC RAY BURST
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'cosmic_ray_scanner_interference',
+    title: l10n.event_cosmicRayScannerInterference_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_cosmicRayScannerInterference_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cosmicRayScannerInterference_choice0_text,
+        outcome: l10n.event_cosmicRayScannerInterference_choice0_outcome,
+        shipEffects: {
+          'mineralScanner': -0.06,
+          'gravimetricScanner': -0.06,
+          'nav': -0.10,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayScannerInterference_choice1_text,
+        outcome: l10n.event_cosmicRayScannerInterference_choice1_outcome,
+        shipEffects: {
+          'mineralScanner': -0.15,
+          'temperatureScanner': -0.12,
+          'gravimetricScanner': -0.04,
+          'lifeSignsScanner': -0.04,
+        },
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayScannerInterference_choice2_text,
+        outcome: l10n.event_cosmicRayScannerInterference_choice2_outcome,
+        shipEffects: {'atmosphericScanner': -0.05},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'cosmic_ray_dna_damage',
+    title: l10n.event_cosmicRayDnaDamage_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_cosmicRayDnaDamage_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cosmicRayDnaDamage_choice0_text,
+        outcome: l10n.event_cosmicRayDnaDamage_choice0_outcome,
+        shipEffects: {'cryopods': -0.10, 'tech': -0.08, 'culture': -0.05},
+        colonistDelta: -40,
+      ),
+      EventChoice(
+        text: l10n.event_cosmicRayDnaDamage_choice1_text,
+        outcome: l10n.event_cosmicRayDnaDamage_choice1_outcome,
+        shipEffects: {'hull': -0.15, 'cryopods': -0.05},
+        colonistDelta: -10,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — EQUIPMENT FAILURES
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'coolant_leak',
+    title: l10n.event_coolantLeak_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_coolantLeak_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_coolantLeak_choice0_text,
+        outcome: l10n.event_coolantLeak_choice0_outcome,
+        shipEffects: {'tech': -0.12, 'nav': -0.08, 'temperatureScanner': -0.06},
+      ),
+      EventChoice(
+        text: l10n.event_coolantLeak_choice1_text,
+        outcome: l10n.event_coolantLeak_choice1_outcome,
+        shipEffects: {'tech': -0.08},
+        colonistDelta: -1,
+      ),
+      EventChoice(
+        text: l10n.event_coolantLeak_choice2_text,
+        outcome: l10n.event_coolantLeak_choice2_outcome,
+        shipEffects: {'tech': -0.06, 'cryopods': -0.12},
+        colonistDelta: -5,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'power_grid_failure',
+    title: l10n.event_powerGridFailure_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_powerGridFailure_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_powerGridFailure_choice0_text,
+        outcome: l10n.event_powerGridFailure_choice0_outcome,
+        shipEffects: {'nav': -0.06, 'atmosphericScanner': -0.06, 'constructors': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_powerGridFailure_choice1_text,
+        outcome: l10n.event_powerGridFailure_choice1_outcome,
+        shipEffects: {'constructors': -0.06, 'nav': -0.15, 'atmosphericScanner': -0.08},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'life_support_glitch',
+    title: l10n.event_lifeSupportGlitch_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_lifeSupportGlitch_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_lifeSupportGlitch_choice0_text,
+        outcome: l10n.event_lifeSupportGlitch_choice0_outcome,
+        shipEffects: {'tech': -0.10, 'culture': -0.08},
+        colonistDelta: -3,
+      ),
+      EventChoice(
+        text: l10n.event_lifeSupportGlitch_choice1_text,
+        outcome: l10n.event_lifeSupportGlitch_choice1_outcome,
+        shipEffects: {'tech': -0.07, 'lifeSignsScanner': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_lifeSupportGlitch_choice2_text,
+        outcome: l10n.event_lifeSupportGlitch_choice2_outcome,
+        shipEffects: {'cryopods': -0.08, 'culture': -0.10},
+        colonistDelta: -2,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'water_recycler_breakdown',
+    title: l10n.event_waterRecyclerBreakdown_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_waterRecyclerBreakdown_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_waterRecyclerBreakdown_choice0_text,
+        outcome: l10n.event_waterRecyclerBreakdown_choice0_outcome,
+        shipEffects: {'tech': -0.10, 'culture': -0.12},
+        colonistDelta: -4,
+      ),
+      EventChoice(
+        text: l10n.event_waterRecyclerBreakdown_choice1_text,
+        outcome: l10n.event_waterRecyclerBreakdown_choice1_outcome,
+        shipEffects: {'cryopods': -0.15, 'tech': -0.05},
+        colonistDelta: -8,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'nav_computer_reboot',
+    title: l10n.event_navComputerReboot_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_navComputerReboot_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_navComputerReboot_choice0_text,
+        outcome: l10n.event_navComputerReboot_choice0_outcome,
+        shipEffects: {'nav': -0.15, 'gravimetricScanner': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_navComputerReboot_choice1_text,
+        outcome: l10n.event_navComputerReboot_choice1_outcome,
+        shipEffects: {'nav': -0.08, 'hull': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_navComputerReboot_choice2_text,
+        outcome: l10n.event_navComputerReboot_choice2_outcome,
+        shipEffects: {'nav': -0.05},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — CRAZED / DESPERATE CREW
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'crew_airlocked',
+    title: l10n.event_crewAirlocked_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_crewAirlocked_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_crewAirlocked_choice0_text,
+        outcome: l10n.event_crewAirlocked_choice0_outcome,
+        shipEffects: {'culture': -0.10, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_crewAirlocked_choice1_text,
+        outcome: l10n.event_crewAirlocked_choice1_outcome,
+        shipEffects: {'culture': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_crewAirlocked_choice2_text,
+        outcome: l10n.event_crewAirlocked_choice2_outcome,
+        shipEffects: {'culture': -0.20},
+        colonistDelta: -1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'crew_cryopod_sabotage',
+    title: l10n.event_crewCryopodSabotage_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_crewCryopodSabotage_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_crewCryopodSabotage_choice0_text,
+        outcome: l10n.event_crewCryopodSabotage_choice0_outcome,
+        shipEffects: {'cryopods': -0.12, 'culture': -0.08, 'tech': -0.08},
+        colonistDelta: -25,
+      ),
+      EventChoice(
+        text: l10n.event_crewCryopodSabotage_choice1_text,
+        outcome: l10n.event_crewCryopodSabotage_choice1_outcome,
+        shipEffects: {'cryopods': -0.18, 'culture': -0.06},
+        colonistDelta: -40,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'crew_supply_hoarder',
+    title: l10n.event_crewSupplyHoarder_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_crewSupplyHoarder_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_crewSupplyHoarder_choice0_text,
+        outcome: l10n.event_crewSupplyHoarder_choice0_outcome,
+        shipEffects: {'culture': -0.15, 'tech': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_crewSupplyHoarder_choice1_text,
+        outcome: l10n.event_crewSupplyHoarder_choice1_outcome,
+        shipEffects: {'culture': -0.08, 'tech': -0.06},
+      ),
+      EventChoice(
+        text: l10n.event_crewSupplyHoarder_choice2_text,
+        outcome: l10n.event_crewSupplyHoarder_choice2_outcome,
+        shipEffects: {'culture': -0.05, 'tech': -0.04},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'crew_mutiny_attempt',
+    title: l10n.event_crewMutinyAttempt_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_crewMutinyAttempt_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_crewMutinyAttempt_choice0_text,
+        outcome: l10n.event_crewMutinyAttempt_choice0_outcome,
+        shipEffects: {'culture': -0.15},
+        colonistDelta: -5,
+      ),
+      EventChoice(
+        text: l10n.event_crewMutinyAttempt_choice1_text,
+        outcome: l10n.event_crewMutinyAttempt_choice1_outcome,
+        shipEffects: {'culture': -0.18, 'nav': -0.10},
+        colonistDelta: -3,
+      ),
+      EventChoice(
+        text: l10n.event_crewMutinyAttempt_choice2_text,
+        outcome: l10n.event_crewMutinyAttempt_choice2_outcome,
+        shipEffects: {'culture': -0.12, 'tech': -0.06},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — HULL FATIGUE / STRUCTURAL STRESS
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'hull_fatigue_stress',
+    title: l10n.event_hullFatigueStress_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_hullFatigueStress_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_hullFatigueStress_choice0_text,
+        outcome: l10n.event_hullFatigueStress_choice0_outcome,
+        shipEffects: {'hull': -0.06, 'tech': -0.14, 'culture': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_hullFatigueStress_choice1_text,
+        outcome: l10n.event_hullFatigueStress_choice1_outcome,
+        shipEffects: {'hull': -0.10, 'nav': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_hullFatigueStress_choice2_text,
+        outcome: l10n.event_hullFatigueStress_choice2_outcome,
+        shipEffects: {'hull': 0.04, 'constructors': -0.18},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'hull_pressure_anomaly',
+    title: l10n.event_hullPressureAnomaly_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_hullPressureAnomaly_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_hullPressureAnomaly_choice0_text,
+        outcome: l10n.event_hullPressureAnomaly_choice0_outcome,
+        shipEffects: {'hull': -0.10, 'culture': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_hullPressureAnomaly_choice1_text,
+        outcome: l10n.event_hullPressureAnomaly_choice1_outcome,
+        shipEffects: {'hull': -0.07, 'culture': -0.15},
+        colonistDelta: -5,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — COMMUNICATION ARRAY FAILURE
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'comms_array_failure',
+    title: l10n.event_commsArrayFailure_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_commsArrayFailure_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_commsArrayFailure_choice0_text,
+        outcome: l10n.event_commsArrayFailure_choice0_outcome,
+        shipEffects: {'atmosphericScanner': -0.06, 'culture': -0.08},
+        colonistDelta: -1,
+      ),
+      EventChoice(
+        text: l10n.event_commsArrayFailure_choice1_text,
+        outcome: l10n.event_commsArrayFailure_choice1_outcome,
+        shipEffects: {'gravimetricScanner': -0.14, 'atmosphericScanner': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_commsArrayFailure_choice2_text,
+        outcome: l10n.event_commsArrayFailure_choice2_outcome,
+        shipEffects: {'culture': -0.12},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — FUEL LINE RUPTURE
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'fuel_line_rupture',
+    title: l10n.event_fuelLineRupture_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_fuelLineRupture_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_fuelLineRupture_choice0_text,
+        outcome: l10n.event_fuelLineRupture_choice0_outcome,
+        shipEffects: {'nav': -0.15, 'hull': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_fuelLineRupture_choice1_text,
+        outcome: l10n.event_fuelLineRupture_choice1_outcome,
+        shipEffects: {'hull': -0.10, 'nav': -0.06},
+        colonistDelta: -1,
+      ),
+      EventChoice(
+        text: l10n.event_fuelLineRupture_choice2_text,
+        outcome: l10n.event_fuelLineRupture_choice2_outcome,
+        shipEffects: {'hull': -0.03, 'nav': -0.04},
+        probeCost: 1,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — CRYOPOD CASCADE WARNING
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'cryopod_cascade_warning',
+    title: l10n.event_cryopodCascadeWarning_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_cryopodCascadeWarning_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cryopodCascadeWarning_choice0_text,
+        outcome: l10n.event_cryopodCascadeWarning_choice0_outcome,
+        shipEffects: {'cryopods': -0.12, 'tech': -0.08},
+        colonistDelta: -30,
+      ),
+      EventChoice(
+        text: l10n.event_cryopodCascadeWarning_choice1_text,
+        outcome: l10n.event_cryopodCascadeWarning_choice1_outcome,
+        shipEffects: {'cryopods': -0.08, 'culture': -0.14, 'tech': -0.06},
+        colonistDelta: -20,
+      ),
+      EventChoice(
+        text: l10n.event_cryopodCascadeWarning_choice2_text,
+        outcome: l10n.event_cryopodCascadeWarning_choice2_outcome,
+        shipEffects: {'constructors': -0.20, 'cryopods': -0.06},
+        colonistDelta: -10,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'cryopod_seal_degradation',
+    title: l10n.event_cryopodSealDegradation_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_cryopodSealDegradation_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_cryopodSealDegradation_choice0_text,
+        outcome: l10n.event_cryopodSealDegradation_choice0_outcome,
+        shipEffects: {'constructors': -0.12, 'tech': -0.10, 'cryopods': -0.06},
+        colonistDelta: -15,
+      ),
+      EventChoice(
+        text: l10n.event_cryopodSealDegradation_choice1_text,
+        outcome: l10n.event_cryopodSealDegradation_choice1_outcome,
+        shipEffects: {'cryopods': -0.15},
+        colonistDelta: -25,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // MALFUNCTIONS — OXYGEN SCRUBBER FAILURE
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'oxygen_scrubber_failure',
+    title: l10n.event_oxygenScrubberFailure_title,
+    category: EventCategory.malfunction,
+    narrative: l10n.event_oxygenScrubberFailure_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_oxygenScrubberFailure_choice0_text,
+        outcome: l10n.event_oxygenScrubberFailure_choice0_outcome,
+        shipEffects: {'cryopods': -0.10, 'tech': -0.08, 'culture': -0.05},
+        colonistDelta: -8,
+      ),
+      EventChoice(
+        text: l10n.event_oxygenScrubberFailure_choice1_text,
+        outcome: l10n.event_oxygenScrubberFailure_choice1_outcome,
+        shipEffects: {'atmosphericScanner': -0.18, 'lifeSignsScanner': -0.12},
+        colonistDelta: -3,
+      ),
+      EventChoice(
+        text: l10n.event_oxygenScrubberFailure_choice2_text,
+        outcome: l10n.event_oxygenScrubberFailure_choice2_outcome,
+        shipEffects: {'hull': -0.05, 'tech': -0.10},
+        colonistDelta: -2,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // DEAD ALIEN ARTIFACT
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'dead_alien_artifact',
+    title: l10n.event_deadAlienArtifact_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_deadAlienArtifact_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_deadAlienArtifact_choice0_text,
+        outcome: l10n.event_deadAlienArtifact_choice0_outcome,
+        shipEffects: {'nav': 0.15, 'tech': 0.10},
+        nextPlanetModifiers: {'atmosphere': 0.08, 'water': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_deadAlienArtifact_choice1_text,
+        outcome: l10n.event_deadAlienArtifact_choice1_outcome,
+        shipEffects: {'culture': 0.20, 'atmosphericScanner': 0.08},
+        nextPlanetModifiers: {'biodiversity': 0.10, 'resources': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_deadAlienArtifact_choice2_text,
+        outcome: l10n.event_deadAlienArtifact_choice2_outcome,
+        shipEffects: {'hull': 0.12, 'shields': 0.10, 'constructors': 0.08},
+        fuelDelta: 15,
+      ),
+      EventChoice(
+        text: l10n.event_deadAlienArtifact_choice3_text,
+        outcome: l10n.event_deadAlienArtifact_choice3_outcome,
+        shipEffects: {'culture': 0.12, 'cryopods': 0.05},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // AUTOMATED REPAIR STATION
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'repair_station',
+    title: l10n.event_repairStation_title,
+    category: EventCategory.rare,
+    narrative: l10n.event_repairStation_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_repairStation_choice0_text,
+        outcome: l10n.event_repairStation_choice0_outcome,
+        shipEffects: {
+          'hull': 0.15,
+          'nav': 0.12,
+          'atmosphericScanner': 0.10,
+          'shields': 0.10,
+          'landingSystem': 0.10,
+          'cryopods': 0.08,
+        },
+        probeCost: 4,
+      ),
+      EventChoice(
+        text: l10n.event_repairStation_choice1_text,
+        outcome: l10n.event_repairStation_choice1_outcome,
+        shipEffects: {
+          'hull': 0.12,
+          'nav': 0.10,
+          'cryopods': 0.10,
+          'landingSystem': 0.08,
+        },
+        fuelDelta: -30,
+      ),
+      EventChoice(
+        text: l10n.event_repairStation_choice2_text,
+        outcome: l10n.event_repairStation_choice2_outcome,
+        shipEffects: {'tech': -0.15},
+        probeDelta: 5,
+        energyDelta: 15,
+      ),
+      EventChoice(
+        text: l10n.event_repairStation_choice3_text,
+        outcome: l10n.event_repairStation_choice3_outcome,
+        shipEffects: {
+          'culture': -0.20,
+          'hull': 0.12,
+          'nav': 0.10,
+          'atmosphericScanner': 0.08,
+          'constructors': 0.08,
+        },
+        probeDelta: 3,
+        fuelDelta: 20,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // NARRATIVE LEGACY
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'ai_soliloquy',
+    title: l10n.event_aiSoliloquy_title,
+    narrative: l10n.event_aiSoliloquy_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_aiSoliloquy_choice0_text,
+        outcome: l10n.event_aiSoliloquy_choice0_outcome,
+        shipEffects: {'culture': 0.15, 'tech': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_aiSoliloquy_choice1_text,
+        outcome: l10n.event_aiSoliloquy_choice1_outcome,
+        shipEffects: {'culture': 0.08, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_aiSoliloquy_choice2_text,
+        outcome: l10n.event_aiSoliloquy_choice2_outcome,
+        shipEffects: {'culture': -0.10, 'tech': 0.05, 'nav': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'archivists_choice',
+    title: l10n.event_archivistsChoice_title,
+    narrative: l10n.event_archivistsChoice_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_archivistsChoice_choice0_text,
+        outcome: l10n.event_archivistsChoice_choice0_outcome,
+        shipEffects: {'tech': 0.20, 'culture': -0.25},
+      ),
+      EventChoice(
+        text: l10n.event_archivistsChoice_choice1_text,
+        outcome: l10n.event_archivistsChoice_choice1_outcome,
+        shipEffects: {'culture': 0.20, 'tech': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_archivistsChoice_choice2_text,
+        outcome: l10n.event_archivistsChoice_choice2_outcome,
+        shipEffects: {'culture': -0.05, 'tech': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'digital_ghost',
+    title: l10n.event_digitalGhost_title,
+    narrative: l10n.event_digitalGhost_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_digitalGhost_choice0_text,
+        outcome: l10n.event_digitalGhost_choice0_outcome,
+        shipEffects: {'nav': 0.15, 'tech': 0.05, 'culture': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_digitalGhost_choice1_text,
+        outcome: l10n.event_digitalGhost_choice1_outcome,
+        shipEffects: {'culture': 0.15, 'tech': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_digitalGhost_choice2_text,
+        outcome: l10n.event_digitalGhost_choice2_outcome,
+        shipEffects: {'tech': 0.05, 'culture': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'cosmic_mirror',
+    title: l10n.event_cosmicMirror_title,
+    narrative: l10n.event_cosmicMirror_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_cosmicMirror_choice0_text,
+        outcome: l10n.event_cosmicMirror_choice0_outcome,
+        shipEffects: {'hull': 0.10, 'tech': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_cosmicMirror_choice1_text,
+        outcome: l10n.event_cosmicMirror_choice1_outcome,
+        shipEffects: {'scanners': -0.10, 'nav': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_cosmicMirror_choice2_text,
+        outcome: l10n.event_cosmicMirror_choice2_outcome,
+        shipEffects: {'culture': 0.15},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'stowaway_child',
+    title: l10n.event_stowawayChild_title,
+    narrative: l10n.event_stowawayChild_narrative,
+    category: EventCategory.early,
+    choices: [
+      EventChoice(
+        text: l10n.event_stowawayChild_choice0_text,
+        outcome: l10n.event_stowawayChild_choice0_outcome,
+        shipEffects: {'culture': 0.15},
+        colonistDelta: 1,
+      ),
+      EventChoice(
+        text: l10n.event_stowawayChild_choice1_text,
+        outcome: l10n.event_stowawayChild_choice1_outcome,
+        shipEffects: {'tech': 0.10, 'culture': 0.05},
+        colonistDelta: 1,
+      ),
+      EventChoice(
+        text: l10n.event_stowawayChild_choice2_text,
+        outcome: l10n.event_stowawayChild_choice2_outcome,
+        shipEffects: {'culture': -0.05},
+        colonistDelta: 1,
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'ghost_signal',
+    title: l10n.event_ghostSignal_title,
+    narrative: l10n.event_ghostSignal_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_ghostSignal_choice0_text,
+        outcome: l10n.event_ghostSignal_choice0_outcome,
+        shipEffects: {'hull': -0.15, 'tech': 0.15},
+      ),
+      EventChoice(
+        text: l10n.event_ghostSignal_choice1_text,
+        outcome: l10n.event_ghostSignal_choice1_outcome,
+        shipEffects: {'culture': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_ghostSignal_choice2_text,
+        outcome: l10n.event_ghostSignal_choice2_outcome,
+        shipEffects: {'tech': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'solar_forge',
+    title: l10n.event_solarForge_title,
+    narrative: l10n.event_solarForge_narrative,
+    category: EventCategory.boon,
+    choices: [
+      EventChoice(
+        text: l10n.event_solarForge_choice0_text,
+        outcome: l10n.event_solarForge_choice0_outcome,
+        fuelDelta: 50,
+        energyDelta: 50,
+        shipEffects: {'hull': -0.05},
+      ),
+      EventChoice(
+        text: l10n.event_solarForge_choice1_text,
+        outcome: l10n.event_solarForge_choice1_outcome,
+        shipEffects: {'scanners': 0.15},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'chrono_vortex',
+    title: l10n.event_chronoVortex_title,
+    narrative: l10n.event_chronoVortex_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_chronoVortex_choice0_text,
+        outcome: l10n.event_chronoVortex_choice0_outcome,
+        shipEffects: {'hull': 0.25, 'culture': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_chronoVortex_choice1_text,
+        outcome: l10n.event_chronoVortex_choice1_outcome,
+        shipEffects: {'tech': 0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'machine_mutiny',
+    title: l10n.event_machineMutiny_title,
+    narrative: l10n.event_machineMutiny_narrative,
+    category: EventCategory.malfunction,
+    choices: [
+      EventChoice(
+        text: l10n.event_machineMutiny_choice0_text,
+        outcome: l10n.event_machineMutiny_choice0_outcome,
+        shipEffects: {'tech': -0.15, 'hull': 0.05},
+      ),
+      EventChoice(
+        text: l10n.event_machineMutiny_choice1_text,
+        outcome: l10n.event_machineMutiny_choice1_outcome,
+        shipEffects: {'nav': 0.15, 'hull': -0.10, 'culture': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'supernova_message',
+    title: l10n.event_supernovaMessage_title,
+    narrative: l10n.event_supernovaMessage_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_supernovaMessage_choice0_text,
+        outcome: l10n.event_supernovaMessage_choice0_outcome,
+        shipEffects: {'tech': 0.15, 'culture': 0.15, 'atmosphericScanner': -0.08, 'gravimetricScanner': -0.08},
+      ),
+      EventChoice(
+        text: l10n.event_supernovaMessage_choice1_text,
+        outcome: l10n.event_supernovaMessage_choice1_outcome,
+        shipEffects: {'gravimetricScanner': 0.15},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'space_fungus',
+    title: l10n.event_spaceFungus_title,
+    narrative: l10n.event_spaceFungus_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_spaceFungus_choice0_text,
+        outcome: l10n.event_spaceFungus_choice0_outcome,
+        shipEffects: {'tech': -0.10},
+        planetModifiers: {'biodiversity': -0.10},
+      ),
+      EventChoice(
+        text: l10n.event_spaceFungus_choice1_text,
+        outcome: l10n.event_spaceFungus_choice1_outcome,
+        shipEffects: {'culture': 0.10},
+        planetModifiers: {'atmosphere': 0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'void_merchant',
+    title: l10n.event_voidMerchant_title,
+    narrative: l10n.event_voidMerchant_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_voidMerchant_choice0_text,
+        outcome: l10n.event_voidMerchant_choice0_outcome,
+        shipEffects: {'hull': 0.15, 'cryopods': 0.10, 'culture': -0.20},
+      ),
+      EventChoice(
+        text: l10n.event_voidMerchant_choice1_text,
+        outcome: l10n.event_voidMerchant_choice1_outcome,
+        shipEffects: {'tech': 0.15, 'nav': -0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'singularity_engine',
+    title: l10n.event_singularityEngine_title,
+    narrative: l10n.event_singularityEngine_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_singularityEngine_choice0_text,
+        outcome: l10n.event_singularityEngine_choice0_outcome,
+        shipEffects: {'nav': 0.30, 'hull': -0.20},
+      ),
+      EventChoice(
+        text: l10n.event_singularityEngine_choice1_text,
+        outcome: l10n.event_singularityEngine_choice1_outcome,
+        shipEffects: {'tech': -0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'dream_contagion',
+    title: l10n.event_dreamContagion_title,
+    narrative: l10n.event_dreamContagion_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_dreamContagion_choice0_text,
+        outcome: l10n.event_dreamContagion_choice0_outcome,
+        shipEffects: {'tech': 0.05, 'culture': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_dreamContagion_choice1_text,
+        outcome: l10n.event_dreamContagion_choice1_outcome,
+        shipEffects: {'culture': 0.20, 'tech': -0.10},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'orbital_shipyard',
+    title: l10n.event_orbitalShipyard_title,
+    narrative: l10n.event_orbitalShipyard_narrative,
+    category: EventCategory.boon,
+    choices: [
+      EventChoice(
+        text: l10n.event_orbitalShipyard_choice0_text,
+        outcome: l10n.event_orbitalShipyard_choice0_outcome,
+        shipEffects: {'hull': 1.0}, // Full repair
+      ),
+      EventChoice(
+        text: l10n.event_orbitalShipyard_choice1_text,
+        outcome: l10n.event_orbitalShipyard_choice1_outcome,
+        shipEffects: {'nav': 0.50, 'scanners': 0.50},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'void_whale_calf',
+    title: l10n.event_voidWhaleCalf_title,
+    narrative: l10n.event_voidWhaleCalf_narrative,
+    category: EventCategory.boon,
+    choices: [
+      EventChoice(
+        text: l10n.event_voidWhaleCalf_choice0_text,
+        outcome: l10n.event_voidWhaleCalf_choice0_outcome,
+        shipEffects: {'shields': 0.20, 'culture': 0.10},
+      ),
+      EventChoice(
+        text: l10n.event_voidWhaleCalf_choice1_text,
+        outcome: l10n.event_voidWhaleCalf_choice1_outcome,
+        shipEffects: {'nav': 0.05},
+      ),
+    ],
+  ),
+
+  GameEvent(
+    id: 'subspace_reef',
+    title: l10n.event_subspaceReef_title,
+    narrative: l10n.event_subspaceReef_narrative,
+    choices: [
+      EventChoice(
+        text: l10n.event_subspaceReef_choice0_text,
+        outcome: l10n.event_subspaceReef_choice0_outcome,
+        shipEffects: {'nav': -0.15},
+      ),
+      EventChoice(
+        text: l10n.event_subspaceReef_choice1_text,
+        outcome: l10n.event_subspaceReef_choice1_outcome,
+        shipEffects: {'scanners': -0.20, 'hull': -0.05},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // PULSAR LIGHTHOUSE
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'pulsar_lighthouse',
+    title: l10n.event_pulsarLighthouse_title,
+    narrative: l10n.event_pulsarLighthouse_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_pulsarLighthouse_choice0,
+        outcome: l10n.event_pulsarLighthouse_outcome0,
+        shipEffects: {
+          'atmosphericScanner': 0.08,
+          'gravimetricScanner': 0.08,
+          'temperatureScanner': 0.06,
+          'cryopods': -0.06,
+        },
+        colonistDelta: -15,
+      ),
+      EventChoice(
+        text: l10n.event_pulsarLighthouse_choice1,
+        outcome: l10n.event_pulsarLighthouse_outcome1,
+        fuelDelta: -10,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ALIEN NURSERY
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'alien_nursery',
+    title: l10n.event_alienNursery_title,
+    narrative: l10n.event_alienNursery_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienNursery_choice0,
+        outcome: l10n.event_alienNursery_outcome0,
+        shipEffects: {
+          'lifeSignsScanner': 0.10,
+          'cryopods': -0.05,
+        },
+        colonistDelta: -8,
+        nextPlanetModifiers: {'biodiversity': 0.06},
+      ),
+      EventChoice(
+        text: l10n.event_alienNursery_choice1,
+        outcome: l10n.event_alienNursery_outcome1,
+        shipEffects: {'culture': 0.05},
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // DERELICT ARMADA
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'derelict_armada',
+    title: l10n.event_derelictArmada_title,
+    narrative: l10n.event_derelictArmada_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_derelictArmada_choice0,
+        outcome: l10n.event_derelictArmada_outcome0,
+        shipEffects: {
+          'constructors': 0.10,
+          'hull': 0.06,
+        },
+        colonistDelta: -12,
+      ),
+      EventChoice(
+        text: l10n.event_derelictArmada_choice1,
+        outcome: l10n.event_derelictArmada_outcome1,
+        shipEffects: {
+          'culture': 0.08,
+          'technology': 0.08,
+        },
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // ALIEN QUARANTINE ZONE
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'alien_quarantine_zone',
+    title: l10n.event_alienQuarantineZone_title,
+    narrative: l10n.event_alienQuarantineZone_narrative,
+    category: EventCategory.rare,
+    choices: [
+      EventChoice(
+        text: l10n.event_alienQuarantineZone_choice0,
+        outcome: l10n.event_alienQuarantineZone_outcome0,
+        shipEffects: {
+          'technology': 0.12,
+          'mineralScanner': 0.08,
+          'cryopods': -0.10,
+        },
+        colonistDelta: -25,
+      ),
+      EventChoice(
+        text: l10n.event_alienQuarantineZone_choice1,
+        outcome: l10n.event_alienQuarantineZone_outcome1,
+        shipEffects: {
+          'temperatureScanner': 0.04,
+          'atmosphericScanner': 0.04,
+        },
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // HYDROPONICS BLIGHT
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'hydroponics_blight',
+    title: l10n.event_hydroponicsBlight_title,
+    narrative: l10n.event_hydroponicsBlight_narrative,
+    category: EventCategory.common,
+    choices: [
+      EventChoice(
+        text: l10n.event_hydroponicsBlight_choice0,
+        outcome: l10n.event_hydroponicsBlight_outcome0,
+        shipEffects: {'culture': -0.06},
+        energyDelta: -5,
+      ),
+      EventChoice(
+        text: l10n.event_hydroponicsBlight_choice1,
+        outcome: l10n.event_hydroponicsBlight_outcome1,
+        shipEffects: {'cryopods': -0.08},
+        colonistDelta: -20,
+      ),
+    ],
+  ),
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // TRADER
+  // ═══════════════════════════════════════════════════════════════════════
+  GameEvent(
+    id: 'alien_trader',
+    title: l10n.event_alienTrader_title,
+    narrative: l10n.event_alienTrader_narrative,
+    choices: [],
+    category: EventCategory.boon,
+    openTraderScreen: true,
   ),
 ];

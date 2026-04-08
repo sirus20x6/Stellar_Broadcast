@@ -1,4 +1,4 @@
-/// App-wide constants for Starbound Exodus.
+/// App-wide constants for Stellar Broadcast.
 class AppConstants {
   AppConstants._();
 
@@ -6,9 +6,9 @@ class AppConstants {
   // App metadata
   // ---------------------------------------------------------------------------
 
-  static const String appName = 'Starbound Exodus';
+  static const String appName = 'Stellar Broadcast';
   static const String appVersion = '1.0.0';
-  static const String packageName = 'com.quickapps.starboundexodus';
+  static const String packageName = 'com.quickapps.stellar_broadcast';
 
   // ---------------------------------------------------------------------------
   // Monetization
@@ -30,8 +30,7 @@ class AppConstants {
 
   static const String testBannerAndroid =
       'ca-app-pub-3940256099942544/6300978111';
-  static const String testBannerIos =
-      'ca-app-pub-3940256099942544/2934735716';
+  static const String testBannerIos = 'ca-app-pub-3940256099942544/2934735716';
 
   static const String testInterstitialAndroid =
       'ca-app-pub-3940256099942544/1033173712';
@@ -44,21 +43,15 @@ class AppConstants {
       'ca-app-pub-3940256099942544/1712485313';
 
   // ---------------------------------------------------------------------------
-  // Ad unit IDs — Production (replace before publishing)
+  // Ad unit IDs — Production
   // ---------------------------------------------------------------------------
 
-  static const String prodBannerAndroid = 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-  static const String prodBannerIos = 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-
+  static const String prodBannerAndroid =
+      'ca-app-pub-8340454950181235/3749920812';
   static const String prodInterstitialAndroid =
-      'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-  static const String prodInterstitialIos =
-      'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-
-  static const String prodRewardedAndroid =
-      'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
-  static const String prodRewardedIos =
-      'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
+      'ca-app-pub-8340454950181235/7724095898';
+  static const String prodNativeAndroid =
+      'ca-app-pub-8340454950181235/5313554970';
 
   // ---------------------------------------------------------------------------
   // Upgrade costs (Legacy Points)
@@ -72,23 +65,51 @@ class AppConstants {
     'culture_archive': 80,
     'tech_boost': 90,
     'star_charts': 120,
-    'emergency_reserve': 40,
+    'extra_probe': 40,
   };
 
   // ---------------------------------------------------------------------------
-  // Achievements
+  // Leaderboards (Android = Google Play Games, iOS = Game Center)
   // ---------------------------------------------------------------------------
 
-  static const Map<String, String> achievements = {
-    'first_voyage': 'First Voyage — Complete your first voyage',
-    'utopia_found': 'Utopia Found — Achieve a Utopia ending',
-    'ten_voyages': 'Seasoned Captain — Complete 10 voyages',
-    'all_upgrades': 'Fully Equipped — Purchase every upgrade',
-    'perfect_systems': 'Peak Performance — Land with all systems above 80%',
-    'rock_bottom': 'Against All Odds — Land with all systems below 20%',
-    'explorer': 'Deep Space Explorer — Scan 50 planets across all voyages',
-    'collector': 'Anomaly Collector — Encounter 10 anomalies',
-    'survivor': 'Survivor — Complete a voyage without repairing any system',
-    'generous': 'Generous Soul — Choose every altruistic event option in one voyage',
+  static const String kLeaderboardBestScoreAndroid = 'CgkIpeS6hMofEAIQAQ';
+  static const String kLeaderboardDailyAndroid = 'CgkIpeS6hMofEAIQAg';
+  static const String kLeaderboardEncountersAndroid = 'CgkIpeS6hMofEAIQAw';
+
+  // TODO: Replace with actual Game Center leaderboard IDs after setup
+  static const String kLeaderboardBestScoreIos = 'stellar_best_score';
+  static const String kLeaderboardDailyIos = 'stellar_daily';
+  static const String kLeaderboardEncountersIos = 'stellar_encounters';
+
+  // ---------------------------------------------------------------------------
+  // Achievements (Android = Google Play Games, iOS = Game Center)
+  // ---------------------------------------------------------------------------
+
+  /// Maps local achievement IDs to Google Play Games achievement IDs.
+  static const Map<String, String> achievementIdsAndroid = {
+    'first_landing': 'CgkIpeS6hMofEAIQBA',
+    'explorer': 'CgkIpeS6hMofEAIQBQ',
+    'golden_age': 'CgkIpeS6hMofEAIQBg',
+    'perfectionist': 'CgkIpeS6hMofEAIQBw',
+    'survivor': 'CgkIpeS6hMofEAIQCA',
+    'iron_hull': 'CgkIpeS6hMofEAIQCQ',
+    'death_world_survivor': 'CgkIpeS6hMofEAIQCg',
+    'full_crew': 'CgkIpeS6hMofEAIQCw',
+    'probe_master': 'CgkIpeS6hMofEAIQDA',
+    'no_scan': 'CgkIpeS6hMofEAIQDQ',
+  };
+
+  // TODO: Replace with actual Game Center achievement IDs after setup
+  static const Map<String, String> achievementIdsIos = {
+    'first_landing': 'stellar_first_landing',
+    'explorer': 'stellar_explorer',
+    'golden_age': 'stellar_golden_age',
+    'perfectionist': 'stellar_perfectionist',
+    'survivor': 'stellar_survivor',
+    'iron_hull': 'stellar_iron_hull',
+    'death_world_survivor': 'stellar_death_world',
+    'full_crew': 'stellar_full_crew',
+    'probe_master': 'stellar_probe_master',
+    'no_scan': 'stellar_no_scan',
   };
 }

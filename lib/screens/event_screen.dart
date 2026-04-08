@@ -4,9 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:starbound_exodus/models/event.dart';
-import 'package:starbound_exodus/providers/game_providers.dart';
-import 'package:starbound_exodus/widgets/star_field.dart';
+import 'package:quickapps_ads/quickapps_ads.dart';
+import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:stellar_broadcast/models/event.dart';
+import 'package:stellar_broadcast/providers/game_providers.dart';
+import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
+import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Theme constants.
 const _kBgColor = Color(0xFF0B1426);
@@ -37,6 +42,9 @@ class _EventScreenState extends ConsumerState<EventScreen>
   int? _selectedChoiceIndex;
   bool _showingOutcome = false;
 
+  // Effect chips animation.
+  bool _showEffectChips = false;
+
   // Title glow animation.
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
@@ -54,30 +62,71 @@ class _EventScreenState extends ConsumerState<EventScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _startTypewriter();
+
+    // Play SFX based on event category.
+    _playEventSfx(widget.event);
+  }
+
+  void _playEventSfx(GameEvent event) {
+    final sfx = GameSfx();
+    switch (event.category) {
+      case EventCategory.malfunction:
+        sfx.play(GameSfx.minorDamage);
+        break;
+      case EventCategory.boon:
+        sfx.play(GameSfx.interestingFind);
+        break;
+      case EventCategory.rare:
+        // Pick between exotic sounds for rare events.
+        final id = event.id.toLowerCase();
+        if (id.contains('ghost') ||
+            id.contains('derelict') ||
+            id.contains('wreck')) {
+          sfx.playLong(GameSfx.ghostShip);
+        } else if (id.contains('alien') ||
+            id.contains('native') ||
+            id.contains('mothership')) {
+          sfx.playLong(GameSfx.mothershipFlyBy);
+        } else if (id.contains('whale') ||
+            id.contains('creature') ||
+            id.contains('leviathan')) {
+          sfx.playLong(GameSfx.spaceWhales);
+        } else if (id.contains('ruins') ||
+            id.contains('library') ||
+            id.contains('database') ||
+            id.contains('dyson')) {
+          sfx.playLong(GameSfx.alienTech);
+        } else {
+          sfx.playLong(GameSfx.interestingFind);
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(
-      const Duration(milliseconds: 30),
-      (timer) {
-        if (_charIndex >= widget.event.narrative.length) {
-          timer.cancel();
-          if (mounted) setState(() => _typewriterDone = true);
-          return;
-        }
-        if (mounted) {
-          setState(() {
-            _charIndex++;
-            _displayedText = widget.event.narrative.substring(0, _charIndex);
-          });
-        }
-      },
-    );
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (
+      timer,
+    ) {
+      if (_charIndex >= widget.event.narrative.length) {
+        timer.cancel();
+        if (mounted) setState(() => _typewriterDone = true);
+        return;
+      }
+      if (mounted) {
+        setState(() {
+          _charIndex++;
+          _displayedText = widget.event.narrative.substring(0, _charIndex);
+        });
+      }
+    });
   }
 
   void _skipTypewriter() {
@@ -93,20 +142,45 @@ class _EventScreenState extends ConsumerState<EventScreen>
     if (_showingOutcome) return;
     final choice = widget.event.choices[index];
 
+    // Check probe cost.
+    final probes = ref.read(voyageProvider).probes;
+    if (choice.probeCost > 0 && probes < choice.probeCost) return;
+
+    HapticService().selection();
+    GameSfx().playVaried(GameSfx.buttonClick);
+
     setState(() {
       _selectedChoiceIndex = index;
       _showingOutcome = true;
     });
 
+    // Show effect chips after a delay so the player reads the outcome first.
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => _showEffectChips = true);
+    });
+
     // Apply effects via provider.
     ref.read(voyageProvider.notifier).handleEvent(choice);
 
-    // Show outcome briefly, then navigate back.
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    });
+    // Play outcome SFX and haptics based on effects.
+    _playOutcomeSfx(choice);
+  }
+
+  void _playOutcomeSfx(EventChoice choice) {
+    final sfx = GameSfx();
+    final haptic = HapticService();
+    // Check if this was mostly damage or mostly repair.
+    final totalDelta = choice.shipEffects.values.fold(0.0, (a, b) => a + b);
+    if (choice.colonistDelta < -50) {
+      sfx.play(GameSfx.criticalAlarm, volume: 0.8);
+      haptic.error();
+    } else if (totalDelta < -0.1) {
+      sfx.play(GameSfx.minorDamage, volume: 0.7);
+      haptic.heavy();
+    } else if (totalDelta > 0.1) {
+      sfx.play(GameSfx.systemRepair, volume: 0.7);
+      haptic.success();
+    }
   }
 
   @override
@@ -120,6 +194,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
   @override
   Widget build(BuildContext context) {
     final event = widget.event;
+    final probes = ref.watch(voyageProvider).probes;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -127,14 +202,16 @@ class _EventScreenState extends ConsumerState<EventScreen>
         children: [
           // Star field background.
           Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _starController,
-              builder: (_, __) => CustomPaint(
-                painter: StarFieldPainter(
-                  animationValue: _starController.value,
-                  farStarCount: 80,
-                  midStarCount: 30,
-                  nearStarCount: 10,
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _starController,
+                builder: (_, __) => CustomPaint(
+                  painter: StarFieldPainter(
+                    animationValue: _starController.value,
+                    farStarCount: 80,
+                    midStarCount: 30,
+                    nearStarCount: 10,
+                  ),
                 ),
               ),
             ),
@@ -143,6 +220,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
           // Content.
           SafeArea(
             child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -164,12 +242,14 @@ class _EventScreenState extends ConsumerState<EventScreen>
                           shadows: [
                             Shadow(
                               color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value),
+                                alpha: _titleGlowAnim.value,
+                              ),
                               blurRadius: 20,
                             ),
                             Shadow(
                               color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value * 0.5),
+                                alpha: _titleGlowAnim.value * 0.5,
+                              ),
                               blurRadius: 40,
                             ),
                           ],
@@ -186,23 +266,133 @@ class _EventScreenState extends ConsumerState<EventScreen>
                             ? event.choices[_selectedChoiceIndex!].outcome
                             : _displayedText,
                         isOutcome: _showingOutcome,
+                        choice: _showingOutcome
+                            ? event.choices[_selectedChoiceIndex!]
+                            : null,
+                        showEffectChips: _showEffectChips,
                       ),
                     ),
 
                     const SizedBox(height: 24),
 
-                    // Choice buttons (visible after typewriter completes).
-                    if (_typewriterDone && !_showingOutcome)
-                      ...event.choices.asMap().entries.map(
-                            (entry) => _ChoiceButton(
-                              text: entry.value.text,
-                              onTap: () => _onChoiceSelected(entry.key),
+                    // Trader shortcut: show a single "ENTER TRADE" button
+                    // instead of normal choices when the event opens the trader.
+                    if (_typewriterDone &&
+                        !_showingOutcome &&
+                        event.openTraderScreen)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              GameSfx().playVaried(GameSfx.buttonClick);
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed('/trader');
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _kAccent.withValues(alpha: 0.6),
+                                ),
+                                color: _kAccent.withValues(alpha: 0.08),
+                              ),
+                              child: Text(
+                                context.l10n.ui_event_enterTrade,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: _kAccent,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 2,
+                                ),
+                              ),
                             ),
                           ),
+                        ),
+                      ),
+
+                    // Choice buttons (visible after typewriter completes).
+                    if (_typewriterDone &&
+                        !_showingOutcome &&
+                        !event.openTraderScreen)
+                      ...event.choices.asMap().entries.map((entry) {
+                        final choice = entry.value;
+                        final hasProbes = probes >= choice.probeCost;
+                        final disabled = choice.probeCost > 0 && !hasProbes;
+                        return _ChoiceButton(
+                          text: choice.text,
+                          probeCost: choice.probeCost,
+                          disabled: disabled,
+                          onTap: disabled
+                              ? null
+                              : () => _onChoiceSelected(entry.key),
+                        );
+                      }),
+
+                    // Continue button after outcome is shown.
+                    if (_showingOutcome)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              GameSfx().playVaried(GameSfx.buttonClick);
+                              final selectedChoice =
+                                  event.choices[_selectedChoiceIndex!];
+                              final hasPlanet =
+                                  ref.read(voyageProvider).currentPlanet !=
+                                  null;
+                              if (selectedChoice.opensPlanetScreen &&
+                                  hasPlanet) {
+                                Navigator.of(
+                                  context,
+                                ).pushReplacementNamed('/scan');
+                                return;
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _kAccent.withValues(alpha: 0.6),
+                                ),
+                                color: _kAccent.withValues(alpha: 0.08),
+                              ),
+                              child: Text(
+                                context.l10n.ui_event_continue,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: _kAccent,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
 
                     if (!_typewriterDone)
                       Text(
-                        'TAP TO SKIP',
+                        context.l10n.ui_event_tapToSkip,
                         style: TextStyle(
                           color: _kAccent.withValues(alpha: 0.5),
                           fontSize: 12,
@@ -210,7 +400,15 @@ class _EventScreenState extends ConsumerState<EventScreen>
                         ),
                       ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 12),
+
+                    const SizedBox(
+                      height: 58,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 8),
+                        child: PremiumAdGate(child: AdaptiveBannerAd()),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -225,13 +423,93 @@ class _EventScreenState extends ConsumerState<EventScreen>
 // ── Narrative card ──────────────────────────────────────────────────────────
 
 class _NarrativeCard extends StatelessWidget {
-  const _NarrativeCard({required this.text, required this.isOutcome});
+  const _NarrativeCard({
+    required this.text,
+    required this.isOutcome,
+    this.choice,
+    this.showEffectChips = false,
+  });
 
   final String text;
   final bool isOutcome;
+  final EventChoice? choice;
+  final bool showEffectChips;
+
+  /// Builds the list of effect chip data from the choice.
+  List<_EffectChipData> _buildEffectChips(BuildContext context) {
+    if (choice == null) return [];
+    final chips = <_EffectChipData>[];
+
+    // Ship system effects.
+    for (final entry in choice!.shipEffects.entries) {
+      if (entry.value == 0) continue;
+      final pct = (entry.value * 100).round();
+      final sign = pct > 0 ? '+' : '';
+      chips.add(
+        _EffectChipData(
+          label: _systemLabel(entry.key, context),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
+    }
+
+    // Colonist delta.
+    if (choice!.colonistDelta != 0) {
+      final sign = choice!.colonistDelta > 0 ? '+' : '';
+      chips.add(
+        _EffectChipData(
+          label: context.l10n.ui_event_colonists,
+          delta: '$sign${choice!.colonistDelta}',
+          isPositive: choice!.colonistDelta > 0,
+          color: Colors.orange,
+        ),
+      );
+    }
+
+    // Planet modifiers.
+    for (final entry in choice!.planetModifiers.entries) {
+      if (entry.value == 0) continue;
+      final pct = (entry.value * 100).round();
+      final sign = pct > 0 ? '+' : '';
+      chips.add(
+        _EffectChipData(
+          label: entry.key.toUpperCase(),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+          color: const Color(0xFF00E5FF),
+        ),
+      );
+    }
+
+    return chips;
+  }
+
+  static String _systemLabel(String key, BuildContext context) {
+    switch (key) {
+      case 'landingSystem':
+        return context.l10n.ui_event_landing;
+      case 'atmosphericScanner':
+        return context.l10n.ui_event_atmScan;
+      case 'gravimetricScanner':
+        return context.l10n.ui_event_gravScan;
+      case 'mineralScanner':
+        return context.l10n.ui_event_minScan;
+      case 'lifeSignsScanner':
+        return context.l10n.ui_event_lifeScan;
+      case 'temperatureScanner':
+        return context.l10n.ui_event_tempScan;
+      case 'waterScanner':
+        return context.l10n.ui_event_h2oScan;
+      default:
+        return key.toUpperCase();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final chips = _buildEffectChips(context);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -255,16 +533,128 @@ class _NarrativeCard extends StatelessWidget {
             : null,
       ),
       child: SingleChildScrollView(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: Text(
+                text,
+                key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  height: 1.6,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+            if (chips.isNotEmpty && showEffectChips) ...[
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (var i = 0; i < chips.length; i++)
+                    _EffectChip(
+                      data: chips[i],
+                      delay: Duration(milliseconds: 80 * i),
+                    ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Effect chip data ────────────────────────────────────────────────────────
+
+class _EffectChipData {
+  final String label;
+  final String delta;
+  final bool isPositive;
+  final Color? color; // Override color (e.g. orange for colonists).
+
+  const _EffectChipData({
+    required this.label,
+    required this.delta,
+    required this.isPositive,
+    this.color,
+  });
+}
+
+// ── Effect chip widget ──────────────────────────────────────────────────────
+
+class _EffectChip extends StatefulWidget {
+  const _EffectChip({required this.data, this.delay = Duration.zero});
+
+  final _EffectChipData data;
+  final Duration delay;
+
+  @override
+  State<_EffectChip> createState() => _EffectChipState();
+}
+
+class _EffectChipState extends State<_EffectChip>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    Future.delayed(widget.delay, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final d = widget.data;
+    final chipColor = d.color ?? (d.isPositive ? Colors.green : Colors.red);
+
+    return SlideTransition(
+      position: _slide,
+      child: FadeTransition(
+        opacity: _opacity,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: chipColor.withValues(alpha: 0.15),
+            border: Border.all(color: chipColor.withValues(alpha: 0.5)),
+            boxShadow: [
+              BoxShadow(color: chipColor.withValues(alpha: 0.2), blurRadius: 8),
+            ],
+          ),
           child: Text(
-            text,
-            key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              height: 1.6,
-              letterSpacing: 0.3,
+            '${d.label}  ${d.delta}',
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: chipColor,
+              letterSpacing: 0.5,
             ),
           ),
         ),
@@ -276,10 +666,17 @@ class _NarrativeCard extends StatelessWidget {
 // ── Choice button ───────────────────────────────────────────────────────────
 
 class _ChoiceButton extends StatefulWidget {
-  const _ChoiceButton({required this.text, required this.onTap});
+  const _ChoiceButton({
+    required this.text,
+    this.probeCost = 0,
+    this.disabled = false,
+    required this.onTap,
+  });
 
   final String text;
-  final VoidCallback onTap;
+  final int probeCost;
+  final bool disabled;
+  final VoidCallback? onTap;
 
   @override
   State<_ChoiceButton> createState() => _ChoiceButtonState();
@@ -306,13 +703,22 @@ class _ChoiceButtonState extends State<_ChoiceButton>
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = widget.disabled;
+    final borderColor = isDisabled
+        ? Colors.grey.withValues(alpha: 0.3)
+        : _kAccent.withValues(alpha: 0.6);
+    final textColor = isDisabled
+        ? Colors.grey.withValues(alpha: 0.4)
+        : _kAccent;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: AnimatedBuilder(
         animation: _shimmer,
         builder: (_, __) {
-          final shimmerAlpha =
-              0.15 * (0.5 + 0.5 * sin(_shimmer.value * 2 * pi));
+          final shimmerAlpha = isDisabled
+              ? 0.0
+              : 0.15 * (0.5 + 0.5 * sin(_shimmer.value * 2 * pi));
           return Material(
             color: Colors.transparent,
             child: InkWell(
@@ -320,31 +726,81 @@ class _ChoiceButtonState extends State<_ChoiceButton>
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 20,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: _kAccent.withValues(alpha: 0.6),
-                  ),
-                  gradient: LinearGradient(
-                    colors: [
-                      _kAccent.withValues(alpha: 0.05),
-                      _kAccent.withValues(alpha: shimmerAlpha),
-                      _kAccent.withValues(alpha: 0.05),
-                    ],
-                    stops: [0.0, _shimmer.value, 1.0],
-                  ),
+                  border: Border.all(color: borderColor),
+                  gradient: isDisabled
+                      ? null
+                      : LinearGradient(
+                          colors: [
+                            _kAccent.withValues(alpha: 0.05),
+                            _kAccent.withValues(alpha: shimmerAlpha),
+                            _kAccent.withValues(alpha: 0.05),
+                          ],
+                          stops: [0.0, _shimmer.value, 1.0],
+                        ),
                 ),
-                child: Text(
-                  widget.text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: _kAccent,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.text,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    if (widget.probeCost > 0)
+                      Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: isDisabled
+                              ? Colors.grey.withValues(alpha: 0.1)
+                              : Colors.orange.withValues(alpha: 0.2),
+                          border: Border.all(
+                            color: isDisabled
+                                ? Colors.grey.withValues(alpha: 0.3)
+                                : Colors.orange.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.satellite_alt,
+                              size: 12,
+                              color: isDisabled
+                                  ? Colors.grey.withValues(alpha: 0.4)
+                                  : Colors.orange,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              '${widget.probeCost}',
+                              style: TextStyle(
+                                fontFamily: 'monospace',
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: isDisabled
+                                    ? Colors.grey.withValues(alpha: 0.4)
+                                    : Colors.orange,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

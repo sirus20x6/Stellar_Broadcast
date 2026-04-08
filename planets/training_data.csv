@@ -1,0 +1,1958 @@
+name,atmosphere,gravity,resources,lifesigns,temperature,water,radiation,universe
+Tatooine,0.5,0.9,0.3,0.3,0.15,0.05,0.7,star_wars
+Alderaan,0.95,0.95,0.7,0.9,0.9,0.7,0.95,star_wars
+Yavin IV,0.8,0.85,0.4,0.8,0.7,0.5,0.75,star_wars
+Hoth,0.6,0.9,0.3,0.2,0.05,0.3,0.8,star_wars
+Dagobah,0.75,0.9,0.3,0.95,0.6,0.7,0.7,star_wars
+Bespin,0.3,0.8,0.7,0.2,0.5,0.1,0.6,star_wars
+Endor,0.9,0.85,0.5,0.9,0.85,0.6,0.9,star_wars
+Naboo,0.95,0.95,0.6,0.9,0.9,0.8,0.95,star_wars
+Coruscant,0.8,0.95,0.8,0.7,0.7,0.2,0.85,star_wars
+Kamino,0.85,0.9,0.4,0.6,0.5,0.98,0.8,star_wars
+Geonosis,0.4,0.85,0.6,0.5,0.25,0.1,0.4,star_wars
+Utapau,0.7,0.9,0.5,0.6,0.6,0.3,0.75,star_wars
+Mustafar,0.2,0.9,0.8,0.15,0.02,0.05,0.3,star_wars
+Kashyyyk,0.9,0.9,0.7,0.95,0.8,0.6,0.85,star_wars
+Polis Massa,0.05,0.3,0.4,0.05,0.3,0.02,0.4,star_wars
+Mygeeto,0.5,0.9,0.7,0.2,0.08,0.2,0.7,star_wars
+Felucia,0.6,0.85,0.5,0.95,0.65,0.5,0.5,star_wars
+Cato Neimoidia,0.8,0.85,0.8,0.7,0.75,0.5,0.8,star_wars
+Saleucami,0.8,0.9,0.5,0.7,0.6,0.4,0.8,star_wars
+Stewjon,0.9,0.9,0.5,0.7,0.8,0.6,0.85,star_wars
+Eriadu,0.7,0.9,0.7,0.6,0.6,0.4,0.7,star_wars
+Corellia,0.9,0.95,0.8,0.8,0.85,0.6,0.9,star_wars
+Rodia,0.65,0.85,0.5,0.85,0.6,0.6,0.7,star_wars
+Nal Hutta,0.4,0.95,0.5,0.6,0.45,0.4,0.5,star_wars
+Dantooine,0.9,0.9,0.4,0.7,0.8,0.5,0.9,star_wars
+Bestine IV,0.8,0.9,0.4,0.5,0.7,0.5,0.8,star_wars
+Ord Mantell,0.75,0.9,0.6,0.6,0.65,0.4,0.7,star_wars
+Trandosha,0.75,0.95,0.5,0.85,0.6,0.5,0.7,star_wars
+Socorro,0.5,0.9,0.4,0.3,0.3,0.15,0.6,star_wars
+Mon Cala,0.7,0.9,0.6,0.9,0.7,0.95,0.85,star_wars
+Chandrila,0.95,0.95,0.6,0.8,0.9,0.7,0.95,star_wars
+Sullust,0.3,0.9,0.7,0.3,0.2,0.2,0.5,star_wars
+Toydaria,0.7,0.85,0.4,0.7,0.6,0.6,0.75,star_wars
+Malastare,0.75,0.95,0.7,0.8,0.7,0.4,0.75,star_wars
+Dathomir,0.7,0.9,0.4,0.75,0.5,0.35,0.5,star_wars
+Ryloth,0.6,0.85,0.6,0.6,0.3,0.2,0.6,star_wars
+Aleen Minor,0.7,0.7,0.3,0.5,0.65,0.4,0.75,star_wars
+Vulpter,0.5,0.9,0.6,0.3,0.5,0.3,0.55,star_wars
+Troiken,0.7,0.85,0.4,0.5,0.5,0.3,0.7,star_wars
+Tund,0.7,0.85,0.4,0.4,0.6,0.3,0.6,star_wars
+Haruun Kal,0.6,0.9,0.5,0.8,0.5,0.4,0.45,star_wars
+Cerea,0.9,0.9,0.5,0.85,0.85,0.6,0.9,star_wars
+Glee Anselm,0.75,0.9,0.5,0.85,0.75,0.9,0.85,star_wars
+Iridonia,0.6,0.95,0.5,0.5,0.35,0.2,0.55,star_wars
+Tholoth,0.7,0.85,0.4,0.5,0.6,0.4,0.7,star_wars
+Iktotch,0.6,0.9,0.3,0.4,0.4,0.25,0.7,star_wars
+Quermia,0.8,0.85,0.4,0.6,0.7,0.5,0.8,star_wars
+Dorin,0.2,0.9,0.4,0.5,0.5,0.2,0.6,star_wars
+Champala,0.8,0.9,0.5,0.7,0.75,0.7,0.8,star_wars
+Mirial,0.6,0.9,0.4,0.4,0.35,0.25,0.7,star_wars
+Serenno,0.9,0.9,0.7,0.7,0.8,0.5,0.9,star_wars
+Concord Dawn,0.6,0.9,0.5,0.4,0.5,0.3,0.5,star_wars
+Zolan,0.75,0.9,0.4,0.6,0.65,0.4,0.75,star_wars
+Ojom,0.5,0.95,0.4,0.4,0.1,0.3,0.7,star_wars
+Skako,0.3,1.0,0.6,0.5,0.5,0.3,0.6,star_wars
+Muunilinst,0.85,0.9,0.9,0.6,0.7,0.5,0.85,star_wars
+Shili,0.85,0.9,0.5,0.8,0.75,0.5,0.85,star_wars
+Kalee,0.7,0.9,0.4,0.6,0.5,0.4,0.65,star_wars
+Umbara,0.5,0.9,0.6,0.6,0.4,0.3,0.3,star_wars
+Jakku,0.5,0.9,0.3,0.2,0.15,0.05,0.7,star_wars
+Takodana,0.9,0.9,0.5,0.9,0.85,0.7,0.9,star_wars
+Ilum,0.7,0.85,0.8,0.2,0.05,0.3,0.8,star_wars
+Exegol,0.3,0.9,0.5,0.2,0.3,0.1,0.1,star_wars
+Scarif,0.9,0.9,0.5,0.8,0.85,0.85,0.9,star_wars
+Jedha,0.6,0.85,0.7,0.4,0.25,0.1,0.55,star_wars
+Lothal,0.85,0.9,0.5,0.7,0.75,0.5,0.85,star_wars
+Mandalore,0.5,0.9,0.6,0.3,0.4,0.2,0.5,star_wars
+Batuu,0.85,0.9,0.4,0.7,0.75,0.5,0.85,star_wars
+Pagodon,0.5,0.85,0.3,0.2,0.1,0.2,0.7,star_wars
+Nevarro,0.6,0.9,0.6,0.3,0.3,0.15,0.6,star_wars
+Tython,0.85,0.9,0.5,0.75,0.75,0.5,0.8,star_wars
+Corvus,0.5,0.9,0.3,0.4,0.4,0.3,0.6,star_wars
+D'Qar,0.85,0.9,0.4,0.7,0.8,0.5,0.85,star_wars
+Hosnian Prime,0.9,0.95,0.7,0.8,0.85,0.6,0.9,star_wars
+Cantonica,0.8,0.9,0.8,0.4,0.5,0.3,0.8,star_wars
+Crait,0.6,0.9,0.5,0.2,0.3,0.15,0.7,star_wars
+Ajan Kloss,0.85,0.9,0.4,0.9,0.75,0.6,0.85,star_wars
+Kijimi,0.7,0.9,0.4,0.5,0.15,0.2,0.7,star_wars
+Pasaana,0.7,0.9,0.3,0.5,0.3,0.1,0.75,star_wars
+Kef Bir,0.8,0.9,0.4,0.6,0.6,0.8,0.7,star_wars
+Ahch-To,0.85,0.9,0.3,0.6,0.6,0.9,0.85,star_wars
+Vardos,0.7,0.9,0.5,0.5,0.5,0.4,0.6,star_wars
+Pillio,0.8,0.85,0.4,0.7,0.7,0.7,0.8,star_wars
+Fondor,0.7,0.9,0.8,0.5,0.6,0.3,0.7,star_wars
+Kessel,0.3,0.9,0.9,0.3,0.4,0.1,0.3,star_wars
+Lah'mu,0.8,0.9,0.4,0.6,0.6,0.5,0.8,star_wars
+Eadu,0.6,0.9,0.5,0.4,0.35,0.5,0.6,star_wars
+Wobani,0.6,0.9,0.3,0.4,0.4,0.3,0.65,star_wars
+Christophsis,0.7,0.9,0.8,0.4,0.5,0.3,0.7,star_wars
+Scipio,0.7,0.9,0.8,0.4,0.2,0.3,0.8,star_wars
+Onderon,0.85,0.9,0.5,0.9,0.75,0.5,0.8,star_wars
+Anaxes,0.8,0.9,0.6,0.5,0.7,0.4,0.8,star_wars
+Bracca,0.6,0.9,0.7,0.2,0.5,0.2,0.6,star_wars
+Zeffo,0.7,0.85,0.5,0.5,0.5,0.4,0.7,star_wars
+Bogano,0.85,0.9,0.4,0.7,0.7,0.5,0.8,star_wars
+Nur,0.6,0.9,0.5,0.5,0.5,0.7,0.5,star_wars
+Rattatak,0.5,0.9,0.4,0.5,0.4,0.2,0.55,star_wars
+Ossus,0.7,0.9,0.5,0.5,0.6,0.4,0.5,star_wars
+Korriban,0.5,0.9,0.5,0.3,0.3,0.1,0.35,star_wars
+Malachor,0.3,0.85,0.5,0.1,0.3,0.1,0.2,star_wars
+Lehon,0.8,0.9,0.5,0.7,0.75,0.7,0.8,star_wars
+Csilla,0.6,0.9,0.5,0.5,0.1,0.3,0.75,star_wars
+Mimban,0.5,0.9,0.5,0.6,0.4,0.5,0.5,star_wars
+Vandor,0.6,0.9,0.5,0.4,0.1,0.3,0.7,star_wars
+Savareen,0.7,0.9,0.4,0.4,0.4,0.2,0.7,star_wars
+Numidian Prime,0.85,0.9,0.4,0.7,0.7,0.5,0.8,star_wars
+Arvala-7,0.6,0.85,0.4,0.3,0.3,0.1,0.7,star_wars
+Sorgan,0.9,0.9,0.3,0.8,0.8,0.6,0.9,star_wars
+Trask,0.7,0.9,0.4,0.6,0.5,0.8,0.75,star_wars
+Morak,0.6,0.9,0.6,0.4,0.4,0.3,0.6,star_wars
+Concordia,0.6,0.85,0.4,0.3,0.5,0.2,0.6,star_wars
+Krownest,0.7,0.9,0.4,0.5,0.15,0.3,0.75,star_wars
+Atollon,0.7,0.85,0.3,0.5,0.5,0.15,0.7,star_wars
+Lira San,0.85,0.9,0.4,0.7,0.75,0.5,0.85,star_wars
+Garel,0.8,0.9,0.5,0.6,0.7,0.4,0.8,star_wars
+Stygeon Prime,0.5,0.9,0.4,0.3,0.1,0.2,0.7,star_wars
+Raydonia,0.7,0.85,0.3,0.4,0.5,0.3,0.7,star_wars
+Florrum,0.6,0.85,0.5,0.4,0.4,0.15,0.65,star_wars
+Zygerria,0.7,0.9,0.5,0.6,0.6,0.3,0.7,star_wars
+Maridun,0.85,0.9,0.3,0.8,0.7,0.4,0.85,star_wars
+Mortis,0.5,0.8,0.3,0.6,0.5,0.3,0.4,star_wars
+Carlac,0.7,0.9,0.3,0.4,0.15,0.3,0.75,star_wars
+Abafar,0.6,0.85,0.3,0.15,0.3,0.05,0.7,star_wars
+Bardotta,0.8,0.9,0.4,0.6,0.7,0.5,0.8,star_wars
+Moraband,0.4,0.9,0.4,0.2,0.3,0.1,0.35,star_wars
+Seelos,0.7,0.9,0.3,0.4,0.5,0.2,0.75,star_wars
+Agamar,0.75,0.9,0.4,0.5,0.6,0.4,0.75,star_wars
+Rentor,0.7,0.85,0.4,0.5,0.6,0.4,0.75,star_wars
+Acamar III,0.75,0.8,0.5,0.7,0.7,0.4,0.8,star_trek
+Adarak,0.6,0.7,0.6,0.5,0.55,0.3,0.7,star_trek
+Adelphous IV,0.7,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Adigeon Prime,0.7,0.75,0.7,0.6,0.65,0.4,0.75,star_trek
+Agaron,0.5,0.7,0.4,0.3,0.5,0.3,0.6,star_trek
+Aia,0.8,0.85,0.6,0.7,0.75,0.5,0.85,star_trek
+Ajilon Prime,0.65,0.75,0.6,0.5,0.6,0.4,0.7,star_trek
+Akritiri,0.55,0.7,0.4,0.4,0.5,0.3,0.6,star_trek
+Alastria,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Aldea,0.9,0.85,0.7,0.8,0.85,0.6,0.95,star_trek
+Aldebaran III,0.7,0.75,0.6,0.5,0.6,0.45,0.75,star_trek
+Algeron IV,0.6,0.7,0.5,0.4,0.55,0.35,0.7,star_trek
+Alonis,0.5,0.7,0.5,0.7,0.6,0.8,0.75,star_trek
+Alpha Onias III,0.7,0.8,0.5,0.5,0.65,0.4,0.7,star_trek
+Altair VI,0.75,0.8,0.6,0.6,0.7,0.5,0.8,star_trek
+Altamid,0.55,0.7,0.6,0.4,0.5,0.3,0.5,star_trek
+Altec,0.7,0.8,0.6,0.6,0.65,0.5,0.75,star_trek
+Andor,0.7,0.8,0.6,0.7,0.35,0.5,0.75,star_trek
+Andoria,0.7,0.8,0.6,0.7,0.25,0.5,0.75,star_trek
+Angel One,0.85,0.8,0.5,0.75,0.75,0.6,0.85,star_trek
+Angosia III,0.75,0.8,0.6,0.7,0.7,0.5,0.8,star_trek
+Antede III,0.65,0.75,0.4,0.6,0.6,0.85,0.75,star_trek
+Antica,0.65,0.75,0.5,0.6,0.6,0.4,0.7,star_trek
+Antos IV,0.8,0.8,0.6,0.8,0.7,0.5,0.85,star_trek
+Arakis Prime,0.3,0.75,0.7,0.2,0.25,0.05,0.6,star_trek
+Archanis IV,0.6,0.75,0.7,0.4,0.55,0.35,0.65,star_trek
+Archer IV,0.8,0.85,0.5,0.7,0.75,0.55,0.8,star_trek
+Ardana,0.85,0.8,0.8,0.6,0.7,0.4,0.85,star_trek
+Argala,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Argelius II,0.85,0.85,0.5,0.8,0.8,0.55,0.9,star_trek
+Argratha,0.65,0.75,0.5,0.6,0.6,0.4,0.7,star_trek
+Ariannus,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Arkaria,0.7,0.8,0.6,0.5,0.65,0.45,0.75,star_trek
+Atrea IV,0.7,0.8,0.6,0.6,0.6,0.5,0.7,star_trek
+Axanar,0.75,0.8,0.6,0.65,0.7,0.5,0.8,star_trek
+Azati Prime,0.6,0.7,0.7,0.5,0.55,0.6,0.6,star_trek
+Ba'ku,0.95,0.9,0.6,0.85,0.9,0.65,0.95,star_trek
+Babel,0.7,0.8,0.5,0.5,0.65,0.4,0.75,star_trek
+Bajor,0.85,0.85,0.7,0.8,0.75,0.6,0.85,star_trek
+Banea,0.7,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Barisa Prime,0.65,0.75,0.6,0.4,0.6,0.4,0.7,star_trek
+Barkon IV,0.75,0.8,0.6,0.7,0.7,0.5,0.75,star_trek
+Barolia,0.6,0.7,0.4,0.4,0.55,0.35,0.7,star_trek
+Barzan II,0.5,0.75,0.7,0.4,0.5,0.3,0.6,star_trek
+Benecia,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Benthos,0.5,0.7,0.5,0.6,0.5,0.85,0.7,star_trek
+Benzar,0.4,0.75,0.6,0.7,0.6,0.5,0.7,star_trek
+Berengaria VII,0.55,0.8,0.6,0.7,0.5,0.4,0.65,star_trek
+Betazed,0.9,0.85,0.6,0.85,0.8,0.65,0.9,star_trek
+Bilana III,0.7,0.8,0.6,0.5,0.65,0.45,0.8,star_trek
+Bolarus IX,0.7,0.8,0.5,0.75,0.6,0.85,0.8,star_trek
+Boraal II,0.3,0.75,0.4,0.5,0.45,0.3,0.3,star_trek
+Boreth,0.55,0.7,0.5,0.3,0.35,0.3,0.65,star_trek
+Breen,0.5,0.75,0.6,0.5,0.1,0.4,0.6,star_trek
+Brentalia,0.85,0.85,0.4,0.9,0.8,0.6,0.9,star_trek
+Bynaus,0.7,0.8,0.7,0.6,0.7,0.45,0.8,star_trek
+Calder II,0.6,0.7,0.7,0.3,0.5,0.3,0.65,star_trek
+Caldos IV,0.85,0.85,0.5,0.7,0.75,0.6,0.85,star_trek
+Caleb IV,0.55,0.7,0.4,0.3,0.5,0.3,0.6,star_trek
+Capella IV,0.65,0.8,0.85,0.6,0.6,0.35,0.7,star_trek
+Cardassia Prime,0.7,0.8,0.6,0.7,0.55,0.3,0.75,star_trek
+Carraya IV,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Casperia Prime,0.9,0.85,0.5,0.7,0.85,0.7,0.9,star_trek
+Celtris III,0.45,0.8,0.6,0.3,0.3,0.1,0.55,star_trek
+Cerberus II,0.4,0.7,0.4,0.2,0.35,0.2,0.5,star_trek
+Cestus III,0.75,0.8,0.6,0.6,0.7,0.5,0.8,star_trek
+Ceti Alpha V,0.15,0.75,0.3,0.1,0.15,0.05,0.2,star_trek
+Chaltok IV,0.6,0.75,0.6,0.4,0.5,0.35,0.65,star_trek
+Cheron,0.5,0.7,0.4,0.1,0.4,0.3,0.5,star_trek
+Coppelius,0.8,0.85,0.5,0.7,0.75,0.55,0.8,star_trek
+Cor Caroli V,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Coridan,0.65,0.75,0.9,0.5,0.6,0.35,0.7,star_trek
+Corvan II,0.7,0.8,0.5,0.7,0.65,0.5,0.75,star_trek
+Daled IV,0.65,0.75,0.5,0.7,0.6,0.45,0.7,star_trek
+Daran V,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Decos Prime,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Dekendi III,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Delos IV,0.7,0.8,0.5,0.65,0.65,0.5,0.75,star_trek
+Delta IV,0.85,0.85,0.6,0.8,0.75,0.7,0.85,star_trek
+Delta Rana IV,0.4,0.75,0.3,0.05,0.5,0.3,0.6,star_trek
+Delta Vega,0.3,0.7,0.5,0.2,0.15,0.2,0.45,star_trek
+Deneb IV,0.8,0.85,0.6,0.75,0.75,0.6,0.85,star_trek
+Deneva,0.85,0.85,0.6,0.75,0.75,0.55,0.85,star_trek
+Denobula,0.8,0.8,0.6,0.8,0.7,0.5,0.8,star_trek
+Derna,0.3,0.4,0.5,0.1,0.35,0.15,0.5,star_trek
+Devidia II,0.5,0.7,0.4,0.4,0.5,0.35,0.55,star_trek
+Dorvan V,0.75,0.8,0.5,0.6,0.65,0.4,0.75,star_trek
+Dozaria,0.35,0.75,0.5,0.2,0.3,0.1,0.5,star_trek
+Draken IV,0.65,0.75,0.5,0.4,0.6,0.4,0.7,star_trek
+Drayan II,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Draylax,0.75,0.8,0.6,0.65,0.7,0.5,0.8,star_trek
+Drema IV,0.6,0.8,0.7,0.5,0.55,0.4,0.5,star_trek
+Dytallix B,0.3,0.65,0.7,0.1,0.35,0.1,0.55,star_trek
+Earth,0.95,0.95,0.7,0.95,0.9,0.85,0.95,star_trek
+Ekos,0.75,0.85,0.6,0.7,0.7,0.5,0.8,star_trek
+El-Adrel IV,0.7,0.8,0.5,0.65,0.65,0.45,0.75,star_trek
+Elas,0.7,0.8,0.8,0.6,0.6,0.4,0.75,star_trek
+Elba II,0.4,0.7,0.3,0.2,0.35,0.2,0.5,star_trek
+Eminiar VII,0.8,0.85,0.7,0.75,0.75,0.55,0.85,star_trek
+Enara Prime,0.8,0.8,0.6,0.75,0.7,0.5,0.8,star_trek
+Excalbia,0.2,0.8,0.5,0.3,0.2,0.1,0.4,star_trek
+Exo III,0.1,0.75,0.6,0.1,0.1,0.05,0.5,star_trek
+Farius Prime,0.7,0.8,0.6,0.6,0.65,0.45,0.7,star_trek
+Ferenginar,0.75,0.8,0.7,0.7,0.65,0.9,0.8,star_trek
+Forcas III,0.6,0.75,0.5,0.4,0.5,0.35,0.65,star_trek
+Freecloud,0.8,0.85,0.6,0.7,0.7,0.5,0.8,star_trek
+Galen IV,0.75,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Galorndon Core,0.15,0.8,0.4,0.1,0.3,0.15,0.1,star_trek
+Gamelan V,0.4,0.75,0.5,0.4,0.45,0.35,0.2,star_trek
+Gamma Trianguli VI,0.8,0.85,0.6,0.8,0.8,0.6,0.7,star_trek
+Garon II,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Gideon,0.75,0.8,0.4,0.95,0.7,0.5,0.8,star_trek
+Golana,0.7,0.8,0.5,0.5,0.65,0.45,0.75,star_trek
+Gothos,0.6,0.7,0.4,0.3,0.5,0.3,0.6,star_trek
+Ha'Dara,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Halii,0.75,0.8,0.5,0.7,0.7,0.7,0.8,star_trek
+Halkan,0.7,0.8,0.8,0.6,0.65,0.45,0.75,star_trek
+Hanon IV,0.5,0.75,0.4,0.4,0.35,0.2,0.55,star_trek
+Haven,0.9,0.85,0.5,0.8,0.85,0.65,0.9,star_trek
+Hekaras II,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Holberg 917G,0.6,0.7,0.5,0.2,0.55,0.35,0.7,star_trek
+Iconia,0.5,0.75,0.8,0.1,0.45,0.3,0.5,star_trek
+Ilari,0.75,0.8,0.6,0.7,0.7,0.5,0.8,star_trek
+Ingraham B,0.55,0.7,0.4,0.3,0.5,0.3,0.6,star_trek
+Invernia II,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Ivor Prime,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Janus IV,0.3,0.7,0.85,0.4,0.45,0.15,0.6,star_trek
+Jaros II,0.6,0.75,0.4,0.3,0.5,0.3,0.65,star_trek
+Jeraddo,0.55,0.7,0.5,0.4,0.5,0.35,0.55,star_trek
+Jouret IV,0.4,0.7,0.4,0.1,0.45,0.3,0.5,star_trek
+Kataan,0.45,0.75,0.4,0.2,0.4,0.15,0.65,star_trek
+Kelva,0.3,0.7,0.5,0.1,0.3,0.2,0.4,star_trek
+Kesprytt III,0.75,0.8,0.6,0.7,0.7,0.5,0.8,star_trek
+Khitomer,0.65,0.75,0.5,0.4,0.55,0.4,0.65,star_trek
+Klaestron IV,0.7,0.8,0.6,0.6,0.65,0.45,0.75,star_trek
+Kolarus III,0.5,0.75,0.4,0.3,0.5,0.3,0.55,star_trek
+Krios Prime,0.8,0.8,0.7,0.7,0.7,0.5,0.8,star_trek
+Ktaria VII,0.7,0.8,0.5,0.65,0.6,0.45,0.75,star_trek
+Kurill Prime,0.55,0.75,0.5,0.5,0.5,0.35,0.65,star_trek
+Kyana Prime,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Ledos,0.75,0.8,0.5,0.75,0.7,0.55,0.8,star_trek
+Legara IV,0.3,0.7,0.5,0.4,0.4,0.3,0.6,star_trek
+Ligon II,0.7,0.8,0.5,0.65,0.7,0.45,0.75,star_trek
+Lissepia,0.7,0.8,0.6,0.6,0.65,0.45,0.75,star_trek
+Loracus Prime,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Loren III,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Lorillia,0.65,0.75,0.5,0.6,0.6,0.45,0.7,star_trek
+Lysia,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+M'Talas Prime,0.65,0.75,0.6,0.6,0.6,0.4,0.7,star_trek
+Majalis,0.8,0.85,0.6,0.7,0.75,0.55,0.8,star_trek
+Malcor III,0.8,0.85,0.65,0.75,0.7,0.55,0.8,star_trek
+Mariposa,0.8,0.85,0.5,0.65,0.75,0.55,0.8,star_trek
+Mazar,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Melnos IV,0.6,0.75,0.5,0.4,0.55,0.35,0.65,star_trek
+Merak II,0.7,0.8,0.6,0.5,0.65,0.45,0.75,star_trek
+Meridian,0.7,0.8,0.4,0.6,0.7,0.5,0.75,star_trek
+Minos,0.6,0.75,0.8,0.1,0.55,0.35,0.6,star_trek
+Minos Korva,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Mintaka III,0.7,0.8,0.5,0.6,0.55,0.35,0.75,star_trek
+Mira,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Miridian VI,0.6,0.75,0.4,0.4,0.55,0.35,0.65,star_trek
+Moab IV,0.7,0.8,0.5,0.65,0.7,0.5,0.75,star_trek
+Mordan IV,0.65,0.75,0.5,0.6,0.6,0.4,0.7,star_trek
+Nausicaa,0.6,0.85,0.6,0.6,0.55,0.35,0.6,star_trek
+Nelvana III,0.3,0.7,0.3,0.1,0.35,0.15,0.5,star_trek
+Nepenthe,0.9,0.85,0.5,0.8,0.85,0.6,0.9,star_trek
+Nervala IV,0.65,0.8,0.5,0.5,0.6,0.45,0.55,star_trek
+Neural,0.75,0.8,0.5,0.75,0.7,0.55,0.8,star_trek
+New Bajor,0.8,0.85,0.6,0.6,0.7,0.55,0.8,star_trek
+New Earth,0.8,0.85,0.5,0.7,0.75,0.6,0.8,star_trek
+Nibiru,0.7,0.8,0.5,0.75,0.6,0.5,0.7,star_trek
+Nimbus III,0.4,0.75,0.2,0.3,0.3,0.1,0.6,star_trek
+Norcadia Prime,0.7,0.8,0.6,0.65,0.65,0.45,0.75,star_trek
+Ocampa,0.35,0.75,0.5,0.5,0.3,0.15,0.55,star_trek
+Ohniaka III,0.55,0.7,0.4,0.2,0.5,0.3,0.6,star_trek
+Omega IV,0.7,0.8,0.5,0.6,0.65,0.5,0.7,star_trek
+Omicron Ceti III,0.7,0.8,0.4,0.6,0.7,0.5,0.4,star_trek
+Organia,0.8,0.85,0.5,0.9,0.75,0.5,0.9,star_trek
+Orias III,0.6,0.75,0.6,0.4,0.55,0.35,0.65,star_trek
+Ornara,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Pacifica,0.85,0.8,0.5,0.8,0.75,0.95,0.85,star_trek
+Penthara IV,0.65,0.8,0.5,0.5,0.45,0.4,0.7,star_trek
+Pernaia Prime,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Platonius,0.75,0.8,0.5,0.6,0.7,0.45,0.8,star_trek
+Pollux IV,0.8,0.85,0.5,0.5,0.75,0.5,0.85,star_trek
+Qo'noS,0.7,0.9,0.7,0.75,0.55,0.5,0.7,star_trek
+Qualor II,0.55,0.7,0.6,0.3,0.5,0.3,0.65,star_trek
+Quarra,0.7,0.8,0.7,0.7,0.65,0.45,0.75,star_trek
+Risa,0.95,0.9,0.5,0.8,0.95,0.8,0.95,star_trek
+Romulus,0.8,0.85,0.7,0.75,0.65,0.55,0.8,star_trek
+Ronara Prime,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Rubicun III,0.9,0.85,0.5,0.8,0.85,0.65,0.9,star_trek
+Rura Penthe,0.35,0.8,0.7,0.2,0.05,0.2,0.45,star_trek
+Rutia IV,0.75,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Sakura Prime,0.75,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Sarpeidon,0.6,0.75,0.5,0.4,0.3,0.35,0.65,star_trek
+Sauria,0.7,0.8,0.6,0.7,0.6,0.45,0.75,star_trek
+Scalos,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Selay,0.65,0.8,0.5,0.65,0.6,0.4,0.7,star_trek
+Sha Ka Ree,0.4,0.7,0.3,0.2,0.45,0.2,0.6,star_trek
+Sherman's Planet,0.75,0.8,0.6,0.5,0.65,0.45,0.8,star_trek
+Sigma Draconis VI,0.6,0.75,0.6,0.5,0.5,0.4,0.7,star_trek
+Sigma Iotia II,0.8,0.85,0.6,0.75,0.7,0.5,0.8,star_trek
+Sikaris,0.85,0.85,0.6,0.8,0.8,0.6,0.85,star_trek
+Solais V,0.6,0.75,0.5,0.5,0.55,0.35,0.65,star_trek
+Soukara,0.45,0.8,0.5,0.5,0.4,0.5,0.5,star_trek
+Straleb,0.65,0.75,0.6,0.55,0.6,0.4,0.7,star_trek
+Surata IV,0.7,0.8,0.5,0.7,0.65,0.5,0.7,star_trek
+T'Khut,0.15,0.85,0.6,0.1,0.1,0.05,0.3,star_trek
+Tagra IV,0.4,0.75,0.5,0.4,0.5,0.35,0.45,star_trek
+Tagus III,0.65,0.8,0.7,0.4,0.6,0.35,0.7,star_trek
+Talos IV,0.7,0.8,0.5,0.6,0.6,0.4,0.75,star_trek
+Tantalus V,0.6,0.75,0.4,0.4,0.55,0.35,0.7,star_trek
+Tarchannen III,0.65,0.8,0.5,0.6,0.6,0.45,0.7,star_trek
+Tarella,0.5,0.7,0.4,0.2,0.5,0.3,0.55,star_trek
+Taresia,0.8,0.8,0.6,0.75,0.75,0.6,0.8,star_trek
+Tau Ceti Prime,0.8,0.85,0.6,0.7,0.7,0.55,0.8,star_trek
+Tau Cygna V,0.6,0.8,0.5,0.5,0.6,0.4,0.3,star_trek
+Taurus II,0.55,0.75,0.4,0.5,0.5,0.35,0.65,star_trek
+Tellar,0.7,0.85,0.7,0.7,0.6,0.45,0.75,star_trek
+Terra Nova,0.6,0.8,0.5,0.4,0.55,0.4,0.55,star_trek
+Tessen III,0.65,0.75,0.5,0.5,0.6,0.4,0.7,star_trek
+Thasus,0.5,0.7,0.4,0.3,0.5,0.3,0.65,star_trek
+Tiburon,0.75,0.8,0.6,0.7,0.7,0.5,0.8,star_trek
+Tilonus IV,0.65,0.75,0.5,0.6,0.6,0.4,0.7,star_trek
+Triskelion,0.6,0.75,0.5,0.4,0.55,0.35,0.65,star_trek
+Troyius,0.7,0.8,0.85,0.6,0.65,0.45,0.75,star_trek
+Turkana IV,0.6,0.75,0.5,0.5,0.55,0.35,0.6,star_trek
+Ty'Gokor,0.5,0.85,0.6,0.4,0.4,0.3,0.6,star_trek
+Tzenketh,0.55,0.8,0.6,0.6,0.5,0.4,0.65,star_trek
+Vagra II,0.5,0.75,0.3,0.3,0.5,0.3,0.55,star_trek
+Valakis,0.7,0.8,0.5,0.7,0.65,0.5,0.75,star_trek
+Valo II,0.55,0.75,0.4,0.4,0.5,0.3,0.6,star_trek
+Vashti,0.65,0.75,0.5,0.5,0.6,0.35,0.7,star_trek
+Velara III,0.55,0.75,0.5,0.4,0.5,0.3,0.65,star_trek
+Ventax II,0.8,0.85,0.6,0.7,0.7,0.5,0.8,star_trek
+Veridian III,0.6,0.75,0.4,0.3,0.55,0.35,0.65,star_trek
+Veridian IV,0.7,0.8,0.5,0.6,0.65,0.5,0.75,star_trek
+Vulcan,0.7,0.85,0.7,0.65,0.35,0.15,0.8,star_trek
+Xindus,0.2,0.6,0.5,0.1,0.3,0.2,0.4,star_trek
+Yadera Prime,0.7,0.8,0.5,0.6,0.65,0.45,0.75,star_trek
+Zalkon,0.75,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Zeon,0.8,0.85,0.6,0.7,0.7,0.5,0.8,star_trek
+Achrady VII,0.5,0.6,0.4,0.3,0.5,0.3,0.6,star_trek
+Amleth Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Atbar Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Athos IV,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Avenal VII,0.6,0.6,0.5,0.4,0.5,0.4,0.6,star_trek
+Barradas III,0.4,0.6,0.7,0.2,0.4,0.2,0.5,star_trek
+Bersallis III,0.2,0.6,0.3,0.1,0.1,0.1,0.2,star_trek
+Beta III,0.7,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Boradis III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Bre'el IV,0.7,0.8,0.5,0.7,0.7,0.6,0.8,star_trek
+Brekka,0.7,0.7,0.6,0.7,0.7,0.5,0.7,star_trek
+Bryma,0.5,0.6,0.6,0.3,0.5,0.3,0.6,star_trek
+Burala Prime,0.5,0.6,0.5,0.4,0.5,0.4,0.6,star_trek
+Cairn,0.6,0.7,0.4,0.6,0.6,0.4,0.7,star_trek
+Calondia IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Camor V,0.6,0.6,0.5,0.5,0.6,0.4,0.6,star_trek
+Campor III,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Camus II,0.4,0.7,0.6,0.3,0.4,0.2,0.5,star_trek
+Carema III,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Castal I,0.3,0.5,0.4,0.2,0.3,0.2,0.4,star_trek
+Chandra V,0.6,0.7,0.4,0.6,0.6,0.4,0.7,star_trek
+Cirrus IV,0.3,0.5,0.3,0.2,0.4,0.2,0.5,star_trek
+Daimanta,0.5,0.6,0.7,0.4,0.5,0.3,0.6,star_trek
+Dakala,0.7,0.7,0.5,0.8,0.7,0.6,0.8,star_trek
+Davlos Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Dedestris,0.4,0.6,0.5,0.3,0.4,0.3,0.5,star_trek
+Deinonychus VII,0.6,0.7,0.4,0.7,0.6,0.5,0.7,star_trek
+Delinia II,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Deneb V,0.7,0.8,0.6,0.7,0.7,0.6,0.8,star_trek
+Denirius,0.4,0.5,0.5,0.3,0.4,0.2,0.5,star_trek
+Dessica II,0.4,0.6,0.6,0.2,0.3,0.2,0.4,star_trek
+Dimorus,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Donatu V,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Doraf I,0.3,0.5,0.4,0.2,0.3,0.1,0.4,star_trek
+Dorala,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Dreon VII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Durenia IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Emila II,0.6,0.7,0.4,0.5,0.6,0.5,0.7,star_trek
+Ennan VI,0.5,0.6,0.5,0.4,0.5,0.4,0.6,star_trek
+Erabus Prime,0.3,0.6,0.5,0.2,0.2,0.1,0.4,star_trek
+Erilon,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Evadne IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Fahleena III,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Felton Prime,0.6,0.7,0.6,0.5,0.6,0.4,0.7,star_trek
+Fina Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Finnea Prime,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Folnar III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Free Haven,0.8,0.8,0.5,0.7,0.8,0.6,0.8,star_trek
+Gagarin IV,0.7,0.8,0.5,0.6,0.7,0.6,0.8,star_trek
+Galador II,0.7,0.7,0.6,0.6,0.7,0.5,0.7,star_trek
+Gallos II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Galorda Prime,0.6,0.7,0.6,0.5,0.6,0.4,0.7,star_trek
+Galt,0.5,0.7,0.5,0.4,0.5,0.3,0.6,star_trek
+Galvin V,0.6,0.6,0.5,0.5,0.6,0.4,0.7,star_trek
+Garadius IV,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Gaspar VII,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Gault,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Gedi Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Gema IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Gemaris V,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Gemulon V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Genesis,0.8,0.8,0.7,0.9,0.8,0.7,0.7,star_trek
+Getheon,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Ghorusda,0.6,0.7,0.5,0.7,0.6,0.4,0.6,star_trek
+Golos Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Gonal IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+H'atoria,0.5,0.7,0.6,0.5,0.4,0.3,0.5,star_trek
+Hakton VII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Harod IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Harrakis V,0.4,0.6,0.7,0.3,0.3,0.1,0.5,star_trek
+Hemikek IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Hoek IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Holna IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Hurada III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Hurkos III,0.6,0.7,0.5,0.6,0.6,0.4,0.7,star_trek
+Hyralan,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Iadara,0.7,0.7,0.4,0.6,0.7,0.5,0.8,star_trek
+Icor IX,0.4,0.6,0.6,0.3,0.4,0.2,0.5,star_trek
+Ilidaria,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Inavar Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Indri VIII,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Inferna Prime,0.2,0.6,0.6,0.1,0.1,0.1,0.3,star_trek
+Itamish III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Iyar,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Japori II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Jemonon,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Juhraya,0.5,0.6,0.5,0.4,0.5,0.3,0.5,star_trek
+Kabrel I,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+Kabrel II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Kaelon II,0.6,0.7,0.5,0.7,0.6,0.4,0.6,star_trek
+Kaldra IV,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Kalla III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Kanda IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Kantare,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Kavis Alpha IV,0.3,0.5,0.4,0.2,0.3,0.2,0.3,star_trek
+Kea IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Kelvas V,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Kenda II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Kentanna,0.7,0.8,0.5,0.6,0.7,0.6,0.8,star_trek
+Khefka IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Khofla II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Kiley 279,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Klavdia III,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Kora II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Korinar,0.5,0.7,0.6,0.4,0.4,0.3,0.5,star_trek
+Korma,0.5,0.7,0.5,0.5,0.5,0.3,0.6,star_trek
+Korvat,0.6,0.7,0.5,0.5,0.5,0.4,0.6,star_trek
+Kostolain,0.7,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Kotara Barath,0.4,0.6,0.6,0.3,0.4,0.2,0.5,star_trek
+Kraus IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Kreetassa,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Lamenda Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Landris II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Lappa IV,0.7,0.7,0.6,0.6,0.7,0.5,0.7,star_trek
+Largo V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Lavinius V,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Lazon II,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+Ledonia III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Lemma II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Lerishi IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Ligos VII,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Loval,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Lya III,0.8,0.8,0.4,0.7,0.8,0.6,0.9,star_trek
+M'kemas III,0.5,0.6,0.5,0.5,0.5,0.3,0.6,star_trek
+Maarek III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Mab-Bu VI,0.4,0.6,0.4,0.3,0.4,0.3,0.5,star_trek
+Makus III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Malaya IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Malindi VII,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Malkus IX,0.4,0.6,0.6,0.3,0.4,0.2,0.5,star_trek
+Malon Prime,0.3,0.6,0.6,0.3,0.4,0.3,0.4,star_trek
+Manark IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Manu III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Maranga IV,0.6,0.7,0.5,0.6,0.6,0.4,0.6,star_trek
+Marcos XII,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Marejaretus VI,0.5,0.6,0.5,0.4,0.5,0.4,0.6,star_trek
+Mariah IV,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Marijne VII,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Marlonia,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Marva IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Matalas Prime,0.6,0.7,0.6,0.5,0.6,0.4,0.7,star_trek
+Mataline II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Mavala IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Meezan IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Meldrar I,0.4,0.6,0.6,0.3,0.4,0.2,0.5,star_trek
+Meles II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Melina II,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Melkot,0.3,0.6,0.4,0.3,0.3,0.1,0.5,star_trek
+Melona IV,0.6,0.7,0.5,0.6,0.6,0.5,0.7,star_trek
+Midos V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Milika III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Minara II,0.4,0.6,0.4,0.3,0.4,0.2,0.3,star_trek
+Mizar II,0.7,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Monac IV,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+Morikin VII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Morska,0.4,0.7,0.5,0.3,0.3,0.2,0.5,star_trek
+Mudor V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Myrmidon,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Nahmi IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Napinne,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Narendra III,0.6,0.7,0.5,0.5,0.5,0.4,0.6,star_trek
+Narva,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Nasreldine,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Nequencia Alpha,0.4,0.6,0.6,0.3,0.4,0.2,0.5,star_trek
+New Gaul,0.8,0.8,0.5,0.7,0.8,0.6,0.8,star_trek
+New Halana,0.8,0.8,0.5,0.7,0.8,0.7,0.8,star_trek
+New Sydney,0.7,0.8,0.6,0.6,0.7,0.5,0.7,star_trek
+New Vulcan,0.6,0.8,0.6,0.6,0.5,0.3,0.7,star_trek
+Nigala IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Ninipia Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Nivoch,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Norellus,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Norpin V,0.7,0.8,0.4,0.6,0.7,0.5,0.8,star_trek
+Nyria III,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Ogus II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Omekla III,0.6,0.7,0.6,0.5,0.6,0.4,0.7,star_trek
+Omicron Theta,0.7,0.8,0.5,0.1,0.6,0.4,0.7,star_trek
+Oran'taku,0.5,0.6,0.5,0.5,0.5,0.3,0.6,star_trek
+Orendal V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Osinar VI,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Otar II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Paan Mokar,0.4,0.7,0.5,0.3,0.4,0.2,0.5,star_trek
+Palgrenax,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Pandril,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Panora,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Parada II,0.6,0.7,0.5,0.6,0.6,0.4,0.7,star_trek
+Parada IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Paragaan II,0.5,0.6,0.6,0.4,0.5,0.3,0.5,star_trek
+Parnassus Beta,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Parsion III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Paxa,0.7,0.7,0.4,0.6,0.7,0.5,0.8,star_trek
+Peliar Zel,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Pelleus V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Pendari,0.6,0.7,0.5,0.6,0.6,0.4,0.6,star_trek
+Pendi II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Pentarus V,0.3,0.7,0.5,0.2,0.2,0.1,0.4,star_trek
+Pentath III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Persephone V,0.6,0.7,0.5,0.5,0.5,0.4,0.7,star_trek
+Porakas IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Portas V,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Potak III,0.5,0.7,0.5,0.4,0.5,0.3,0.6,star_trek
+Prakal II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Praxis,0.1,0.6,0.8,0.1,0.1,0.1,0.1,star_trek
+Prema II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Prophet's Landing,0.7,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Prospect VII,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Pullock V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Pyris VII,0.3,0.5,0.4,0.3,0.3,0.2,0.4,star_trek
+Pythro V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Quadra Sigma III,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Quatal Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Quazulu VIII,0.4,0.6,0.4,0.5,0.4,0.3,0.5,star_trek
+Quinor VII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+R'ongovia,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Raatooras,0.5,0.7,0.5,0.4,0.4,0.3,0.5,star_trek
+Rahm-Izad,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Rakal,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Rakella Prime,0.6,0.7,0.6,0.5,0.6,0.4,0.7,star_trek
+Rakhar,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Rakosa V,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Ramatis III,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Ramura,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Raritan IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Razna V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Regula,0.2,0.4,0.6,0.1,0.3,0.1,0.4,star_trek
+Regulus V,0.7,0.8,0.5,0.7,0.7,0.5,0.8,star_trek
+Rekag-Seronia,0.6,0.7,0.5,0.6,0.6,0.4,0.7,star_trek
+Relva VII,0.7,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Remus,0.3,0.7,0.7,0.5,0.2,0.2,0.3,star_trek
+Rhaandarel,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Rigel VII,0.6,0.8,0.6,0.7,0.6,0.5,0.6,star_trek
+Rigel X,0.4,0.6,0.5,0.4,0.3,0.2,0.5,star_trek
+Rinax,0.1,0.5,0.4,0.1,0.1,0.1,0.1,star_trek
+Rivos V,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Rochanie III,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Rondac III,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Rousseau V,0.7,0.8,0.5,0.6,0.7,0.6,0.8,star_trek
+Ruah IV,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Rujian,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Salinia Prime,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Saltok IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Salva II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Sarnia Prime,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Sarona VIII,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Sarthong V,0.5,0.7,0.6,0.5,0.5,0.3,0.6,star_trek
+Secarus IV,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+Selek IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Selnia Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Sentinel Minor IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Septimus III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Seros,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Setlik III,0.6,0.7,0.5,0.5,0.5,0.4,0.6,star_trek
+Shantil III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Sheva II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Shiralea VI,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Signia Minor,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Simperia,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Sobras,0.5,0.6,0.5,0.4,0.5,0.3,0.5,star_trek
+Solarion IV,0.6,0.7,0.5,0.5,0.6,0.4,0.6,star_trek
+Solosos III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Sothis III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Stakoron II,0.6,0.7,0.7,0.5,0.6,0.4,0.7,star_trek
+Styris IV,0.5,0.6,0.4,0.4,0.5,0.3,0.5,star_trek
+Syrath,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+T'Lani III,0.6,0.7,0.5,0.6,0.6,0.4,0.7,star_trek
+T'Lani Prime,0.7,0.7,0.6,0.7,0.7,0.5,0.7,star_trek
+T'lli Beta,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Takar,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Takara,0.5,0.7,0.6,0.4,0.5,0.3,0.6,star_trek
+Talagos Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Talax,0.7,0.7,0.5,0.7,0.7,0.6,0.7,star_trek
+Tandar Prime,0.7,0.7,0.6,0.6,0.7,0.5,0.7,star_trek
+Tanuga IV,0.7,0.7,0.6,0.6,0.7,0.5,0.7,star_trek
+Tarakis,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Tarkalea,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Tarod IX,0.4,0.6,0.5,0.3,0.4,0.2,0.5,star_trek
+Tarok,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Tarsas III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Tarsus IV,0.7,0.8,0.6,0.7,0.7,0.5,0.8,star_trek
+Tartaras V,0.3,0.6,0.5,0.2,0.2,0.1,0.4,star_trek
+Tau Alpha C,0.7,0.8,0.5,0.6,0.7,0.6,0.8,star_trek
+Tavela Minor,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Teerza Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Telsius Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Terlina III,0.6,0.7,0.5,0.4,0.6,0.4,0.7,star_trek
+Terosa Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Tesnia,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Tessik Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Tethys III,0.6,0.7,0.5,0.5,0.6,0.7,0.7,star_trek
+Thalos VII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Thanatos VII,0.2,0.6,0.4,0.1,0.2,0.1,0.3,star_trek
+Thelka IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Theta VII,0.7,0.8,0.5,0.6,0.7,0.5,0.8,star_trek
+Torga IV,0.5,0.6,0.6,0.3,0.5,0.3,0.5,star_trek
+Torman V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Torna IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Torona IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Torros III,0.5,0.7,0.7,0.4,0.5,0.3,0.6,star_trek
+Tracken II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Tranome Sar,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Trelka V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Triacus,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Trialas IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Triannon,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Trillius Prime,0.8,0.8,0.5,0.8,0.8,0.7,0.8,star_trek
+Ufandi III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Ultima Thule,0.3,0.5,0.4,0.2,0.2,0.2,0.5,star_trek
+Umoth VIII,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Unefra III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Vacca VI,0.6,0.7,0.5,0.5,0.6,0.5,0.7,star_trek
+Vadris III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Valeo Beta V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Valo III,0.5,0.6,0.4,0.5,0.5,0.3,0.6,star_trek
+Valt Minor,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Vandor IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Vandros IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Varala,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Veloz Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Vendikar,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Ventani II,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Verex III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Vergessen,0.4,0.6,0.4,0.3,0.4,0.3,0.5,star_trek
+Vico V,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Vilmor II,0.6,0.7,0.5,0.6,0.6,0.5,0.7,star_trek
+Vissia,0.7,0.7,0.5,0.7,0.7,0.5,0.7,star_trek
+Volchok Prime,0.5,0.6,0.6,0.4,0.5,0.3,0.6,star_trek
+Volon II,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Volon III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Xanthras III,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Xantoras,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Xarantine,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Yadalla Prime,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Yadera II,0.7,0.7,0.5,0.6,0.7,0.5,0.7,star_trek
+Yridia,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Zadar IV,0.5,0.6,0.5,0.4,0.5,0.3,0.6,star_trek
+Zayra IV,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+Zeta Alpha II,0.4,0.6,0.5,0.3,0.4,0.3,0.5,star_trek
+Zetar,0.2,0.4,0.3,0.2,0.3,0.1,0.3,star_trek
+Zytchin III,0.6,0.7,0.5,0.5,0.6,0.4,0.7,star_trek
+III Delta Kaising,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+IV Anbus,0.4,0.5,0.3,0.2,0.4,0.2,0.5,dune
+Al Dhanab,0.3,0.6,0.5,0.2,0.3,0.1,0.4,dune
+Alajory,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Alpha Corvus,0.4,0.5,0.3,0.2,0.4,0.2,0.5,dune
+Andioyu,0.5,0.5,0.3,0.3,0.5,0.3,0.6,dune
+Arbelough,0.5,0.6,0.4,0.3,0.5,0.4,0.6,dune
+Arrakis,0.2,0.6,0.9,0.3,0.1,0.0,0.3,dune
+Artisia,0.6,0.5,0.4,0.4,0.6,0.5,0.7,dune
+Arvon,0.5,0.5,0.3,0.3,0.5,0.3,0.6,dune
+Atar,0.3,0.5,0.4,0.2,0.3,0.1,0.4,dune
+Balut,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Barandiko,0.5,0.5,0.3,0.3,0.5,0.3,0.6,dune
+Beakkal,0.6,0.5,0.5,0.4,0.6,0.5,0.7,dune
+Bela Tegeuse,0.7,0.6,0.5,0.5,0.7,0.5,0.7,dune
+Biarek,0.4,0.5,0.4,0.2,0.4,0.3,0.5,dune
+Buzzell,0.4,0.5,0.5,0.5,0.5,0.9,0.5,dune
+Caladan,0.9,0.8,0.6,0.8,0.9,0.9,0.9,dune
+Cedon,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Cerbol,0.4,0.5,0.3,0.2,0.4,0.3,0.5,dune
+Chapterhouse,0.7,0.7,0.5,0.5,0.6,0.4,0.7,dune
+Chusuk,0.7,0.7,0.5,0.6,0.7,0.5,0.8,dune
+Corrin,0.6,0.6,0.7,0.4,0.5,0.4,0.5,dune
+Crompton,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Dan,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Dur,0.4,0.5,0.5,0.2,0.4,0.2,0.5,dune
+Ecaz,0.8,0.7,0.5,0.7,0.8,0.6,0.8,dune
+Enfiel,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Extaris,0.4,0.5,0.4,0.2,0.4,0.3,0.5,dune
+Foum al-Hout,0.3,0.5,0.4,0.2,0.3,0.1,0.4,dune
+Gaar,0.4,0.5,0.4,0.2,0.4,0.2,0.5,dune
+Galacia,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Gamont,0.7,0.6,0.5,0.6,0.7,0.5,0.7,dune
+Gammu,0.7,0.7,0.6,0.6,0.6,0.5,0.7,dune
+Gangishree,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Gansireed,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Giedi Prime,0.3,0.7,0.8,0.3,0.4,0.3,0.3,dune
+Ginaz,0.7,0.7,0.4,0.6,0.7,0.8,0.8,dune
+Grumman,0.6,0.7,0.5,0.4,0.5,0.4,0.6,dune
+Hagal,0.5,0.6,0.7,0.3,0.4,0.3,0.5,dune
+Harmonthep,0.6,0.6,0.5,0.4,0.6,0.4,0.7,dune
+Hessra,0.3,0.5,0.3,0.1,0.1,0.2,0.4,dune
+Ipyr,0.4,0.5,0.4,0.3,0.4,0.3,0.5,dune
+Ishkal,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Ishia,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Ix,0.5,0.6,0.9,0.4,0.5,0.3,0.6,dune
+Junction,0.5,0.5,0.5,0.3,0.5,0.4,0.6,dune
+Kadesh,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Kadrish,0.4,0.5,0.4,0.2,0.4,0.3,0.5,dune
+Kaitain,0.9,0.8,0.7,0.7,0.9,0.7,0.9,dune
+Kirana III,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Kolhar,0.6,0.6,0.7,0.4,0.5,0.4,0.6,dune
+Komider,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Korona,0.5,0.5,0.5,0.3,0.5,0.4,0.6,dune
+Krelln,0.4,0.5,0.4,0.2,0.4,0.3,0.5,dune
+Kroinin,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Lampadas,0.7,0.6,0.4,0.5,0.7,0.5,0.7,dune
+Lankiveil,0.6,0.7,0.4,0.5,0.3,0.8,0.6,dune
+Laran,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Lernaeus,0.5,0.5,0.5,0.3,0.5,0.3,0.6,dune
+Markon,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Menaris,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Molitor,0.6,0.6,0.5,0.4,0.6,0.5,0.7,dune
+Muritan,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Naraj,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Niushe,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Novebruns,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Palma,0.6,0.6,0.4,0.5,0.7,0.5,0.7,dune
+Parella,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Parmentier,0.7,0.6,0.5,0.5,0.7,0.5,0.7,dune
+Perrin XIV,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Perth,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Pilargo,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Pincknon,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Ponciard,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Poritrin,0.7,0.7,0.6,0.5,0.7,0.6,0.7,dune
+Quadra,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Reenol,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Relicon,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Renditai,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Reticulus,0.5,0.5,0.4,0.3,0.5,0.3,0.5,dune
+Revona,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Richese,0.6,0.6,0.8,0.4,0.6,0.4,0.7,dune
+Risp VII,0.4,0.5,0.4,0.2,0.4,0.3,0.5,dune
+Roc,0.4,0.5,0.5,0.2,0.4,0.2,0.5,dune
+Romo,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Ros-Jal,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Rossak,0.6,0.6,0.5,0.7,0.6,0.5,0.5,dune
+Salusa Secundus,0.4,0.7,0.5,0.3,0.3,0.2,0.4,dune
+Sansin,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Seban,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Sembou,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Semboule,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Seneca,0.6,0.6,0.4,0.4,0.6,0.5,0.7,dune
+Seprek,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Sikun,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Souci,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Synchrony,0.6,0.6,0.7,0.3,0.5,0.4,0.6,dune
+Tarahell,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Tleilax,0.5,0.6,0.6,0.6,0.5,0.4,0.5,dune
+Tupile,0.7,0.6,0.4,0.5,0.7,0.6,0.8,dune
+Ularda,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Ven,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Vertree Colony,0.6,0.6,0.4,0.5,0.6,0.5,0.7,dune
+Walgis,0.4,0.5,0.4,0.2,0.4,0.2,0.5,dune
+Wallach VI,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Wallach VII,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Wallach IX,0.6,0.6,0.4,0.4,0.5,0.4,0.6,dune
+Wayku,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Yardin,0.5,0.5,0.4,0.3,0.5,0.3,0.6,dune
+Yondair,0.5,0.5,0.4,0.3,0.5,0.4,0.6,dune
+Zabulon,0.5,0.5,0.5,0.3,0.5,0.3,0.6,dune
+Zanbar,0.5,0.6,0.5,0.3,0.5,0.3,0.5,dune
+Zanovar,0.6,0.6,0.6,0.4,0.6,0.5,0.7,dune
+Accatran,0.4,0.6,0.7,0.2,0.4,0.2,0.4,warhammer_40k
+Acreage,0.7,0.7,0.5,0.5,0.7,0.6,0.7,warhammer_40k
+Agripinaa,0.3,0.6,0.8,0.2,0.3,0.2,0.3,warhammer_40k
+Alaric Prime,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Arkhona,0.5,0.6,0.6,0.4,0.5,0.4,0.5,warhammer_40k
+Armageddon,0.3,0.7,0.7,0.3,0.3,0.3,0.3,warhammer_40k
+Arthas Moloch,0.2,0.6,0.4,0.2,0.2,0.1,0.2,warhammer_40k
+Astaramis,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Atoma Prime,0.4,0.6,0.7,0.2,0.4,0.3,0.4,warhammer_40k
+Attila,0.6,0.7,0.3,0.5,0.5,0.4,0.6,warhammer_40k
+Aurelia,0.5,0.6,0.5,0.4,0.4,0.4,0.5,warhammer_40k
+Aurum,0.5,0.6,0.8,0.3,0.5,0.3,0.6,warhammer_40k
+Avarax,0.3,0.6,0.5,0.2,0.3,0.2,0.4,warhammer_40k
+Baal,0.2,0.6,0.3,0.1,0.1,0.0,0.2,warhammer_40k
+Badab Primaris,0.5,0.6,0.6,0.4,0.5,0.4,0.5,warhammer_40k
+Bakka,0.5,0.6,0.7,0.3,0.5,0.4,0.5,warhammer_40k
+Baraspine,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Barbarossa IV,0.4,0.6,0.5,0.3,0.3,0.3,0.4,warhammer_40k
+Barbarus,0.1,0.6,0.3,0.3,0.2,0.4,0.2,warhammer_40k
+Bathamor,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Belacane,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Bellerophon's Fall,0.3,0.6,0.4,0.2,0.3,0.2,0.3,warhammer_40k
+Belis Corona,0.5,0.6,0.6,0.4,0.5,0.4,0.6,warhammer_40k
+Beseritor,0.3,0.6,0.5,0.2,0.3,0.2,0.4,warhammer_40k
+Betalis III,0.4,0.6,0.5,0.3,0.2,0.5,0.5,warhammer_40k
+Black Marble,0.2,0.5,0.4,0.1,0.2,0.1,0.3,warhammer_40k
+Black Reach,0.5,0.6,0.6,0.3,0.5,0.4,0.5,warhammer_40k
+Bodt,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Branx Magna,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Bubonicus,0.1,0.5,0.3,0.5,0.2,0.4,0.1,warhammer_40k
+Cadia,0.5,0.7,0.7,0.4,0.5,0.4,0.4,warhammer_40k
+Calderis,0.4,0.6,0.5,0.3,0.3,0.2,0.5,warhammer_40k
+Caliban,0.7,0.7,0.5,0.7,0.6,0.6,0.7,warhammer_40k
+Calth,0.7,0.7,0.6,0.6,0.7,0.6,0.7,warhammer_40k
+Carcharias,0.4,0.6,0.5,0.3,0.2,0.7,0.5,warhammer_40k
+Catachan,0.7,0.7,0.5,1.0,0.4,0.7,0.6,warhammer_40k
+Chemos,0.2,0.6,0.7,0.1,0.3,0.2,0.3,warhammer_40k
+Chinchare,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Chogoris,0.7,0.7,0.4,0.5,0.6,0.5,0.7,warhammer_40k
+Chondax,0.5,0.6,0.4,0.4,0.5,0.3,0.6,warhammer_40k
+Colchis,0.5,0.6,0.4,0.4,0.3,0.3,0.5,warhammer_40k
+Coronis Agathon,0.5,0.6,0.6,0.3,0.5,0.4,0.5,warhammer_40k
+Cretacia,0.6,0.7,0.4,0.9,0.6,0.6,0.6,warhammer_40k
+Crucis,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Cthonia,0.2,0.6,0.8,0.1,0.3,0.1,0.3,warhammer_40k
+Cyrene,0.6,0.6,0.5,0.5,0.6,0.5,0.6,warhammer_40k
+Dal'yth,0.7,0.6,0.6,0.6,0.7,0.6,0.8,warhammer_40k
+Davin,0.4,0.6,0.4,0.5,0.5,0.5,0.4,warhammer_40k
+Death of Bianzeer,0.2,0.5,0.3,0.1,0.2,0.1,0.2,warhammer_40k
+Deliverance,0.3,0.6,0.6,0.2,0.3,0.2,0.4,warhammer_40k
+Demerium,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Drakaasi,0.2,0.7,0.5,0.3,0.1,0.2,0.2,warhammer_40k
+Dreah,0.4,0.5,0.4,0.3,0.4,0.3,0.5,warhammer_40k
+Drenthal,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Dusk,0.4,0.6,0.4,0.4,0.3,0.4,0.4,warhammer_40k
+Eidolon,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Eleusis,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Endymion Prime,0.5,0.6,0.5,0.4,0.5,0.4,0.5,warhammer_40k
+Equinox,0.5,0.6,0.5,0.3,0.5,0.4,0.6,warhammer_40k
+Espandor,0.7,0.7,0.5,0.5,0.7,0.6,0.7,warhammer_40k
+Fedrid,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Fenksworld,0.5,0.6,0.5,0.4,0.5,0.4,0.5,warhammer_40k
+Fenris,0.5,0.7,0.4,0.5,0.1,0.8,0.5,warhammer_40k
+Fervious,0.3,0.6,0.5,0.2,0.2,0.2,0.4,warhammer_40k
+Fleshworld,0.1,0.5,0.3,0.8,0.3,0.5,0.1,warhammer_40k
+Frostheim,0.4,0.6,0.4,0.3,0.1,0.5,0.5,warhammer_40k
+Galen VI,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Gantz,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Ghosar Quintus,0.4,0.6,0.6,0.3,0.4,0.3,0.5,warhammer_40k
+Glass Moon,0.1,0.3,0.4,0.0,0.2,0.0,0.3,warhammer_40k
+Graia,0.3,0.6,0.8,0.2,0.4,0.2,0.4,warhammer_40k
+Gryphonne IV,0.3,0.6,0.8,0.2,0.4,0.2,0.4,warhammer_40k
+Harakon,0.5,0.6,0.5,0.4,0.5,0.7,0.6,warhammer_40k
+Hydra Cordatus,0.4,0.6,0.6,0.3,0.4,0.3,0.5,warhammer_40k
+Iax,0.8,0.7,0.6,0.7,0.8,0.7,0.8,warhammer_40k
+Incron,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Inwit,0.3,0.6,0.5,0.2,0.1,0.2,0.4,warhammer_40k
+Isstvan III,0.1,0.6,0.4,0.0,0.2,0.1,0.1,warhammer_40k
+Isstvan V,0.2,0.6,0.4,0.1,0.3,0.1,0.2,warhammer_40k
+Kadaku,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Konor,0.6,0.7,0.6,0.5,0.6,0.5,0.7,warhammer_40k
+Krieg,0.1,0.7,0.5,0.1,0.2,0.2,0.1,warhammer_40k
+Kronus,0.5,0.6,0.5,0.4,0.5,0.4,0.5,warhammer_40k
+Laeran,0.4,0.5,0.4,0.7,0.5,0.8,0.5,warhammer_40k
+Lucius,0.2,0.5,0.9,0.1,0.3,0.1,0.3,warhammer_40k
+Macragge,0.8,0.8,0.7,0.6,0.7,0.6,0.8,warhammer_40k
+Mandragora,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Mars,0.2,0.5,0.8,0.1,0.3,0.1,0.3,warhammer_40k
+Masali,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Medrengard,0.1,0.7,0.6,0.2,0.2,0.2,0.1,warhammer_40k
+Medusa,0.3,0.7,0.6,0.2,0.2,0.3,0.4,warhammer_40k
+Medusa V,0.3,0.6,0.5,0.2,0.3,0.3,0.4,warhammer_40k
+Messelina Gloriana,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Metalica,0.3,0.6,0.8,0.1,0.3,0.2,0.4,warhammer_40k
+Midgardia,0.4,0.6,0.4,0.3,0.2,0.5,0.5,warhammer_40k
+Molech,0.7,0.7,0.5,0.6,0.6,0.5,0.7,warhammer_40k
+Mordian,0.5,0.7,0.6,0.3,0.3,0.3,0.5,warhammer_40k
+Mornax,0.4,0.6,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Necromunda,0.2,0.7,0.7,0.3,0.3,0.2,0.3,warhammer_40k
+Nemesis Tessera,0.3,0.6,0.5,0.2,0.3,0.2,0.4,warhammer_40k
+Nemeton,0.5,0.6,0.4,0.5,0.5,0.5,0.5,warhammer_40k
+Nocturne,0.3,0.8,0.7,0.3,0.1,0.2,0.3,warhammer_40k
+Nostramo,0.3,0.6,0.6,0.3,0.2,0.3,0.3,warhammer_40k
+Novaris,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Nuceria,0.5,0.7,0.4,0.4,0.5,0.3,0.5,warhammer_40k
+Oliensis,0.1,0.8,0.3,0.7,0.3,0.4,0.1,warhammer_40k
+Olympia,0.5,0.7,0.6,0.4,0.5,0.4,0.6,warhammer_40k
+Ophelia VII,0.6,0.6,0.5,0.5,0.6,0.5,0.7,warhammer_40k
+Pavane,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Phyrr,0.5,0.6,0.4,0.6,0.5,0.5,0.5,warhammer_40k
+Plague Planet,0.0,0.6,0.3,0.7,0.2,0.4,0.0,warhammer_40k
+Port Maw,0.4,0.6,0.6,0.3,0.4,0.3,0.5,warhammer_40k
+Prandium,0.8,0.7,0.5,0.7,0.8,0.7,0.8,warhammer_40k
+Prospero,0.6,0.6,0.4,0.3,0.5,0.3,0.6,warhammer_40k
+Pythos,0.5,0.6,0.4,0.7,0.5,0.6,0.4,warhammer_40k
+Quintarn,0.7,0.7,0.6,0.5,0.7,0.6,0.7,warhammer_40k
+Rocyria,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Rynn's World,0.7,0.7,0.5,0.5,0.7,0.5,0.7,warhammer_40k
+Ryza,0.3,0.6,0.8,0.2,0.4,0.2,0.4,warhammer_40k
+Sacris,0.4,0.6,0.4,0.3,0.4,0.3,0.5,warhammer_40k
+Sanctuary 101,0.5,0.6,0.4,0.4,0.5,0.4,0.6,warhammer_40k
+Saramanth,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Savlar,0.2,0.6,0.6,0.2,0.3,0.3,0.2,warhammer_40k
+Scelus,0.3,0.6,0.4,0.2,0.3,0.2,0.4,warhammer_40k
+Scintilla,0.5,0.7,0.7,0.5,0.5,0.4,0.6,warhammer_40k
+Sicarus,0.2,0.6,0.5,0.4,0.3,0.3,0.2,warhammer_40k
+Signus Prime,0.4,0.6,0.4,0.3,0.4,0.3,0.3,warhammer_40k
+Sotha,0.6,0.6,0.5,0.4,0.6,0.5,0.6,warhammer_40k
+Sortiarius,0.1,0.5,0.5,0.4,0.2,0.2,0.1,warhammer_40k
+Stygies VIII,0.3,0.6,0.7,0.2,0.3,0.2,0.3,warhammer_40k
+Tallarn,0.2,0.6,0.4,0.1,0.1,0.0,0.4,warhammer_40k
+Tanith,0.7,0.7,0.5,0.7,0.6,0.6,0.7,warhammer_40k
+Tarentus,0.5,0.6,0.5,0.4,0.5,0.4,0.6,warhammer_40k
+Tartarus,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+T'au,0.8,0.7,0.6,0.6,0.7,0.6,0.8,warhammer_40k
+Terra,0.3,0.8,0.6,0.4,0.4,0.3,0.4,warhammer_40k
+Thramas,0.3,0.6,0.5,0.2,0.2,0.3,0.4,warhammer_40k
+Titan,0.2,0.4,0.5,0.1,0.1,0.3,0.4,warhammer_40k
+Tsagualsa,0.3,0.6,0.4,0.2,0.2,0.3,0.3,warhammer_40k
+Typhon Primaris,0.5,0.6,0.5,0.4,0.5,0.4,0.5,warhammer_40k
+Ulan Huda,0.5,0.6,0.5,0.3,0.5,0.4,0.5,warhammer_40k
+Valhalla,0.4,0.7,0.5,0.3,0.1,0.5,0.5,warhammer_40k
+Vash'ya,0.6,0.6,0.6,0.4,0.6,0.4,0.7,warhammer_40k
+Vigilus,0.5,0.7,0.6,0.4,0.5,0.4,0.5,warhammer_40k
+Vior'la,0.7,0.6,0.5,0.5,0.6,0.5,0.7,warhammer_40k
+Vitria,0.4,0.6,0.7,0.2,0.4,0.3,0.5,warhammer_40k
+Vostroya,0.4,0.7,0.7,0.3,0.3,0.3,0.5,warhammer_40k
+Vraks,0.3,0.6,0.6,0.2,0.4,0.3,0.3,warhammer_40k
+Xana II,0.2,0.6,0.8,0.1,0.3,0.2,0.3,warhammer_40k
+Zayth,0.4,0.5,0.5,0.3,0.4,0.3,0.5,warhammer_40k
+Zhao-Arkkad,0.3,0.6,0.7,0.2,0.3,0.2,0.4,warhammer_40k
+Aeia,0.7,0.8,0.4,0.6,0.7,0.6,0.7,mass_effect
+Acaeria,0.3,0.5,0.5,0.1,0.3,0.1,0.4,mass_effect
+Adas,0.1,0.4,0.6,0.0,0.2,0.0,0.3,mass_effect
+Adek,0.2,0.7,0.5,0.0,0.3,0.1,0.5,mass_effect
+Aegis,0.1,0.3,0.4,0.0,0.2,0.0,0.6,mass_effect
+Aequitas,0.5,0.6,0.5,0.2,0.5,0.3,0.6,mass_effect
+Aganju,0.1,0.9,0.7,0.0,0.1,0.0,0.3,mass_effect
+Agebinium,0.2,0.5,0.6,0.0,0.2,0.1,0.4,mass_effect
+Ageko,0.3,0.4,0.3,0.1,0.4,0.2,0.5,mass_effect
+Agessia,0.4,0.6,0.5,0.2,0.4,0.3,0.5,mass_effect
+Agetoton,0.1,0.3,0.4,0.0,0.1,0.0,0.3,mass_effect
+Agnin,0.2,0.8,0.6,0.0,0.2,0.0,0.4,mass_effect
+Aigela,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Aitarus,0.1,0.6,0.5,0.0,0.1,0.0,0.3,mass_effect
+Aite,0.6,0.7,0.5,0.4,0.6,0.5,0.7,mass_effect
+Aitis,0.2,0.4,0.3,0.0,0.3,0.1,0.4,mass_effect
+Akraia,0.1,0.5,0.4,0.0,0.2,0.0,0.3,mass_effect
+Alchera,0.3,0.6,0.3,0.1,0.2,0.4,0.5,mass_effect
+Alcyoneus,0.1,1.0,0.7,0.0,0.1,0.0,0.2,mass_effect
+Alformus,0.2,0.4,0.5,0.0,0.3,0.1,0.4,mass_effect
+Alingon,0.3,0.6,0.6,0.1,0.3,0.2,0.5,mass_effect
+Alko,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Alkonost,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Allusah,0.2,0.7,0.5,0.0,0.2,0.1,0.3,mass_effect
+Almarcrux,0.1,0.4,0.6,0.0,0.1,0.0,0.3,mass_effect
+Almos,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Alrumter,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Alsages,0.3,0.5,0.4,0.1,0.4,0.2,0.5,mass_effect
+Altaaya,0.4,0.6,0.5,0.2,0.5,0.3,0.6,mass_effect
+Altahe,0.2,0.5,0.7,0.1,0.3,0.1,0.4,mass_effect
+Altakiril,0.5,0.6,0.5,0.3,0.5,0.4,0.6,mass_effect
+Altanorch,0.2,0.7,0.6,0.0,0.2,0.1,0.3,mass_effect
+Amaranthine,0.5,0.6,0.4,0.3,0.5,0.4,0.7,mass_effect
+Ammut,0.1,0.4,0.5,0.0,0.1,0.0,0.3,mass_effect
+Anedia,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Anhur,0.7,0.7,0.6,0.5,0.6,0.5,0.7,mass_effect
+Anjea,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Ansuz,0.2,0.6,0.5,0.0,0.3,0.1,0.4,mass_effect
+Antibaar,0.2,0.5,0.6,0.1,0.2,0.1,0.4,mass_effect
+Antictra,0.1,0.4,0.4,0.0,0.2,0.0,0.3,mass_effect
+Antida,0.3,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Antigar,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Antinax,0.1,0.3,0.4,0.0,0.1,0.0,0.3,mass_effect
+Antiroprus,0.2,0.7,0.6,0.0,0.2,0.1,0.4,mass_effect
+Antirumgon,0.1,0.8,0.5,0.0,0.1,0.0,0.3,mass_effect
+Antitarra,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Aphras,0.2,0.6,0.7,0.0,0.2,0.1,0.3,mass_effect
+Apo,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Aratoht,0.4,0.6,0.5,0.3,0.4,0.3,0.5,mass_effect
+Arcadia,0.7,0.8,0.4,0.5,0.7,0.6,0.8,mass_effect
+Archanes,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Armeni,0.3,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Asteria,0.4,0.5,0.5,0.2,0.4,0.3,0.6,mass_effect
+Atahil,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Atebolos,0.1,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Athame,0.5,0.6,0.4,0.3,0.5,0.4,0.7,mass_effect
+Atos Irn,0.1,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Aventen,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Aya,0.9,0.8,0.6,0.9,0.8,0.7,0.9,mass_effect
+Azimir,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Azrahas,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Bannik,0.2,0.5,0.6,0.0,0.2,0.1,0.4,mass_effect
+Bast,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Bastzuda,0.1,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Beach Thunder,0.4,0.6,0.3,0.2,0.4,0.5,0.6,mass_effect
+Bekenstein,0.8,0.8,0.5,0.5,0.7,0.5,0.8,mass_effect
+Benda,0.2,0.5,0.4,0.1,0.3,0.1,0.5,mass_effect
+Beness,0.3,0.4,0.5,0.1,0.3,0.2,0.5,mass_effect
+Benning,0.7,0.8,0.5,0.6,0.7,0.6,0.7,mass_effect
+Beregale,0.1,0.9,0.7,0.0,0.1,0.0,0.2,mass_effect
+Beyalt,0.2,0.5,0.4,0.0,0.3,0.1,0.4,mass_effect
+Bindur,0.1,0.6,0.6,0.0,0.2,0.0,0.3,mass_effect
+Binthu,0.2,0.5,0.5,0.1,0.3,0.1,0.4,mass_effect
+Boro,0.1,0.4,0.4,0.0,0.2,0.0,0.3,mass_effect
+Borr,0.1,0.3,0.5,0.0,0.1,0.0,0.3,mass_effect
+Bothros,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Bovis Tor,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Bres,0.2,0.4,0.5,0.0,0.2,0.1,0.4,mass_effect
+Caelax,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Camala,0.4,0.6,0.4,0.2,0.4,0.3,0.6,mass_effect
+Camaron,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Canalus,0.5,0.6,0.4,0.3,0.5,0.6,0.6,mass_effect
+Canctra,0.2,0.4,0.5,0.0,0.2,0.1,0.4,mass_effect
+Canrum,0.1,0.5,0.6,0.0,0.2,0.0,0.3,mass_effect
+Capek,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Carborix,0.1,0.6,0.8,0.0,0.1,0.0,0.3,mass_effect
+Carcosa,0.3,0.5,0.4,0.2,0.3,0.2,0.4,mass_effect
+Casbin,0.5,0.7,0.6,0.3,0.5,0.4,0.6,mass_effect
+Chalkhos,0.2,0.6,0.7,0.0,0.2,0.1,0.3,mass_effect
+Charoum,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Chasca,0.6,0.7,0.5,0.4,0.6,0.4,0.7,mass_effect
+Cherk Sab,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Chofen,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Chohe,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Choitadix,0.1,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Cholis,0.2,0.4,0.4,0.0,0.3,0.1,0.4,mass_effect
+Circe,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Clobaka,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Clocrolis,0.1,0.4,0.4,0.0,0.2,0.0,0.3,mass_effect
+Clogon,0.2,0.5,0.5,0.1,0.2,0.1,0.4,mass_effect
+Clojiia,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Clomarthu,0.1,0.7,0.6,0.0,0.1,0.0,0.3,mass_effect
+Cloroplon,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Clotanca,0.3,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Clugon,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Corang,0.3,0.6,0.6,0.1,0.3,0.2,0.5,mass_effect
+Crick,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Cyllene,0.1,0.3,0.3,0.0,0.1,0.0,0.4,mass_effect
+Cyone,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Damkianna,0.4,0.6,0.5,0.2,0.4,0.3,0.6,mass_effect
+Daratar,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Darwin,0.5,0.7,0.4,0.3,0.5,0.4,0.6,mass_effect
+Datriux,0.2,0.4,0.5,0.0,0.2,0.1,0.4,mass_effect
+Dekuuna,0.6,0.9,0.6,0.7,0.5,0.5,0.7,mass_effect
+Derneuca,0.2,0.5,0.4,0.1,0.3,0.1,0.5,mass_effect
+Dezda,0.1,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Digeris,0.3,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Dobrovolski,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Doldit,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Dor,0.1,0.4,0.5,0.0,0.1,0.0,0.3,mass_effect
+Dorgal,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Doriae,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Doz Atab,0.2,0.6,0.6,0.0,0.2,0.1,0.3,mass_effect
+Dragel,0.1,0.4,0.5,0.0,0.1,0.0,0.3,mass_effect
+Dregir,0.2,0.7,0.7,0.0,0.2,0.1,0.3,mass_effect
+Dumah,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Durak,0.3,0.6,0.6,0.1,0.3,0.2,0.5,mass_effect
+Echidna,0.3,0.5,0.4,0.2,0.3,0.2,0.4,mass_effect
+Eden Prime,0.9,0.8,0.6,0.8,0.9,0.7,0.9,mass_effect
+Edmos,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Edolus,0.2,0.6,0.4,0.1,0.3,0.1,0.5,mass_effect
+Egalic,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Ehstag,0.1,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Eingana,0.5,0.6,0.4,0.4,0.5,0.5,0.6,mass_effect
+Eirene,0.5,0.6,0.4,0.3,0.5,0.4,0.7,mass_effect
+Ekuna,0.6,0.7,0.5,0.5,0.6,0.6,0.7,mass_effect
+Elaaden,0.2,0.7,0.7,0.1,0.1,0.0,0.3,mass_effect
+Elatha,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Eletania,0.7,0.7,0.5,0.6,0.7,0.5,0.7,mass_effect
+Elohi,0.4,0.6,0.5,0.3,0.5,0.4,0.6,mass_effect
+Elysium,0.8,0.8,0.5,0.6,0.8,0.6,0.8,mass_effect
+Eos,0.5,0.7,0.6,0.3,0.5,0.3,0.5,mass_effect
+Epho,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Erinle,0.6,0.7,0.5,0.5,0.6,0.6,0.7,mass_effect
+Erros,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Erszbat,0.1,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Essenus,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Etamis,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Eunomia,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Euntanta,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Ezka,0.1,0.4,0.4,0.0,0.2,0.0,0.3,mass_effect
+Farcrothu,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Fargeluse,0.3,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Faringor,0.2,0.5,0.6,0.0,0.2,0.1,0.4,mass_effect
+Farlas,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Farnuri,0.2,0.4,0.5,0.0,0.2,0.1,0.4,mass_effect
+Farthorl,0.1,0.6,0.6,0.0,0.1,0.0,0.3,mass_effect
+Fermi,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Feros,0.5,0.7,0.4,0.5,0.5,0.3,0.6,mass_effect
+Feynman,0.2,0.4,0.4,0.0,0.3,0.1,0.5,mass_effect
+Fiax,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+First Land,0.6,0.7,0.5,0.4,0.6,0.5,0.7,mass_effect
+Fitful Current,0.3,0.5,0.3,0.1,0.3,0.4,0.5,mass_effect
+Flett,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Freedom's Progress,0.7,0.8,0.5,0.5,0.7,0.5,0.7,mass_effect
+Gaelon,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Gamayun,0.4,0.5,0.4,0.2,0.4,0.3,0.6,mass_effect
+Garan,0.2,0.6,0.5,0.0,0.3,0.1,0.4,mass_effect
+Garvug,0.4,0.7,0.7,0.3,0.3,0.2,0.4,mass_effect
+Gei Hinnom,0.1,0.5,0.5,0.0,0.1,0.0,0.2,mass_effect
+Gellix,0.5,0.6,0.4,0.3,0.4,0.3,0.6,mass_effect
+Geus,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Gilead,0.4,0.6,0.4,0.2,0.4,0.3,0.6,mass_effect
+Goliath,0.1,0.9,0.6,0.0,0.1,0.0,0.3,mass_effect
+Gorgun,0.2,0.6,0.6,0.0,0.2,0.1,0.4,mass_effect
+Gotha,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Gregas,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Gremar,0.1,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Gromar,0.2,0.6,0.6,0.0,0.2,0.1,0.4,mass_effect
+Grosalgen,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+H-047c,0.0,0.3,0.7,0.0,0.2,0.0,0.2,mass_effect
+Haestrom,0.3,0.6,0.5,0.1,0.1,0.2,0.1,mass_effect
+Hagalaz,0.4,0.6,0.4,0.2,0.3,0.3,0.5,mass_effect
+Halegeuse,0.1,0.5,0.4,0.0,0.1,0.0,0.3,mass_effect
+Hanalei,0.5,0.6,0.4,0.3,0.6,0.6,0.7,mass_effect
+Havarl,0.8,0.7,0.5,0.9,0.7,0.6,0.7,mass_effect
+Haza,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Hebat,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Helyme,0.4,0.6,0.5,0.2,0.4,0.3,0.6,mass_effect
+Hesano,0.2,0.5,0.4,0.0,0.3,0.1,0.5,mass_effect
+Heshtok,0.5,0.6,0.4,0.5,0.5,0.4,0.5,mass_effect
+Hiba,0.2,0.4,0.5,0.0,0.2,0.1,0.4,mass_effect
+Hito,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Horizon,0.8,0.8,0.5,0.6,0.7,0.6,0.8,mass_effect
+Hunidor,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Huningto,0.2,0.6,0.5,0.0,0.3,0.1,0.4,mass_effect
+Hunsalra,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Hyetiana,0.5,0.6,0.4,0.3,0.5,0.7,0.6,mass_effect
+Ilem,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Illapa,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Illium,0.8,0.7,0.5,0.5,0.7,0.5,0.8,mass_effect
+Ilmnos,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Ilos,0.4,0.7,0.5,0.2,0.4,0.3,0.5,mass_effect
+Imaen,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Imaneya,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Impera,0.4,0.6,0.5,0.2,0.4,0.3,0.6,mass_effect
+Inakhos,0.2,0.5,0.4,0.0,0.3,0.1,0.4,mass_effect
+Intai'sei,0.3,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Inti,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Invictus,0.5,0.7,0.6,0.3,0.4,0.3,0.5,mass_effect
+Iritum,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Irune,0.5,0.8,0.7,0.6,0.5,0.4,0.6,mass_effect
+Isa,0.1,0.4,0.3,0.0,0.1,0.2,0.4,mass_effect
+Isale,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Ishassara,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Island Wind,0.4,0.5,0.3,0.2,0.5,0.5,0.6,mass_effect
+Israfil,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Ithrone,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Jak Ser,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Janiri,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Jarfor,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Jartar,0.2,0.6,0.6,0.0,0.2,0.1,0.3,mass_effect
+Joab,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Jontan,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Jonus,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Joppa,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Juncro,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Juntauma,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Junthor,0.1,0.7,0.6,0.0,0.1,0.0,0.3,mass_effect
+Kadara,0.5,0.7,0.6,0.4,0.4,0.4,0.4,mass_effect
+Kaddi,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Kahje,0.7,0.7,0.5,0.7,0.6,0.9,0.7,mass_effect
+Kailo,0.2,0.4,0.4,0.0,0.3,0.1,0.5,mass_effect
+Kakabel,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Kanin,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Karora,0.3,0.6,0.4,0.2,0.4,0.3,0.6,mass_effect
+Karumto,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Kashshaptu,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Katebolo,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Kaushus,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Keimowitz,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Kelim,0.2,0.5,0.4,0.0,0.3,0.1,0.5,mass_effect
+Kenaz,0.1,0.4,0.5,0.0,0.1,0.0,0.3,mass_effect
+Keph,0.2,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Ker,0.1,0.4,0.4,0.0,0.1,0.0,0.3,mass_effect
+Khar'shan,0.6,0.7,0.6,0.6,0.5,0.5,0.6,mass_effect
+Klencory,0.2,0.6,0.7,0.1,0.3,0.1,0.4,mass_effect
+Klensal,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Klos,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Kobayashi,0.2,0.5,0.4,0.0,0.3,0.1,0.5,mass_effect
+Komarov,0.1,0.3,0.3,0.0,0.2,0.0,0.4,mass_effect
+Korar,0.2,0.6,0.6,0.0,0.2,0.1,0.4,mass_effect
+Korlus,0.3,0.6,0.7,0.2,0.3,0.2,0.3,mass_effect
+Kralla,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Kruban,0.1,0.8,0.5,0.0,0.0,0.0,0.2,mass_effect
+Kurinth,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Laban,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Laconix,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Laena,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Lahu,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Lattesh,0.3,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Lemnia,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Lenuamund,0.2,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Lepini,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Lesuss,0.6,0.7,0.4,0.5,0.6,0.5,0.7,mass_effect
+Lihrat,0.2,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Linossa,0.3,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Lisir,0.2,0.4,0.4,0.0,0.2,0.1,0.4,mass_effect
+Locil,0.2,0.5,0.5,0.0,0.3,0.1,0.4,mass_effect
+Logan,0.4,0.6,0.5,0.2,0.4,0.3,0.6,mass_effect
+Logasiri,0.3,0.6,0.5,0.2,0.3,0.2,0.5,mass_effect
+Loki,0.2,0.5,0.4,0.0,0.2,0.1,0.3,mass_effect
+Lorek,0.4,0.6,0.6,0.3,0.4,0.3,0.5,mass_effect
+Loxia,0.2,0.5,0.4,0.1,0.3,0.2,0.5,mass_effect
+Lusia,0.4,0.6,0.4,0.2,0.4,0.3,0.6,mass_effect
+Lymetis,0.3,0.5,0.5,0.1,0.3,0.2,0.5,mass_effect
+Maganlis,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Mahavid,0.1,0.7,0.5,0.0,0.2,0.0,0.4,mass_effect
+Maidla,0.0,0.3,0.2,0.0,0.1,0.0,0.2,mass_effect
+Maisuth,0.1,0.5,0.4,0.0,0.2,0.1,0.5,mass_effect
+Maitrum,0.2,0.6,0.6,0.0,0.3,0.1,0.4,mass_effect
+Maji,0.7,0.8,0.4,0.6,0.7,0.8,0.7,mass_effect
+Maklan,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Maldor,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Mantun,0.0,0.4,0.3,0.0,0.1,0.0,0.6,mass_effect
+Maskawa,0.0,0.2,0.2,0.0,0.1,0.0,0.3,mass_effect
+Matar,0.1,0.6,0.4,0.0,0.2,0.0,0.4,mass_effect
+Matol,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Mavigon,0.1,0.5,0.4,0.0,0.2,0.0,0.5,mass_effect
+Mawinor,0.2,0.6,0.5,0.1,0.3,0.1,0.4,mass_effect
+Medokos,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Melile,0.1,0.5,0.4,0.0,0.2,0.1,0.5,mass_effect
+Metaponto,0.1,0.6,0.5,0.0,0.3,0.1,0.4,mass_effect
+Metgos,0.0,0.7,0.6,0.0,0.1,0.0,0.3,mass_effect
+Mingito,0.0,0.3,0.2,0.0,0.1,0.0,0.2,mass_effect
+Mizraim,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Mola,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Morana,0.1,0.5,0.3,0.0,0.1,0.2,0.4,mass_effect
+Moros,0.0,0.6,0.5,0.0,0.2,0.0,0.2,mass_effect
+Murky Water,0.3,0.7,0.3,0.4,0.4,0.9,0.5,mass_effect
+Mylasi,0.1,0.4,0.4,0.0,0.2,0.0,0.4,mass_effect
+Nalisin,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Namakli,0.1,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Nambu,0.0,0.2,0.2,0.0,0.1,0.0,0.3,mass_effect
+Naskral,0.0,0.4,0.4,0.0,0.1,0.0,0.2,mass_effect
+Nataisa,0.1,0.5,0.3,0.0,0.2,0.1,0.5,mass_effect
+Nauti,0.0,0.3,0.2,0.0,0.1,0.0,0.3,mass_effect
+Naxell,0.0,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Neargas,0.0,0.2,0.3,0.0,0.1,0.0,0.2,mass_effect
+Nearog,0.0,0.5,0.4,0.0,0.2,0.0,0.3,mass_effect
+Nearrum,0.1,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Neidus,0.1,0.5,0.4,0.0,0.2,0.0,0.5,mass_effect
+Neith,0.2,0.6,0.5,0.1,0.3,0.2,0.4,mass_effect
+Nemata,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Nepheron,0.1,0.5,0.6,0.0,0.2,0.0,0.4,mass_effect
+Nephros,0.0,0.6,0.5,0.0,0.1,0.0,0.3,mass_effect
+Nepmos,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Nepneu,0.0,0.4,0.4,0.0,0.2,0.0,0.3,mass_effect
+Nepyma,0.1,0.5,0.3,0.0,0.1,0.0,0.4,mass_effect
+Nevos,0.6,0.8,0.4,0.5,0.6,0.5,0.7,mass_effect
+Niacal,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Niagolon,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Nios,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Nirrus,0.0,0.3,0.2,0.0,0.1,0.0,0.2,mass_effect
+Nirvana,0.5,0.7,0.3,0.4,0.5,0.4,0.6,mass_effect
+Nodacrux,0.6,0.8,0.4,0.7,0.6,0.5,0.6,mass_effect
+Nonuel,0.1,0.5,0.6,0.0,0.2,0.0,0.4,mass_effect
+Norehsa,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Nossia,0.1,0.5,0.4,0.0,0.2,0.1,0.5,mass_effect
+Noveria,0.5,0.8,0.6,0.3,0.2,0.3,0.6,mass_effect
+Nutus,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Odasst,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Olokun,0.2,0.6,0.5,0.1,0.3,0.4,0.4,mass_effect
+Oma Ker,0.1,0.5,0.6,0.0,0.2,0.0,0.3,mass_effect
+Omega,0.3,0.5,0.5,0.6,0.4,0.1,0.3,mass_effect
+Ontaheter,0.0,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Ontamalca,0.1,0.5,0.4,0.0,0.2,0.0,0.3,mass_effect
+Ontarom,0.4,0.8,0.5,0.2,0.5,0.3,0.6,mass_effect
+Orunmila,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Osalri,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Paeto,0.0,0.4,0.4,0.0,0.2,0.0,0.4,mass_effect
+Pahhur,0.1,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Palaven,0.6,0.8,0.6,0.7,0.5,0.4,0.3,mass_effect
+Pania,0.0,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Paphos,0.1,0.5,0.4,0.0,0.3,0.1,0.5,mass_effect
+Parag,0.0,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Parasc,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Paravin,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Parnassus,0.3,0.7,0.4,0.2,0.4,0.3,0.5,mass_effect
+Partholon,0.1,0.5,0.5,0.0,0.2,0.1,0.4,mass_effect
+Pataiton,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Patajiri,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Patamalrus,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Patashi,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Patatanlis,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Patavig,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Patsayev,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Pauling,0.0,0.3,0.5,0.0,0.1,0.0,0.2,mass_effect
+Phaistos,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Pharos,0.0,0.4,0.3,0.0,0.1,0.0,0.5,mass_effect
+Pheiros,0.0,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Phoros,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Piares,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Pietas,0.2,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Ploba,0.0,0.4,0.3,0.0,0.1,0.0,0.2,mass_effect
+Polissa,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Pollino,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Poloh Tem,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Pomal,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Ponolus,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Ponos,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Porolan,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Pragia,0.6,0.7,0.3,0.5,0.5,0.8,0.5,mass_effect
+Pregel,0.0,0.4,0.5,0.0,0.2,0.0,0.3,mass_effect
+Prescyla,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Presrop,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Pressha,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Preying Mouth,0.2,0.6,0.4,0.3,0.3,0.2,0.3,mass_effect
+Promavess,0.0,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Pronoia,0.1,0.5,0.4,0.0,0.2,0.1,0.5,mass_effect
+Prospect,0.3,0.7,0.6,0.2,0.4,0.2,0.5,mass_effect
+Proteus,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Quaji,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Quana,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Quarem,0.0,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Quirezia,0.0,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Quodis,0.1,0.5,0.4,0.0,0.2,0.0,0.3,mass_effect
+Raisaris,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Rakhana,0.2,0.7,0.3,0.1,0.3,0.1,0.5,mass_effect
+Ramlat,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Rannoch,0.8,0.9,0.5,0.6,0.8,0.5,0.8,mass_effect
+Rayingri,0.0,0.4,0.6,0.0,0.1,0.0,0.2,mass_effect
+Raysha,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Renshato,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Rescel,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Rihali,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Rilar,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Rotesk,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Rothla,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Rough Tide,0.2,0.6,0.3,0.3,0.4,0.8,0.4,mass_effect
+Ruam,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Rustaka,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Sakata,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Salamis,0.1,0.5,0.4,0.0,0.2,0.1,0.5,mass_effect
+Saleas,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sanctum,0.4,0.7,0.4,0.3,0.5,0.3,0.6,mass_effect
+Sangel,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Sanves,0.5,0.8,0.5,0.4,0.6,0.4,0.7,mass_effect
+Saradril,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sarait,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Sarapai,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Sazgoth,0.1,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Sehtor,0.0,0.4,0.4,0.0,0.1,0.0,0.3,mass_effect
+Sekhmet,0.1,0.5,0.4,0.0,0.1,0.0,0.2,mass_effect
+Selvos,0.3,0.7,0.4,0.2,0.4,0.3,0.5,mass_effect
+Serao,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sesmose,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Sharblu,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Sharjila,0.2,0.6,0.5,0.1,0.3,0.2,0.5,mass_effect
+Sharring,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Shastessia,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Shasu,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Shir,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Siano,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Sidon,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Silva,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Sineus,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Slekon,0.0,0.4,0.4,0.0,0.1,0.0,0.2,mass_effect
+Sobek,0.1,0.6,0.5,0.0,0.2,0.2,0.4,mass_effect
+Sogelrus,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Solmarlon,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Solu Paolis,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Sonedma,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sotera,0.1,0.5,0.4,0.1,0.3,0.1,0.5,mass_effect
+Spekilas,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sthenia,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Suen,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Supay,0.1,0.6,0.5,0.0,0.1,0.0,0.2,mass_effect
+Sur'Kesh,0.9,0.8,0.6,0.9,0.8,0.7,0.8,mass_effect
+Svarog,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Syba,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Sybin,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Syided,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Sylsalto,0.0,0.4,0.4,0.0,0.1,0.0,0.3,mass_effect
+Synalus,0.1,0.5,0.3,0.0,0.2,0.1,0.4,mass_effect
+Sytau,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Taitus,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Takkan,0.0,0.6,0.5,0.0,0.2,0.0,0.3,mass_effect
+Talaria,0.1,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Talis Fia,0.5,0.7,0.4,0.4,0.6,0.5,0.6,mass_effect
+Tamahera,0.0,0.5,0.4,0.0,0.2,0.0,0.3,mass_effect
+Tamgauta,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Tarith,0.5,0.7,0.4,0.5,0.4,0.4,0.4,mass_effect
+Tefnut,0.1,0.5,0.4,0.0,0.2,0.3,0.4,mass_effect
+Telluune,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Temerarus,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Tenoth,0.0,0.4,0.4,0.0,0.1,0.0,0.3,mass_effect
+Terapso,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Teshub,0.1,0.6,0.5,0.0,0.2,0.1,0.4,mass_effect
+Teukria,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Tevura,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Thail,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Tharopto,0.0,0.4,0.4,0.0,0.1,0.0,0.2,mass_effect
+Thegan,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Thegeuse,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Themis,0.2,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Thenusi,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Theonax,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Therum,0.3,0.7,0.7,0.1,0.3,0.1,0.4,mass_effect
+Therumlon,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Thesalgon,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Theshaca,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Thessia,0.9,0.9,0.6,0.9,0.8,0.7,0.9,mass_effect
+Theyar,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Thissioni,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Thooft,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Thrivaldi,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Thunawanuro,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Thurisaz,0.0,0.6,0.4,0.0,0.1,0.0,0.2,mass_effect
+Tosal Nym,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Trategos,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Treagir,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Trebin,0.4,0.7,0.4,0.3,0.5,0.3,0.5,mass_effect
+Trelyn,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Tremanre,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Tremar,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Treyarmus,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Trident,0.2,0.6,0.4,0.1,0.3,0.4,0.5,mass_effect
+Triginta Petra,0.1,0.5,0.6,0.0,0.2,0.0,0.3,mass_effect
+Trikalon,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Triodia,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Tritogenith,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Tuchanka,0.3,0.9,0.4,0.4,0.3,0.2,0.1,mass_effect
+Tula,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Tunfigel,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Tungel,0.0,0.4,0.5,0.0,0.1,0.0,0.3,mass_effect
+Tunshagon,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Tuntau,0.6,0.7,0.4,0.5,0.5,0.5,0.5,mass_effect
+Tyr,0.0,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Tyre,0.1,0.4,0.3,0.0,0.1,0.0,0.4,mass_effect
+Urdak,0.0,0.6,0.5,0.0,0.2,0.0,0.2,mass_effect
+Uriyah,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Urmola,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Uruz,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Utha,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Utukku,0.0,0.6,0.5,0.0,0.1,0.0,0.2,mass_effect
+Uwan Oche,0.2,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Uza,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Uzin,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Vana,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Vard,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Varmalus,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Vatar,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Vaul,0.0,0.6,0.4,0.0,0.2,0.0,0.3,mass_effect
+Vebinok,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Vecchio,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Vectra,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Veles,0.2,0.6,0.4,0.1,0.3,0.2,0.5,mass_effect
+Veltman,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Vemal,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Vem Osca,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Venture,0.3,0.7,0.5,0.2,0.4,0.2,0.5,mass_effect
+Verush,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Veyaria,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Viantel,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Vioresa,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Vir,0.5,0.8,0.5,0.4,0.6,0.4,0.6,mass_effect
+Virmire,0.8,0.9,0.5,0.7,0.7,0.8,0.8,mass_effect
+Voeld,0.5,0.8,0.4,0.3,0.1,0.4,0.5,mass_effect
+Volkov,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Volturno,0.2,0.6,0.5,0.1,0.3,0.2,0.4,mass_effect
+Vylius,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Wallace,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Watchman,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Welm Urun,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Wenrum,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Wentania,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Wermani,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Wheeler,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Wrill,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Wuo,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Xamarri,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Xanadu,0.3,0.7,0.4,0.2,0.4,0.3,0.5,mass_effect
+Xathorron,0.0,0.6,0.5,0.0,0.1,0.0,0.2,mass_effect
+Xawin,0.1,0.4,0.4,0.0,0.2,0.0,0.4,mass_effect
+Xerceo,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Xetic,0.0,0.4,0.4,0.0,0.1,0.0,0.2,mass_effect
+Yamm,0.1,0.5,0.4,0.0,0.2,0.3,0.4,mass_effect
+Yan Tao,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Yasilium,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Yukawa,0.0,0.3,0.3,0.0,0.1,0.0,0.3,mass_effect
+Yunaca,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Yunthorl,0.1,0.5,0.5,0.0,0.2,0.0,0.4,mass_effect
+Zada Ban,0.2,0.6,0.5,0.1,0.3,0.2,0.4,mass_effect
+Zafe,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Zaherux,0.0,0.3,0.4,0.0,0.1,0.0,0.2,mass_effect
+Zakros,0.1,0.5,0.4,0.0,0.2,0.1,0.4,mass_effect
+Zanethu,0.3,0.6,0.5,0.2,0.4,0.3,0.5,mass_effect
+Zatorus,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Zayarter,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Zeona,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Zesmeni,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Zeth,0.0,0.3,0.3,0.0,0.1,0.0,0.2,mass_effect
+Zirnitra,0.1,0.5,0.5,0.0,0.2,0.0,0.3,mass_effect
+Zorya,0.6,0.8,0.5,0.6,0.5,0.5,0.5,mass_effect
+Zosteros,0.0,0.4,0.3,0.0,0.1,0.0,0.3,mass_effect
+Zylium,0.1,0.5,0.4,0.0,0.2,0.0,0.4,mass_effect
+Abydos,0.55,0.9,0.5,0.4,0.25,0.1,0.7,stargate
+Chulak,0.85,0.95,0.6,0.8,0.8,0.6,0.85,stargate
+Dakara,0.7,0.9,0.7,0.5,0.6,0.3,0.75,stargate
+Tollana,0.95,0.95,0.85,0.8,0.85,0.6,0.95,stargate
+Langara,0.85,0.95,0.8,0.8,0.75,0.6,0.65,stargate
+Lantea,0.9,0.9,0.6,0.7,0.8,0.95,0.9,stargate
+Athos,0.8,0.9,0.4,0.7,0.7,0.5,0.85,stargate
+Sateda,0.8,0.95,0.7,0.3,0.7,0.5,0.6,stargate
+Asuras,0.85,0.9,0.9,0.6,0.75,0.6,0.8,stargate
+Hoff,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+Celestis,0.95,0.95,0.7,0.7,0.85,0.6,0.95,stargate
+Orilla,0.9,0.9,0.9,0.7,0.8,0.5,0.95,stargate
+Hala,0.85,0.9,0.8,0.3,0.7,0.4,0.5,stargate
+Erebus,0.5,0.9,0.6,0.6,0.3,0.2,0.4,stargate
+Hebridan,0.85,0.95,0.8,0.8,0.8,0.6,0.85,stargate
+Tagrea,0.8,0.9,0.6,0.7,0.75,0.5,0.8,stargate
+Pangar,0.8,0.9,0.6,0.7,0.7,0.5,0.75,stargate
+Edora,0.85,0.9,0.5,0.7,0.8,0.6,0.8,stargate
+Simarka,0.8,0.9,0.4,0.7,0.7,0.5,0.8,stargate
+Argos,0.85,0.9,0.4,0.7,0.8,0.5,0.75,stargate
+Cimmeria,0.85,0.9,0.5,0.7,0.6,0.5,0.85,stargate
+Cartago,0.8,0.9,0.4,0.7,0.7,0.5,0.8,stargate
+Nasya,0.85,0.9,0.5,0.7,0.75,0.5,0.8,stargate
+Altair,0.3,0.85,0.7,0.2,0.4,0.1,0.6,stargate
+Hadante,0.5,0.9,0.2,0.5,0.5,0.3,0.5,stargate
+Madrona,0.9,0.9,0.5,0.8,0.85,0.7,0.85,stargate
+Othala,0.9,0.9,0.9,0.7,0.8,0.5,0.95,stargate
+Vyus,0.85,0.9,0.5,0.7,0.75,0.5,0.8,stargate
+Netu,0.15,0.9,0.3,0.2,0.05,0.05,0.2,stargate
+Delmak,0.6,0.9,0.6,0.5,0.5,0.3,0.6,stargate
+Vorash,0.7,0.9,0.5,0.4,0.6,0.3,0.7,stargate
+Bedrosia,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+Kheb,0.9,0.9,0.4,0.5,0.8,0.6,0.95,stargate
+Euronda,0.4,0.9,0.7,0.3,0.5,0.3,0.3,stargate
+Alaris,0.8,0.9,0.5,0.7,0.75,0.5,0.8,stargate
+Latona,0.85,0.9,0.5,0.7,0.75,0.5,0.85,stargate
+Haktyl,0.75,0.9,0.4,0.6,0.65,0.4,0.75,stargate
+Talthus,0.6,0.85,0.5,0.6,0.5,0.4,0.6,stargate
+Ardena,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+Tegalus,0.8,0.95,0.6,0.7,0.7,0.5,0.7,stargate
+Galar,0.85,0.95,0.7,0.8,0.8,0.5,0.85,stargate
+Kallana,0.7,0.85,0.5,0.3,0.6,0.3,0.5,stargate
+Camelot,0.85,0.9,0.5,0.7,0.75,0.5,0.85,stargate
+Vagonbrei,0.75,0.9,0.4,0.5,0.6,0.4,0.7,stargate
+Selenis,0.8,0.9,0.5,0.6,0.7,0.5,0.8,stargate
+Praclarush,0.3,0.85,0.9,0.1,0.2,0.05,0.3,stargate
+Vis Uban,0.8,0.9,0.4,0.3,0.7,0.4,0.8,stargate
+Chodawa,0.75,0.9,0.5,0.6,0.65,0.4,0.75,stargate
+Reetalia,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+Entac,0.75,0.9,0.5,0.6,0.65,0.4,0.75,stargate
+Jebanna,0.8,0.9,0.4,0.7,0.7,0.5,0.8,stargate
+Sureeta,0.75,0.9,0.4,0.6,0.65,0.4,0.75,stargate
+Hanka,0.8,0.9,0.5,0.3,0.7,0.5,0.5,stargate
+Juna,0.7,0.9,0.5,0.5,0.6,0.4,0.7,stargate
+Amra,0.8,0.9,0.5,0.6,0.7,0.5,0.8,stargate
+Sartorus,0.75,0.85,0.5,0.5,0.6,0.4,0.7,stargate
+Adora,0.85,0.9,0.5,0.7,0.75,0.5,0.85,stargate
+Rolan,0.75,0.9,0.4,0.6,0.65,0.4,0.75,stargate
+Meronat,0.75,0.9,0.5,0.6,0.65,0.4,0.75,stargate
+Praxyon,0.6,0.85,0.6,0.3,0.5,0.3,0.6,stargate
+Proculus,0.95,0.9,0.5,0.7,0.85,0.6,0.95,stargate
+Dagan,0.8,0.9,0.6,0.7,0.7,0.5,0.8,stargate
+Olesia,0.8,0.9,0.5,0.7,0.7,0.6,0.75,stargate
+Doranda,0.3,0.85,0.7,0.1,0.4,0.2,0.2,stargate
+Taranis,0.7,0.9,0.6,0.6,0.5,0.5,0.6,stargate
+Belkan,0.8,0.9,0.6,0.7,0.7,0.5,0.8,stargate
+Manaria,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+New Athos,0.85,0.9,0.5,0.7,0.75,0.6,0.85,stargate
+Aschen Prime,0.85,0.95,0.7,0.5,0.8,0.5,0.85,stargate
+Kelowna,0.85,0.95,0.8,0.8,0.75,0.6,0.65,stargate
+Orban,0.85,0.9,0.6,0.7,0.75,0.5,0.85,stargate
+Sahal,0.7,0.9,0.4,0.5,0.6,0.4,0.7,stargate
+Castiana,0.7,0.9,0.4,0.4,0.6,0.3,0.7,stargate
+Ver Ager,0.75,0.9,0.4,0.6,0.65,0.4,0.7,stargate
+Ver Isca,0.8,0.9,0.5,0.7,0.7,0.5,0.8,stargate
+Dar Eshkalon,0.7,0.85,0.5,0.5,0.55,0.3,0.65,stargate
+Kawawn,0.75,0.9,0.4,0.6,0.65,0.4,0.75,stargate
+Kresh'tar,0.7,0.85,0.4,0.5,0.6,0.3,0.7,stargate
+Serras-Dia,0.75,0.9,0.5,0.6,0.65,0.4,0.75,stargate
+Co'rak,0.7,0.85,0.4,0.5,0.6,0.3,0.7,stargate
+Centauri Prime,0.85,0.90,0.75,0.80,0.80,0.70,0.85,babylon_5
+Minbar,0.80,0.75,0.85,0.70,0.45,0.50,0.90,babylon_5
+Narn,0.55,0.85,0.50,0.35,0.55,0.30,0.70,babylon_5
+Z'ha'dum,0.30,0.80,0.70,0.40,0.25,0.15,0.30,babylon_5
+Vorlon,0.90,0.85,0.95,0.80,0.75,0.65,0.95,babylon_5
+Epsilon III,0.20,0.70,0.90,0.10,0.35,0.05,0.60,babylon_5
+Proxima III,0.75,0.85,0.65,0.55,0.70,0.60,0.80,babylon_5
+Zhabar,0.65,0.80,0.55,0.60,0.30,0.20,0.75,babylon_5
+N'chak'fah,0.50,0.75,0.60,0.85,0.55,0.45,0.65,babylon_5
+Melat,0.55,0.80,0.50,0.65,0.50,0.40,0.70,babylon_5
+Vreetan,0.60,0.70,0.55,0.60,0.60,0.50,0.75,babylon_5
+Brakir,0.70,0.85,0.70,0.70,0.65,0.55,0.80,babylon_5
+Omelos,0.10,0.75,0.45,0.05,0.10,0.10,0.10,babylon_5
+Ikarra VII,0.15,0.80,0.65,0.05,0.40,0.15,0.55,babylon_5
+Sigma 957,0.30,0.70,0.40,0.20,0.35,0.20,0.45,babylon_5
+Coriana VI,0.70,0.80,0.50,0.85,0.65,0.55,0.75,babylon_5
+Arcata VII,0.10,0.75,0.30,0.05,0.15,0.10,0.20,babylon_5
+Ventauri III,0.10,0.70,0.25,0.05,0.15,0.10,0.15,babylon_5
+Daltron VII,0.05,0.80,0.20,0.00,0.10,0.05,0.10,babylon_5
+Lorka VII,0.70,0.80,0.55,0.65,0.65,0.55,0.75,babylon_5
+Ragesh III,0.70,0.85,0.60,0.60,0.65,0.50,0.75,babylon_5
+Zagros VII,0.60,0.80,0.55,0.50,0.50,0.35,0.70,babylon_5
+Soom,0.65,0.80,0.45,0.55,0.60,0.50,0.80,babylon_5
+Regula IV,0.60,0.75,0.50,0.45,0.55,0.40,0.70,babylon_5
+Orion VII,0.75,0.85,0.65,0.60,0.70,0.55,0.80,babylon_5
+Cyrus III,0.65,0.80,0.50,0.45,0.60,0.45,0.75,babylon_5
+Beta Durani VII,0.45,0.75,0.55,0.20,0.50,0.30,0.65,babylon_5
+Vega VII,0.70,0.80,0.60,0.55,0.65,0.50,0.80,babylon_5
+Tau Ceti IV,0.70,0.85,0.60,0.55,0.65,0.55,0.80,babylon_5
+Arisia III,0.60,0.75,0.50,0.40,0.55,0.40,0.70,babylon_5
+Kazomi VII,0.70,0.80,0.55,0.60,0.65,0.50,0.75,babylon_5
+Balos,0.40,0.70,0.35,0.20,0.35,0.20,0.50,babylon_5
+Zafran VII,0.55,0.75,0.60,0.40,0.50,0.35,0.65,babylon_5
+Shandukan,0.60,0.80,0.50,0.50,0.55,0.40,0.70,babylon_5
+Abba IV,0.75,0.80,0.60,0.70,0.70,0.65,0.80,babylon_5
+Akdor,0.55,0.85,0.55,0.50,0.45,0.30,0.65,babylon_5
+Anfran,0.60,0.75,0.50,0.45,0.55,0.40,0.70,babylon_5
+Alzeral,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Androma,0.60,0.80,0.55,0.45,0.55,0.40,0.70,babylon_5
+Aztlan,0.65,0.80,0.55,0.50,0.60,0.45,0.75,babylon_5
+Brensil IV,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Bricarn IX,0.45,0.70,0.55,0.30,0.40,0.25,0.60,babylon_5
+Cestus,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Crenshaw's World,0.50,0.80,0.60,0.35,0.50,0.30,0.65,babylon_5
+Cygnus IV,0.55,0.75,0.50,0.40,0.50,0.35,0.70,babylon_5
+D'Grn IV,0.45,0.80,0.55,0.40,0.40,0.25,0.60,babylon_5
+Deruzala,0.50,0.75,0.50,0.35,0.45,0.30,0.65,babylon_5
+Dorado,0.60,0.80,0.55,0.45,0.55,0.40,0.70,babylon_5
+Drathun II,0.50,0.75,0.50,0.35,0.45,0.30,0.60,babylon_5
+Falaron,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Glasir,0.50,0.75,0.45,0.35,0.50,0.35,0.70,babylon_5
+Golus III,0.55,0.80,0.50,0.40,0.50,0.35,0.65,babylon_5
+Halax,0.50,0.75,0.55,0.35,0.45,0.30,0.60,babylon_5
+Hilak VII,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Ikos,0.60,0.80,0.55,0.50,0.55,0.40,0.70,babylon_5
+Kalevala,0.65,0.80,0.50,0.55,0.60,0.50,0.75,babylon_5
+Kara,0.50,0.75,0.50,0.35,0.45,0.30,0.65,babylon_5
+Kitab III,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Kordat IV,0.50,0.80,0.55,0.35,0.45,0.30,0.60,babylon_5
+Latig IV,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Lupis,0.45,0.75,0.55,0.30,0.40,0.25,0.55,babylon_5
+Mipas,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Mjolnir,0.40,0.85,0.70,0.25,0.35,0.20,0.55,babylon_5
+Morada VII,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Morbis,0.35,0.75,0.55,0.20,0.30,0.15,0.50,babylon_5
+Morda,0.45,0.80,0.55,0.30,0.40,0.25,0.55,babylon_5
+Musca,0.50,0.75,0.50,0.35,0.45,0.30,0.60,babylon_5
+Nefua,0.55,0.75,0.45,0.40,0.50,0.40,0.70,babylon_5
+Nemus,0.60,0.80,0.45,0.55,0.60,0.50,0.75,babylon_5
+Nimue,0.60,0.80,0.50,0.45,0.55,0.45,0.75,babylon_5
+Pa'ri,0.55,0.75,0.50,0.45,0.50,0.35,0.65,babylon_5
+Pak'ma,0.50,0.80,0.50,0.55,0.45,0.35,0.60,babylon_5
+Photikar,0.45,0.75,0.55,0.30,0.40,0.25,0.60,babylon_5
+Pictor,0.55,0.75,0.50,0.40,0.50,0.35,0.70,babylon_5
+Ralga,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Reticulum,0.50,0.75,0.55,0.35,0.45,0.30,0.65,babylon_5
+Septis II,0.50,0.75,0.50,0.35,0.45,0.30,0.60,babylon_5
+Shambah III,0.55,0.80,0.50,0.40,0.55,0.40,0.70,babylon_5
+Shi,0.55,0.80,0.50,0.45,0.50,0.40,0.70,babylon_5
+Sirius IX,0.45,0.70,0.60,0.25,0.35,0.20,0.55,babylon_5
+Skirnir,0.50,0.80,0.55,0.35,0.45,0.30,0.60,babylon_5
+Tarkon III,0.60,0.80,0.50,0.45,0.55,0.40,0.70,babylon_5
+Tigris,0.60,0.80,0.55,0.50,0.55,0.40,0.70,babylon_5
+Tirolus,0.55,0.75,0.50,0.40,0.50,0.35,0.65,babylon_5
+Tizino Prime,0.65,0.85,0.60,0.55,0.60,0.50,0.75,babylon_5
+Vartas,0.60,0.80,0.55,0.50,0.55,0.45,0.70,babylon_5
+Ymir,0.30,0.90,0.65,0.15,0.15,0.35,0.45,babylon_5
+Zander Prime,0.65,0.85,0.65,0.55,0.60,0.50,0.75,babylon_5
+Zok,0.50,0.75,0.50,0.40,0.45,0.30,0.60,babylon_5
+Markab,0.70,0.80,0.55,0.10,0.60,0.50,0.75,babylon_5
+Trantor,0.7,0.9,0.4,0.3,0.7,0.3,0.9,foundation
+Terminus,0.8,0.8,0.3,0.4,0.7,0.5,0.9,foundation
+Aurora,0.9,0.9,0.7,0.8,0.8,0.7,0.9,foundation
+Solaria,0.9,0.8,0.8,0.5,0.8,0.6,0.9,foundation
+Gaia,1.0,0.9,0.7,1.0,0.9,0.8,1.0,foundation
+Anacreon,0.7,0.8,0.6,0.5,0.7,0.5,0.8,foundation
+Kalgan,0.9,0.9,0.6,0.6,0.8,0.7,0.9,foundation
+Helicon,0.7,0.8,0.3,0.5,0.6,0.3,0.8,foundation
+Comporellon,0.6,0.8,0.5,0.3,0.3,0.4,0.8,foundation
+Smyrno,0.4,0.8,0.4,0.2,0.2,0.1,0.6,foundation
+Korell,0.7,0.8,0.7,0.4,0.6,0.5,0.8,foundation
+Siwenna,0.8,0.9,0.6,0.5,0.7,0.6,0.8,foundation
+Rossem,0.5,0.8,0.2,0.1,0.1,0.2,0.7,foundation
+Tazenda,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Neotrantor,0.7,0.9,0.3,0.3,0.6,0.4,0.8,foundation
+Sayshell,0.8,0.9,0.5,0.6,0.8,0.6,0.9,foundation
+Florina,0.9,0.8,0.8,0.9,0.8,0.7,0.8,foundation
+Sark,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Melpomenia,0.2,0.7,0.2,0.1,0.2,0.1,0.5,foundation
+Alpha,0.8,0.8,0.4,0.6,0.7,0.9,0.9,foundation
+Askone,0.6,0.8,0.6,0.3,0.5,0.4,0.7,foundation
+Asperta,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Baronn,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Bonde,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Cil,0.5,0.7,0.3,0.2,0.5,0.3,0.7,foundation
+Cinna,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Daribow,0.6,0.7,0.4,0.3,0.5,0.3,0.7,foundation
+Derowd,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Erythro,0.5,0.6,0.3,0.4,0.4,0.3,0.5,foundation
+Euterpe,0.9,0.8,0.5,0.9,0.8,0.8,0.9,foundation
+Fomalhaut,0.7,0.8,0.6,0.4,0.6,0.5,0.7,foundation
+Getorin,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Hesperos,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Horleggor,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Ifni,0.6,0.7,0.4,0.3,0.5,0.3,0.7,foundation
+Iss,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Jennisek,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Konom,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Libair,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Livia,0.7,0.8,0.5,0.5,0.6,0.5,0.8,foundation
+Locris,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Lyonesse,0.7,0.8,0.5,0.5,0.7,0.6,0.8,foundation
+Lystena,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Mandress,0.6,0.7,0.4,0.3,0.5,0.3,0.7,foundation
+Mnemon,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Mores,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Nexon,0.8,0.8,0.6,0.5,0.7,0.6,0.8,foundation
+Nishaya,0.8,0.8,0.4,0.7,0.7,0.6,0.9,foundation
+Ophiuchus,0.6,0.7,0.5,0.3,0.5,0.4,0.7,foundation
+Rhampora,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Rhea,0.7,0.8,0.5,0.4,0.6,0.5,0.8,foundation
+Salinn,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Santanni,0.7,0.8,0.5,0.5,0.6,0.5,0.8,foundation
+Sarip,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Smitheus,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Smushyk,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Synnax,0.5,0.6,0.3,0.2,0.4,0.3,0.5,foundation
+Terel,0.6,0.8,0.4,0.3,0.5,0.4,0.7,foundation
+Vincetori,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Voreg,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Wanda,0.7,0.8,0.4,0.4,0.6,0.5,0.8,foundation
+Wencory,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Zoranel,0.6,0.7,0.4,0.3,0.5,0.4,0.7,foundation
+Glyptal IV,0.5,0.7,0.3,0.2,0.4,0.3,0.6,foundation
+Londinium,0.95,0.95,0.85,0.9,0.9,0.7,0.95,firefly
+Sihnon,0.95,0.9,0.8,0.85,0.85,0.6,0.95,firefly
+Ariel,0.9,0.9,0.85,0.8,0.85,0.55,0.95,firefly
+Bellerophon,0.9,0.9,0.7,0.75,0.85,0.95,0.95,firefly
+Bernadette,0.85,0.9,0.7,0.7,0.8,0.5,0.9,firefly
+Persephone,0.8,0.9,0.75,0.7,0.75,0.5,0.85,firefly
+Osiris,0.95,0.95,0.85,0.85,0.9,0.65,0.95,firefly
+Santo,0.7,0.85,0.5,0.5,0.7,0.4,0.8,firefly
+Valentine,0.65,0.8,0.4,0.4,0.65,0.35,0.8,firefly
+Albion,0.75,0.85,0.5,0.55,0.75,0.45,0.85,firefly
+Pelorum,0.9,0.9,0.6,0.8,0.85,0.7,0.9,firefly
+Gonghe,0.7,0.85,0.55,0.5,0.7,0.4,0.85,firefly
+Rubicon,0.65,0.8,0.45,0.4,0.6,0.3,0.8,firefly
+Liann Jiun,0.8,0.85,0.6,0.6,0.75,0.5,0.85,firefly
+Ezra,0.5,0.85,0.4,0.3,0.3,0.1,0.75,firefly
+Boros,0.7,0.9,0.8,0.5,0.65,0.35,0.8,firefly
+Regina,0.55,0.85,0.85,0.35,0.5,0.2,0.6,firefly
+Kerry,0.6,0.8,0.4,0.4,0.6,0.3,0.75,firefly
+Whitefall,0.45,0.75,0.3,0.2,0.4,0.15,0.65,firefly
+Hera,0.85,0.9,0.65,0.75,0.8,0.55,0.85,firefly
+Shadow,0.15,0.85,0.2,0.05,0.2,0.1,0.3,firefly
+Meadow,0.7,0.8,0.4,0.55,0.7,0.45,0.8,firefly
+Three Hills,0.6,0.8,0.45,0.4,0.6,0.3,0.75,firefly
+Elphame,0.65,0.8,0.4,0.45,0.65,0.35,0.75,firefly
+Di Yu,0.35,0.8,0.3,0.2,0.3,0.15,0.55,firefly
+Ithaca,0.6,0.8,0.4,0.4,0.6,0.3,0.75,firefly
+Priam,0.6,0.8,0.4,0.4,0.6,0.3,0.75,firefly
+Aphrodite,0.7,0.85,0.5,0.55,0.7,0.4,0.8,firefly
+Sturges,0.55,0.8,0.35,0.3,0.5,0.25,0.7,firefly
+Jiangyin,0.7,0.85,0.4,0.6,0.7,0.45,0.8,firefly
+Greenleaf,0.85,0.85,0.7,0.85,0.8,0.75,0.8,firefly
+Higgins Moon,0.5,0.8,0.65,0.3,0.5,0.2,0.7,firefly
+St. Albans,0.55,0.85,0.4,0.3,0.15,0.35,0.75,firefly
+Triumph,0.55,0.8,0.3,0.4,0.6,0.25,0.7,firefly
+Paquin,0.75,0.85,0.5,0.6,0.7,0.4,0.8,firefly
+New Melbourne,0.7,0.85,0.5,0.55,0.65,0.6,0.8,firefly
+Dyton,0.6,0.75,0.45,0.4,0.6,0.3,0.75,firefly
+Anson's World,0.5,0.8,0.35,0.3,0.5,0.2,0.7,firefly
+Silverhold,0.55,0.8,0.6,0.3,0.5,0.2,0.65,firefly
+Lazarus,0.45,0.8,0.3,0.2,0.4,0.15,0.6,firefly
+Jubilee,0.6,0.8,0.4,0.4,0.6,0.3,0.75,firefly
+Spider,0.4,0.7,0.5,0.2,0.4,0.1,0.6,firefly
+Moab,0.5,0.8,0.35,0.25,0.45,0.15,0.65,firefly
+Verbena,0.7,0.85,0.5,0.55,0.7,0.45,0.8,firefly
+Constance,0.6,0.8,0.4,0.4,0.6,0.3,0.75,firefly
+Glacier,0.5,0.85,0.4,0.2,0.1,0.45,0.75,firefly
+Heaven,0.8,0.85,0.55,0.7,0.8,0.6,0.85,firefly
+Angel,0.7,0.8,0.45,0.5,0.7,0.4,0.8,firefly
+Zephyr,0.7,0.8,0.45,0.5,0.7,0.4,0.8,firefly
+Beylix,0.5,0.85,0.6,0.3,0.4,0.3,0.65,firefly
+Newhall,0.65,0.85,0.5,0.45,0.6,0.4,0.75,firefly
+Oberon,0.55,0.8,0.4,0.35,0.5,0.3,0.7,firefly
+Ghost,0.3,0.75,0.25,0.1,0.3,0.1,0.5,firefly
+Aberdeen,0.55,0.85,0.45,0.4,0.5,0.35,0.7,firefly
+Beaumonde,0.55,0.9,0.85,0.5,0.6,0.35,0.65,firefly
+Salisbury,0.45,0.8,0.35,0.3,0.35,0.2,0.6,firefly
+Vishnu,0.6,0.8,0.4,0.4,0.55,0.3,0.7,firefly
+Djinn's Bane,0.4,0.8,0.3,0.2,0.35,0.1,0.55,firefly
+New Canaan,0.55,0.8,0.4,0.35,0.5,0.3,0.65,firefly
+Muir,0.5,0.8,0.4,0.35,0.5,0.3,0.65,firefly
+Fury,0.35,0.8,0.3,0.15,0.3,0.1,0.5,firefly
+Highgate,0.55,0.8,0.45,0.35,0.5,0.3,0.65,firefly
+Deadwood,0.5,0.8,0.35,0.3,0.45,0.2,0.6,firefly
+Dragon's Egg,0.3,0.7,0.5,0.1,0.2,0.05,0.4,firefly
+Miranda,0.9,0.9,0.75,0.05,0.85,0.6,0.9,firefly
+Lilac,0.55,0.8,0.35,0.35,0.5,0.3,0.6,firefly
+Burnham,0.3,0.7,0.25,0.1,0.25,0.1,0.45,firefly
+Ariopolis,0.8,0.75,0.6,0.6,0.8,0.45,0.9,firefly
+Poseidon,0.7,0.7,0.5,0.5,0.7,0.8,0.85,firefly
+Shiva,0.6,0.7,0.45,0.35,0.6,0.3,0.8,firefly
+Nautilus,0.65,0.7,0.4,0.4,0.65,0.5,0.8,firefly
+Ares,0.5,0.7,0.6,0.25,0.5,0.15,0.7,firefly
+Colchester,0.8,0.7,0.5,0.65,0.8,0.45,0.9,firefly
+Balkerne,0.75,0.7,0.45,0.55,0.75,0.4,0.85,firefly
+Renao,0.6,0.7,0.4,0.4,0.6,0.35,0.75,firefly
+Hades,0.4,0.7,0.35,0.2,0.3,0.1,0.6,firefly
+Reach,0.9,0.95,0.9,0.7,0.7,0.6,0.85,halo
+Harvest,0.95,1.0,0.7,0.8,0.75,0.5,0.9,halo
+Eridanus II,0.95,1.0,0.5,0.75,0.8,0.7,0.9,halo
+Sigma Octanus IV,0.85,0.9,0.6,0.65,0.7,0.6,0.8,halo
+Tribute,0.9,0.95,0.7,0.7,0.75,0.65,0.85,halo
+Coral,0.85,0.9,0.5,0.7,0.75,0.7,0.8,halo
+Draco III,0.85,0.9,0.5,0.65,0.7,0.6,0.8,halo
+Jericho VII,0.85,0.9,0.55,0.6,0.7,0.55,0.8,halo
+Madrigal,0.8,0.85,0.4,0.55,0.65,0.45,0.75,halo
+Chi Rho,0.85,0.9,0.5,0.6,0.7,0.55,0.8,halo
+Miridem,0.85,0.9,0.5,0.6,0.7,0.6,0.8,halo
+Paris IV,0.85,0.9,0.55,0.6,0.7,0.6,0.8,halo
+Circumstance,0.9,0.9,0.6,0.65,0.75,0.65,0.85,halo
+Concord,0.85,0.9,0.55,0.6,0.7,0.6,0.8,halo
+Victoria,0.85,0.9,0.6,0.6,0.65,0.55,0.8,halo
+Skopje,0.8,0.9,0.5,0.55,0.65,0.5,0.75,halo
+Fumirole,0.8,0.85,0.55,0.5,0.6,0.5,0.75,halo
+Sedra,0.8,0.85,0.5,0.55,0.6,0.5,0.7,halo
+Venezia,0.85,0.9,0.65,0.6,0.7,0.6,0.8,halo
+Gao,0.85,0.9,0.6,0.7,0.75,0.65,0.8,halo
+New Jerusalem,0.85,0.9,0.5,0.55,0.65,0.45,0.8,halo
+Gilgamesh,0.85,0.9,0.6,0.6,0.7,0.55,0.8,halo
+Far Isle,0.7,0.85,0.4,0.3,0.5,0.4,0.5,halo
+Alluvion,0.85,0.9,0.55,0.6,0.7,0.6,0.8,halo
+Biko,0.85,0.9,0.55,0.65,0.7,0.6,0.8,halo
+Bliss,0.9,0.9,0.5,0.7,0.8,0.7,0.85,halo
+New Carthage,0.9,0.95,0.65,0.65,0.75,0.6,0.85,halo
+Dwarka,0.8,0.85,0.5,0.55,0.65,0.5,0.75,halo
+Troy,0.85,0.9,0.55,0.6,0.7,0.55,0.8,halo
+Harmony,0.85,0.9,0.55,0.65,0.75,0.6,0.85,halo
+Minister,0.85,0.9,0.5,0.6,0.7,0.55,0.8,halo
+Lostwithiel,0.8,0.85,0.45,0.5,0.65,0.5,0.75,halo
+Greydowns,0.8,0.85,0.5,0.5,0.65,0.5,0.75,halo
+Terceira,0.85,0.9,0.55,0.6,0.7,0.6,0.8,halo
+Sundown,0.75,0.85,0.5,0.45,0.55,0.4,0.7,halo
+Dryad,0.85,0.9,0.5,0.7,0.75,0.65,0.85,halo
+Green Hills,0.9,0.9,0.45,0.7,0.8,0.7,0.85,halo
+Neos Atlantis,0.85,0.9,0.5,0.6,0.7,0.85,0.8,halo
+Beta Gabriel,0.8,0.85,0.5,0.55,0.65,0.55,0.75,halo
+Charybdis IX,0.8,0.85,0.55,0.5,0.6,0.5,0.75,halo
+Cote d'Azure,0.9,0.9,0.5,0.7,0.8,0.75,0.85,halo
+Endymion,0.8,0.85,0.5,0.55,0.65,0.55,0.75,halo
+Levosia,0.8,0.85,0.5,0.5,0.65,0.5,0.75,halo
+Paradise Falls,0.9,0.9,0.4,0.75,0.85,0.8,0.9,halo
+Carrow,0.75,0.85,0.6,0.5,0.55,0.35,0.7,halo
+Sanghelios,0.8,0.7,0.75,0.85,0.5,0.7,0.75,halo
+Doisac,0.7,0.5,0.7,0.75,0.55,0.6,0.45,halo
+Balaho,0.2,0.75,0.3,0.5,0.2,0.4,0.6,halo
+Palamok,0.6,0.4,0.5,0.8,0.45,0.35,0.7,halo
+Janjur Qom,0.85,0.9,0.55,0.85,0.8,0.75,0.8,halo
+Te,0.15,0.3,0.7,0.6,0.3,0.1,0.5,halo
+Ealen IV,0.7,0.8,0.5,0.55,0.6,0.5,0.7,halo
+Hesduros,0.75,0.75,0.6,0.7,0.55,0.55,0.7,halo
+Rahnelo,0.75,0.8,0.5,0.6,0.6,0.5,0.7,halo
+Glyke,0.7,0.8,0.5,0.6,0.6,0.5,0.65,halo
+Kholo,0.3,0.85,0.4,0.15,0.3,0.2,0.4,halo
+Aleria,0.65,0.8,0.7,0.2,0.4,0.05,0.7,halo
+Kamchatka,0.6,0.95,0.8,0.1,0.1,0.3,0.7,halo
+Netherop,0.5,0.85,0.4,0.2,0.2,0.1,0.3,halo
+Alpha Corvi II,0.8,0.85,0.55,0.5,0.65,0.5,0.75,halo
+Circinius IV,0.85,0.9,0.5,0.6,0.7,0.6,0.8,halo
+Chi Ceti IV,0.75,0.85,0.5,0.45,0.6,0.45,0.7,halo
+Andesia,0.85,0.9,0.65,0.6,0.7,0.55,0.8,halo
+Falaknuma,0.8,0.85,0.55,0.55,0.65,0.5,0.75,halo
+Criterion,0.8,0.85,0.5,0.55,0.65,0.55,0.75,halo
+Crystal,0.75,0.85,0.6,0.4,0.55,0.35,0.7,halo
+Oasis VI,0.85,0.9,0.45,0.65,0.75,0.8,0.85,halo
+Heian,0.7,0.8,0.4,0.8,0.6,0.65,0.6,halo
+Charum Hakkor,0.85,0.9,0.7,0.7,0.75,0.65,0.8,halo
+Faun Hakkor,0.8,0.85,0.6,0.65,0.7,0.6,0.75,halo
+Vodin,0.8,0.85,0.5,0.55,0.65,0.55,0.75,halo
+Erebus VII,0.6,0.8,0.55,0.3,0.3,0.25,0.5,halo
+Substance,0.8,0.85,0.55,0.5,0.65,0.5,0.75,halo
+Verge,0.75,0.8,0.45,0.45,0.6,0.4,0.7,halo
+Thalia,0.85,0.9,0.5,0.6,0.7,0.6,0.8,halo
+Estuary,0.8,0.85,0.45,0.6,0.7,0.8,0.8,halo
+Draetheus V,0.7,0.8,0.55,0.4,0.5,0.4,0.6,halo
+Aktis IV,0.75,0.8,0.6,0.6,0.6,0.55,0.7,halo
+Minab,0.65,0.75,0.5,0.45,0.45,0.35,0.6,halo
+Ghibalb,0.3,0.7,0.5,0.15,0.2,0.2,0.2,halo
+Duraan,0.7,0.8,0.5,0.5,0.55,0.45,0.65,halo
+Pydoryn,0.7,0.75,0.5,0.55,0.55,0.5,0.65,halo
+Ilus,0.7,0.8,0.7,0.8,0.7,0.6,0.7,the_expanse
+Laconia,0.8,0.9,0.9,0.7,0.8,0.7,0.8,the_expanse
+Auberon,0.9,0.8,0.8,0.6,0.8,0.7,0.8,the_expanse
+Freehold,0.5,0.7,0.3,0.2,0.6,0.4,0.7,the_expanse
+Bara Gaon,0.8,0.9,0.9,0.5,0.9,0.8,0.8,the_expanse
+Thanjavur,0.7,0.8,0.6,0.4,0.7,0.6,0.7,the_expanse
+Dobridomov,0.6,0.7,0.5,0.3,0.5,0.5,0.6,the_expanse
+Asylum,0.6,0.7,0.4,0.2,0.6,0.5,0.7,the_expanse
+Athens,0.7,0.8,0.5,0.3,0.7,0.6,0.7,the_expanse
+Castila,0.6,0.7,0.5,0.3,0.6,0.4,0.6,the_expanse
+New Cyprus,0.7,0.8,0.5,0.3,0.7,0.5,0.7,the_expanse
+New Kashmir,0.6,0.7,0.4,0.3,0.5,0.5,0.6,the_expanse
+Nieuwestad,0.7,0.8,0.6,0.4,0.7,0.6,0.7,the_expanse
+Patria,0.7,0.7,0.5,0.4,0.7,0.6,0.7,the_expanse
+San Esteban,0.6,0.8,0.5,0.3,0.6,0.5,0.7,the_expanse
+Sanctuary,0.7,0.7,0.4,0.2,0.6,0.5,0.8,the_expanse
+Sigurta,0.5,0.6,0.6,0.3,0.5,0.3,0.6,the_expanse
+Tabalta,0.6,0.7,0.5,0.3,0.6,0.4,0.6,the_expanse
+Tasnim,0.7,0.8,0.5,0.4,0.7,0.6,0.7,the_expanse
+Tridevi,0.6,0.7,0.4,0.3,0.6,0.5,0.6,the_expanse
+Walton,0.5,0.7,0.5,0.2,0.5,0.4,0.7,the_expanse
+Xicheng,0.7,0.8,0.6,0.4,0.7,0.5,0.7,the_expanse
+Yasamal,0.6,0.7,0.5,0.3,0.6,0.4,0.6,the_expanse

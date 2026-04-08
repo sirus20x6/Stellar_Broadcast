@@ -16,7 +16,7 @@ class SystemBar extends StatefulWidget {
   /// Display label (e.g. "Hull").
   final String label;
 
-  /// Current value in the range 0.0 – 1.0.
+  /// Current value — normally 0.0–1.0, but culture/tech can reach up to 1.5.
   final double value;
 
   /// If non-null, overrides the automatic green/yellow/red color.
@@ -70,8 +70,12 @@ class _SystemBarState extends State<SystemBar>
     super.dispose();
   }
 
+  /// Golden color for over-repaired systems (> 1.0).
+  static const _goldenOverflow = Color(0xFFFFD700);
+
   Color _barColor(double v) {
     if (widget.overrideColor != null) return widget.overrideColor!;
+    if (v > 1.0) return _goldenOverflow;
     if (v > 0.7) return const Color(0xFF00E676);
     if (v > 0.4) return const Color(0xFFFFD600);
     return const Color(0xFFFF1744);
@@ -79,62 +83,83 @@ class _SystemBarState extends State<SystemBar>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _valueAnimation,
-      builder: (context, _) {
-        final animatedValue = _valueAnimation.value.clamp(0.0, 1.0);
-        final color = _barColor(animatedValue);
-        final pct = (animatedValue * 100).round();
+    return Semantics(
+      label: '${widget.label} ${(widget.value * 100).round()}%',
+      child: AnimatedBuilder(
+        animation: _valueAnimation,
+        builder: (context, _) {
+          final rawValue = _valueAnimation.value;
+          final isOverflow = rawValue > 1.0;
+          final barFill = rawValue.clamp(0.0, 1.0);
+          final color = _barColor(rawValue);
+          final pct = (rawValue * 100).round();
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: Row(
             children: [
               // Label.
               SizedBox(
-                width: 78,
+                width: 64,
                 child: Text(
                   widget.label.toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 11,
-                    letterSpacing: 1.2,
+                    fontSize: 9,
+                    letterSpacing: 1,
                     fontWeight: FontWeight.w600,
                     color: _accent.withValues(alpha: 0.85),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               // Bar.
               Expanded(
                 child: Container(
-                  height: 14,
+                  height: 10,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(7),
                     color: Colors.white.withValues(alpha: 0.06),
                     border: Border.all(
-                      color: _accent.withValues(alpha: 0.15),
-                      width: 0.5,
+                      color: isOverflow
+                          ? _goldenOverflow.withValues(alpha: 0.4)
+                          : _accent.withValues(alpha: 0.15),
+                      width: isOverflow ? 1.0 : 0.5,
                     ),
+                    boxShadow: isOverflow
+                        ? [
+                            BoxShadow(
+                              color: _goldenOverflow.withValues(alpha: 0.25),
+                              blurRadius: 8,
+                              spreadRadius: 1,
+                            ),
+                          ]
+                        : null,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(7),
+                    borderRadius: BorderRadius.circular(5),
                     child: FractionallySizedBox(
                       alignment: Alignment.centerLeft,
-                      widthFactor: animatedValue,
+                      widthFactor: barFill,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(7),
                           gradient: LinearGradient(
-                            colors: [
-                              color.withValues(alpha: 0.9),
-                              color.withValues(alpha: 0.6),
-                            ],
+                            colors: isOverflow
+                                ? [
+                                    color.withValues(alpha: 0.95),
+                                    const Color(0xFF00E676).withValues(alpha: 0.7),
+                                    color.withValues(alpha: 0.9),
+                                  ]
+                                : [
+                                    color.withValues(alpha: 0.9),
+                                    color.withValues(alpha: 0.6),
+                                  ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: color.withValues(alpha: 0.4),
-                              blurRadius: 6,
+                              color: color.withValues(alpha: isOverflow ? 0.6 : 0.4),
+                              blurRadius: isOverflow ? 10 : 6,
                             ),
                           ],
                         ),
@@ -143,22 +168,22 @@ class _SystemBarState extends State<SystemBar>
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               // Percentage.
               SizedBox(
-                width: 38,
+                width: 34,
                 child: Text(
                   '$pct%',
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 12,
+                    fontSize: 10,
                     fontWeight: FontWeight.bold,
                     color: color,
                     shadows: [
                       Shadow(
-                        color: color.withValues(alpha: 0.5),
-                        blurRadius: 4,
+                        color: color.withValues(alpha: isOverflow ? 0.8 : 0.5),
+                        blurRadius: isOverflow ? 8 : 4,
                       ),
                     ],
                   ),
@@ -168,6 +193,7 @@ class _SystemBarState extends State<SystemBar>
           ),
         );
       },
+      ),
     );
   }
 }

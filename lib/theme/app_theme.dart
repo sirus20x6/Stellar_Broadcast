@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
-class AppTheme {
-  AppTheme._();
+/// Game-specific space colors used throughout Stellar Broadcast.
+///
+/// The app theme itself is provided by [QaTheme.dark] in app.dart.
+/// These constants are used by game-specific widgets for the sci-fi aesthetic.
+class SpaceColors {
+  SpaceColors._();
 
   // Core colors
   static const Color deepSpace = Color(0xFF0B1426);
@@ -18,63 +22,20 @@ class AppTheme {
   // Surface variants
   static const Color surfaceLight = Color(0xFF152238);
   static const Color surfaceMid = Color(0xFF0E1B2E);
+}
 
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
-        surface: deepSpace,
-        primary: cyan,
-        onSurface: Colors.white,
-        onPrimary: deepSpace,
-        secondary: cyanDark,
-        onSecondary: Colors.white,
-      ),
-      scaffoldBackgroundColor: deepSpace,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: cyan,
-      ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(color: Colors.white),
-        displayMedium: TextStyle(color: Colors.white),
-        displaySmall: TextStyle(color: Colors.white),
-        headlineLarge: TextStyle(color: Colors.white),
-        headlineMedium: TextStyle(color: Colors.white),
-        headlineSmall: TextStyle(color: Colors.white),
-        titleLarge: TextStyle(color: Colors.white),
-        titleMedium: TextStyle(color: Colors.white),
-        titleSmall: TextStyle(color: Colors.white),
-        bodyLarge: TextStyle(color: Colors.white),
-        bodyMedium: TextStyle(color: Colors.white),
-        bodySmall: TextStyle(color: Colors.white70),
-        labelLarge: TextStyle(color: Colors.white),
-        labelMedium: TextStyle(color: Colors.white),
-        labelSmall: TextStyle(color: Colors.white70),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: cyan,
-          foregroundColor: deepSpace,
-          textStyle: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      cardTheme: const CardThemeData(
-        color: surfaceMid,
-        elevation: 0,
-      ),
-    );
-  }
+/// Game-specific decorations and text styles.
+class SpaceStyles {
+  SpaceStyles._();
 
   static BoxDecoration get holographicBorder {
     return BoxDecoration(
-      border: Border.all(color: cyan.withValues(alpha: 0.6), width: 1.5),
+      border:
+          Border.all(color: SpaceColors.cyan.withValues(alpha: 0.6), width: 1.5),
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: cyan.withValues(alpha: 0.15),
+          color: SpaceColors.cyan.withValues(alpha: 0.15),
           blurRadius: 12,
           spreadRadius: 1,
         ),
@@ -86,10 +47,10 @@ class AppTheme {
     return const TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.bold,
-      color: cyan,
+      color: SpaceColors.cyan,
       shadows: [
         Shadow(
-          color: cyan,
+          color: SpaceColors.cyan,
           blurRadius: 12,
         ),
       ],

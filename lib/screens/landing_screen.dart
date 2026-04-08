@@ -3,13 +3,27 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:starbound_exodus/models/planet.dart';
-import 'package:starbound_exodus/models/ship.dart';
-import 'package:starbound_exodus/providers/game_providers.dart';
-import 'package:starbound_exodus/widgets/star_field.dart';
+import 'package:stellar_broadcast/logic/planet_namer.dart';
+import 'package:stellar_broadcast/models/planet.dart';
+import 'package:stellar_broadcast/models/ship.dart';
+import 'package:stellar_broadcast/providers/game_providers.dart';
+import 'package:stellar_broadcast/services/game_music.dart';
+import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/planet_l10n.dart';
+import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
 const _kAccent = Color(0xFF00E5FF);
+
+/// Features visible from orbit (same as scan_screen).
+const _obviousFeatures = {
+  'caves', 'airtight_caves', 'insulated_caves',
+  'outstanding_beauty', 'outstanding_ugliness',
+  'plant_life', 'unicellular_life',
+  'floating_islands', 'orbital_wreckage', 'megastructural_fragments',
+  'bioluminescent_life', 'cryovolcanism',
+};
 
 /// Landing decision screen -- "Accept this planet or press on?"
 class LandingScreen extends ConsumerStatefulWidget {
@@ -26,10 +40,21 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
   late final AnimationController _entryController;
   late final Animation<double> _entryFade;
   late final Animation<double> _entrySlide;
+  late final TextEditingController _colonyNameController;
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize colony name with suggestion.
+    final planet = ref.read(voyageProvider).currentPlanet;
+    final suggestedName = planet != null ? PlanetNamer.suggestName(planet) : '';
+    _colonyNameController = TextEditingController(text: suggestedName);
+
+    // Play appropriate planet discovery SFX.
+    if (planet != null && planet.habitabilityScore > 0.7) {
+      GameSfx().play(GameSfx.alienEden, volume: 0.5);
+    }
 
     _starController = AnimationController(
       vsync: this,
@@ -56,6 +81,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
 
   @override
   void dispose() {
+    _colonyNameController.dispose();
     _starController.dispose();
     _pulseController.dispose();
     _entryController.dispose();
@@ -109,20 +135,29 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
     final remaining = _estimateRemainingEncounters(ship);
     final shipCritical = lowestVal < 0.15;
 
-    return Scaffold(
+    return PopScope(
+      canPop: false, // No going back once you're deciding to land.
+      child: Scaffold(
       backgroundColor: _kBgColor,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           // Star field background.
           Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _starController,
-              builder: (_, __) => CustomPaint(
-                painter: StarFieldPainter(
-                  animationValue: _starController.value,
-                  farStarCount: 80,
-                  midStarCount: 30,
-                  nearStarCount: 10,
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _starController,
+                builder: (_, __) => Semantics(
+                  label: 'Animated star field background',
+                  excludeSemantics: true,
+                  child: CustomPaint(
+                    painter: StarFieldPainter(
+                      animationValue: _starController.value,
+                      farStarCount: 80,
+                      midStarCount: 30,
+                      nearStarCount: 10,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -168,7 +203,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        planet.tier.toUpperCase(),
+                        localizedTier(context.l10n, planet.tier).toUpperCase(),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -181,11 +216,14 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                     const SizedBox(height: 32),
 
                     // Planet visualization circle.
-                    AnimatedBuilder(
-                      animation: _pulseController,
-                      builder: (_, __) => _PlanetVisualization(
-                        planet: planet,
-                        pulse: _pulseController.value,
+                    Semantics(
+                      label: 'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
+                      child: AnimatedBuilder(
+                        animation: _pulseController,
+                        builder: (_, __) => _PlanetVisualization(
+                          planet: planet,
+                          pulse: _pulseController.value,
+                        ),
                       ),
                     ),
 
@@ -193,14 +231,14 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
 
                     // Planet stats card.
                     _StatsCard(
-                      title: 'PLANET ANALYSIS',
+                      title: context.l10n.ui_landing_planetAnalysis,
                       entries: [
-                        _StatEntry('Atmosphere', planet.atmosphere),
-                        _StatEntry('Temperature', planet.temperature),
-                        _StatEntry('Water', planet.water),
-                        _StatEntry('Resources', planet.resources),
-                        _StatEntry('Gravity', planet.gravity),
-                        _StatEntry('Biodiversity', planet.biodiversity),
+                        _StatEntry(context.l10n.ui_landing_statAtmosphere, planet.atmosphere),
+                        _StatEntry(context.l10n.ui_landing_statTemperature, planet.temperature),
+                        _StatEntry(context.l10n.ui_landing_statWater, planet.water),
+                        _StatEntry(context.l10n.ui_landing_statResources, planet.resources),
+                        _StatEntry(context.l10n.ui_landing_statGravity, planet.gravity),
+                        _StatEntry(context.l10n.ui_landing_statBiodiversity, planet.biodiversity),
                       ],
                     ),
 
@@ -208,17 +246,132 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
 
                     // Ship status card.
                     _StatsCard(
-                      title: 'SHIP STATUS',
+                      title: context.l10n.ui_landing_shipStatus,
                       entries: [
-                        _StatEntry('Avg Health', avgHealth),
-                        _StatEntry('Hull', ship.hull),
-                        _StatEntry('Scanner', ship.scanner),
-                        _StatEntry('Navigation', ship.nav),
-                        _StatEntry('Cryopods', ship.cryopods),
-                        _StatEntry('Culture', ship.culture),
-                        _StatEntry('Tech', ship.tech),
+                        _StatEntry(context.l10n.ui_landing_statAvgHealth, avgHealth),
+                        _StatEntry(context.l10n.ui_landing_statHull, ship.hull),
+                        _StatEntry(context.l10n.ui_landing_statNavigation, ship.nav),
+                        _StatEntry(context.l10n.ui_landing_statCryopods, ship.cryopods),
+                        _StatEntry(context.l10n.ui_landing_statCulture, ship.culture),
+                        _StatEntry(context.l10n.ui_landing_statTech, ship.tech),
+                        _StatEntry(context.l10n.ui_landing_statConstructors, ship.constructors),
+                        _StatEntry(context.l10n.ui_landing_statShields, ship.shields),
+                        _StatEntry(context.l10n.ui_landing_statLandingSys, ship.landingSystem),
                       ],
                     ),
+
+                    const SizedBox(height: 16),
+
+                    // Fuel status.
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: voyage.fuel < 60
+                              ? Colors.orange.withValues(alpha: 0.5)
+                              : _kAccent.withValues(alpha: 0.3),
+                        ),
+                        color: _kBgColor.withValues(alpha: 0.85),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.local_gas_station,
+                            color: voyage.fuel < 60
+                                ? Colors.orange
+                                : _kAccent.withValues(alpha: 0.7),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            context.l10n.ui_landing_fuel(voyage.fuel),
+                            style: TextStyle(
+                              color: voyage.fuel < 60
+                                  ? Colors.orange
+                                  : _kAccent,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
+                          if (voyage.fuel < 60) ...[
+                            const SizedBox(width: 12),
+                            Text(
+                              context.l10n.ui_landing_lowFuelWarning,
+                              style: TextStyle(
+                                color: Colors.orange.withValues(alpha: 0.8),
+                                fontSize: 11,
+                                letterSpacing: 1,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Landing risk indicator.
+                    if (ship.landingSystem < 0.7)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: ship.landingSystem < 0.3
+                                ? const Color(0xFFF44336).withValues(alpha: 0.6)
+                                : const Color(0xFFFF9800).withValues(alpha: 0.5),
+                          ),
+                          color: _kBgColor.withValues(alpha: 0.85),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: ship.landingSystem < 0.3
+                                      ? const Color(0xFFF44336)
+                                      : const Color(0xFFFF9800),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  ship.landingSystem < 0.3
+                                      ? context.l10n.ui_landing_landingRiskCritical
+                                      : context.l10n.ui_landing_landingRiskElevated,
+                                  style: TextStyle(
+                                    color: ship.landingSystem < 0.3
+                                        ? const Color(0xFFF44336)
+                                        : const Color(0xFFFF9800),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              ship.landingSystem < 0.3
+                                  ? context.l10n.ui_landing_landingRiskCriticalDesc
+                                  : context.l10n.ui_landing_landingRiskElevatedDesc,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.7),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
                     const SizedBox(height: 16),
 
@@ -238,7 +391,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                       child: Column(
                         children: [
                           Text(
-                            'RISK ASSESSMENT',
+                            context.l10n.ui_landing_riskAssessment,
                             style: TextStyle(
                               color: _kAccent.withValues(alpha: 0.7),
                               fontSize: 12,
@@ -248,7 +401,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Your ship can sustain ~$remaining more encounters',
+                            context.l10n.ui_landing_encountersRemaining(remaining),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.white,
@@ -269,16 +422,16 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                                       .withValues(alpha: 0.4),
                                 ),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.warning_amber_rounded,
+                                  const Icon(Icons.warning_amber_rounded,
                                       color: Color(0xFFF44336), size: 20),
-                                  SizedBox(width: 8),
+                                  const SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
-                                      'Your ship may not survive another voyage',
-                                      style: TextStyle(
+                                      context.l10n.ui_landing_shipMayNotSurvive,
+                                      style: const TextStyle(
                                         color: Color(0xFFF44336),
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -293,27 +446,384 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    // Surface features.
+                    if (planet.surfaceFeatures.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: _kAccent.withValues(alpha: 0.3)),
+                          color: _kBgColor.withValues(alpha: 0.85),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.l10n.ui_landing_surfaceFeatures,
+                              style: TextStyle(
+                                color: _kAccent.withValues(alpha: 0.7),
+                                fontSize: 12,
+                                letterSpacing: 2,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              children: planet.surfaceFeatures.map((f) {
+                                // Only show features that are obvious from orbit or revealed by probe.
+                                final isRevealed = _obviousFeatures.contains(f) ||
+                                    voyage.revealedFeatures.contains(f);
+                                final label = isRevealed
+                                    ? localizedSurfaceFeature(context.l10n, f)
+                                    : '??? Unknown';
+                                final chipColor = isRevealed ? _kAccent : Colors.white.withValues(alpha: 0.4);
+                                return Tooltip(
+                                  message: isRevealed ? label : 'Requires landing to identify',
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color:
+                                            chipColor.withValues(alpha: 0.3),
+                                      ),
+                                      color: chipColor.withValues(alpha: 0.08),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (!isRevealed) ...[
+                                          Icon(Icons.lock_outline, size: 10, color: chipColor.withValues(alpha: 0.8)),
+                                          const SizedBox(width: 4),
+                                        ],
+                                        Text(
+                                          label,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: chipColor.withValues(alpha: 0.9),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    // Moons & Rings panel.
+                    if (planet.moons.isNotEmpty || planet.rings != null) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: _kAccent.withValues(alpha: 0.3)),
+                          color: _kBgColor.withValues(alpha: 0.85),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (planet.moons.isNotEmpty) ...[
+                              Text(
+                                'MOONS',
+                                style: TextStyle(
+                                  color: _kAccent.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                  letterSpacing: 2,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              ...planet.moons.map((moon) {
+                                final color = _moonTypeColor(moon.type);
+                                final label = _moonTypeLabel(moon.type);
+                                final sizeLabel = moon.size > 0.7
+                                    ? 'Large'
+                                    : moon.size > 0.3
+                                        ? 'Medium'
+                                        : 'Small';
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: color,
+                                          boxShadow: [
+                                            if (moon.type ==
+                                                MoonType.habitable)
+                                              BoxShadow(
+                                                color: color
+                                                    .withValues(alpha: 0.5),
+                                                blurRadius: 6,
+                                                spreadRadius: 1,
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '$label Moon',
+                                        style: TextStyle(
+                                          color: color,
+                                          fontSize: 13,
+                                          fontWeight: moon.type ==
+                                                  MoonType.habitable
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        sizeLabel,
+                                        style: TextStyle(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.5),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      if (moon.type == MoonType.habitable &&
+                                          moon.habitability != null) ...[
+                                        const Spacer(),
+                                        Text(
+                                          '${(moon.habitability! * 100).round()}% hab.',
+                                          style: TextStyle(
+                                            color: const Color(0xFF4CAF50),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                );
+                              }),
+                            ],
+                            if (planet.rings != null) ...[
+                              if (planet.moons.isNotEmpty)
+                                const SizedBox(height: 12),
+                              Text(
+                                'RINGS',
+                                style: TextStyle(
+                                  color: _kAccent.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                  letterSpacing: 2,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.trip_origin,
+                                    size: 14,
+                                    color: _ringTypeColor(planet.rings!.type),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${_ringTypeLabel(planet.rings!.type)} Ring System',
+                                    style: TextStyle(
+                                      color:
+                                          _ringTypeColor(planet.rings!.type),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    'Density: ${(planet.rings!.density * 100).round()}%',
+                                    style: TextStyle(
+                                      color: Colors.white
+                                          .withValues(alpha: 0.5),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 24),
+
+                    // Colony name field.
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: _kAccent.withValues(alpha: 0.3)),
+                        color: _kBgColor.withValues(alpha: 0.85),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.ui_landing_nameYourColony,
+                            style: TextStyle(
+                              color: _kAccent.withValues(alpha: 0.7),
+                              fontSize: 12,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _colonyNameController,
+                            maxLines: 1,
+                            textInputAction: TextInputAction.done,
+                            keyboardType: TextInputType.text,
+                            enableInteractiveSelection: true,
+                            textCapitalization: TextCapitalization.words,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Name your colony',
+                              hintStyle: TextStyle(
+                                color: _kAccent.withValues(alpha: 0.3),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _kAccent.withValues(alpha: 0.3)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide(
+                                    color: _kAccent.withValues(alpha: 0.7)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
 
                     // Establish colony — primary glowing button.
                     _GlowingActionButton(
-                      label: 'ESTABLISH COLONY',
+                      label: context.l10n.ui_landing_establishColony,
                       isPrimary: true,
                       pulseController: _pulseController,
                       onTap: () {
-                        ref.read(voyageProvider.notifier).landOnPlanet();
+                        GameSfx().play(GameSfx.buttonClick);
+                        final name = _colonyNameController.text.trim();
+                        if (name.isNotEmpty) {
+                          ref.read(voyageProvider.notifier).setColonyName(name);
+                        }
                         Navigator.of(context)
-                            .pushReplacementNamed('/ending');
+                            .pushReplacementNamed('/landing-sequence');
                       },
                     ),
                     const SizedBox(height: 16),
 
+                    // Land on moon — shown only when a habitable moon exists.
+                    if (planet.canLandOnMoon) ...[
+                      _GlowingActionButton(
+                        label: 'LAND ON MOON', // TODO: l10n ui_landing_landOnMoon
+                        isPrimary: true,
+                        accentColor: const Color(0xFF4CAF50),
+                        pulseController: _pulseController,
+                        onTap: () {
+                          GameSfx().play(GameSfx.buttonClick);
+                          final name = _colonyNameController.text.trim();
+                          if (name.isNotEmpty) {
+                            ref
+                                .read(voyageProvider.notifier)
+                                .setColonyName(name);
+                          }
+                          ref.read(voyageProvider.notifier).setLandedOnMoon(true);
+                          Navigator.of(context)
+                              .pushReplacementNamed('/landing-sequence');
+                        },
+                      ),
+                      // Moon vs planet habitability comparison.
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6, bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Moon: ${(planet.bestHabitableMoon!.habitability! * 100).round()}%',
+                              style: const TextStyle(
+                                color: Color(0xFF4CAF50),
+                                fontSize: 12,
+                                fontFamily: 'monospace',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '  vs  ',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.5),
+                                fontSize: 12,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                            Text(
+                              'Planet: ${(planet.habitabilityScore * 100).round()}%',
+                              style: TextStyle(
+                                color: _kAccent,
+                                fontSize: 12,
+                                fontFamily: 'monospace',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Gravity note.
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'Lower gravity — easier landing',
+                          style: TextStyle(
+                            color: const Color(0xFF4CAF50).withValues(alpha: 0.7),
+                            fontSize: 11,
+                            fontFamily: 'monospace',
+                            fontStyle: FontStyle.italic,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+
                     // Press onward — secondary button.
                     _GlowingActionButton(
-                      label: 'PRESS ONWARD',
+                      label: context.l10n.ui_landing_pressOnward,
                       isPrimary: false,
                       pulseController: _pulseController,
                       onTap: () {
+                        GameSfx().play(GameSfx.buttonClick);
+                        GameMusic().returnToBgMusic();
+                        GameMusic().startEngineHum();
                         ref.read(voyageProvider.notifier).pressOn();
                         Navigator.of(context).pop();
                       },
@@ -327,6 +837,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
           ),
         ],
       ),
+    ),
     );
   }
 }
@@ -568,15 +1079,19 @@ class _GlowingActionButton extends StatelessWidget {
     required this.isPrimary,
     required this.pulseController,
     required this.onTap,
+    this.accentColor,
   });
 
   final String label;
   final bool isPrimary;
   final AnimationController pulseController;
   final VoidCallback onTap;
+  final Color? accentColor;
 
   @override
   Widget build(BuildContext context) {
+    final color = accentColor ?? _kAccent;
+
     return AnimatedBuilder(
       animation: pulseController,
       builder: (_, __) {
@@ -592,16 +1107,16 @@ class _GlowingActionButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color:
-                    isPrimary ? _kAccent : _kAccent.withValues(alpha: 0.4),
+                    isPrimary ? color : color.withValues(alpha: 0.4),
                 width: isPrimary ? 2 : 1,
               ),
               color: isPrimary
-                  ? _kAccent.withValues(alpha: 0.15)
+                  ? color.withValues(alpha: 0.15)
                   : Colors.transparent,
               boxShadow: isPrimary
                   ? [
                       BoxShadow(
-                        color: _kAccent.withValues(alpha: glowAlpha),
+                        color: color.withValues(alpha: glowAlpha),
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
@@ -612,7 +1127,7 @@ class _GlowingActionButton extends StatelessWidget {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: isPrimary ? Colors.white : _kAccent,
+                color: isPrimary ? Colors.white : color,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 3,
@@ -622,5 +1137,63 @@ class _GlowingActionButton extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+// ── Moon/Ring helper functions ──────────────────────────────────────────────
+
+Color _moonTypeColor(MoonType type) {
+  switch (type) {
+    case MoonType.barren:
+      return const Color(0xFF78909C);
+    case MoonType.metalRich:
+      return const Color(0xFFFFD700);
+    case MoonType.unstable:
+      return const Color(0xFFFF7043);
+    case MoonType.habitable:
+      return const Color(0xFF4CAF50);
+    case MoonType.ice:
+      return const Color(0xFF81D4FA);
+  }
+}
+
+String _moonTypeLabel(MoonType type) {
+  switch (type) {
+    case MoonType.barren:
+      return 'Barren';
+    case MoonType.metalRich:
+      return 'Metal-Rich';
+    case MoonType.unstable:
+      return 'Unstable';
+    case MoonType.habitable:
+      return 'Habitable';
+    case MoonType.ice:
+      return 'Ice';
+  }
+}
+
+Color _ringTypeColor(RingType type) {
+  switch (type) {
+    case RingType.dust:
+      return const Color(0xFFBDBDBD);
+    case RingType.ice:
+      return const Color(0xFF81D4FA);
+    case RingType.rocky:
+      return const Color(0xFF8D6E63);
+    case RingType.metallic:
+      return const Color(0xFFFFD700);
+  }
+}
+
+String _ringTypeLabel(RingType type) {
+  switch (type) {
+    case RingType.dust:
+      return 'Dust';
+    case RingType.ice:
+      return 'Ice';
+    case RingType.rocky:
+      return 'Rocky';
+    case RingType.metallic:
+      return 'Metallic';
   }
 }

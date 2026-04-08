@@ -1,4 +1,4 @@
-# starbound_exodus
+# stellar_broadcast
 
 A new Flutter project.
 
