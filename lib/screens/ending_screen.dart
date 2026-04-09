@@ -5,17 +5,18 @@ import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:stellar_broadcast/logic/ending_calculator.dart';
 import 'package:stellar_broadcast/models/voyage_log_entry.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, legacyProvider, seedToCode;
 import 'package:stellar_broadcast/services/leaderboard_api.dart';
-import 'package:stellar_broadcast/services/play_games_service.dart';
+import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/utils/constants.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -247,6 +248,32 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       LeaderboardApi.submitScore(
         player: cmdName, score: voyageEncounters, board: 'encounters', seed: seedCode,
       );
+
+      // Analytics: voyage completion + achievements
+      AnalyticsService().logEvent(
+        name: QaEvents.voyageEnded,
+        parameters: {
+          'score': resultScore,
+          'tier': resultTier,
+          'planets_scanned': voyagePlanetsScanned,
+          'planets_skipped': voyagePlanetsSkipped,
+          'encounters': voyageEncounters,
+          'colonists': voyageColonists,
+          'fuel_consumed': voyageFuelConsumed,
+          'is_daily': voyageIsDaily,
+          'seed': voyageSeed,
+        },
+      );
+      AnalyticsService().logEvent(
+        name: QaEvents.leaderboardSubmitted,
+        parameters: {'board': 'best', 'score': resultScore},
+      );
+      for (final ach in newAch) {
+        AnalyticsService().logEvent(
+          name: QaEvents.achievementUnlocked,
+          parameters: {'achievement_id': ach},
+        );
+      }
     });
 
     // Phase 1: Colony established text + expanding glow.
@@ -410,6 +437,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   @override
   Widget build(BuildContext context) {
     final tierColor = _tierColor(_tier);
+    final screen = ScreenInfo.of(context);
 
     return PopScope(
       canPop: false,
@@ -441,708 +469,713 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
           // Content.
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                children: [
-                  const SizedBox(height: 60),
-
-                  // Phase 1: "COLONY ESTABLISHED" with expanding glow.
-                  AnimatedBuilder(
-                    animation: _phase1Controller,
-                    builder: (_, __) => Opacity(
-                      opacity: _glowOpacity.value,
-                      child: Column(
-                        children: [
-                          // Glow ring.
-                          Container(
-                            width: 120 + _glowExpand.value * 60,
-                            height: 120 + _glowExpand.value * 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _kAccent.withValues(
-                                    alpha: 0.3 * _glowOpacity.value,
-                                  ),
-                                  blurRadius: 40 + _glowExpand.value * 40,
-                                  spreadRadius: _glowExpand.value * 20,
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.public,
-                              size: 80 + _glowExpand.value * 20,
-                              color: _kAccent.withValues(
-                                alpha: _glowOpacity.value,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            context.l10n.ui_ending_colonyEstablished,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white.withValues(
-                                alpha: _glowOpacity.value,
-                              ),
-                              letterSpacing: 4,
-                              shadows: [
-                                Shadow(
-                                  color: _kAccent.withValues(
-                                    alpha: _glowOpacity.value * 0.8,
-                                  ),
-                                  blurRadius: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 48),
-
-                  // Phase 2: Score reveal with counting animation.
-                  AnimatedBuilder(
-                    animation: _phase2Controller,
-                    builder: (_, __) {
-                      final opacity = _phase2Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Column(
-                          children: [
-                            Text(
-                              context.l10n.ui_ending_colonyScore,
-                              style: TextStyle(
-                                color: _kAccent.withValues(alpha: 0.7),
-                                fontSize: 14,
-                                letterSpacing: 3,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${_scoreCount.value}',
-                              style: TextStyle(
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    color: _kAccent.withValues(alpha: 0.6),
-                                    blurRadius: 20,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Phase 3: Tier badge reveal.
-                  AnimatedBuilder(
-                    animation: _phase3Controller,
-                    builder: (_, __) {
-                      final scale = Curves.elasticOut.transform(
-                        _phase3Controller.value.clamp(0.0, 1.0),
-                      );
-                      final opacity = _phase3Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.scale(
-                          scale: scale,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: tierColor, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: tierColor.withValues(alpha: 0.3),
-                                  blurRadius: 20,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                              color: tierColor.withValues(alpha: 0.15),
-                            ),
-                            child: Text(
-                              _tier.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: tierColor,
-                                letterSpacing: 3,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  AnimatedBuilder(
-                    animation: _phase3Controller,
-                    builder: (_, __) {
-                      final opacity = _phase3Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Text(
-                          _tierSubtitle(_tier),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: tierColor.withValues(alpha: 0.8),
-                            fontSize: 13,
-                            letterSpacing: 2.2,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  // Phase 4: Epilogue text.
-                  AnimatedBuilder(
-                    animation: _phase4Controller,
-                    builder: (_, __) {
-                      final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-                      final slide = 20.0 * (1.0 - _phase4Controller.value);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.translate(
-                          offset: Offset(0, slide),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _kAccent.withValues(alpha: 0.2),
-                              ),
-                              color: _kBgColor.withValues(alpha: 0.85),
-                            ),
-                            child: Text(
-                              _epilogue,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 15,
-                                height: 1.6,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Colony details (appears with phase 4).
-                  AnimatedBuilder(
-                    animation: _phase4Controller,
-                    builder: (_, __) {
-                      final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: _kAccent.withValues(alpha: 0.2),
-                            ),
-                            color: _kBgColor.withValues(alpha: 0.85),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                context.l10n.ui_ending_colonyProfile,
-                                style: TextStyle(
-                                  color: _kAccent.withValues(alpha: 0.7),
-                                  fontSize: 12,
-                                  letterSpacing: 2,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              _ColonyDetailRow(
-                                label: 'Government',
-                                value: _governmentType,
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Culture',
-                                value: _cultureLevel,
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Technology',
-                                value: _technologyLevel,
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Construction',
-                                value: _constructionLevel,
-                              ),
-                              if (_nativeRelations != 'None')
-                                _ColonyDetailRow(
-                                  label: 'Natives',
-                                  value: _nativeRelations,
-                                ),
-                              const SizedBox(height: 12),
-                              Text(
-                                _colonyDescription,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                  fontSize: 12,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Landscape description (appears with phase 4).
-                  if (_landscapeDescription.isNotEmpty)
-                    AnimatedBuilder(
-                      animation: _phase4Controller,
-                      builder: (_, __) {
-                        final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-                        return Opacity(
-                          opacity: opacity,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.2),
-                                ),
-                                color: _kBgColor.withValues(alpha: 0.85),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    context.l10n.ui_ending_landscape,
-                                    style: TextStyle(
-                                      color: _kAccent.withValues(alpha: 0.7),
-                                      fontSize: 12,
-                                      letterSpacing: 2,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    _landscapeDescription,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.6,
-                                      ),
-                                      fontSize: 12,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 16),
-
-                  // Voyage record card (appears with phase 4).
-                  AnimatedBuilder(
-                    animation: _phase4Controller,
-                    builder: (_, __) {
-                      final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: _kAccent.withValues(alpha: 0.2),
-                            ),
-                            color: _kBgColor.withValues(alpha: 0.85),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                context.l10n.ui_ending_voyageRecord,
-                                style: TextStyle(
-                                  color: _kAccent.withValues(alpha: 0.7),
-                                  fontSize: 12,
-                                  letterSpacing: 2,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              _ColonyDetailRow(
-                                label: 'Planets Scanned',
-                                value: '$_planetsScanned',
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Planets Skipped',
-                                value: '$_planetsSkipped',
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Damage Taken',
-                                value:
-                                    '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Fuel Consumed',
-                                value: '$_fuelConsumed',
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Energy Consumed',
-                                value: '$_energyConsumed',
-                              ),
-                              _ColonyDetailRow(
-                                label: 'Scanners Upgraded',
-                                value: '$_scannersUpgraded',
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Score breakdown (appears after phase 4).
-                  if (_breakdown != null)
-                    AnimatedBuilder(
-                      animation: _phase4Controller,
-                      builder: (_, __) {
-                        final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-                        return Opacity(
-                          opacity: opacity,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _kAccent.withValues(alpha: 0.2),
-                              ),
-                              color: _kBgColor.withValues(alpha: 0.85),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  context.l10n.ui_ending_scoreBreakdown,
-                                  style: TextStyle(
-                                    color: _kAccent.withValues(alpha: 0.7),
-                                    fontSize: 12,
-                                    letterSpacing: 2,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                ..._breakdown!.localizedEntries(context.l10n).map(
-                                  (entry) => _ScoreRow(
-                                    label: entry.key,
-                                    score: entry.value,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Container(
-                                  height: 1,
-                                  color: _kAccent.withValues(alpha: 0.2),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      context.l10n.ui_ending_total,
-                                      style: TextStyle(
-                                        fontFamily: 'monospace',
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: _kAccent.withValues(alpha: 0.9),
-                                        letterSpacing: 1,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${_breakdown!.total.round()}',
-                                      style: const TextStyle(
-                                        fontFamily: 'monospace',
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 32),
-
-                  // Native ad between score and legacy points.
-                  PremiumAdGate(child: AdaptiveNativeAd(
-                    fallback: AdaptiveBannerAd(
-                      size: QaBannerSize.mrec,
-                      fallback: AdFallbackBanner(
-                        height: 250,
-                        onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
-                      ),
-                    ),
-                  )),
-
-                  const SizedBox(height: 32),
-
-                  // Phase 5: Legacy points earned with sparkle effect.
-                  AnimatedBuilder(
-                    animation: _phase5Controller,
-                    builder: (_, __) {
-                      final opacity = _phase5Controller.value.clamp(0.0, 1.0);
-                      final scale = 0.8 + 0.2 * _phase5Controller.value;
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.scale(
-                          scale: scale,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              gradient: LinearGradient(
-                                colors: [
-                                  _kAccent.withValues(alpha: 0.1),
-                                  _kAccent.withValues(alpha: 0.2),
-                                  _kAccent.withValues(alpha: 0.1),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: _kAccent.withValues(alpha: 0.5),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _kAccent.withValues(alpha: 0.2),
-                                  blurRadius: 20,
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.auto_awesome,
-                                  color: _kAccent,
-                                  size: 24,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'LEGACY POINTS EARNED: +$_legacyPoints',
-                                  style: const TextStyle(
-                                    color: _kAccent,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Newly unlocked achievements.
-                  if (_newAchievements.isNotEmpty)
-                    AnimatedBuilder(
-                      animation: _phase5Controller,
-                      builder: (_, __) {
-                        final opacity = _phase5Controller.value.clamp(0.0, 1.0);
-                        return Opacity(
-                          opacity: opacity,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 24),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: const Color(
-                                    0xFFFFD700,
-                                  ).withValues(alpha: 0.4),
-                                ),
-                                color: const Color(
-                                  0xFFFFD700,
-                                ).withValues(alpha: 0.08),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.emoji_events,
-                                        color: Color(0xFFFFD700),
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        context.l10n.ui_ending_achievementsUnlocked,
-                                        style: TextStyle(
-                                          color: const Color(
-                                            0xFFFFD700,
-                                          ).withValues(alpha: 0.9),
-                                          fontSize: 13,
-                                          letterSpacing: 2,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  ..._newAchievements.map((id) {
-                                    final names = _achievementNames(context);
-                                    final name = names[id] ?? id;
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                      ),
-                                      child: Text(
-                                        name,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 48),
-
-                  // Bottom buttons.
-                  AnimatedBuilder(
-                    animation: _phase5Controller,
-                    builder: (_, __) {
-                      final opacity = _phase5Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Column(
-                          children: [
-                            _EndingButton(
-                              label: context.l10n.ui_ending_challengeFriend,
-                              isPrimary: true,
-                              onTap: () {
-                                final text =
-                                    '🚀 STELLAR BROADCAST\n'
-                                    '\n'
-                                    'I scored $_finalScore on $_planetName!\n'
-                                    '🏆 $_tier • $_governmentType\n'
-                                    '\n'
-                                    'Think you can beat me? Tap to play the same voyage:\n'
-                                    'stellarbroadcast://play?seed=${seedToCode(_voyageSeed)}\n'
-                                    '\n'
-                                    "Don't have the app?\n"
-                                    'https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast';
-                                Share.share(text);
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _EndingButton(
-                              label: context.l10n.ui_ending_copySeed,
-                              isPrimary: false,
-                              onTap: () {
-                                Clipboard.setData(
-                                  ClipboardData(
-                                    text: seedToCode(_voyageSeed),
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Seed ${seedToCode(_voyageSeed)} copied!',
-                                    ),
-                                    backgroundColor: _kAccent.withValues(
-                                      alpha: 0.9,
-                                    ),
-                                    duration: const Duration(seconds: 2),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _EndingButton(
-                              label: context.l10n.ui_ending_viewLegacy,
-                              isPrimary: false,
-                              onTap: () => Navigator.of(context)
-                                  .pushNamedAndRemoveUntil(
-                                '/legacy',
-                                (route) => route.isFirst,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            _EndingButton(
-                              label: context.l10n.ui_ending_newVoyage,
-                              isPrimary: false,
-                              onTap: () {
-                                ref.read(voyageProvider.notifier).startVoyage(l10n: context.l10n);
-                                Navigator.of(context).pushReplacementNamed('/');
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 40),
-                ],
+              child: ResponsiveContent(
+                child: _buildContent(context, screen, tierColor),
               ),
             ),
           ),
         ],
       ),
     ),
+    );
+  }
+
+  /// Builds the score + tier display (left side in landscape).
+  Widget _buildScoreAndTier(BuildContext context, ScreenInfo screen, Color tierColor) {
+    return Column(
+      children: [
+        // Phase 1: "COLONY ESTABLISHED" with expanding glow.
+        AnimatedBuilder(
+          animation: _phase1Controller,
+          builder: (_, __) => Opacity(
+            opacity: _glowOpacity.value,
+            child: Column(
+              children: [
+                Container(
+                  width: 120 + _glowExpand.value * 60,
+                  height: 120 + _glowExpand.value * 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: _kAccent.withValues(
+                          alpha: 0.3 * _glowOpacity.value,
+                        ),
+                        blurRadius: 40 + _glowExpand.value * 40,
+                        spreadRadius: _glowExpand.value * 20,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.public,
+                    size: 80 + _glowExpand.value * 20,
+                    color: _kAccent.withValues(
+                      alpha: _glowOpacity.value,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  context.l10n.ui_ending_colonyEstablished,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: screen.scaledFontSize(28),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white.withValues(
+                      alpha: _glowOpacity.value,
+                    ),
+                    letterSpacing: 4,
+                    shadows: [
+                      Shadow(
+                        color: _kAccent.withValues(
+                          alpha: _glowOpacity.value * 0.8,
+                        ),
+                        blurRadius: 30,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 48),
+
+        // Phase 2: Score reveal.
+        AnimatedBuilder(
+          animation: _phase2Controller,
+          builder: (_, __) {
+            final opacity = _phase2Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Column(
+                children: [
+                  Text(
+                    context.l10n.ui_ending_colonyScore,
+                    style: TextStyle(
+                      color: _kAccent.withValues(alpha: 0.7),
+                      fontSize: 14,
+                      letterSpacing: 3,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${_scoreCount.value}',
+                    style: TextStyle(
+                      fontSize: screen.scaledFontSize(64),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: _kAccent.withValues(alpha: 0.6),
+                          blurRadius: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 32),
+
+        // Phase 3: Tier badge.
+        AnimatedBuilder(
+          animation: _phase3Controller,
+          builder: (_, __) {
+            final scale = Curves.elasticOut.transform(
+              _phase3Controller.value.clamp(0.0, 1.0),
+            );
+            final opacity = _phase3Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: tierColor, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: tierColor.withValues(alpha: 0.3),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                    color: tierColor.withValues(alpha: 0.15),
+                  ),
+                  child: Text(
+                    _tier.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: tierColor,
+                      letterSpacing: 3,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 12),
+
+        AnimatedBuilder(
+          animation: _phase3Controller,
+          builder: (_, __) {
+            final opacity = _phase3Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Text(
+                _tierSubtitle(_tier),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: tierColor.withValues(alpha: 0.8),
+                  fontSize: 13,
+                  letterSpacing: 2.2,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 40),
+
+        // Phase 5: Legacy points earned.
+        AnimatedBuilder(
+          animation: _phase5Controller,
+          builder: (_, __) {
+            final opacity = _phase5Controller.value.clamp(0.0, 1.0);
+            final scale = 0.8 + 0.2 * _phase5Controller.value;
+            return Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors: [
+                        _kAccent.withValues(alpha: 0.1),
+                        _kAccent.withValues(alpha: 0.2),
+                        _kAccent.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: _kAccent.withValues(alpha: 0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _kAccent.withValues(alpha: 0.2),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.auto_awesome,
+                        color: _kAccent,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: Text(
+                          'LEGACY POINTS EARNED: +$_legacyPoints',
+                          style: const TextStyle(
+                            color: _kAccent,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        // Newly unlocked achievements.
+        if (_newAchievements.isNotEmpty)
+          AnimatedBuilder(
+            animation: _phase5Controller,
+            builder: (_, __) {
+              final opacity = _phase5Controller.value.clamp(0.0, 1.0);
+              return Opacity(
+                opacity: opacity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.4),
+                      ),
+                      color: const Color(0xFFFFD700).withValues(alpha: 0.08),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.emoji_events,
+                              color: Color(0xFFFFD700),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              context.l10n.ui_ending_achievementsUnlocked,
+                              style: TextStyle(
+                                color: const Color(0xFFFFD700).withValues(alpha: 0.9),
+                                fontSize: 13,
+                                letterSpacing: 2,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        ..._newAchievements.map((id) {
+                          final names = _achievementNames(context);
+                          final name = names[id] ?? id;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+
+  /// Builds the breakdown + details (right side in landscape).
+  Widget _buildBreakdownAndDetails(BuildContext context) {
+    return Column(
+      children: [
+        // Phase 4: Epilogue text.
+        AnimatedBuilder(
+          animation: _phase4Controller,
+          builder: (_, __) {
+            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+            final slide = 20.0 * (1.0 - _phase4Controller.value);
+            return Opacity(
+              opacity: opacity,
+              child: Transform.translate(
+                offset: Offset(0, slide),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _kAccent.withValues(alpha: 0.2),
+                    ),
+                    color: _kBgColor.withValues(alpha: 0.85),
+                  ),
+                  child: Text(
+                    _epilogue,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 15,
+                      height: 1.6,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 24),
+
+        // Colony details.
+        AnimatedBuilder(
+          animation: _phase4Controller,
+          builder: (_, __) {
+            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _kAccent.withValues(alpha: 0.2),
+                  ),
+                  color: _kBgColor.withValues(alpha: 0.85),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      context.l10n.ui_ending_colonyProfile,
+                      style: TextStyle(
+                        color: _kAccent.withValues(alpha: 0.7),
+                        fontSize: 12,
+                        letterSpacing: 2,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _ColonyDetailRow(label: 'Government', value: _governmentType),
+                    _ColonyDetailRow(label: 'Culture', value: _cultureLevel),
+                    _ColonyDetailRow(label: 'Technology', value: _technologyLevel),
+                    _ColonyDetailRow(label: 'Construction', value: _constructionLevel),
+                    if (_nativeRelations != 'None')
+                      _ColonyDetailRow(label: 'Natives', value: _nativeRelations),
+                    const SizedBox(height: 12),
+                    Text(
+                      _colonyDescription,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+
+        // Landscape description.
+        if (_landscapeDescription.isNotEmpty)
+          AnimatedBuilder(
+            animation: _phase4Controller,
+            builder: (_, __) {
+              final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+              return Opacity(
+                opacity: opacity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _kAccent.withValues(alpha: 0.2),
+                      ),
+                      color: _kBgColor.withValues(alpha: 0.85),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          context.l10n.ui_ending_landscape,
+                          style: TextStyle(
+                            color: _kAccent.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _landscapeDescription,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.6),
+                            fontSize: 12,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+        const SizedBox(height: 16),
+
+        // Voyage record card.
+        AnimatedBuilder(
+          animation: _phase4Controller,
+          builder: (_, __) {
+            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _kAccent.withValues(alpha: 0.2),
+                  ),
+                  color: _kBgColor.withValues(alpha: 0.85),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      context.l10n.ui_ending_voyageRecord,
+                      style: TextStyle(
+                        color: _kAccent.withValues(alpha: 0.7),
+                        fontSize: 12,
+                        letterSpacing: 2,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _ColonyDetailRow(label: 'Planets Scanned', value: '$_planetsScanned'),
+                    _ColonyDetailRow(label: 'Planets Skipped', value: '$_planetsSkipped'),
+                    _ColonyDetailRow(
+                      label: 'Damage Taken',
+                      value: '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
+                    ),
+                    _ColonyDetailRow(label: 'Fuel Consumed', value: '$_fuelConsumed'),
+                    _ColonyDetailRow(label: 'Energy Consumed', value: '$_energyConsumed'),
+                    _ColonyDetailRow(label: 'Scanners Upgraded', value: '$_scannersUpgraded'),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 24),
+
+        // Score breakdown.
+        if (_breakdown != null)
+          AnimatedBuilder(
+            animation: _phase4Controller,
+            builder: (_, __) {
+              final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+              return Opacity(
+                opacity: opacity,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _kAccent.withValues(alpha: 0.2),
+                    ),
+                    color: _kBgColor.withValues(alpha: 0.85),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        context.l10n.ui_ending_scoreBreakdown,
+                        style: TextStyle(
+                          color: _kAccent.withValues(alpha: 0.7),
+                          fontSize: 12,
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ..._breakdown!.localizedEntries(context.l10n).map(
+                        (entry) => _ScoreRow(
+                          label: entry.key,
+                          score: entry.value,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 1,
+                        color: _kAccent.withValues(alpha: 0.2),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            context.l10n.ui_ending_total,
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: _kAccent.withValues(alpha: 0.9),
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          Text(
+                            '${_breakdown!.total.round()}',
+                            style: const TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+      ],
+    );
+  }
+
+  /// Builds the action buttons section.
+  Widget _buildButtons(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _phase5Controller,
+      builder: (_, __) {
+        final opacity = _phase5Controller.value.clamp(0.0, 1.0);
+        return Opacity(
+          opacity: opacity,
+          child: Column(
+            children: [
+              _EndingButton(
+                label: context.l10n.ui_ending_challengeFriend,
+                isPrimary: true,
+                onTap: () {
+                  final text =
+                      '🚀 STELLAR BROADCAST\n'
+                      '\n'
+                      'I scored $_finalScore on $_planetName!\n'
+                      '🏆 $_tier • $_governmentType\n'
+                      '\n'
+                      'Think you can beat me? Tap to play the same voyage:\n'
+                      'stellarbroadcast://play?seed=${seedToCode(_voyageSeed)}\n'
+                      '\n'
+                      "Don't have the app?\n"
+                      'https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast';
+                  Share.share(text);
+                },
+              ),
+              const SizedBox(height: 16),
+              _EndingButton(
+                label: context.l10n.ui_ending_copySeed,
+                isPrimary: false,
+                onTap: () {
+                  Clipboard.setData(
+                    ClipboardData(text: seedToCode(_voyageSeed)),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Seed ${seedToCode(_voyageSeed)} copied!'),
+                      backgroundColor: _kAccent.withValues(alpha: 0.9),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              _EndingButton(
+                label: context.l10n.ui_ending_viewLegacy,
+                isPrimary: false,
+                onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/legacy',
+                  (route) => route.isFirst,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _EndingButton(
+                label: context.l10n.ui_ending_newVoyage,
+                isPrimary: false,
+                onTap: () {
+                  ref.read(voyageProvider.notifier).startVoyage(l10n: context.l10n);
+                  Navigator.of(context).pushReplacementNamed('/');
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Builds the ad widget.
+  Widget _buildAd(BuildContext context) {
+    return PremiumAdGate(child: AdaptiveNativeAd(
+      fallback: AdaptiveBannerAd(
+        size: QaBannerSize.mrec,
+        fallback: AdFallbackBanner(
+          height: 250,
+          onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+        ),
+      ),
+    ));
+  }
+
+  Widget _buildContent(BuildContext context, ScreenInfo screen, Color tierColor) {
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
+    if (isLandscape) {
+      return Column(
+        children: [
+          const SizedBox(height: 24),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left side: score, tier, legacy points, achievements.
+              Expanded(
+                child: _buildScoreAndTier(context, screen, tierColor),
+              ),
+              const SizedBox(width: 24),
+              // Right side: breakdown, details, voyage record.
+              Expanded(
+                child: _buildBreakdownAndDetails(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          _buildAd(context),
+          const SizedBox(height: 32),
+          _buildButtons(context),
+          const SizedBox(height: 40),
+        ],
+      );
+    }
+
+    // Portrait: original vertical layout.
+    return Column(
+      children: [
+        const SizedBox(height: 60),
+        _buildScoreAndTier(context, screen, tierColor),
+        const SizedBox(height: 40),
+        _buildBreakdownAndDetails(context),
+        const SizedBox(height: 32),
+        _buildAd(context),
+        const SizedBox(height: 32),
+        _buildButtons(context),
+        const SizedBox(height: 40),
+      ],
     );
   }
 }

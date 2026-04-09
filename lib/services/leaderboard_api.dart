@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 
 /// Fire-and-forget client for the self-hosted leaderboard API.
@@ -29,6 +30,7 @@ class LeaderboardApi {
   }
 
   static Future<void> _post(String path, Map<String, dynamic> body) async {
+    if (kIsWeb) return; // dart:io HttpClient not available on web
     try {
       final client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 5);

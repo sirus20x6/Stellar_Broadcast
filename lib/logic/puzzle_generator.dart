@@ -275,8 +275,8 @@ class PuzzleGenerator {
       // Main sequence: more stars.
       for (final cls in mainSeq)
         makeStars(cls, 12 + random.nextInt(8), // 12-19 stars
-          ((_starClasses[cls]![5]) as num).toDouble(),
-          ((_starClasses[cls]![6]) as num).toDouble()),
+          (_starClasses[cls]![5]).toDouble(),
+          (_starClasses[cls]![6]).toDouble()),
       // Giants: large, fewer.
       for (final g in giants) makeStars(g, 3 + random.nextInt(4), 3.0, 5.5),
       // Supergiants: very large, rare.

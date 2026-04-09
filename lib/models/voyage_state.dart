@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 
@@ -95,6 +96,9 @@ class VoyageState {
   /// 0 means no recharge occurred. Reset each scan.
   final int solarRechargeAmount;
 
+  /// Chained events waiting to fire at future encounters.
+  final List<PendingChain> pendingChains;
+
   const VoyageState({
     this.ship = const ShipSystems(),
     this.currentPlanet,
@@ -128,6 +132,7 @@ class VoyageState {
     this.isDaily = false,
     this.landedOnMoon = false,
     this.solarRechargeAmount = 0,
+    this.pendingChains = const [],
   });
 
   VoyageState copyWith({
@@ -166,6 +171,7 @@ class VoyageState {
     bool? isDaily,
     bool? landedOnMoon,
     int? solarRechargeAmount,
+    List<PendingChain>? pendingChains,
   }) {
     return VoyageState(
       ship: ship ?? this.ship,
@@ -200,8 +206,99 @@ class VoyageState {
       isDaily: isDaily ?? this.isDaily,
       landedOnMoon: landedOnMoon ?? this.landedOnMoon,
       solarRechargeAmount: solarRechargeAmount ?? this.solarRechargeAmount,
+      pendingChains: pendingChains ?? this.pendingChains,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'ship': ship.toJson(),
+        if (currentPlanet != null) 'currentPlanet': currentPlanet!.toJson(),
+        'encounterCount': encounterCount,
+        'maxEncounters': maxEncounters,
+        'log': log,
+        'isComplete': isComplete,
+        'seenEventIds': seenEventIds,
+        'probes': probes,
+        'probedStats': probedStats.toList(),
+        'revealedFeatures': revealedFeatures.toList(),
+        'scannerReadings': scannerReadings,
+        'colonists': colonists,
+        'scannerLevels': scannerLevels,
+        'planetsScanned': planetsScanned,
+        'nextPlanetEncounter': nextPlanetEncounter,
+        'pendingScannerUpgrade': pendingScannerUpgrade,
+        if (colonyName != null) 'colonyName': colonyName,
+        'fuel': fuel,
+        'energy': energy,
+        'planetsSkipped': planetsSkipped,
+        'totalDamageTaken': totalDamageTaken,
+        'scannersUpgraded': scannersUpgraded,
+        'fuelConsumed': fuelConsumed,
+        'energyConsumed': energyConsumed,
+        if (voyageStartTime != null)
+          'voyageStartTime': voyageStartTime!.toIso8601String(),
+        'isGameOver': isGameOver,
+        'gameOverReason': gameOverReason,
+        'pendingPlanetModifiers': pendingPlanetModifiers,
+        'seed': seed,
+        'isDaily': isDaily,
+        'landedOnMoon': landedOnMoon,
+        'solarRechargeAmount': solarRechargeAmount,
+        'pendingChains': pendingChains.map((c) => c.toJson()).toList(),
+      };
+
+  factory VoyageState.fromJson(Map<String, dynamic> json) => VoyageState(
+        ship: ShipSystems.fromJson(json['ship'] as Map<String, dynamic>),
+        currentPlanet: json['currentPlanet'] != null
+            ? Planet.fromJson(json['currentPlanet'] as Map<String, dynamic>)
+            : null,
+        encounterCount: json['encounterCount'] as int,
+        maxEncounters: json['maxEncounters'] as int,
+        log: (json['log'] as List<dynamic>).cast<String>(),
+        isComplete: json['isComplete'] as bool,
+        seenEventIds: (json['seenEventIds'] as List<dynamic>).cast<String>(),
+        probes: json['probes'] as int,
+        probedStats: (json['probedStats'] as List<dynamic>).cast<String>().toSet(),
+        revealedFeatures:
+            (json['revealedFeatures'] as List<dynamic>).cast<String>().toSet(),
+        scannerReadings: (json['scannerReadings'] as Map<String, dynamic>).map(
+          (k, v) => MapEntry(k, (v as num?)?.toDouble()),
+        ),
+        colonists: json['colonists'] as int,
+        scannerLevels: (json['scannerLevels'] as Map<String, dynamic>).map(
+          (k, v) => MapEntry(k, (v as num).toInt()),
+        ),
+        planetsScanned: json['planetsScanned'] as int,
+        nextPlanetEncounter: json['nextPlanetEncounter'] as int,
+        pendingScannerUpgrade: json['pendingScannerUpgrade'] as bool,
+        colonyName: json['colonyName'] as String?,
+        fuel: json['fuel'] as int,
+        energy: json['energy'] as int,
+        planetsSkipped: json['planetsSkipped'] as int,
+        totalDamageTaken: (json['totalDamageTaken'] as num).toDouble(),
+        scannersUpgraded: json['scannersUpgraded'] as int,
+        fuelConsumed: json['fuelConsumed'] as int,
+        energyConsumed: json['energyConsumed'] as int,
+        voyageStartTime: json['voyageStartTime'] != null
+            ? DateTime.parse(json['voyageStartTime'] as String)
+            : null,
+        isGameOver: json['isGameOver'] as bool? ?? false,
+        gameOverReason: json['gameOverReason'] as String? ?? '',
+        pendingPlanetModifiers:
+            (json['pendingPlanetModifiers'] as Map<String, dynamic>?)?.map(
+                  (k, v) => MapEntry(k, (v as num).toDouble()),
+                ) ??
+                {},
+        seed: json['seed'] as int? ?? 0,
+        isDaily: json['isDaily'] as bool? ?? false,
+        landedOnMoon: json['landedOnMoon'] as bool? ?? false,
+        solarRechargeAmount: json['solarRechargeAmount'] as int? ?? 0,
+        pendingChains: (json['pendingChains'] as List<dynamic>?)
+                ?.map((e) =>
+                    PendingChain.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+      );
 
   @override
   String toString() =>

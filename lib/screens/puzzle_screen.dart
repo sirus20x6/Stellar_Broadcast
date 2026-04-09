@@ -11,8 +11,8 @@ import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/models/puzzle.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -182,9 +182,278 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     super.dispose();
   }
 
+  // ── Helper builders ──────────────────────────────────────────────────────
+
+  Widget _buildTitle() {
+    final puzzle = widget.puzzle;
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        puzzle.title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: _accent,
+          letterSpacing: 2,
+          shadows: [
+            Shadow(
+              color: _accent.withValues(alpha: _titleGlowAnim.value),
+              blurRadius: 20,
+            ),
+            Shadow(
+              color: _accent.withValues(alpha: _titleGlowAnim.value * 0.5),
+              blurRadius: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    final puzzle = widget.puzzle;
+    if (!_resolved && puzzle.narrative.isNotEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white.withValues(alpha: 0.05),
+          border: Border.all(color: _accent.withValues(alpha: 0.2)),
+        ),
+        child: Text(
+          _displayedText,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildOutcomeCard() {
+    final puzzle = widget.puzzle;
+    if (!_resolved) return const SizedBox.shrink();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: (_isCorrect ? Colors.green : Colors.red)
+            .withValues(alpha: 0.1),
+        border: Border.all(
+          color: (_isCorrect ? Colors.green : Colors.red)
+              .withValues(alpha: 0.4),
+        ),
+      ),
+      child: Text(
+        _isCorrect ? puzzle.correctOutcome : puzzle.incorrectOutcome,
+        style: TextStyle(
+          color: _isCorrect ? Colors.greenAccent : Colors.redAccent,
+          fontSize: 15,
+          height: 1.5,
+        ),
+      ),
+    );
+  }
+
+  /// The visual/interactive puzzle area (canvas-based types use Expanded).
+  Widget _buildPuzzleVisual() {
+    final puzzle = widget.puzzle;
+    if (!_typewriterDone) return const SizedBox.shrink();
+
+    if (puzzle.sequenceType == SequenceType.spectralId) {
+      return _buildSpectralChoices();
+    }
+    if (puzzle.sequenceType == SequenceType.starCluster) {
+      return _buildStarClusterChoices();
+    }
+    if (puzzle.sequenceType == SequenceType.chirality) {
+      return _buildChiralityChoices();
+    }
+
+    // Sequence-based puzzle: sequence row + answer grid.
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildSequenceRow(),
+        const SizedBox(height: 24),
+        if (!_resolved) ...[
+          Text(
+            'SELECT THE MISSING VALUE',
+            style: TextStyle(
+              color: _accent.withValues(alpha: 0.7),
+              fontSize: 12,
+              letterSpacing: 2,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildAnswerGrid(),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildContinueButton() {
+    if (!_resolved) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            GameSfx().playVaried(GameSfx.buttonClick);
+            Navigator.of(context).pop();
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _accent.withValues(alpha: 0.6)),
+              color: _accent.withValues(alpha: 0.08),
+            ),
+            child: Text(
+              'CONTINUE',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _accent,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTapHint() {
+    if (_typewriterDone) return const SizedBox.shrink();
+    return Text(
+      'TAP TO SKIP',
+      style: TextStyle(
+        color: _accent.withValues(alpha: 0.5),
+        fontSize: 12,
+        letterSpacing: 2,
+      ),
+    );
+  }
+
+  Widget _buildAdBanner() {
+    return const SizedBox(
+      height: 58,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 8),
+        child: PremiumAdGate(child: AdaptiveBannerAd()),
+      ),
+    );
+  }
+
+  bool get _isCanvasType {
+    final t = widget.puzzle.sequenceType;
+    return t == SequenceType.spectralId ||
+        t == SequenceType.starCluster ||
+        t == SequenceType.chirality;
+  }
+
+  // ── Portrait layout ─────────────────────────────────────────────────────
+
+  Widget _buildPortrait() {
+    final puzzle = widget.puzzle;
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildTitle(),
+          const SizedBox(height: 20),
+          _buildNarrativeCard(),
+          _buildOutcomeCard(),
+          SizedBox(height: puzzle.sequenceType == SequenceType.spectralId ? 12 : 24),
+          _buildPuzzleVisual(),
+          if (_showEffects) ...[
+            const SizedBox(height: 16),
+            _buildEffectChips(),
+          ],
+          if (!_isCanvasType) const Spacer(),
+          _buildContinueButton(),
+          _buildTapHint(),
+          const SizedBox(height: 12),
+          _buildAdBanner(),
+        ],
+      ),
+    );
+  }
+
+  // ── Landscape layout ────────────────────────────────────────────────────
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              // Left: narrative + choices/buttons.
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildNarrativeCard(),
+                              _buildOutcomeCard(),
+                              if (_showEffects) ...[
+                                const SizedBox(height: 8),
+                                _buildEffectChips(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildContinueButton(),
+                      _buildTapHint(),
+                    ],
+                  ),
+                ),
+              ),
+              // Right: puzzle canvas visualization.
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildPuzzleVisual(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Ad banner full width at bottom.
+        _buildAdBanner(),
+      ],
+    );
+  }
+
+  // ── Build ───────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
-    final puzzle = widget.puzzle;
+    final screen = ScreenInfo.of(context);
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -212,199 +481,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Title.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        puzzle.title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: _accent,
-                          letterSpacing: 2,
-                          shadows: [
-                            Shadow(
-                              color: _accent.withValues(alpha: _titleGlowAnim.value),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: _accent.withValues(alpha: _titleGlowAnim.value * 0.5),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Narrative (typewriter) — hidden for spectral puzzles.
-                    if (!_resolved && puzzle.narrative.isNotEmpty)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.white.withValues(alpha: 0.05),
-                          border: Border.all(color: _accent.withValues(alpha: 0.2)),
-                        ),
-                        child: Text(
-                          _displayedText,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    // Outcome text.
-                    if (_resolved)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: (_isCorrect ? Colors.green : Colors.red)
-                              .withValues(alpha: 0.1),
-                          border: Border.all(
-                            color: (_isCorrect ? Colors.green : Colors.red)
-                                .withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Text(
-                          _isCorrect
-                              ? puzzle.correctOutcome
-                              : puzzle.incorrectOutcome,
-                          style: TextStyle(
-                            color: _isCorrect
-                                ? Colors.greenAccent
-                                : Colors.redAccent,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    SizedBox(height: puzzle.sequenceType == SequenceType.spectralId ? 12 : 24),
-
-                    // Display area.
-                    if (_typewriterDone &&
-                        puzzle.sequenceType == SequenceType.spectralId)
-                      _buildSpectralChoices(),
-
-                    if (_typewriterDone &&
-                        puzzle.sequenceType == SequenceType.starCluster)
-                      _buildStarClusterChoices(),
-
-                    if (_typewriterDone &&
-                        puzzle.sequenceType == SequenceType.chirality)
-                      _buildChiralityChoices(),
-
-                    if (_typewriterDone &&
-                        puzzle.sequenceType != SequenceType.spectralId &&
-                        puzzle.sequenceType != SequenceType.starCluster &&
-                        puzzle.sequenceType != SequenceType.chirality) ...[
-                      _buildSequenceRow(),
-
-                      const SizedBox(height: 24),
-
-                      // Answer grid.
-                      if (!_resolved) ...[
-                        Text(
-                          'SELECT THE MISSING VALUE',
-                          style: TextStyle(
-                            color: _accent.withValues(alpha: 0.7),
-                            fontSize: 12,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildAnswerGrid(),
-                      ],
-                    ],
-
-                    // Effect chips.
-                    if (_showEffects) ...[
-                      const SizedBox(height: 16),
-                      _buildEffectChips(),
-                    ],
-
-                    if (puzzle.sequenceType != SequenceType.spectralId &&
-                        puzzle.sequenceType != SequenceType.starCluster &&
-                        puzzle.sequenceType != SequenceType.chirality)
-                      const Spacer(),
-
-                    // Continue button.
-                    if (_resolved)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _accent.withValues(alpha: 0.6),
-                                ),
-                                color: _accent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                'CONTINUE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _accent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    if (!_typewriterDone)
-                      Text(
-                        'TAP TO SKIP',
-                        style: TextStyle(
-                          color: _accent.withValues(alpha: 0.5),
-                          fontSize: 12,
-                          letterSpacing: 2,
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],

@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -154,9 +154,150 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
     return sum >= 0;
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        'GRAVITATIONAL LENS',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 2,
+          shadows: [
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
+              blurRadius: 20,
+            ),
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
+              blurRadius: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    final event = widget.event;
+    if (!_resolved && event.narrative.isNotEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white.withValues(alpha: 0.05),
+          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
+        ),
+        child: Text(
+          _displayedText,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    if (_resolved && _selectedWindow != null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: (_isPositiveOutcome ? Colors.green : Colors.red)
+              .withValues(alpha: 0.1),
+          border: Border.all(
+            color: (_isPositiveOutcome ? Colors.green : Colors.red)
+                .withValues(alpha: 0.4),
+          ),
+        ),
+        child: Text(
+          event.choices[_selectedWindow!].outcome,
+          style: TextStyle(
+            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildVisualArea() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          onTapDown: _resolved
+              ? null
+              : (details) => _handleTap(details, constraints),
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_diskController, _pulseController]),
+            builder: (_, __) => CustomPaint(
+              size: Size(constraints.maxWidth, constraints.maxHeight),
+              painter: _BlackHolePainter(
+                animationValue: _diskController.value,
+                pulseValue: _pulseAnim.value,
+                selectedWindow: _selectedWindow,
+                isResolved: _resolved,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_resolved) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+                color: _kAccent.withValues(alpha: 0.08),
+              ),
+              child: Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _kAccent,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
+    }
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final event = widget.event;
+    final screen = ScreenInfo.of(context);
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -184,196 +325,97 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Title with glow.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        'GRAVITATIONAL LENS',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: _kAccent,
-                          letterSpacing: 2,
-                          shadows: [
-                            Shadow(
-                              color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value * 0.5),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Narrative (typewriter).
-                    if (!_resolved && event.narrative.isNotEmpty)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.white.withValues(alpha: 0.05),
-                          border: Border.all(
-                              color: _kAccent.withValues(alpha: 0.2)),
-                        ),
-                        child: Text(
-                          _displayedText,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    // Outcome text.
-                    if (_resolved && _selectedWindow != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: (_isPositiveOutcome
-                                  ? Colors.green
-                                  : Colors.red)
-                              .withValues(alpha: 0.1),
-                          border: Border.all(
-                            color: (_isPositiveOutcome
-                                    ? Colors.green
-                                    : Colors.red)
-                                .withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Text(
-                          event.choices[_selectedWindow!].outcome,
-                          style: TextStyle(
-                            color: _isPositiveOutcome
-                                ? Colors.greenAccent
-                                : Colors.redAccent,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    // Black hole visual area.
-                    Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return GestureDetector(
-                              onTapDown: _resolved
-                                  ? null
-                                  : (details) =>
-                                      _handleTap(details, constraints),
-                              child: AnimatedBuilder(
-                                animation: Listenable.merge(
-                                    [_diskController, _pulseController]),
-                                builder: (_, __) => CustomPaint(
-                                  size: Size(constraints.maxWidth,
-                                      constraints.maxHeight),
-                                  painter: _BlackHolePainter(
-                                    animationValue: _diskController.value,
-                                    pulseValue: _pulseAnim.value,
-                                    selectedWindow: _selectedWindow,
-                                    isResolved: _resolved,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                    if (!_typewriterDone) const Spacer(),
-
-                    // Effect chips.
-                    if (_showEffects) ...[
-                      const SizedBox(height: 8),
-                      _buildEffectChips(),
-                    ],
-
-                    // Continue button.
-                    if (_resolved)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12, bottom: 12),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.6),
-                                ),
-                                color: _kAccent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                'CONTINUE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    if (!_typewriterDone)
-                      Text(
-                        'TAP TO SKIP',
-                        style: TextStyle(
-                          color: _kAccent.withValues(alpha: 0.5),
-                          fontSize: 12,
-                          letterSpacing: 2,
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildTitle(),
+          const SizedBox(height: 20),
+          _buildNarrativeCard(),
+          const SizedBox(height: 12),
+          Expanded(child: _buildVisualArea()),
+          if (!_typewriterDone) const Spacer(),
+          if (_showEffects) ...[
+            const SizedBox(height: 8),
+            _buildEffectChips(),
+          ],
+          if (_resolved || !_typewriterDone) ...[
+            const SizedBox(height: 12),
+            _buildHintOrContinue(),
+          ],
+          const SizedBox(height: 12),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildNarrativeCard(),
+                              if (_showEffects) ...[
+                                const SizedBox(height: 8),
+                                _buildEffectChips(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildHintOrContinue(),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualArea(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 
@@ -530,7 +572,6 @@ class _BlackHolePainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height * 0.55;
     final eventHorizonRadius = size.width * 0.15;
-    final einsteinRadius = size.width * 0.20;
 
     // 1. Dark overlay background.
     canvas.drawRect(
@@ -700,32 +741,6 @@ class _BlackHolePainter extends CustomPainter {
         Rect.fromCircle(center: Offset(cx, cy), radius: radius),
       );
     canvas.drawCircle(Offset(cx, cy), radius, rimPaint);
-  }
-
-  void _drawEinsteinRing(
-      Canvas canvas, double cx, double cy, double radius) {
-    // Outer glow.
-    final outerGlow = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 8
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12)
-      ..color = _kAccent.withValues(alpha: 0.15 + 0.1 * pulseValue);
-    canvas.drawCircle(Offset(cx, cy), radius, outerGlow);
-
-    // Mid glow.
-    final midGlow = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4)
-      ..color = Colors.white.withValues(alpha: 0.25 + 0.15 * pulseValue);
-    canvas.drawCircle(Offset(cx, cy), radius, midGlow);
-
-    // Sharp ring.
-    final ringPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..color = Colors.white.withValues(alpha: 0.5 + 0.2 * pulseValue);
-    canvas.drawCircle(Offset(cx, cy), radius, ringPaint);
   }
 
   void _drawWindows(Canvas canvas, Size size) {

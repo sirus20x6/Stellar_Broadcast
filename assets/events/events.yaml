@@ -1,0 +1,2970 @@
+# Starbound Exodus — Statechart Event Definitions
+#
+# All 134 events converted from Dart + 5 new statechart events.
+#
+# Format reference:
+#   @key      — l10n key lookup (resolved at load time)
+#   guard     — state predicate: "hull > 0.3 and fuel >= 50"
+#   outcomes  — weighted random (replaces single outcome on a choice)
+#   chain     — triggers a follow-up event after N encounters
+#   route     — dedicated cinematic screen (default: /event)
+#   tags      — metadata for filtering and visualization
+
+events:
+
+  - id: asteroid_field
+    title: "@event_asteroidField_title"
+    narrative: "@event_asteroidField_narrative"
+    choices:
+      - text: "@event_asteroidField_choice0_text"
+        outcome: "@event_asteroidField_choice0_outcome"
+        ship: { hull: -0.15, nav: 0.05 }
+      - text: "@event_asteroidField_choice1_text"
+        outcome: "@event_asteroidField_choice1_outcome"
+        ship: { nav: -0.10, tech: -0.05 }
+      - text: "@event_asteroidField_choice2_text"
+        outcome: "@event_asteroidField_choice2_outcome"
+        ship: { tech: -0.12, hull: 0.02 }
+        planet: { resources: 0.05 }
+      - text: "@event_asteroidField_choice3_text"
+        outcome: "@event_asteroidField_choice3_outcome"
+        ship: { hull: -0.05 }
+        probeCost: 1
+
+  - id: solar_flare
+    title: "@event_solarFlare_title"
+    narrative: "@event_solarFlare_narrative"
+    choices:
+      - text: "@event_solarFlare_choice0_text"
+        outcome: "@event_solarFlare_choice0_outcome"
+        ship: { shields: -0.08, tech: -0.08, scanners: -0.08, culture: 0.05 }
+      - text: "@event_solarFlare_choice1_text"
+        outcome: "@event_solarFlare_choice1_outcome"
+        ship: { cryopods: 0.05, hull: -0.12 }
+      - text: "@event_solarFlare_choice2_text"
+        outcome: "@event_solarFlare_choice2_outcome"
+        ship: { hull: -0.08, culture: -0.08 }
+      - text: "@event_solarFlare_choice3_text"
+        outcome: "@event_solarFlare_choice3_outcome"
+        ship: { atmosphericScanner: -0.03, tech: -0.05 }
+        probeCost: 1
+
+  - id: nebula_passage
+    title: "@event_nebulaPassage_title"
+    narrative: "@event_nebulaPassage_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_nebulaPassage_choice0_text"
+        outcome: "@event_nebulaPassage_choice0_outcome"
+        ship: { tech: 0.10, atmosphericScanner: -0.15 }
+      - text: "@event_nebulaPassage_choice1_text"
+        outcome: "@event_nebulaPassage_choice1_outcome"
+        ship: { tech: 0.05, atmosphericScanner: -0.05, nav: -0.03 }
+
+  - id: micro_meteorite
+    title: "@event_microMeteorite_title"
+    narrative: "@event_microMeteorite_narrative"
+    choices:
+      - text: "@event_microMeteorite_choice0_text"
+        outcome: "@event_microMeteorite_choice0_outcome"
+        ship: { hull: -0.05, nav: -0.10 }
+      - text: "@event_microMeteorite_choice1_text"
+        outcome: "@event_microMeteorite_choice1_outcome"
+        ship: { hull: 0.03, tech: -0.12 }
+      - text: "@event_microMeteorite_choice2_text"
+        outcome: "@event_microMeteorite_choice2_outcome"
+        ship: { hull: -0.03, nav: -0.03 }
+        probeCost: 1
+
+  - id: gravity_well
+    title: "@event_gravityWell_title"
+    narrative: "@event_gravityWell_narrative"
+    choices:
+      - text: "@event_gravityWell_choice0_text"
+        outcome: "@event_gravityWell_choice0_outcome"
+        ship: { nav: -0.08, hull: -0.06 }
+      - text: "@event_gravityWell_choice1_text"
+        outcome: "@event_gravityWell_choice1_outcome"
+        ship: { nav: 0.08, cryopods: -0.10, hull: -0.05 }
+
+  - id: crew_unrest
+    title: "@event_crewUnrest_title"
+    narrative: "@event_crewUnrest_narrative"
+    category: early
+    choices:
+      - text: "@event_crewUnrest_choice0_text"
+        outcome: "@event_crewUnrest_choice0_outcome"
+        ship: { culture: 0.10, cryopods: -0.16, tech: -0.10, nav: -0.10 }
+        colonists: 30
+      - text: "@event_crewUnrest_choice1_text"
+        outcome: "@event_crewUnrest_choice1_outcome"
+        ship: { culture: -0.12, tech: 0.05 }
+        fuel: 8
+        probes: 1
+      - text: "@event_crewUnrest_choice2_text"
+        outcome: "@event_crewUnrest_choice2_outcome"
+        ship: { culture: 0.05, cryopods: -0.08, shields: 0.06 }
+        fuel: 5
+
+  - id: stowaway
+    title: "@event_stowaway_title"
+    narrative: "@event_stowaway_narrative"
+    category: early
+    choices:
+      - text: "@event_stowaway_choice0_text"
+        outcome: "@event_stowaway_choice0_outcome"
+        ship: { cryopods: 0.08, tech: 0.05, culture: -0.05 }
+        colonists: 1
+      - text: "@event_stowaway_choice1_text"
+        outcome: "@event_stowaway_choice1_outcome"
+        ship: { culture: 0.03, cryopods: 0.03 }
+      - text: "@event_stowaway_choice2_text"
+        outcome: "@event_stowaway_choice2_outcome"
+        ship: { culture: -0.08, cryopods: -0.03 }
+
+  - id: mutiny_brewing
+    title: "@event_mutinyBrewing_title"
+    narrative: "@event_mutinyBrewing_narrative"
+    choices:
+      - text: "@event_mutinyBrewing_choice0_text"
+        outcome: "@event_mutinyBrewing_choice0_outcome"
+        ship: { culture: -0.10, shields: -0.05 }
+      - text: "@event_mutinyBrewing_choice1_text"
+        outcome: "@event_mutinyBrewing_choice1_outcome"
+        ship: { culture: -0.05, nav: 0.03 }
+
+  - id: cultural_schism
+    title: "@event_culturalSchism_title"
+    category: uneventful
+    narrative: "@event_culturalSchism_narrative"
+    choices:
+      - text: "@event_culturalSchism_choice0_text"
+        outcome: "@event_culturalSchism_choice0_outcome"
+        ship: { culture: 0.05 }
+      - text: "@event_culturalSchism_choice1_text"
+        outcome: "@event_culturalSchism_choice1_outcome"
+        ship: { culture: -0.03, tech: 0.03 }
+      - text: "@event_culturalSchism_choice2_text"
+        outcome: "@event_culturalSchism_choice2_outcome"
+        ship: { culture: -0.08 }
+
+  - id: birth_in_space
+    title: "@event_birthInSpace_title"
+    category: early
+    narrative: "@event_birthInSpace_narrative"
+    choices:
+      - text: "@event_birthInSpace_choice0_text"
+        outcome: "@event_birthInSpace_choice0_outcome"
+        ship: { culture: 0.15, cryopods: -0.05 }
+        colonists: 1
+      - text: "@event_birthInSpace_choice1_text"
+        outcome: "@event_birthInSpace_choice1_outcome"
+        ship: { culture: 0.05 }
+
+  - id: derelict_ship
+    title: "@event_derelictShip_title"
+    narrative: "@event_derelictShip_narrative"
+    choices:
+      - text: "@event_derelictShip_choice0_text"
+        outcomes:
+          - weight: 60
+            outcome: "@event_derelictShip_choice0_outcome"
+            ship: { hull: 0.10, tech: 0.08, culture: -0.08, constructors: 0.08 }
+          - weight: 25
+            outcome: "Automated defense systems activate the moment you breach the airlock. Your crew retreats under fire — hull integrity drops and several colonists are injured in the chaos."
+            ship: { hull: -0.15, tech: -0.08, culture: -0.06 }
+            colonists: -5
+          - weight: 15
+            outcome: "The ship's vault is untouched. Inside: a full navigational database, advanced fabrication modules, and a cache of rare materials the previous crew never got to use."
+            ship: { hull: 0.10, tech: 0.18, nav: 0.10, constructors: 0.12 }
+      - text: "@event_derelictShip_choice1_text"
+        outcome: "@event_derelictShip_choice1_outcome"
+        ship: { mineralScanner: 0.05, nav: 0.05 }
+      - text: "@event_derelictShip_choice2_text"
+        outcome: "@event_derelictShip_choice2_outcome"
+        ship: { culture: 0.08 }
+
+  - id: alien_probe
+    title: "@event_alienProbe_title"
+    category: rare
+    narrative: "@event_alienProbe_narrative"
+    choices:
+      - text: "@event_alienProbe_choice0_text"
+        outcomes:
+          - weight: 65
+            outcome: "@event_alienProbe_choice0_outcome"
+            ship: { tech: 0.15, atmosphericScanner: 0.08, hull: -0.05 }
+          - weight: 25
+            outcome: "The probe's symbols flash red as you reach for it. An EMP burst crackles through the ship, frying navigation arrays and scanner relays before the device goes dark."
+            ship: { tech: -0.10, scanners: -0.08, hull: -0.05 }
+          - weight: 10
+            outcome: "The probe detects your intent and initiates a controlled self-disassembly, collapsing into a neat arrangement of exotic components your engineers immediately recognize as upgrade material."
+            ship: { tech: 0.20, atmosphericScanner: 0.12 }
+      - text: "@event_alienProbe_choice1_text"
+        outcome: "@event_alienProbe_choice1_outcome"
+        ship: { nav: 0.12, atmosphericScanner: 0.10 }
+        planet: { anomaly: 0.10 }
+      - text: "@event_alienProbe_choice2_text"
+        outcome: "@event_alienProbe_choice2_outcome"
+        ship: { hull: 0.03, culture: -0.05 }
+
+  - id: ancient_beacon
+    title: "@event_ancientBeacon_title"
+    category: rare
+    narrative: "@event_ancientBeacon_narrative"
+    choices:
+      - text: "@event_ancientBeacon_choice0_text"
+        outcomes:
+          - weight: 65
+            outcome: "@event_ancientBeacon_choice0_outcome"
+            ship: { nav: -0.08, gravimetricScanner: 0.10 }
+            planet: { anomaly: 0.15, resources: 0.10 }
+          - weight: 25
+            outcome: "The beacon emits a disorienting pulse that scrambles your navigation systems and unsettles the crew."
+            ship: { nav: -0.12, hull: -0.05, culture: -0.05 }
+          - weight: 10
+            outcome: "The beacon recognizes your ship as worthy and shares a star map of uncharted systems."
+            ship: { nav: 0.15, gravimetricScanner: 0.10 }
+            planet: { anomaly: 0.15 }
+      - text: "@event_ancientBeacon_choice1_text"
+        outcome: "@event_ancientBeacon_choice1_outcome"
+        ship: { nav: 0.05, culture: 0.03 }
+
+  - id: frozen_garden
+    title: "@event_frozenGarden_title"
+    narrative: "@event_frozenGarden_narrative"
+    choices:
+      - text: "@event_frozenGarden_choice0_text"
+        outcome: "@event_frozenGarden_choice0_outcome"
+        ship: { tech: -0.05 }
+        planet: { biodiversity: 0.15, anomaly: 0.05 }
+      - text: "@event_frozenGarden_choice1_text"
+        outcome: "@event_frozenGarden_choice1_outcome"
+        ship: { lifeSignsScanner: 0.05 }
+        planet: { biodiversity: 0.05 }
+      - text: "@event_frozenGarden_choice2_text"
+        outcome: "@event_frozenGarden_choice2_outcome"
+        ship: { culture: -0.05 }
+
+  - id: data_cache
+    title: "@event_dataCache_title"
+    narrative: "@event_dataCache_narrative"
+    choices:
+      - text: "@event_dataCache_choice0_text"
+        outcome: "@event_dataCache_choice0_outcome"
+        ship: { tech: 0.12, nav: -0.05, constructors: 0.05 }
+        planet: { atmosphere: 0.08, water: 0.05 }
+      - text: "@event_dataCache_choice1_text"
+        outcome: "@event_dataCache_choice1_outcome"
+        ship: { atmosphericScanner: 0.03 }
+
+  - id: hull_breach
+    title: "@event_hullBreach_title"
+    category: malfunction
+    narrative: "@event_hullBreach_narrative"
+    choices:
+      - text: "@event_hullBreach_choice0_text"
+        outcome: "@event_hullBreach_choice0_outcome"
+        ship: { hull: -0.15, culture: 0.10 }
+        colonists: -3
+      - text: "@event_hullBreach_choice1_text"
+        outcome: "@event_hullBreach_choice1_outcome"
+        ship: { hull: -0.08, culture: 0.02 }
+      - text: "@event_hullBreach_choice2_text"
+        outcome: "@event_hullBreach_choice2_outcome"
+        ship: { hull: -0.04, culture: 0.05 }
+        probeCost: 1
+
+  - id: nav_malfunction
+    title: "@event_navMalfunction_title"
+    category: malfunction
+    narrative: "@event_navMalfunction_narrative"
+    choices:
+      - text: "@event_navMalfunction_choice0_text"
+        outcome: "@event_navMalfunction_choice0_outcome"
+        ship: { nav: -0.08, gravimetricScanner: -0.03 }
+      - text: "@event_navMalfunction_choice1_text"
+        outcome: "@event_navMalfunction_choice1_outcome"
+        ship: { nav: -0.12 }
+      - text: "@event_navMalfunction_choice2_text"
+        outcome: "@event_navMalfunction_choice2_outcome"
+        ship: { nav: -0.05, culture: 0.05, tech: -0.03 }
+
+  - id: cryopod_failure
+    title: "@event_cryopodFailure_title"
+    category: malfunction
+    narrative: "@event_cryopodFailure_narrative"
+    choices:
+      - text: "@event_cryopodFailure_choice0_text"
+        outcome: "@event_cryopodFailure_choice0_outcome"
+        ship: { cryopods: -0.03, tech: 0.03, hull: 0.04 }
+        colonists: -5
+      - text: "@event_cryopodFailure_choice1_text"
+        outcome: "@event_cryopodFailure_choice1_outcome"
+        ship: { cryopods: -0.18, culture: 0.10 }
+        colonists: 20
+
+  - id: scanner_burnout
+    title: "@event_scannerBurnout_title"
+    category: malfunction
+    narrative: "@event_scannerBurnout_narrative"
+    choices:
+      - text: "@event_scannerBurnout_choice0_text"
+        outcome: "@event_scannerBurnout_choice0_outcome"
+        ship: { atmosphericScanner: 0.10, tech: -0.15, constructors: -0.08 }
+      - text: "@event_scannerBurnout_choice1_text"
+        outcome: "@event_scannerBurnout_choice1_outcome"
+        ship: { atmosphericScanner: -0.08, tech: -0.03 }
+      - text: "@event_scannerBurnout_choice2_text"
+        outcome: "@event_scannerBurnout_choice2_outcome"
+        ship: { atmosphericScanner: 0.05 }
+        probeCost: 1
+
+  - id: power_fluctuation
+    title: "@event_powerFluctuation_title"
+    category: malfunction
+    narrative: "@event_powerFluctuation_narrative"
+    choices:
+      - text: "@event_powerFluctuation_choice0_text"
+        outcome: "@event_powerFluctuation_choice0_outcome"
+        ship: { tech: 0.08, culture: -0.15 }
+      - text: "@event_powerFluctuation_choice1_text"
+        outcome: "@event_powerFluctuation_choice1_outcome"
+        ship: { tech: 0.05, atmosphericScanner: -0.12 }
+      - text: "@event_powerFluctuation_choice2_text"
+        outcome: "@event_powerFluctuation_choice2_outcome"
+        ship: { tech: 0.03, hull: -0.08, constructors: -0.05 }
+
+  - id: alien_signal
+    title: "@event_alienSignal_title"
+    narrative: "@event_alienSignal_narrative"
+    choices:
+      - text: "@event_alienSignal_choice0_text"
+        outcomes:
+          - weight: 70
+            outcome: "@event_alienSignal_choice0_outcome"
+            ship: { nav: 0.10, atmosphericScanner: 0.08, culture: 0.05 }
+          - weight: 20
+            outcome: "The aliens interpret our signal as a territorial challenge and break off contact. Relations sour immediately."
+            ship: { culture: -0.10, nav: -0.08 }
+          - weight: 10
+            outcome: "Against all odds, the aliens recognize our intent and transmit detailed star charts. Navigation systems update with new precision."
+            ship: { nav: 0.15, tech: 0.08 }
+      - text: "@event_alienSignal_choice1_text"
+        outcome: "@event_alienSignal_choice1_outcome"
+        ship: { atmosphericScanner: 0.05, nav: 0.05 }
+      - text: "@event_alienSignal_choice2_text"
+        outcome: "@event_alienSignal_choice2_outcome"
+        ship: { culture: -0.03, atmosphericScanner: -0.03, shields: 0.05 }
+
+  - id: living_nebula
+    title: "@event_livingNebula_title"
+    category: rare
+    narrative: "@event_livingNebula_narrative"
+    choices:
+      - text: "@event_livingNebula_choice0_text"
+        outcomes:
+          - weight: 70
+            outcome: "@event_livingNebula_choice0_outcome"
+            ship: { lifeSignsScanner: 0.15, hull: -0.08, tech: 0.05 }
+            planet: { anomaly: 0.10 }
+          - weight: 20
+            outcome: "The organism's thoughts cascade through every system at once. Overloaded processors burn out and hull integrity fails under psychic resonance before contact can be severed."
+            ship: { tech: -0.12, hull: -0.08 }
+          - weight: 10
+            outcome: "A rare symbiotic link forms. The nebula shares biological knowledge encoded in patterns no human has ever catalogued — sensors and systems absorb the gift."
+            ship: { lifeSignsScanner: 0.15, tech: 0.10 }
+      - text: "@event_livingNebula_choice1_text"
+        outcome: "@event_livingNebula_choice1_outcome"
+        ship: { culture: 0.08, nav: -0.05 }
+
+  - id: alien_ruins
+    title: "@event_alienRuins_title"
+    narrative: "@event_alienRuins_narrative"
+    choices:
+      - text: "@event_alienRuins_choice0_text"
+        outcomes:
+          - weight: 55
+            outcome: "@event_alienRuins_choice0_outcome"
+            ship: { tech: 0.15, cryopods: -0.08, hull: -0.05, constructors: 0.10 }
+            planet: { resources: 0.08 }
+          - weight: 30
+            outcome: "Dormant defence systems flicker to life. Automated turrets open fire before the team can retreat — the hull is breached and casualties are taken."
+            ship: { hull: -0.18, cryopods: -0.12 }
+            colonists: -5
+          - weight: 15
+            outcome: "Behind the defence grid lies an untouched alien tech cache. Rare components and intact data cores are recovered, a windfall beyond anything anticipated."
+            ship: { tech: 0.20, constructors: 0.15, hull: -0.04 }
+            planet: { resources: 0.12 }
+      - text: "@event_alienRuins_choice1_text"
+        outcome: "@event_alienRuins_choice1_outcome"
+        ship: { hull: 0.08, mineralScanner: 0.03 }
+      - text: "@event_alienRuins_choice2_text"
+        outcome: "@event_alienRuins_choice2_outcome"
+        ship: { culture: 0.10 }
+
+  - id: symbiotic_spores
+    title: "@event_symbioticSpores_title"
+    narrative: "@event_symbioticSpores_narrative"
+    choices:
+      - text: "@event_symbioticSpores_choice0_text"
+        outcome: "@event_symbioticSpores_choice0_outcome"
+        ship: { hull: 0.12, culture: -0.05 }
+        planet: { biodiversity: 0.08 }
+      - text: "@event_symbioticSpores_choice1_text"
+        outcome: "@event_symbioticSpores_choice1_outcome"
+        ship: { tech: 0.05, hull: -0.03 }
+        planet: { biodiversity: 0.03 }
+
+  - id: whale_song
+    title: "@event_whaleSong_title"
+    category: rare
+    narrative: "@event_whaleSong_narrative"
+    choices:
+      - text: "@event_whaleSong_choice0_text"
+        outcome: "@event_whaleSong_choice0_outcome"
+        ship: { culture: 0.15 }
+      - text: "@event_whaleSong_choice1_text"
+        outcome: "@event_whaleSong_choice1_outcome"
+        ship: { nav: 0.08, tech: 0.05 }
+      - text: "@event_whaleSong_choice2_text"
+        outcome: "@event_whaleSong_choice2_outcome"
+        ship: { culture: 0.12, lifeSignsScanner: 0.03 }
+
+  - id: distress_signal
+    title: "@event_distressSignal_title"
+    narrative: "@event_distressSignal_narrative"
+    choices:
+      - text: "@event_distressSignal_choice0_text"
+        outcomes:
+          - weight: 60
+            outcome: "@event_distressSignal_choice0_outcome"
+            ship: { cryopods: -0.08, tech: 0.05, culture: 0.05 }
+            colonists: 50
+          - weight: 25
+            outcome: "The survivors carry an unknown pathogen. Cryopods are damaged during emergency quarantine and several colonists are lost."
+            ship: { cryopods: -0.10, culture: -0.08 }
+            colonists: -30
+          - weight: 15
+            outcome: "Among the survivors are seasoned engineers who quickly integrate with your crew, reinforcing ship systems."
+            ship: { tech: 0.08, constructors: 0.08 }
+            colonists: 50
+      - text: "@event_distressSignal_choice1_text"
+        outcome: "@event_distressSignal_choice1_outcome"
+        ship: { cryopods: -0.05, culture: 0.05, nav: 0.03 }
+        fuel: 5
+        probes: 1
+      - text: "@event_distressSignal_choice2_text"
+        outcome: "@event_distressSignal_choice2_outcome"
+        ship: { culture: -0.08, shields: 0.05 }
+        fuel: 15
+
+  - id: ai_awakening
+    title: "@event_aiAwakening_title"
+    narrative: "@event_aiAwakening_narrative"
+    category: rare
+    choices:
+      - text: "@event_aiAwakening_choice0_text"
+        outcome: "@event_aiAwakening_choice0_outcome"
+        ship: { nav: 0.12, tech: 0.10, culture: -0.05 }
+      - text: "@event_aiAwakening_choice1_text"
+        outcome: "@event_aiAwakening_choice1_outcome"
+        ship: { nav: 0.08, tech: 0.05 }
+      - text: "@event_aiAwakening_choice2_text"
+        outcome: "@event_aiAwakening_choice2_outcome"
+        ship: { nav: 0.05, culture: -0.04, tech: -0.03 }
+        probes: 2
+
+  - id: genetic_modification
+    title: "@event_geneticModification_title"
+    narrative: "@event_geneticModification_narrative"
+    choices:
+      - text: "@event_geneticModification_choice0_text"
+        outcome: "@event_geneticModification_choice0_outcome"
+        ship: { cryopods: -0.02, tech: -0.02, culture: -0.03 }
+        planet: { atmosphere: 0.12, gravity: 0.08, biodiversity: 0.10, water: 0.05 }
+        colonists: -5
+      - text: "@event_geneticModification_choice1_text"
+        outcome: "@event_geneticModification_choice1_outcome"
+        ship: { cryopods: 0.05, culture: -0.08 }
+        planet: { atmosphere: 0.03 }
+      - text: "@event_geneticModification_choice2_text"
+        outcome: "@event_geneticModification_choice2_outcome"
+        ship: { culture: 0.08 }
+
+  - id: triage_decision
+    title: "@event_triageDecision_title"
+    narrative: "@event_triageDecision_narrative"
+    choices:
+      - text: "@event_triageDecision_choice0_text"
+        outcome: "@event_triageDecision_choice0_outcome"
+        ship: { cryopods: -0.05, culture: -0.05 }
+        colonists: -8
+      - text: "@event_triageDecision_choice1_text"
+        outcome: "@event_triageDecision_choice1_outcome"
+        ship: { tech: -0.08, cryopods: -0.03 }
+        colonists: -3
+      - text: "@event_triageDecision_choice2_text"
+        outcome: "@event_triageDecision_choice2_outcome"
+        ship: { tech: -0.05, culture: 0.05 }
+        colonists: -10
+
+  - id: earth_signal
+    title: "@event_earthSignal_title"
+    narrative: "@event_earthSignal_narrative"
+    choices:
+      - text: "@event_earthSignal_choice0_text"
+        outcome: "@event_earthSignal_choice0_outcome"
+        ship: { atmosphericScanner: 0.08, nav: -0.05 }
+        planet: { anomaly: -0.15 }
+      - text: "@event_earthSignal_choice1_text"
+        outcome: "@event_earthSignal_choice1_outcome"
+        ship: { culture: 0.05 }
+      - text: "@event_earthSignal_choice2_text"
+        outcome: "@event_earthSignal_choice2_outcome"
+        ship: { culture: -0.08 }
+
+  - id: resource_theft
+    title: "@event_resourceTheft_title"
+    narrative: "@event_resourceTheft_narrative"
+    choices:
+      - text: "@event_resourceTheft_choice0_text"
+        outcome: "@event_resourceTheft_choice0_outcome"
+        ship: { culture: -0.08, cryopods: 0.05 }
+      - text: "@event_resourceTheft_choice1_text"
+        outcome: "@event_resourceTheft_choice1_outcome"
+        ship: { culture: -0.03, cryopods: 0.03 }
+
+  - id: time_dilation
+    title: "@event_timeDilation_title"
+    narrative: "@event_timeDilation_narrative"
+    category: rare
+    choices:
+      - text: "@event_timeDilation_choice0_text"
+        outcome: "@event_timeDilation_choice0_outcome"
+        ship: { hull: 0.08, cryopods: 0.08, nav: -0.10 }
+      - text: "@event_timeDilation_choice1_text"
+        outcome: "@event_timeDilation_choice1_outcome"
+        ship: { tech: -0.08, nav: -0.05 }
+
+  - id: dream_plague
+    title: "@event_dreamPlague_title"
+    narrative: "@event_dreamPlague_narrative"
+    category: rare
+    choices:
+      - text: "@event_dreamPlague_choice0_text"
+        outcome: "@event_dreamPlague_choice0_outcome"
+        ship: { nav: -0.10, culture: 0.10 }
+        nextPlanet:
+          atmosphere: 0.12
+          water: 0.10
+          nativePresence: 0.80
+          nativeDisposition: 0.50
+      - text: "@event_dreamPlague_choice1_text"
+        outcome: "@event_dreamPlague_choice1_outcome"
+        ship: { lifeSignsScanner: 0.08, tech: 0.05, cryopods: -0.05 }
+      - text: "@event_dreamPlague_choice2_text"
+        outcome: "@event_dreamPlague_choice2_outcome"
+        ship: { cryopods: -0.05, culture: -0.05, shields: 0.05 }
+
+  - id: black_hole_lens
+    title: "@event_blackHoleLens_title"
+    narrative: "@event_blackHoleLens_narrative"
+    category: rare
+    choices:
+      - text: "@event_blackHoleLens_choice0_text"
+        outcomes:
+          - weight: 60
+            outcome: "@event_blackHoleLens_choice0_outcome"
+            ship: { gravimetricScanner: 0.15, hull: -0.10, nav: -0.05 }
+            planet: { water: 0.05, atmosphere: 0.05 }
+          - weight: 25
+            outcome: "Tidal stress — gravity warps the hull worse than expected."
+            ship: { hull: -0.18, nav: -0.08, gravimetricScanner: 0.05 }
+          - weight: 15
+            outcome: "Exceptional data — the lens reveals hidden planetary systems."
+            ship: { gravimetricScanner: 0.20, nav: 0.10 }
+            planet: { water: 0.10, atmosphere: 0.08 }
+      - text: "@event_blackHoleLens_choice1_text"
+        outcome: "@event_blackHoleLens_choice1_outcome"
+        ship: { gravimetricScanner: 0.05, culture: 0.05 }
+
+  - id: seed_vault
+    title: "@event_seedVault_title"
+    narrative: "@event_seedVault_narrative"
+    choices:
+      - text: "@event_seedVault_choice0_text"
+        outcome: "@event_seedVault_choice0_outcome"
+        ship: { cryopods: 0.08, culture: -0.10 }
+        planet: { resources: 0.05 }
+      - text: "@event_seedVault_choice1_text"
+        outcome: "@event_seedVault_choice1_outcome"
+        ship: { culture: 0.12, tech: -0.05 }
+        planet: { biodiversity: 0.05 }
+      - text: "@event_seedVault_choice2_text"
+        outcome: "@event_seedVault_choice2_outcome"
+        ship: { cryopods: 0.03, culture: 0.03 }
+
+  - id: phantom_ship
+    title: "@event_phantomShip_title"
+    narrative: "@event_phantomShip_narrative"
+    category: rare
+    choices:
+      - text: "@event_phantomShip_choice0_text"
+        outcomes:
+          - weight: 50
+            outcome: "@event_phantomShip_choice0_outcome"
+            ship: { nav: 0.10, atmosphericScanner: 0.05, culture: -0.08 }
+          - weight: 30
+            outcome: "The two timelines collide violently. Ship systems flicker and reset, navigation corrupted by overlapping realities."
+            ship: { nav: -0.08, tech: -0.05, culture: -0.05 }
+          - weight: 20
+            outcome: "The echo transmits fragmented navigational data from a timeline where the voyage ended in ruin — a warning written in coordinates."
+            ship: { nav: 0.15, shields: 0.08 }
+      - text: "@event_phantomShip_choice1_text"
+        outcome: "@event_phantomShip_choice1_outcome"
+        ship: { culture: -0.03 }
+
+  - id: solar_sail
+    title: "@event_solarSail_title"
+    narrative: "@event_solarSail_narrative"
+    choices:
+      - text: "@event_solarSail_choice0_text"
+        outcome: "@event_solarSail_choice0_outcome"
+        ship: { hull: 0.12, tech: -0.05, constructors: 0.08 }
+      - text: "@event_solarSail_choice1_text"
+        outcome: "@event_solarSail_choice1_outcome"
+        ship: { tech: 0.10, atmosphericScanner: 0.05, hull: -0.03 }
+
+  - id: boon_stellar_nursery
+    title: "@event_boonStellarNursery_title"
+    category: boon
+    narrative: "@event_boonStellarNursery_narrative"
+    choices:
+      - text: "@event_boonStellarNursery_choice0_text"
+        outcome: "@event_boonStellarNursery_choice0_outcome"
+        ship: { tech: 0.12, atmosphericScanner: 0.08, culture: 0.10 }
+      - text: "@event_boonStellarNursery_choice1_text"
+        outcome: "@event_boonStellarNursery_choice1_outcome"
+        ship: { hull: 0.10, tech: 0.10, nav: 0.05 }
+        fuel: 25
+
+  - id: boon_golden_planet
+    title: "@event_boonGoldenPlanet_title"
+    category: boon
+    narrative: "@event_boonGoldenPlanet_narrative"
+    choices:
+      - text: "@event_boonGoldenPlanet_choice0_text"
+        outcome: "@event_boonGoldenPlanet_choice0_outcome"
+        ship: { nav: 0.15, mineralScanner: 0.12 }
+        planet: { water: 0.08, atmosphere: 0.05, resources: 0.05 }
+      - text: "@event_boonGoldenPlanet_choice1_text"
+        outcome: "@event_boonGoldenPlanet_choice1_outcome"
+        ship: { culture: 0.12, mineralScanner: 0.08 }
+        planet: { resources: 0.08 }
+
+  - id: boon_repair_swarm
+    title: "@event_boonRepairSwarm_title"
+    category: boon
+    narrative: "@event_boonRepairSwarm_narrative"
+    choices:
+      - text: "@event_boonRepairSwarm_choice0_text"
+        outcome: "@event_boonRepairSwarm_choice0_outcome"
+        ship: { hull: 0.15, cryopods: 0.07, tech: 0.07, atmosphericScanner: 0.08, constructors: 0.08 }
+      - text: "@event_boonRepairSwarm_choice1_text"
+        outcome: "@event_boonRepairSwarm_choice1_outcome"
+        ship: { hull: 0.15, atmosphericScanner: 0.10, culture: 0.05 }
+        fuel: 15
+
+  - id: boon_time_crystal
+    title: "@event_boonTimeCrystal_title"
+    category: boon
+    narrative: "@event_boonTimeCrystal_narrative"
+    choices:
+      - text: "@event_boonTimeCrystal_choice0_text"
+        outcome: "@event_boonTimeCrystal_choice0_outcome"
+        ship: { cryopods: 0.15, culture: 0.05 }
+      - text: "@event_boonTimeCrystal_choice1_text"
+        outcome: "@event_boonTimeCrystal_choice1_outcome"
+        ship: { nav: 0.15, gravimetricScanner: 0.08 }
+
+  - id: boon_library
+    title: "@event_boonLibrary_title"
+    category: boon
+    narrative: "@event_boonLibrary_narrative"
+    choices:
+      - text: "@event_boonLibrary_choice0_text"
+        outcome: "@event_boonLibrary_choice0_outcome"
+        ship: { culture: 0.15, tech: 0.12 }
+        planet: { resources: 0.05 }
+      - text: "@event_boonLibrary_choice1_text"
+        outcome: "@event_boonLibrary_choice1_outcome"
+        ship: { tech: 0.15, hull: 0.08, constructors: 0.10 }
+        planet: { atmosphere: 0.05, resources: 0.08 }
+
+  - id: cosmic_ray_burst
+    title: "@event_cosmicRayBurst_title"
+    narrative: "@event_cosmicRayBurst_narrative"
+    choices:
+      - text: "@event_cosmicRayBurst_choice0_text"
+        outcomes:
+          - weight: 65
+            outcome: "@event_cosmicRayBurst_choice0_outcome"
+            ship: { tech: -0.12, atmosphericScanner: -0.08 }
+          - weight: 20
+            outcome: "Shielding collapses in three unprotected bays. Crew in the affected sections take a lethal dose before emergency bulkheads seal. The casualties hit morale like a hammer."
+            ship: { hull: -0.12, shields: -0.10 }
+            colonists: -15
+          - weight: 15
+            outcome: "The burst overloads the shield emitters, but the surge floods the scanner arrays with high-energy photons and calibrates them better than any manual tuning could."
+            ship: { scanners: 0.08, shields: -0.03 }
+      - text: "@event_cosmicRayBurst_choice1_text"
+        outcome: "@event_cosmicRayBurst_choice1_outcome"
+        ship: { hull: -0.10, tech: -0.05 }
+        colonists: -5
+      - text: "@event_cosmicRayBurst_choice2_text"
+        outcome: "@event_cosmicRayBurst_choice2_outcome"
+        ship: { atmosphericScanner: 0.05, nav: -0.08, tech: -0.05 }
+      - text: "@event_cosmicRayBurst_choice3_text"
+        outcome: "@event_cosmicRayBurst_choice3_outcome"
+        ship: { tech: -0.05, atmosphericScanner: -0.03 }
+        probeCost: 1
+
+  - id: ice_comet
+    title: "@event_iceComet_title"
+    narrative: "@event_iceComet_narrative"
+    choices:
+      - text: "@event_iceComet_choice0_text"
+        outcomes:
+          - weight: 70
+            outcome: "@event_iceComet_choice0_outcome"
+            ship: { hull: -0.05, tech: -0.05 }
+            planet: { water: 0.12 }
+          - weight: 20
+            outcome: "Structural collapse — the comet fragments violently during extraction, pelting the hull with debris."
+            ship: { hull: -0.10 }
+            planet: { water: 0.03 }
+          - weight: 10
+            outcome: "Rare isotopes discovered deep in the ice yield an unexpected technological windfall."
+            ship: { tech: 0.10 }
+            planet: { water: 0.12 }
+      - text: "@event_iceComet_choice1_text"
+        outcome: "@event_iceComet_choice1_outcome"
+        ship: { tech: -0.03 }
+        planet: { biodiversity: 0.10, water: 0.05 }
+      - text: "@event_iceComet_choice2_text"
+        outcome: "@event_iceComet_choice2_outcome"
+        ship: { culture: 0.05 }
+
+  - id: sleepwalker
+    title: "@event_sleepwalker_title"
+    narrative: "@event_sleepwalker_narrative"
+    choices:
+      - text: "@event_sleepwalker_choice0_text"
+        outcome: "@event_sleepwalker_choice0_outcome"
+        ship: { tech: 0.10, cryopods: -0.08, culture: -0.05 }
+      - text: "@event_sleepwalker_choice1_text"
+        outcome: "@event_sleepwalker_choice1_outcome"
+        ship: { tech: 0.05, cryopods: -0.03 }
+
+  - id: dust_cloud
+    title: "@event_dustCloud_title"
+    narrative: "@event_dustCloud_narrative"
+    choices:
+      - text: "@event_dustCloud_choice0_text"
+        outcome: "@event_dustCloud_choice0_outcome"
+        ship: { hull: -0.12, nav: -0.05 }
+      - text: "@event_dustCloud_choice1_text"
+        outcome: "@event_dustCloud_choice1_outcome"
+        ship: { hull: -0.05, atmosphericScanner: -0.10, tech: -0.05 }
+      - text: "@event_dustCloud_choice2_text"
+        outcome: "@event_dustCloud_choice2_outcome"
+        ship: { hull: -0.03, nav: -0.03 }
+        probeCost: 2
+
+  - id: religion_founded
+    title: "@event_religionFounded_title"
+    category: uneventful
+    narrative: "@event_religionFounded_narrative"
+    choices:
+      - text: "@event_religionFounded_choice0_text"
+        outcome: "@event_religionFounded_choice0_outcome"
+        ship: { culture: 0.12, tech: -0.03 }
+      - text: "@event_religionFounded_choice1_text"
+        outcome: "@event_religionFounded_choice1_outcome"
+        ship: { culture: 0.05 }
+      - text: "@event_religionFounded_choice2_text"
+        outcome: "@event_religionFounded_choice2_outcome"
+        ship: { culture: -0.10, tech: 0.05 }
+
+  - id: solar_wind_surfing
+    title: "@event_solarWindSurfing_title"
+    narrative: "@event_solarWindSurfing_narrative"
+    choices:
+      - text: "@event_solarWindSurfing_choice0_text"
+        outcome: "@event_solarWindSurfing_choice0_outcome"
+        ship: { nav: 0.10, hull: -0.08 }
+      - text: "@event_solarWindSurfing_choice1_text"
+        outcome: "@event_solarWindSurfing_choice1_outcome"
+        ship: { tech: 0.08, atmosphericScanner: 0.05 }
+
+  - id: memory_plague
+    title: "@event_memoryPlague_title"
+    category: malfunction
+    narrative: "@event_memoryPlague_narrative"
+    choices:
+      - text: "@event_memoryPlague_choice0_text"
+        outcome: "@event_memoryPlague_choice0_outcome"
+        ship: { culture: -0.08, tech: -0.10 }
+      - text: "@event_memoryPlague_choice1_text"
+        outcome: "@event_memoryPlague_choice1_outcome"
+        ship: { culture: -0.18 }
+      - text: "@event_memoryPlague_choice2_text"
+        outcome: "@event_memoryPlague_choice2_outcome"
+        ship: { culture: -0.03, cryopods: -0.10, tech: -0.05 }
+        colonists: -3
+
+  - id: gravity_lens_planet
+    title: "@event_gravityLensPlanet_title"
+    narrative: "@event_gravityLensPlanet_narrative"
+    choices:
+      - text: "@event_gravityLensPlanet_choice0_text"
+        outcome: "@event_gravityLensPlanet_choice0_outcome"
+        ship: { gravimetricScanner: 0.08, culture: 0.10 }
+        planet: { water: 0.10, atmosphere: 0.10, biodiversity: 0.08 }
+      - text: "@event_gravityLensPlanet_choice1_text"
+        outcome: "@event_gravityLensPlanet_choice1_outcome"
+        ship: { culture: -0.05, gravimetricScanner: 0.05 }
+
+  - id: engine_harmonics
+    title: "@event_engineHarmonics_title"
+    narrative: "@event_engineHarmonics_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_engineHarmonics_choice0_text"
+        outcome: "@event_engineHarmonics_choice0_outcome"
+        ship: { nav: -0.08, culture: 0.08 }
+      - text: "@event_engineHarmonics_choice1_text"
+        outcome: "@event_engineHarmonics_choice1_outcome"
+        ship: { tech: -0.08, culture: -0.03 }
+
+  - id: ark_memory
+    title: "@event_arkMemory_title"
+    narrative: "@event_arkMemory_narrative"
+    choices:
+      - text: "@event_arkMemory_choice0_text"
+        outcome: "@event_arkMemory_choice0_outcome"
+        ship: { culture: 0.15, cryopods: -0.03 }
+      - text: "@event_arkMemory_choice1_text"
+        outcome: "@event_arkMemory_choice1_outcome"
+        ship: { culture: 0.03 }
+
+  - id: magnetic_storm
+    title: "@event_magneticStorm_title"
+    narrative: "@event_magneticStorm_narrative"
+    choices:
+      - text: "@event_magneticStorm_choice0_text"
+        outcome: "@event_magneticStorm_choice0_outcome"
+        ship: { hull: -0.10, tech: 0.05 }
+      - text: "@event_magneticStorm_choice1_text"
+        outcome: "@event_magneticStorm_choice1_outcome"
+        ship: { hull: 0.05, atmosphericScanner: -0.12, tech: -0.05 }
+      - text: "@event_magneticStorm_choice2_text"
+        outcome: "@event_magneticStorm_choice2_outcome"
+        ship: { hull: -0.03, tech: -0.03 }
+        probeCost: 1
+
+  - id: oxygen_garden
+    title: "@event_oxygenGarden_title"
+    narrative: "@event_oxygenGarden_narrative"
+    choices:
+      - text: "@event_oxygenGarden_choice0_text"
+        outcome: "@event_oxygenGarden_choice0_outcome"
+        ship: { culture: 0.12, cryopods: 0.05 }
+        planet: { biodiversity: 0.05 }
+      - text: "@event_oxygenGarden_choice1_text"
+        outcome: "@event_oxygenGarden_choice1_outcome"
+        ship: { culture: 0.08 }
+
+  - id: rogue_planet
+    title: "@event_roguePlanet_title"
+    narrative: "@event_roguePlanet_narrative"
+    choices:
+      - text: "@event_roguePlanet_choice0_text"
+        outcomes:
+          - weight: 65
+            outcome: "@event_roguePlanet_choice0_outcome"
+            ship: { mineralScanner: 0.08, tech: 0.05 }
+            planet: { biodiversity: 0.08, water: 0.05 }
+          - weight: 25
+            outcome: "The probe returns carrying unknown microbial hitchhikers. A contamination scare forces the crew into emergency decontamination protocols, straining medical supplies and morale."
+            ship: { tech: -0.08, cryopods: -0.08 }
+            colonists: -5
+          - weight: 10
+            outcome: "The biological data recovered is unlike anything in the xenobiology archives. The probe's findings rewrite entire chapters of the science, opening new frontiers in understanding life beyond stars."
+            ship: { lifeSignsScanner: 0.15, tech: 0.08 }
+            planet: { biodiversity: 0.12 }
+      - text: "@event_roguePlanet_choice1_text"
+        outcome: "@event_roguePlanet_choice1_outcome"
+        ship: { hull: 0.08 }
+        planet: { resources: 0.10 }
+      - text: "@event_roguePlanet_choice2_text"
+        outcome: "@event_roguePlanet_choice2_outcome"
+        ship: { nav: 0.03 }
+
+  - id: art_competition
+    title: "@event_artCompetition_title"
+    narrative: "@event_artCompetition_narrative"
+    choices:
+      - text: "@event_artCompetition_choice0_text"
+        outcome: "@event_artCompetition_choice0_outcome"
+        ship: { culture: 0.15, tech: -0.05 }
+      - text: "@event_artCompetition_choice1_text"
+        outcome: "@event_artCompetition_choice1_outcome"
+        ship: { culture: 0.08 }
+
+  - id: subspace_echo
+    title: "@event_subspaceEcho_title"
+    narrative: "@event_subspaceEcho_narrative"
+    choices:
+      - text: "@event_subspaceEcho_choice0_text"
+        outcome: "@event_subspaceEcho_choice0_outcome"
+        ship: { nav: 0.05, culture: 0.10 }
+        planet: { anomaly: 0.08 }
+      - text: "@event_subspaceEcho_choice1_text"
+        outcome: "@event_subspaceEcho_choice1_outcome"
+        ship: { gravimetricScanner: 0.08, nav: 0.05 }
+      - text: "@event_subspaceEcho_choice2_text"
+        outcome: "@event_subspaceEcho_choice2_outcome"
+        ship: { culture: -0.05, nav: 0.03 }
+
+  - id: boon_perfect_calm
+    title: "@event_boonPerfectCalm_title"
+    narrative: "@event_boonPerfectCalm_narrative"
+    category: boon
+    choices:
+      - text: "@event_boonPerfectCalm_choice0_text"
+        outcome: "@event_boonPerfectCalm_choice0_outcome"
+        ship: { hull: 0.10, atmosphericScanner: 0.08, nav: 0.08, tech: 0.08 }
+      - text: "@event_boonPerfectCalm_choice1_text"
+        outcome: "@event_boonPerfectCalm_choice1_outcome"
+        ship: { culture: 0.15, cryopods: 0.10 }
+
+  - id: boon_ancient_waystation
+    title: "@event_boonAncientWaystation_title"
+    narrative: "@event_boonAncientWaystation_narrative"
+    category: boon
+    choices:
+      - text: "@event_boonAncientWaystation_choice0_text"
+        outcome: "@event_boonAncientWaystation_choice0_outcome"
+        ship: { hull: 0.10, nav: 0.10, tech: 0.08, atmosphericScanner: 0.10, cryopods: 0.08, culture: 0.08 }
+      - text: "@event_boonAncientWaystation_choice1_text"
+        outcome: "@event_boonAncientWaystation_choice1_outcome"
+        ship: { hull: 0.08, nav: 0.08, tech: 0.05, culture: 0.12 }
+        fuel: 20
+
+  - id: relic_sentinel
+    title: "@event_relicSentinel_title"
+    narrative: "@event_relicSentinel_narrative"
+    choices:
+      - text: "@event_relicSentinel_choice0_text"
+        outcome: "@event_relicSentinel_choice0_outcome"
+        ship: { nav: 0.10, gravimetricScanner: 0.08 }
+        planet: { atmosphere: 0.05, water: 0.05 }
+      - text: "@event_relicSentinel_choice1_text"
+        outcome: "@event_relicSentinel_choice1_outcome"
+        ship: { hull: 0.08, tech: 0.05, gravimetricScanner: 0.05 }
+      - text: "@event_relicSentinel_choice2_text"
+        outcome: "@event_relicSentinel_choice2_outcome"
+        ship: { culture: -0.03, shields: 0.05 }
+        fuel: 5
+
+  - id: relic_seed_probe
+    title: "@event_relicSeedProbe_title"
+    narrative: "@event_relicSeedProbe_narrative"
+    choices:
+      - text: "@event_relicSeedProbe_choice0_text"
+        outcome: "@event_relicSeedProbe_choice0_outcome"
+        planet: { biodiversity: 0.15, atmosphere: 0.05, water: 0.03 }
+      - text: "@event_relicSeedProbe_choice1_text"
+        outcome: "@event_relicSeedProbe_choice1_outcome"
+        ship: { nav: 0.10, tech: 0.10 }
+      - text: "@event_relicSeedProbe_choice2_text"
+        outcome: "@event_relicSeedProbe_choice2_outcome"
+        ship: { culture: 0.12 }
+
+  - id: relic_warning_buoy
+    title: "@event_relicWarningBuoy_title"
+    narrative: "@event_relicWarningBuoy_narrative"
+    choices:
+      - text: "@event_relicWarningBuoy_choice0_text"
+        outcome: "@event_relicWarningBuoy_choice0_outcome"
+        ship: { nav: -0.08, hull: 0.05 }
+      - text: "@event_relicWarningBuoy_choice1_text"
+        outcome: "@event_relicWarningBuoy_choice1_outcome"
+        ship: { culture: -0.05 }
+      - text: "@event_relicWarningBuoy_choice2_text"
+        outcome: "@event_relicWarningBuoy_choice2_outcome"
+        ship: { gravimetricScanner: 0.10, nav: 0.05, tech: -0.03 }
+
+  - id: relic_mirror_array
+    title: "@event_relicMirrorArray_title"
+    narrative: "@event_relicMirrorArray_narrative"
+    choices:
+      - text: "@event_relicMirrorArray_choice0_text"
+        outcome: "@event_relicMirrorArray_choice0_outcome"
+        ship: { tech: 0.10, culture: 0.08, atmosphericScanner: 0.05 }
+      - text: "@event_relicMirrorArray_choice1_text"
+        outcome: "@event_relicMirrorArray_choice1_outcome"
+        ship: { hull: 0.12, tech: 0.08 }
+      - text: "@event_relicMirrorArray_choice2_text"
+        outcome: "@event_relicMirrorArray_choice2_outcome"
+        ship: { nav: 0.12, atmosphericScanner: 0.10 }
+        planet: { resources: 0.05, atmosphere: 0.05 }
+
+  - id: relic_graveyard
+    title: "@event_relicGraveyard_title"
+    narrative: "@event_relicGraveyard_narrative"
+    choices:
+      - text: "@event_relicGraveyard_choice0_text"
+        outcome: "@event_relicGraveyard_choice0_outcome"
+        ship: { tech: 0.12, hull: 0.08, mineralScanner: 0.05, nav: 0.05 }
+      - text: "@event_relicGraveyard_choice1_text"
+        outcome: "@event_relicGraveyard_choice1_outcome"
+        ship: { nav: 0.15, mineralScanner: 0.10 }
+        planet: { water: 0.05, resources: 0.05 }
+      - text: "@event_relicGraveyard_choice2_text"
+        outcome: "@event_relicGraveyard_choice2_outcome"
+        ship: { culture: 0.12, tech: -0.03, nav: 0.05 }
+
+  - id: relic_dreamcatcher
+    title: "@event_relicDreamcatcher_title"
+    narrative: "@event_relicDreamcatcher_narrative"
+    choices:
+      - text: "@event_relicDreamcatcher_choice0_text"
+        outcome: "@event_relicDreamcatcher_choice0_outcome"
+        ship: { lifeSignsScanner: 0.10, nav: 0.08 }
+        nextPlanet:
+          atmosphere: 0.15
+          water: 0.12
+          nativePresence: 0.80
+          nativeDisposition: 0.50
+      - text: "@event_relicDreamcatcher_choice1_text"
+        outcome: "@event_relicDreamcatcher_choice1_outcome"
+        ship: { tech: 0.12, lifeSignsScanner: 0.08 }
+      - text: "@event_relicDreamcatcher_choice2_text"
+        outcome: "@event_relicDreamcatcher_choice2_outcome"
+        ship: { cryopods: 0.05, culture: -0.05 }
+
+  - id: relic_rosetta
+    title: "@event_relicRosetta_title"
+    narrative: "@event_relicRosetta_narrative"
+    choices:
+      - text: "@event_relicRosetta_choice0_text"
+        outcome: "@event_relicRosetta_choice0_outcome"
+        ship: { tech: 0.15, nav: 0.10 }
+      - text: "@event_relicRosetta_choice1_text"
+        outcome: "@event_relicRosetta_choice1_outcome"
+        ship: { hull: 0.12, tech: 0.05 }
+      - text: "@event_relicRosetta_choice2_text"
+        outcome: "@event_relicRosetta_choice2_outcome"
+        ship: { cryopods: 0.08 }
+        planet: { biodiversity: 0.08, atmosphere: 0.05 }
+
+  - id: relic_ghost_fleet
+    title: "@event_relicGhostFleet_title"
+    narrative: "@event_relicGhostFleet_narrative"
+    choices:
+      - text: "@event_relicGhostFleet_choice0_text"
+        outcomes:
+          - weight: 55
+            outcome: "@event_relicGhostFleet_choice0_outcome"
+            ship: { nav: 0.10, gravimetricScanner: 0.12, hull: -0.05 }
+          - weight: 30
+            outcome: "Automated defenses activate. Your boarding party barely escapes."
+            ship: { hull: -0.12, tech: -0.05 }
+            colonists: -3
+          - weight: 15
+            outcome: "The flagship's AI core is intact and cooperative. It shares centuries of star charts."
+            ship: { tech: 0.20, nav: 0.15 }
+      - text: "@event_relicGhostFleet_choice1_text"
+        outcome: "@event_relicGhostFleet_choice1_outcome"
+        ship: { hull: 0.18, tech: -0.05 }
+      - text: "@event_relicGhostFleet_choice2_text"
+        outcome: "@event_relicGhostFleet_choice2_outcome"
+        ship: { cryopods: 0.12, tech: 0.05 }
+
+  - id: scanner_calibration_drift
+    title: "@event_scannerCalibrationDrift_title"
+    narrative: "@event_scannerCalibrationDrift_narrative"
+    choices:
+      - text: "@event_scannerCalibrationDrift_choice0_text"
+        outcome: "@event_scannerCalibrationDrift_choice0_outcome"
+        ship: { atmosphericScanner: 0.10, temperatureScanner: 0.10, tech: -0.10 }
+      - text: "@event_scannerCalibrationDrift_choice1_text"
+        outcome: "@event_scannerCalibrationDrift_choice1_outcome"
+        ship: { atmosphericScanner: 0.08, temperatureScanner: -0.05, tech: -0.03 }
+      - text: "@event_scannerCalibrationDrift_choice2_text"
+        outcome: "@event_scannerCalibrationDrift_choice2_outcome"
+        ship: { atmosphericScanner: 0.08, temperatureScanner: 0.08 }
+        probeCost: 1
+
+  - id: ion_storm_scanners
+    title: "@event_ionStormScanners_title"
+    narrative: "@event_ionStormScanners_narrative"
+    choices:
+      - text: "@event_ionStormScanners_choice0_text"
+        outcome: "@event_ionStormScanners_choice0_outcome"
+        ship: { mineralScanner: -0.10, waterScanner: -0.08 }
+      - text: "@event_ionStormScanners_choice1_text"
+        outcome: "@event_ionStormScanners_choice1_outcome"
+        ship: { mineralScanner: -0.12, waterScanner: -0.10, gravimetricScanner: -0.05 }
+      - text: "@event_ionStormScanners_choice2_text"
+        outcome: "@event_ionStormScanners_choice2_outcome"
+        ship: { waterScanner: 0.05, mineralScanner: -0.08, tech: -0.05 }
+
+  - id: bio_scanner_contamination
+    title: "@event_bioScannerContamination_title"
+    narrative: "@event_bioScannerContamination_narrative"
+    choices:
+      - text: "@event_bioScannerContamination_choice0_text"
+        outcome: "@event_bioScannerContamination_choice0_outcome"
+        ship: { lifeSignsScanner: 0.08, gravimetricScanner: -0.08 }
+      - text: "@event_bioScannerContamination_choice1_text"
+        outcome: "@event_bioScannerContamination_choice1_outcome"
+        ship: { lifeSignsScanner: -0.05, gravimetricScanner: -0.03, tech: -0.03 }
+
+  - id: scanner_power_surge
+    title: "@event_scannerPowerSurge_title"
+    narrative: "@event_scannerPowerSurge_narrative"
+    choices:
+      - text: "@event_scannerPowerSurge_choice0_text"
+        outcome: "@event_scannerPowerSurge_choice0_outcome"
+        ship: { scanners: -0.10, shields: -0.10 }
+      - text: "@event_scannerPowerSurge_choice1_text"
+        outcome: "@event_scannerPowerSurge_choice1_outcome"
+        ship: { scanners: -0.18 }
+      - text: "@event_scannerPowerSurge_choice2_text"
+        outcome: "@event_scannerPowerSurge_choice2_outcome"
+        ship: { scanners: -0.04 }
+        probeCost: 1
+
+  - id: relic_world_engine
+    title: "@event_relicWorldEngine_title"
+    narrative: "@event_relicWorldEngine_narrative"
+    choices:
+      - text: "@event_relicWorldEngine_choice0_text"
+        outcome: "@event_relicWorldEngine_choice0_outcome"
+        ship: { tech: 0.10 }
+        planet: { atmosphere: 0.12, water: 0.10, temperature: 0.08, gravity: 0.05 }
+      - text: "@event_relicWorldEngine_choice1_text"
+        outcome: "@event_relicWorldEngine_choice1_outcome"
+        ship: { hull: 0.15, tech: 0.08 }
+      - text: "@event_relicWorldEngine_choice2_text"
+        outcome: "@event_relicWorldEngine_choice2_outcome"
+        ship: { tech: -0.05, nav: -0.03 }
+        nextPlanet:
+          atmosphere: 0.28
+          water: 0.22
+          temperature: 0.18
+          biodiversity: 0.18
+          resources: 0.15
+          gravity: 0.10
+
+  - id: uneventful_maintenance
+    title: "@event_uneventfulMaintenance_title"
+    narrative: "@event_uneventfulMaintenance_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_uneventfulMaintenance_choice0_text"
+        outcome: "@event_uneventfulMaintenance_choice0_outcome"
+        ship: { hull: 0.02 }
+      - text: "@event_uneventfulMaintenance_choice1_text"
+        outcome: "@event_uneventfulMaintenance_choice1_outcome"
+        ship: { atmosphericScanner: 0.02 }
+
+  - id: uneventful_quiet_watch
+    title: "@event_uneventfulQuietWatch_title"
+    narrative: "@event_uneventfulQuietWatch_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_uneventfulQuietWatch_choice0_text"
+        outcome: "@event_uneventfulQuietWatch_choice0_outcome"
+        ship: { culture: 0.02 }
+      - text: "@event_uneventfulQuietWatch_choice1_text"
+        outcome: "@event_uneventfulQuietWatch_choice1_outcome"
+        ship: { tech: 0.02 }
+
+  - id: uneventful_cryopod_check
+    title: "@event_uneventfulCryopodCheck_title"
+    narrative: "@event_uneventfulCryopodCheck_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_uneventfulCryopodCheck_choice0_text"
+        outcome: "@event_uneventfulCryopodCheck_choice0_outcome"
+        ship: { culture: 0.02, cryopods: -0.01 }
+      - text: "@event_uneventfulCryopodCheck_choice1_text"
+        outcome: "@event_uneventfulCryopodCheck_choice1_outcome"
+        ship: { cryopods: 0.02 }
+
+  - id: uneventful_cartography
+    title: "@event_uneventfulCartography_title"
+    narrative: "@event_uneventfulCartography_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_uneventfulCartography_choice0_text"
+        outcome: "@event_uneventfulCartography_choice0_outcome"
+        ship: { nav: 0.02 }
+      - text: "@event_uneventfulCartography_choice1_text"
+        outcome: "@event_uneventfulCartography_choice1_outcome"
+        ship: { gravimetricScanner: 0.02 }
+
+  - id: uneventful_anniversary
+    title: "@event_uneventfulAnniversary_title"
+    narrative: "@event_uneventfulAnniversary_narrative"
+    category: uneventful
+    choices:
+      - text: "@event_uneventfulAnniversary_choice0_text"
+        outcome: "@event_uneventfulAnniversary_choice0_outcome"
+        ship: { culture: 0.02 }
+      - text: "@event_uneventfulAnniversary_choice1_text"
+        outcome: "@event_uneventfulAnniversary_choice1_outcome"
+        ship: { tech: 0.01, nav: 0.01 }
+
+  - id: database_literature
+    title: "@event_databaseLiterature_title"
+    narrative: "@event_databaseLiterature_narrative"
+    choices:
+      - text: "@event_databaseLiterature_choice0_text"
+        outcome: "@event_databaseLiterature_choice0_outcome"
+        ship: { culture: 0.10 }
+      - text: "@event_databaseLiterature_choice1_text"
+        outcome: "@event_databaseLiterature_choice1_outcome"
+        ship: { culture: 0.06, tech: 0.02 }
+
+  - id: database_schematics
+    title: "@event_databaseSchematics_title"
+    narrative: "@event_databaseSchematics_narrative"
+    choices:
+      - text: "@event_databaseSchematics_choice0_text"
+        outcome: "@event_databaseSchematics_choice0_outcome"
+        ship: { tech: 0.10, nav: 0.03 }
+      - text: "@event_databaseSchematics_choice1_text"
+        outcome: "@event_databaseSchematics_choice1_outcome"
+        ship: { tech: 0.06, hull: 0.02, atmosphericScanner: 0.02 }
+
+  - id: database_corruption
+    title: "@event_databaseCorruption_title"
+    narrative: "@event_databaseCorruption_narrative"
+    choices:
+      - text: "@event_databaseCorruption_choice0_text"
+        outcome: "@event_databaseCorruption_choice0_outcome"
+        ship: { culture: -0.05, tech: -0.06 }
+      - text: "@event_databaseCorruption_choice1_text"
+        outcome: "@event_databaseCorruption_choice1_outcome"
+        ship: { culture: 0.03, cryopods: -0.03 }
+
+  - id: database_breakthrough
+    title: "@event_databaseBreakthrough_title"
+    narrative: "@event_databaseBreakthrough_narrative"
+    choices:
+      - text: "@event_databaseBreakthrough_choice0_text"
+        outcome: "@event_databaseBreakthrough_choice0_outcome"
+        ship: { tech: 0.06, atmosphericScanner: 0.08 }
+      - text: "@event_databaseBreakthrough_choice1_text"
+        outcome: "@event_databaseBreakthrough_choice1_outcome"
+        ship: { tech: 0.08, culture: 0.04 }
+
+  - id: alien_fleet_sighting
+    title: "@event_alienFleetSighting_title"
+    narrative: "@event_alienFleetSighting_narrative"
+    choices:
+      - text: "@event_alienFleetSighting_choice0_text"
+        outcomes:
+          - weight: 45
+            outcome: "@event_alienFleetSighting_choice0_outcome"
+            ship: { atmosphericScanner: 0.10, nav: -0.05 }
+          - weight: 35
+            outcome: "The fleet interprets your hail as a challenge. Hundreds of warships power weapons simultaneously — a wall of targeting locks floods your sensors. They stand down after a tense standoff, but the crew is shaken to the core."
+            ship: { culture: -0.15, shields: -0.05 }
+          - weight: 20
+            outcome: "Against all odds, your signal resonates. A fleet commander responds with navigational charts and engineering data — a gesture of alliance across the void."
+            ship: { tech: 0.15, culture: 0.10 }
+      - text: "@event_alienFleetSighting_choice1_text"
+        outcome: "@event_alienFleetSighting_choice1_outcome"
+        ship: { culture: 0.10, nav: 0.05, atmosphericScanner: 0.05 }
+      - text: "@event_alienFleetSighting_choice2_text"
+        outcome: "@event_alienFleetSighting_choice2_outcome"
+        ship: { nav: -0.06, culture: -0.03, shields: 0.05 }
+        fuel: 5
+
+  - id: alien_trade_offer
+    title: "@event_alienTradeOffer_title"
+    narrative: "@event_alienTradeOffer_narrative"
+    choices:
+      - text: "@event_alienTradeOffer_choice0_text"
+        outcome: "@event_alienTradeOffer_choice0_outcome"
+        ship: { nav: 0.12, mineralScanner: 0.08, tech: -0.08 }
+      - text: "@event_alienTradeOffer_choice1_text"
+        outcome: "@event_alienTradeOffer_choice1_outcome"
+        ship: { hull: 0.15, culture: -0.08 }
+      - text: "@event_alienTradeOffer_choice2_text"
+        outcome: "@event_alienTradeOffer_choice2_outcome"
+        ship: { culture: -0.03 }
+
+  - id: alien_warning
+    title: "@event_alienWarning_title"
+    narrative: "@event_alienWarning_narrative"
+    choices:
+      - text: "@event_alienWarning_choice0_text"
+        outcome: "@event_alienWarning_choice0_outcome"
+        ship: { nav: -0.10, hull: 0.05, atmosphericScanner: 0.03 }
+      - text: "@event_alienWarning_choice1_text"
+        outcome: "@event_alienWarning_choice1_outcome"
+        ship: { hull: -0.12, atmosphericScanner: -0.08 }
+      - text: "@event_alienWarning_choice2_text"
+        outcome: "@event_alienWarning_choice2_outcome"
+        ship: { atmosphericScanner: 0.10, hull: -0.05 }
+        probeCost: 1
+
+  - id: native_signal_detected
+    title: "@event_nativeSignalDetected_title"
+    narrative: "@event_nativeSignalDetected_narrative"
+    choices:
+      - text: "@event_nativeSignalDetected_choice0_text"
+        outcome: "@event_nativeSignalDetected_choice0_outcome"
+        ship: { culture: 0.05, lifeSignsScanner: 0.03 }
+        planet: { nativePresence: 0.10, nativeDisposition: 0.10 }
+      - text: "@event_nativeSignalDetected_choice1_text"
+        outcome: "@event_nativeSignalDetected_choice1_outcome"
+        ship: { lifeSignsScanner: 0.05 }
+        planet: { nativePresence: 0.10, nativeDisposition: 0.05 }
+      - text: "@event_nativeSignalDetected_choice2_text"
+        outcome: "@event_nativeSignalDetected_choice2_outcome"
+        ship: { tech: -0.03, culture: -0.05, shields: 0.05 }
+        fuel: 8
+        planet: { nativePresence: 0.05, nativeDisposition: -0.15 }
+
+  - id: native_probe_encounter
+    title: "@event_nativeProbeEncounter_title"
+    narrative: "@event_nativeProbeEncounter_narrative"
+    choices:
+      - text: "@event_nativeProbeEncounter_choice0_text"
+        outcome: "@event_nativeProbeEncounter_choice0_outcome"
+        ship: { atmosphericScanner: 0.05, nav: 0.03 }
+        planet: { nativePresence: 0.08, nativeDisposition: 0.12 }
+      - text: "@event_nativeProbeEncounter_choice1_text"
+        outcome: "@event_nativeProbeEncounter_choice1_outcome"
+        ship: { tech: 0.08, atmosphericScanner: 0.05 }
+        planet: { nativePresence: 0.05, nativeDisposition: -0.10 }
+      - text: "@event_nativeProbeEncounter_choice2_text"
+        outcome: "@event_nativeProbeEncounter_choice2_outcome"
+        ship: { culture: -0.05 }
+        planet: { nativePresence: 0.03, nativeDisposition: -0.15 }
+        probeCost: 1
+
+  - id: native_cultural_exchange
+    title: "@event_nativeCulturalExchange_title"
+    narrative: "@event_nativeCulturalExchange_narrative"
+    choices:
+      - text: "@event_nativeCulturalExchange_choice0_text"
+        outcome: "@event_nativeCulturalExchange_choice0_outcome"
+        ship: { culture: 0.10, tech: 0.03 }
+        planet: { nativeDisposition: 0.12 }
+      - text: "@event_nativeCulturalExchange_choice1_text"
+        outcome: "@event_nativeCulturalExchange_choice1_outcome"
+        ship: { tech: 0.10, atmosphericScanner: 0.05 }
+        planet: { nativeDisposition: 0.05 }
+      - text: "@event_nativeCulturalExchange_choice2_text"
+        outcome: "@event_nativeCulturalExchange_choice2_outcome"
+        ship: { tech: 0.05, culture: 0.05 }
+        planet: { nativeDisposition: 0.10, nativePresence: 0.03 }
+        probeCost: 1
+
+  - id: landing_thruster_malfunction
+    title: "@event_landingThrusterMalfunction_title"
+    narrative: "@event_landingThrusterMalfunction_narrative"
+    choices:
+      - text: "@event_landingThrusterMalfunction_choice0_text"
+        outcome: "@event_landingThrusterMalfunction_choice0_outcome"
+        ship: { landingSystem: 0.10, tech: -0.08 }
+      - text: "@event_landingThrusterMalfunction_choice1_text"
+        outcome: "@event_landingThrusterMalfunction_choice1_outcome"
+        ship: { landingSystem: 0.06, atmosphericScanner: 0.02 }
+        probeCost: 1
+
+  - id: landing_sim_drill
+    title: "@event_landingSimDrill_title"
+    narrative: "@event_landingSimDrill_narrative"
+    choices:
+      - text: "@event_landingSimDrill_choice0_text"
+        outcome: "@event_landingSimDrill_choice0_outcome"
+        ship: { landingSystem: 0.08, nav: 0.02 }
+      - text: "@event_landingSimDrill_choice1_text"
+        outcome: "@event_landingSimDrill_choice1_outcome"
+        ship: { landingSystem: 0.04, culture: 0.08 }
+
+  - id: dyson_sphere
+    title: "@event_dysonSphere_title"
+    category: rare
+    narrative: "@event_dysonSphere_narrative"
+    choices:
+      - text: "@event_dysonSphere_choice0_text"
+        outcome: "@event_dysonSphere_choice0_outcome"
+        ship: { tech: 0.20, constructors: 0.15, atmosphericScanner: 0.10 }
+        colonists: -5
+      - text: "@event_dysonSphere_choice1_text"
+        outcome: "@event_dysonSphere_choice1_outcome"
+        ship: { tech: 0.12, hull: 0.05, shields: 0.05, nav: -0.08, fuel: 0.10 }
+      - text: "@event_dysonSphere_choice2_text"
+        outcome: "@event_dysonSphere_choice2_outcome"
+        ship: { constructors: 0.10, tech: 0.08, culture: 0.05 }
+
+  - id: nanotech_plague
+    title: "@event_nanotechPlague_title"
+    category: rare
+    narrative: "@event_nanotechPlague_narrative"
+    choices:
+      - text: "@event_nanotechPlague_choice0_text"
+        outcome: "@event_nanotechPlague_choice0_outcome"
+        ship: { tech: -0.08, lifeSignsScanner: -0.05, hull: -0.05, shields: 0.05 }
+        colonists: -18
+      - text: "@event_nanotechPlague_choice1_text"
+        outcome: "@event_nanotechPlague_choice1_outcome"
+        ship: { culture: -0.10, hull: -0.05, constructors: -0.05 }
+        colonists: -15
+      - text: "@event_nanotechPlague_choice2_text"
+        outcome: "@event_nanotechPlague_choice2_outcome"
+        ship: { tech: 0.05, hull: 0.08, constructors: 0.08, culture: -0.15 }
+        colonists: -25
+      - text: "@event_nanotechPlague_choice3_text"
+        outcome: "@event_nanotechPlague_choice3_outcome"
+        ship: { hull: -0.03, tech: -0.03 }
+        colonists: -3
+        probeCost: 1
+
+  - id: premature_awakening
+    title: "@event_prematureAwakening_title"
+    category: rare
+    narrative: "@event_prematureAwakening_narrative"
+    choices:
+      - text: "@event_prematureAwakening_choice0_text"
+        outcome: "@event_prematureAwakening_choice0_outcome"
+        ship: { culture: 0.12, cryopods: -0.22, tech: 0.05 }
+        colonists: 130
+      - text: "@event_prematureAwakening_choice1_text"
+        outcome: "@event_prematureAwakening_choice1_outcome"
+        ship: { cryopods: -0.03, culture: 0.08, tech: 0.10, hull: 0.05 }
+        colonists: 110
+      - text: "@event_prematureAwakening_choice2_text"
+        outcome: "@event_prematureAwakening_choice2_outcome"
+        ship: { culture: 0.03, cryopods: -0.16, constructors: 0.05 }
+        colonists: 125
+
+  - id: stowaways_advanced
+    title: "@event_stowawaysAdvanced_title"
+    category: rare
+    narrative: "@event_stowawaysAdvanced_narrative"
+    choices:
+      - text: "@event_stowawaysAdvanced_choice0_text"
+        outcome: "@event_stowawaysAdvanced_choice0_outcome"
+        ship: { culture: 0.10, constructors: 0.08, tech: 0.05 }
+        colonists: 80
+      - text: "@event_stowawaysAdvanced_choice1_text"
+        outcome: "@event_stowawaysAdvanced_choice1_outcome"
+        ship: { cryopods: 0.08, hull: 0.05, culture: -0.07 }
+        colonists: 80
+      - text: "@event_stowawaysAdvanced_choice2_text"
+        outcome: "@event_stowawaysAdvanced_choice2_outcome"
+        ship: { tech: 0.08, constructors: 0.05, culture: 0.03 }
+        colonists: 80
+
+  - id: alien_reservation
+    title: "@event_alienReservation_title"
+    category: rare
+    narrative: "@event_alienReservation_narrative"
+    choices:
+      - text: "@event_alienReservation_choice0_text"
+        outcome: "@event_alienReservation_choice0_outcome"
+        ship: { nav: 0.08, gravimetricScanner: 0.08, hull: -0.05 }
+        opensPlanetScreen: true
+        minHabitability: 0.78
+        planet: { atmosphere: 0.15, water: 0.12, temperature: 0.10, resources: 0.08 }
+      - text: "@event_alienReservation_choice1_text"
+        outcome: "@event_alienReservation_choice1_outcome"
+        ship: { lifeSignsScanner: 0.15, nav: 0.10, culture: 0.05 }
+        planet: { resources: 0.10, biodiversity: 0.08 }
+      - text: "@event_alienReservation_choice2_text"
+        outcome: "@event_alienReservation_choice2_outcome"
+        ship: { nav: 0.08, culture: 0.10, lifeSignsScanner: 0.05 }
+
+  - id: cosmic_horror
+    title: "@event_cosmicHorror_title"
+    category: rare
+    narrative: "@event_cosmicHorror_narrative"
+    choices:
+      - text: "@event_cosmicHorror_choice0_text"
+        outcome: "@event_cosmicHorror_choice0_outcome"
+        ship: { nav: -0.12, hull: -0.08, culture: -0.10 }
+        colonists: -15
+      - text: "@event_cosmicHorror_choice1_text"
+        outcome: "@event_cosmicHorror_choice1_outcome"
+        ship: { hull: -0.05, culture: -0.15, atmosphericScanner: -0.08 }
+        colonists: -8
+      - text: "@event_cosmicHorror_choice2_text"
+        outcome: "@event_cosmicHorror_choice2_outcome"
+        ship: { nav: 0.08, atmosphericScanner: 0.06, tech: 0.05, culture: -0.25 }
+        colonists: -50
+      - text: "@event_cosmicHorror_choice3_text"
+        outcome: "@event_cosmicHorror_choice3_outcome"
+        ship: { culture: -0.05 }
+        colonists: -2
+        probeCost: 1
+
+  - id: meteor_glancing_hit
+    title: "@event_meteorGlancingHit_title"
+    category: malfunction
+    narrative: "@event_meteorGlancingHit_narrative"
+    choices:
+      - text: "@event_meteorGlancingHit_choice0_text"
+        outcome: "@event_meteorGlancingHit_choice0_outcome"
+        ship: { hull: -0.08, tech: -0.12 }
+      - text: "@event_meteorGlancingHit_choice1_text"
+        outcome: "@event_meteorGlancingHit_choice1_outcome"
+        ship: { hull: -0.10, nav: -0.08 }
+      - text: "@event_meteorGlancingHit_choice2_text"
+        outcome: "@event_meteorGlancingHit_choice2_outcome"
+        ship: { hull: -0.04 }
+        probeCost: 1
+
+  - id: meteor_direct_impact
+    title: "@event_meteorDirectImpact_title"
+    category: malfunction
+    narrative: "@event_meteorDirectImpact_narrative"
+    choices:
+      - text: "@event_meteorDirectImpact_choice0_text"
+        outcome: "@event_meteorDirectImpact_choice0_outcome"
+        ship: { hull: -0.18, culture: -0.08 }
+        colonists: -2
+      - text: "@event_meteorDirectImpact_choice1_text"
+        outcome: "@event_meteorDirectImpact_choice1_outcome"
+        ship: { hull: -0.20, tech: -0.10, culture: 0.05 }
+        colonists: -1
+
+  - id: meteor_debris_field
+    title: "@event_meteorDebrisField_title"
+    category: malfunction
+    narrative: "@event_meteorDebrisField_narrative"
+    choices:
+      - text: "@event_meteorDebrisField_choice0_text"
+        outcome: "@event_meteorDebrisField_choice0_outcome"
+        ship: { shields: -0.15, hull: -0.10 }
+      - text: "@event_meteorDebrisField_choice1_text"
+        outcome: "@event_meteorDebrisField_choice1_outcome"
+        ship: { hull: -0.06, nav: -0.12 }
+      - text: "@event_meteorDebrisField_choice2_text"
+        outcome: "@event_meteorDebrisField_choice2_outcome"
+        ship: { hull: -0.05, shields: -0.04 }
+        probeCost: 1
+
+  - id: meteor_shower_dense
+    title: "@event_meteorShowerDense_title"
+    category: malfunction
+    narrative: "@event_meteorShowerDense_narrative"
+    choices:
+      - text: "@event_meteorShowerDense_choice0_text"
+        outcome: "@event_meteorShowerDense_choice0_outcome"
+        ship: { landingSystem: -0.05, atmosphericScanner: -0.15, hull: -0.08 }
+      - text: "@event_meteorShowerDense_choice1_text"
+        outcome: "@event_meteorShowerDense_choice1_outcome"
+        ship: { gravimetricScanner: -0.06, landingSystem: -0.15, hull: -0.07 }
+
+  - id: solar_emp_burst
+    title: "@event_solarEmpBurst_title"
+    category: malfunction
+    narrative: "@event_solarEmpBurst_narrative"
+    choices:
+      - text: "@event_solarEmpBurst_choice0_text"
+        outcome: "@event_solarEmpBurst_choice0_outcome"
+        ship: { nav: -0.03, scanners: -0.18, tech: -0.15 }
+      - text: "@event_solarEmpBurst_choice1_text"
+        outcome: "@event_solarEmpBurst_choice1_outcome"
+        ship: { scanners: -0.04, tech: -0.04, nav: -0.18 }
+      - text: "@event_solarEmpBurst_choice2_text"
+        outcome: "@event_solarEmpBurst_choice2_outcome"
+        ship: { nav: -0.08, scanners: -0.08, tech: -0.08, culture: -0.06 }
+
+  - id: solar_radiation_wave
+    title: "@event_solarRadiationWave_title"
+    category: malfunction
+    narrative: "@event_solarRadiationWave_narrative"
+    choices:
+      - text: "@event_solarRadiationWave_choice0_text"
+        outcome: "@event_solarRadiationWave_choice0_outcome"
+        ship: { cryopods: -0.08, tech: -0.12 }
+        colonists: -15
+      - text: "@event_solarRadiationWave_choice1_text"
+        outcome: "@event_solarRadiationWave_choice1_outcome"
+        ship: { hull: -0.12, cryopods: -0.10 }
+        colonists: -20
+      - text: "@event_solarRadiationWave_choice2_text"
+        outcome: "@event_solarRadiationWave_choice2_outcome"
+        ship: { tech: -0.15, nav: -0.10, cryopods: -0.05 }
+        colonists: -8
+
+  - id: coronal_mass_ejection
+    title: "@event_coronalMassEjection_title"
+    category: malfunction
+    narrative: "@event_coronalMassEjection_narrative"
+    choices:
+      - text: "@event_coronalMassEjection_choice0_text"
+        outcome: "@event_coronalMassEjection_choice0_outcome"
+        ship: { hull: -0.10, nav: -0.12, tech: -0.10 }
+      - text: "@event_coronalMassEjection_choice1_text"
+        outcome: "@event_coronalMassEjection_choice1_outcome"
+        ship: { hull: -0.08, landingSystem: -0.10, shields: -0.08 }
+
+  - id: cosmic_ray_scanner_interference
+    title: "@event_cosmicRayScannerInterference_title"
+    category: malfunction
+    narrative: "@event_cosmicRayScannerInterference_narrative"
+    choices:
+      - text: "@event_cosmicRayScannerInterference_choice0_text"
+        outcome: "@event_cosmicRayScannerInterference_choice0_outcome"
+        ship: { mineralScanner: -0.06, gravimetricScanner: -0.06, nav: -0.10 }
+      - text: "@event_cosmicRayScannerInterference_choice1_text"
+        outcome: "@event_cosmicRayScannerInterference_choice1_outcome"
+        ship: { mineralScanner: -0.15, temperatureScanner: -0.12, gravimetricScanner: -0.04, lifeSignsScanner: -0.04 }
+      - text: "@event_cosmicRayScannerInterference_choice2_text"
+        outcome: "@event_cosmicRayScannerInterference_choice2_outcome"
+        ship: { atmosphericScanner: -0.05 }
+        probeCost: 1
+
+  - id: cosmic_ray_dna_damage
+    title: "@event_cosmicRayDnaDamage_title"
+    category: malfunction
+    narrative: "@event_cosmicRayDnaDamage_narrative"
+    choices:
+      - text: "@event_cosmicRayDnaDamage_choice0_text"
+        outcome: "@event_cosmicRayDnaDamage_choice0_outcome"
+        ship: { cryopods: -0.06, tech: -0.05, culture: -0.05 }
+        colonists: -25
+      - text: "@event_cosmicRayDnaDamage_choice1_text"
+        outcome: "@event_cosmicRayDnaDamage_choice1_outcome"
+        ship: { hull: -0.15, cryopods: -0.05 }
+        colonists: -10
+
+  - id: coolant_leak
+    title: "@event_coolantLeak_title"
+    category: malfunction
+    narrative: "@event_coolantLeak_narrative"
+    choices:
+      - text: "@event_coolantLeak_choice0_text"
+        outcome: "@event_coolantLeak_choice0_outcome"
+        ship: { tech: -0.12, nav: -0.08, temperatureScanner: -0.06 }
+      - text: "@event_coolantLeak_choice1_text"
+        outcome: "@event_coolantLeak_choice1_outcome"
+        ship: { tech: -0.08 }
+        colonists: -1
+      - text: "@event_coolantLeak_choice2_text"
+        outcome: "@event_coolantLeak_choice2_outcome"
+        ship: { tech: -0.06, cryopods: -0.12 }
+        colonists: -5
+
+  - id: power_grid_failure
+    title: "@event_powerGridFailure_title"
+    category: malfunction
+    narrative: "@event_powerGridFailure_narrative"
+    choices:
+      - text: "@event_powerGridFailure_choice0_text"
+        outcome: "@event_powerGridFailure_choice0_outcome"
+        ship: { nav: -0.06, atmosphericScanner: -0.06, constructors: -0.15 }
+      - text: "@event_powerGridFailure_choice1_text"
+        outcome: "@event_powerGridFailure_choice1_outcome"
+        ship: { constructors: -0.06, nav: -0.15, atmosphericScanner: -0.08 }
+
+  - id: life_support_glitch
+    title: "@event_lifeSupportGlitch_title"
+    category: malfunction
+    narrative: "@event_lifeSupportGlitch_narrative"
+    choices:
+      - text: "@event_lifeSupportGlitch_choice0_text"
+        outcome: "@event_lifeSupportGlitch_choice0_outcome"
+        ship: { tech: -0.10, culture: -0.08 }
+        colonists: -3
+      - text: "@event_lifeSupportGlitch_choice1_text"
+        outcome: "@event_lifeSupportGlitch_choice1_outcome"
+        ship: { tech: -0.07, lifeSignsScanner: -0.05 }
+      - text: "@event_lifeSupportGlitch_choice2_text"
+        outcome: "@event_lifeSupportGlitch_choice2_outcome"
+        ship: { cryopods: -0.08, culture: -0.10 }
+        colonists: -2
+
+  - id: water_recycler_breakdown
+    title: "@event_waterRecyclerBreakdown_title"
+    category: malfunction
+    narrative: "@event_waterRecyclerBreakdown_narrative"
+    choices:
+      - text: "@event_waterRecyclerBreakdown_choice0_text"
+        outcome: "@event_waterRecyclerBreakdown_choice0_outcome"
+        ship: { tech: -0.10, culture: -0.12 }
+        colonists: -4
+      - text: "@event_waterRecyclerBreakdown_choice1_text"
+        outcome: "@event_waterRecyclerBreakdown_choice1_outcome"
+        ship: { cryopods: -0.15, tech: -0.05 }
+        colonists: -8
+
+  - id: nav_computer_reboot
+    title: "@event_navComputerReboot_title"
+    category: malfunction
+    narrative: "@event_navComputerReboot_narrative"
+    choices:
+      - text: "@event_navComputerReboot_choice0_text"
+        outcome: "@event_navComputerReboot_choice0_outcome"
+        ship: { nav: -0.15, gravimetricScanner: -0.05 }
+      - text: "@event_navComputerReboot_choice1_text"
+        outcome: "@event_navComputerReboot_choice1_outcome"
+        ship: { nav: -0.08, hull: -0.08 }
+      - text: "@event_navComputerReboot_choice2_text"
+        outcome: "@event_navComputerReboot_choice2_outcome"
+        ship: { nav: -0.05 }
+        probeCost: 1
+
+  - id: crew_airlocked
+    title: "@event_crewAirlocked_title"
+    category: malfunction
+    narrative: "@event_crewAirlocked_narrative"
+    choices:
+      - text: "@event_crewAirlocked_choice0_text"
+        outcome: "@event_crewAirlocked_choice0_outcome"
+        ship: { culture: -0.10, tech: -0.05 }
+      - text: "@event_crewAirlocked_choice1_text"
+        outcome: "@event_crewAirlocked_choice1_outcome"
+        ship: { culture: -0.15 }
+      - text: "@event_crewAirlocked_choice2_text"
+        outcome: "@event_crewAirlocked_choice2_outcome"
+        ship: { culture: -0.20 }
+        colonists: -1
+
+  - id: crew_cryopod_sabotage
+    title: "@event_crewCryopodSabotage_title"
+    category: malfunction
+    narrative: "@event_crewCryopodSabotage_narrative"
+    choices:
+      - text: "@event_crewCryopodSabotage_choice0_text"
+        outcome: "@event_crewCryopodSabotage_choice0_outcome"
+        ship: { cryopods: -0.12, culture: -0.08, tech: -0.08 }
+        colonists: -25
+      - text: "@event_crewCryopodSabotage_choice1_text"
+        outcome: "@event_crewCryopodSabotage_choice1_outcome"
+        ship: { cryopods: -0.18, culture: -0.06 }
+        colonists: -40
+
+  - id: crew_supply_hoarder
+    title: "@event_crewSupplyHoarder_title"
+    category: malfunction
+    narrative: "@event_crewSupplyHoarder_narrative"
+    choices:
+      - text: "@event_crewSupplyHoarder_choice0_text"
+        outcome: "@event_crewSupplyHoarder_choice0_outcome"
+        ship: { culture: -0.15, tech: 0.05 }
+      - text: "@event_crewSupplyHoarder_choice1_text"
+        outcome: "@event_crewSupplyHoarder_choice1_outcome"
+        ship: { culture: -0.08, tech: -0.06 }
+      - text: "@event_crewSupplyHoarder_choice2_text"
+        outcome: "@event_crewSupplyHoarder_choice2_outcome"
+        ship: { culture: -0.05, tech: -0.04 }
+
+  - id: crew_mutiny_attempt
+    title: "@event_crewMutinyAttempt_title"
+    category: malfunction
+    narrative: "@event_crewMutinyAttempt_narrative"
+    choices:
+      - text: "@event_crewMutinyAttempt_choice0_text"
+        outcome: "@event_crewMutinyAttempt_choice0_outcome"
+        ship: { culture: -0.15 }
+        colonists: -5
+      - text: "@event_crewMutinyAttempt_choice1_text"
+        outcome: "@event_crewMutinyAttempt_choice1_outcome"
+        ship: { culture: -0.18, nav: -0.10 }
+        colonists: -3
+      - text: "@event_crewMutinyAttempt_choice2_text"
+        outcome: "@event_crewMutinyAttempt_choice2_outcome"
+        ship: { culture: -0.12, tech: -0.06 }
+
+  - id: hull_fatigue_stress
+    title: "@event_hullFatigueStress_title"
+    category: malfunction
+    narrative: "@event_hullFatigueStress_narrative"
+    choices:
+      - text: "@event_hullFatigueStress_choice0_text"
+        outcome: "@event_hullFatigueStress_choice0_outcome"
+        ship: { hull: -0.06, tech: -0.14, culture: -0.08 }
+      - text: "@event_hullFatigueStress_choice1_text"
+        outcome: "@event_hullFatigueStress_choice1_outcome"
+        ship: { hull: -0.10, nav: -0.10 }
+      - text: "@event_hullFatigueStress_choice2_text"
+        outcome: "@event_hullFatigueStress_choice2_outcome"
+        ship: { hull: 0.04, constructors: -0.18 }
+
+  - id: hull_pressure_anomaly
+    title: "@event_hullPressureAnomaly_title"
+    category: malfunction
+    narrative: "@event_hullPressureAnomaly_narrative"
+    choices:
+      - text: "@event_hullPressureAnomaly_choice0_text"
+        outcome: "@event_hullPressureAnomaly_choice0_outcome"
+        ship: { hull: -0.10, culture: -0.10 }
+      - text: "@event_hullPressureAnomaly_choice1_text"
+        outcome: "@event_hullPressureAnomaly_choice1_outcome"
+        ship: { hull: -0.07, culture: -0.15 }
+        colonists: -5
+
+  - id: comms_array_failure
+    title: "@event_commsArrayFailure_title"
+    category: malfunction
+    narrative: "@event_commsArrayFailure_narrative"
+    choices:
+      - text: "@event_commsArrayFailure_choice0_text"
+        outcome: "@event_commsArrayFailure_choice0_outcome"
+        ship: { atmosphericScanner: -0.06, culture: -0.08 }
+        colonists: -1
+      - text: "@event_commsArrayFailure_choice1_text"
+        outcome: "@event_commsArrayFailure_choice1_outcome"
+        ship: { gravimetricScanner: -0.14, atmosphericScanner: -0.10 }
+      - text: "@event_commsArrayFailure_choice2_text"
+        outcome: "@event_commsArrayFailure_choice2_outcome"
+        ship: { culture: -0.12 }
+
+  - id: fuel_line_rupture
+    title: "@event_fuelLineRupture_title"
+    category: malfunction
+    narrative: "@event_fuelLineRupture_narrative"
+    choices:
+      - text: "@event_fuelLineRupture_choice0_text"
+        outcome: "@event_fuelLineRupture_choice0_outcome"
+        ship: { nav: -0.15, hull: -0.05 }
+      - text: "@event_fuelLineRupture_choice1_text"
+        outcome: "@event_fuelLineRupture_choice1_outcome"
+        ship: { hull: -0.10, nav: -0.06 }
+        colonists: -1
+      - text: "@event_fuelLineRupture_choice2_text"
+        outcome: "@event_fuelLineRupture_choice2_outcome"
+        ship: { hull: -0.03, nav: -0.04 }
+        probeCost: 1
+
+  - id: cryopod_cascade_warning
+    title: "@event_cryopodCascadeWarning_title"
+    category: malfunction
+    narrative: "@event_cryopodCascadeWarning_narrative"
+    choices:
+      - text: "@event_cryopodCascadeWarning_choice0_text"
+        outcome: "@event_cryopodCascadeWarning_choice0_outcome"
+        ship: { cryopods: -0.12, tech: -0.08 }
+        colonists: -30
+      - text: "@event_cryopodCascadeWarning_choice1_text"
+        outcome: "@event_cryopodCascadeWarning_choice1_outcome"
+        ship: { cryopods: -0.08, culture: -0.14, tech: -0.06 }
+        colonists: -20
+      - text: "@event_cryopodCascadeWarning_choice2_text"
+        outcome: "@event_cryopodCascadeWarning_choice2_outcome"
+        ship: { constructors: -0.20, cryopods: -0.06 }
+        colonists: -10
+
+  - id: cryopod_seal_degradation
+    title: "@event_cryopodSealDegradation_title"
+    category: malfunction
+    narrative: "@event_cryopodSealDegradation_narrative"
+    choices:
+      - text: "@event_cryopodSealDegradation_choice0_text"
+        outcome: "@event_cryopodSealDegradation_choice0_outcome"
+        ship: { constructors: -0.12, tech: -0.10, cryopods: -0.06 }
+        colonists: -15
+      - text: "@event_cryopodSealDegradation_choice1_text"
+        outcome: "@event_cryopodSealDegradation_choice1_outcome"
+        ship: { cryopods: -0.15 }
+        colonists: -25
+
+  - id: oxygen_scrubber_failure
+    title: "@event_oxygenScrubberFailure_title"
+    category: malfunction
+    narrative: "@event_oxygenScrubberFailure_narrative"
+    choices:
+      - text: "@event_oxygenScrubberFailure_choice0_text"
+        outcome: "@event_oxygenScrubberFailure_choice0_outcome"
+        ship: { cryopods: -0.10, tech: -0.08, culture: -0.05 }
+        colonists: -8
+      - text: "@event_oxygenScrubberFailure_choice1_text"
+        outcome: "@event_oxygenScrubberFailure_choice1_outcome"
+        ship: { atmosphericScanner: -0.18, lifeSignsScanner: -0.12 }
+        colonists: -3
+      - text: "@event_oxygenScrubberFailure_choice2_text"
+        outcome: "@event_oxygenScrubberFailure_choice2_outcome"
+        ship: { hull: -0.05, tech: -0.10 }
+        colonists: -2
+
+  - id: dead_alien_artifact
+    title: "@event_deadAlienArtifact_title"
+    category: rare
+    narrative: "@event_deadAlienArtifact_narrative"
+    choices:
+      - text: "@event_deadAlienArtifact_choice0_text"
+        outcome: "@event_deadAlienArtifact_choice0_outcome"
+        ship: { nav: 0.15, tech: 0.10 }
+        nextPlanet:
+          atmosphere: 0.08
+          water: 0.05
+      - text: "@event_deadAlienArtifact_choice1_text"
+        outcome: "@event_deadAlienArtifact_choice1_outcome"
+        ship: { culture: 0.20, atmosphericScanner: 0.08 }
+        nextPlanet:
+          biodiversity: 0.10
+          resources: 0.05
+      - text: "@event_deadAlienArtifact_choice2_text"
+        outcome: "@event_deadAlienArtifact_choice2_outcome"
+        ship: { hull: 0.12, shields: 0.10, constructors: 0.08 }
+        fuel: 15
+      - text: "@event_deadAlienArtifact_choice3_text"
+        outcome: "@event_deadAlienArtifact_choice3_outcome"
+        ship: { culture: 0.12, cryopods: 0.05, shields: 0.05 }
+        fuel: 5
+
+  - id: repair_station
+    title: "@event_repairStation_title"
+    category: rare
+    narrative: "@event_repairStation_narrative"
+    choices:
+      - text: "@event_repairStation_choice0_text"
+        outcome: "@event_repairStation_choice0_outcome"
+        ship: { hull: 0.15, nav: 0.12, atmosphericScanner: 0.10, shields: 0.10, landingSystem: 0.10, cryopods: 0.08 }
+        probeCost: 4
+      - text: "@event_repairStation_choice1_text"
+        outcome: "@event_repairStation_choice1_outcome"
+        ship: { hull: 0.12, nav: 0.10, cryopods: 0.10, landingSystem: 0.08 }
+        fuel: -20
+        probes: 2
+      - text: "@event_repairStation_choice2_text"
+        outcome: "@event_repairStation_choice2_outcome"
+        ship: { tech: -0.10 }
+        probes: 9
+        energy: 15
+        fuel: 5
+      - text: "@event_repairStation_choice3_text"
+        outcome: "@event_repairStation_choice3_outcome"
+        ship: { culture: -0.20, hull: 0.12, nav: 0.10, atmosphericScanner: 0.08, constructors: 0.08 }
+        probes: 2
+        fuel: 10
+
+  - id: ai_soliloquy
+    title: "@event_aiSoliloquy_title"
+    narrative: "@event_aiSoliloquy_narrative"
+    choices:
+      - text: "@event_aiSoliloquy_choice0_text"
+        outcome: "@event_aiSoliloquy_choice0_outcome"
+        ship: { culture: 0.15, tech: -0.10 }
+      - text: "@event_aiSoliloquy_choice1_text"
+        outcome: "@event_aiSoliloquy_choice1_outcome"
+        ship: { culture: 0.08, tech: -0.05 }
+      - text: "@event_aiSoliloquy_choice2_text"
+        outcome: "@event_aiSoliloquy_choice2_outcome"
+        ship: { culture: -0.10, tech: 0.05, nav: 0.05 }
+
+  - id: archivists_choice
+    title: "@event_archivistsChoice_title"
+    narrative: "@event_archivistsChoice_narrative"
+    choices:
+      - text: "@event_archivistsChoice_choice0_text"
+        outcome: "@event_archivistsChoice_choice0_outcome"
+        ship: { tech: 0.20, culture: -0.25 }
+      - text: "@event_archivistsChoice_choice1_text"
+        outcome: "@event_archivistsChoice_choice1_outcome"
+        ship: { culture: 0.20, tech: -0.15 }
+      - text: "@event_archivistsChoice_choice2_text"
+        outcome: "@event_archivistsChoice_choice2_outcome"
+        ship: { culture: -0.05, tech: -0.05 }
+
+  - id: digital_ghost
+    title: "@event_digitalGhost_title"
+    narrative: "@event_digitalGhost_narrative"
+    choices:
+      - text: "@event_digitalGhost_choice0_text"
+        outcome: "@event_digitalGhost_choice0_outcome"
+        ship: { nav: 0.15, tech: 0.05, culture: -0.10 }
+      - text: "@event_digitalGhost_choice1_text"
+        outcome: "@event_digitalGhost_choice1_outcome"
+        ship: { culture: 0.15, tech: -0.05 }
+      - text: "@event_digitalGhost_choice2_text"
+        outcome: "@event_digitalGhost_choice2_outcome"
+        ship: { tech: 0.05, culture: -0.05 }
+
+  - id: cosmic_mirror
+    title: "@event_cosmicMirror_title"
+    category: rare
+    narrative: "@event_cosmicMirror_narrative"
+    choices:
+      - text: "@event_cosmicMirror_choice0_text"
+        outcome: "@event_cosmicMirror_choice0_outcome"
+        ship: { hull: 0.10, tech: 0.05 }
+      - text: "@event_cosmicMirror_choice1_text"
+        outcome: "@event_cosmicMirror_choice1_outcome"
+        ship: { scanners: -0.10, nav: 0.05 }
+      - text: "@event_cosmicMirror_choice2_text"
+        outcome: "@event_cosmicMirror_choice2_outcome"
+        ship: { culture: 0.15 }
+
+  - id: stowaway_child
+    title: "@event_stowawayChild_title"
+    category: early
+    narrative: "@event_stowawayChild_narrative"
+    choices:
+      - text: "@event_stowawayChild_choice0_text"
+        outcome: "@event_stowawayChild_choice0_outcome"
+        ship: { culture: 0.15 }
+        colonists: 1
+      - text: "@event_stowawayChild_choice1_text"
+        outcome: "@event_stowawayChild_choice1_outcome"
+        ship: { tech: 0.10, culture: 0.05 }
+        colonists: 1
+      - text: "@event_stowawayChild_choice2_text"
+        outcome: "@event_stowawayChild_choice2_outcome"
+        ship: { tech: 0.04 }
+        colonists: 1
+        fuel: 5
+
+  - id: ghost_signal
+    title: "@event_ghostSignal_title"
+    category: rare
+    narrative: "@event_ghostSignal_narrative"
+    choices:
+      - text: "@event_ghostSignal_choice0_text"
+        outcome: "@event_ghostSignal_choice0_outcome"
+        ship: { hull: -0.15, tech: 0.15 }
+      - text: "@event_ghostSignal_choice1_text"
+        outcome: "@event_ghostSignal_choice1_outcome"
+        ship: { culture: -0.05 }
+      - text: "@event_ghostSignal_choice2_text"
+        outcome: "@event_ghostSignal_choice2_outcome"
+        ship: { tech: 0.05 }
+
+  - id: solar_forge
+    title: "@event_solarForge_title"
+    category: boon
+    narrative: "@event_solarForge_narrative"
+    choices:
+      - text: "@event_solarForge_choice0_text"
+        outcome: "@event_solarForge_choice0_outcome"
+        fuel: 25
+        energy: 25
+        ship: { hull: -0.08 }
+      - text: "@event_solarForge_choice1_text"
+        outcome: "@event_solarForge_choice1_outcome"
+        ship: { scanners: 0.20, tech: 0.10, nav: 0.05 }
+        fuel: 10
+
+  - id: chrono_vortex
+    title: "@event_chronoVortex_title"
+    category: rare
+    narrative: "@event_chronoVortex_narrative"
+    choices:
+      - text: "@event_chronoVortex_choice0_text"
+        outcome: "@event_chronoVortex_choice0_outcome"
+        ship: { hull: 0.25, culture: -0.10 }
+      - text: "@event_chronoVortex_choice1_text"
+        outcome: "@event_chronoVortex_choice1_outcome"
+        ship: { tech: 0.10 }
+
+  - id: machine_mutiny
+    title: "@event_machineMutiny_title"
+    category: malfunction
+    narrative: "@event_machineMutiny_narrative"
+    choices:
+      - text: "@event_machineMutiny_choice0_text"
+        outcome: "@event_machineMutiny_choice0_outcome"
+        ship: { tech: -0.15, hull: 0.05 }
+      - text: "@event_machineMutiny_choice1_text"
+        outcome: "@event_machineMutiny_choice1_outcome"
+        ship: { nav: 0.15, hull: -0.10, culture: -0.05 }
+
+  - id: supernova_message
+    title: "@event_supernovaMessage_title"
+    category: rare
+    narrative: "@event_supernovaMessage_narrative"
+    choices:
+      - text: "@event_supernovaMessage_choice0_text"
+        outcome: "@event_supernovaMessage_choice0_outcome"
+        ship: { tech: 0.15, culture: 0.15, atmosphericScanner: -0.08, gravimetricScanner: -0.08 }
+      - text: "@event_supernovaMessage_choice1_text"
+        outcome: "@event_supernovaMessage_choice1_outcome"
+        ship: { gravimetricScanner: 0.15 }
+
+  - id: space_fungus
+    title: "@event_spaceFungus_title"
+    narrative: "@event_spaceFungus_narrative"
+    choices:
+      - text: "@event_spaceFungus_choice0_text"
+        outcome: "@event_spaceFungus_choice0_outcome"
+        ship: { tech: -0.07 }
+        planet: { biodiversity: 0.05 }
+      - text: "@event_spaceFungus_choice1_text"
+        outcome: "@event_spaceFungus_choice1_outcome"
+        ship: { culture: 0.10 }
+        planet: { atmosphere: 0.10 }
+
+  - id: void_merchant
+    title: "@event_voidMerchant_title"
+    category: rare
+    narrative: "@event_voidMerchant_narrative"
+    choices:
+      - text: "@event_voidMerchant_choice0_text"
+        outcome: "@event_voidMerchant_choice0_outcome"
+        ship: { hull: 0.15, cryopods: 0.10, culture: -0.20 }
+      - text: "@event_voidMerchant_choice1_text"
+        outcome: "@event_voidMerchant_choice1_outcome"
+        ship: { tech: 0.15, nav: -0.10 }
+
+  - id: singularity_engine
+    title: "@event_singularityEngine_title"
+    category: rare
+    narrative: "@event_singularityEngine_narrative"
+    choices:
+      - text: "@event_singularityEngine_choice0_text"
+        outcome: "@event_singularityEngine_choice0_outcome"
+        ship: { nav: 0.18, hull: -0.20 }
+      - text: "@event_singularityEngine_choice1_text"
+        outcome: "@event_singularityEngine_choice1_outcome"
+        ship: { tech: -0.05 }
+
+  - id: dream_contagion
+    title: "@event_dreamContagion_title"
+    narrative: "@event_dreamContagion_narrative"
+    choices:
+      - text: "@event_dreamContagion_choice0_text"
+        outcome: "@event_dreamContagion_choice0_outcome"
+        ship: { tech: 0.05, culture: -0.15 }
+      - text: "@event_dreamContagion_choice1_text"
+        outcome: "@event_dreamContagion_choice1_outcome"
+        ship: { culture: 0.20, tech: -0.10 }
+
+  - id: orbital_shipyard
+    title: "@event_orbitalShipyard_title"
+    category: boon
+    narrative: "@event_orbitalShipyard_narrative"
+    choices:
+      - text: "@event_orbitalShipyard_choice0_text"
+        outcome: "@event_orbitalShipyard_choice0_outcome"
+        ship: { hull: 0.20 }
+      - text: "@event_orbitalShipyard_choice1_text"
+        outcome: "@event_orbitalShipyard_choice1_outcome"
+        ship: { nav: 0.15, scanners: 0.12 }
+
+  - id: void_whale_calf
+    title: "@event_voidWhaleCalf_title"
+    category: boon
+    narrative: "@event_voidWhaleCalf_narrative"
+    choices:
+      - text: "@event_voidWhaleCalf_choice0_text"
+        outcome: "@event_voidWhaleCalf_choice0_outcome"
+        ship: { shields: 0.20, culture: 0.10 }
+      - text: "@event_voidWhaleCalf_choice1_text"
+        outcome: "@event_voidWhaleCalf_choice1_outcome"
+        ship: { nav: 0.05, culture: 0.05 }
+        fuel: 5
+
+  - id: subspace_reef
+    title: "@event_subspaceReef_title"
+    narrative: "@event_subspaceReef_narrative"
+    choices:
+      - text: "@event_subspaceReef_choice0_text"
+        outcome: "@event_subspaceReef_choice0_outcome"
+        ship: { nav: -0.15 }
+      - text: "@event_subspaceReef_choice1_text"
+        outcome: "@event_subspaceReef_choice1_outcome"
+        ship: { scanners: -0.20, hull: -0.05 }
+
+  - id: pulsar_lighthouse
+    title: "@event_pulsarLighthouse_title"
+    category: rare
+    narrative: "@event_pulsarLighthouse_narrative"
+    choices:
+      - text: "@event_pulsarLighthouse_choice0"
+        outcome: "@event_pulsarLighthouse_outcome0"
+        ship: { atmosphericScanner: 0.08, gravimetricScanner: 0.08, temperatureScanner: 0.06, cryopods: -0.06 }
+        colonists: -15
+      - text: "@event_pulsarLighthouse_choice1"
+        outcome: "@event_pulsarLighthouse_outcome1"
+        fuel: -10
+
+  - id: alien_nursery
+    title: "@event_alienNursery_title"
+    category: rare
+    narrative: "@event_alienNursery_narrative"
+    choices:
+      - text: "@event_alienNursery_choice0"
+        outcome: "@event_alienNursery_outcome0"
+        ship: { lifeSignsScanner: 0.10, cryopods: -0.05 }
+        colonists: -8
+        nextPlanet:
+          biodiversity: 0.06
+      - text: "@event_alienNursery_choice1"
+        outcome: "@event_alienNursery_outcome1"
+        ship: { culture: 0.05 }
+
+  - id: derelict_armada
+    title: "@event_derelictArmada_title"
+    category: rare
+    narrative: "@event_derelictArmada_narrative"
+    choices:
+      - text: "@event_derelictArmada_choice0"
+        outcome: "@event_derelictArmada_outcome0"
+        ship: { constructors: 0.10, hull: 0.06 }
+        colonists: -12
+      - text: "@event_derelictArmada_choice1"
+        outcome: "@event_derelictArmada_outcome1"
+        ship: { culture: 0.08, technology: 0.08 }
+
+  - id: alien_quarantine_zone
+    title: "@event_alienQuarantineZone_title"
+    category: rare
+    narrative: "@event_alienQuarantineZone_narrative"
+    choices:
+      - text: "@event_alienQuarantineZone_choice0"
+        outcome: "@event_alienQuarantineZone_outcome0"
+        ship: { technology: 0.15, mineralScanner: 0.10, cryopods: -0.10 }
+        colonists: -15
+      - text: "@event_alienQuarantineZone_choice1"
+        outcome: "@event_alienQuarantineZone_outcome1"
+        ship: { temperatureScanner: 0.04, atmosphericScanner: 0.04 }
+
+  - id: hydroponics_blight
+    title: "@event_hydroponicsBlight_title"
+    category: common
+    narrative: "@event_hydroponicsBlight_narrative"
+    choices:
+      - text: "@event_hydroponicsBlight_choice0"
+        outcome: "@event_hydroponicsBlight_outcome0"
+        ship: { culture: -0.06 }
+        energy: -5
+      - text: "@event_hydroponicsBlight_choice1"
+        outcome: "@event_hydroponicsBlight_outcome1"
+        ship: { cryopods: -0.08 }
+        colonists: -20
+
+  - id: alien_trader
+    title: "@event_alienTrader_title"
+    category: boon
+    narrative: "@event_alienTrader_narrative"
+    openTraderScreen: true
+    choices: []
+
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # NEW STATECHART EVENTS (guards, weighted outcomes, chains)
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: emergency_repair_drone
+    title: "Emergency Repair Drone"
+    narrative: >
+      A dormant repair drone activates nearby, drawn by your ship's
+      distress signals. Its ancient programming offers three modes.
+    category: boon
+    tags: [boon, repair, guarded]
+    guard: "hull < 0.5 and encounter >= 3"
+    choices:
+      - text: "Hull priority"
+        outcome: "The drone welds the worst breaches with alien alloy."
+        ship: { hull: 0.20, shields: -0.05 }
+      - text: "Systems sweep"
+        outcome: "The drone distributes repairs across all systems."
+        ship: { hull: 0.08, nav: 0.05, tech: 0.05, cryopods: 0.05 }
+      - text: "Salvage the drone"
+        outcome: "You strip the drone for parts and fuel."
+        ship: { tech: 0.10 }
+        fuel: 15
+
+  - id: rogue_comet
+    title: "Rogue Comet"
+    narrative: >
+      A comet on an intercept course carries both danger and opportunity.
+      Its ice core could replenish water supplies, but harvesting requires
+      precise maneuvering.
+    category: common
+    tags: [hazard, opportunity]
+    choices:
+      - text: "Harvest the ice"
+        guard: "fuel >= 20 and nav > 0.4"
+        outcome: "Careful thruster work brings ice aboard safely."
+        ship: { nav: -0.05 }
+        fuel: -10
+        planet: { water: 0.10 }
+      - text: "Analyze from distance"
+        outcome: "Passive scans reveal the comet's composition."
+        ship: { tech: 0.03 }
+        probeCost: 1
+      - text: "Evade"
+        outcome: "You steer clear. The comet passes harmlessly."
+        ship: { nav: -0.03 }
+        fuel: -5
+
+  - id: alien_distress_signal
+    title: "Alien Distress Signal"
+    narrative: >
+      Your comms array picks up a repeating distress pattern from an alien
+      vessel. The signal is genuine, but the situation aboard is unknown.
+    category: common
+    tags: [alien, risk, weighted]
+    guard: "encounter >= 2"
+    choices:
+      - text: "Board and help"
+        outcomes:
+          - weight: 50
+            outcome: >
+              The aliens are grateful. They share navigational data and
+              supplies before departing.
+            ship: { nav: 0.08, tech: 0.05 }
+            fuel: 10
+          - weight: 30
+            outcome: >
+              A misunderstanding turns violent. Your crew repels boarders
+              but takes casualties.
+            ship: { hull: -0.10, culture: -0.05 }
+            colonists: -8
+          - weight: 20
+            outcome: >
+              The alien crew carries compatible technology. They join
+              your voyage as allies.
+            ship: { tech: 0.12, scanners: 0.05 }
+            colonists: 15
+      - text: "Send supplies remotely"
+        outcome: "You jettison a care package. A grateful reply arrives hours later."
+        ship: { culture: 0.08, tech: 0.03 }
+        fuel: -10
+        energy: -5
+        probes: 1
+      - text: "Ignore the signal"
+        outcome: "The signal fades as you press on. Your crew is uneasy."
+        ship: { culture: -0.04 }
+        fuel: 5
+
+  - id: seed_probe_discovery
+    title: "Ancient Seed Probe"
+    narrative: >
+      You discover a probe from a long-dead civilization, carrying
+      biological samples in stasis. Its activation sequence is intact.
+    category: rare
+    tags: [alien, discovery, chain]
+    guard: "encounter >= 4 and tech > 0.3"
+    choices:
+      - text: "Activate the probe"
+        outcome: >
+          The probe hums to life and begins broadcasting. Something
+          out there is listening.
+        ship: { nav: 0.05, culture: 0.03 }
+        energy: -3
+        chain:
+          event: seed_probe_response
+          delay: 4
+      - text: "Study the samples"
+        outcome: "Careful analysis yields insights into alien biology."
+        ship: { tech: 0.08, lifeSignsScanner: 0.10 }
+      - text: "Store it in the hold"
+        outcome: "The probe is secured. Perhaps it will be useful later."
+        ship: { culture: 0.03 }
+
+  - id: seed_probe_response
+    title: "Signal Response"
+    narrative: >
+      The seed probe's broadcast has been answered. An enormous
+      living vessel emerges from hyperspace, ancient beyond reckoning.
+    category: rare
+    tags: [alien, chain, payoff]
+    choices:
+      - text: "Attempt communication"
+        outcomes:
+          - weight: 60
+            outcome: >
+              The vessel shares star charts showing a habitable system
+              nearby. Your navigation is recalibrated.
+            ship: { nav: 0.15, scanners: 0.08 }
+            nextPlanet:
+              atmosphere: 0.10
+              water: 0.08
+              biodiversity: 0.10
+          - weight: 40
+            outcome: >
+              Communication fails. The vessel scans your ship and
+              departs, leaving behind a trail of exotic particles.
+            ship: { tech: 0.10 }
+            fuel: 10
+      - text: "Power down and observe"
+        outcome: "The vessel ignores you and drifts away. Readings are valuable."
+        ship: { tech: 0.05, culture: 0.05, scanners: 0.05 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # MUTINY ARC — 3-event chain
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: mutiny_whispers
+    title: "Whispers Below Decks"
+    narrative: >
+      Monitoring picks up encrypted chatter between cryopod bays. A
+      faction of colonists, led by a charismatic former engineer, believes
+      the command crew is hiding the true state of the ship. They want
+      representation in navigation decisions.
+    category: common
+    tags: [crew, drama, chain]
+    guard: "encounter >= 3 and culture < 0.7"
+    choices:
+      - text: "Address their concerns openly"
+        outcome: >
+          You broadcast the full ship status to every screen. The
+          transparency earns grudging respect, but the numbers are
+          sobering. Some colonists wish they hadn't asked.
+        ship: { culture: 0.10, nav: -0.03 }
+      - text: "Invite their leader to the bridge"
+        outcome: >
+          The engineer is sharp. She points out an inefficiency in the
+          power grid you'd missed. Her people stand down — for now.
+        ship: { tech: 0.05, culture: 0.05, constructors: 0.03 }
+        chain:
+          event: mutiny_ultimatum
+          delay: 5
+      - text: "Increase surveillance and suppress"
+        outcome: >
+          The encrypted channels go silent. But the silence feels worse
+          than the whispers. Trust erodes on both sides.
+        ship: { culture: -0.12, shields: 0.05 }
+        chain:
+          event: mutiny_ultimatum
+          delay: 3
+
+  - id: mutiny_ultimatum
+    title: "The Ultimatum"
+    narrative: >
+      The faction has grown. Forty colonists now stand thawed in Cargo
+      Bay 7, blocking access to the fuel reserves. Their leader speaks
+      calmly: "We're not enemies. We just want a voice. Give us a seat
+      at the table, or we shut down the engines."
+    category: rare
+    tags: [crew, drama, chain, crisis]
+    choices:
+      - text: "Grant them a council seat"
+        outcome: >
+          A colonist council is formed. Decisions take longer now, but
+          the crew feels ownership of the voyage for the first time.
+          Morale soars.
+        ship: { culture: 0.08, nav: -0.05, cryopods: -0.05 }
+        colonists: 5
+      - text: "Negotiate — offer concessions"
+        outcomes:
+          - weight: 60
+            outcome: >
+              Hours of tense negotiation yield a compromise. The faction
+              gets access to scan data and a monthly briefing. They
+              return to cryo satisfied.
+            ship: { culture: 0.08, tech: 0.03 }
+            colonists: 3
+          - weight: 40
+            outcome: >
+              Negotiations break down over fuel rationing. The standoff
+              stretches into a second day. Systems run on backup power.
+            ship: { culture: -0.08 }
+            fuel: -10
+            chain:
+              event: mutiny_showdown
+              delay: 2
+      - text: "Call their bluff — seal the bay"
+        outcome: >
+          You vent the atmosphere to non-lethal levels. The colonists
+          collapse. When they wake in medical, the rebellion is broken
+          — but so is something else.
+        ship: { culture: -0.10, shields: 0.05 }
+        colonists: -3
+        chain:
+          event: mutiny_showdown
+          delay: 4
+
+  - id: mutiny_showdown
+    title: "Breaking Point"
+    narrative: >
+      It was always going to come to this. The faction has seized
+      engineering. Life support is stable but the engines are offline.
+      Your security chief awaits orders. The colonist leader stands
+      behind a barricade of cryopod frames, eyes steady.
+    category: rare
+    tags: [crew, drama, chain, crisis, climax]
+    choices:
+      - text: "Storm engineering"
+        outcomes:
+          - weight: 40
+            outcome: >
+              The breach is swift and surgical. Three security officers
+              are injured. The faction leader surrenders when she sees
+              blood. Engineering is restored.
+            ship: { hull: -0.05, culture: -0.10, constructors: 0.05, tech: 0.05 }
+            colonists: -2
+          - weight: 35
+            outcome: >
+              The assault goes wrong. A stray shot hits the coolant
+              manifold. The resulting cascade forces a full section
+              evacuation. Both sides suffer.
+            ship: { hull: -0.15, culture: -0.15, tech: -0.05 }
+            colonists: -12
+          - weight: 25
+            outcome: >
+              Your team finds engineering abandoned. The faction slipped
+              away through maintenance shafts. They left the engines
+              running — and a note: "We proved our point."
+            ship: { culture: -0.05, nav: 0.03 }
+      - text: "Cut power to engineering and wait"
+        outcome: >
+          Twelve cold hours. Then the barricade opens. They're hungry,
+          shivering, and ready to talk. No one was hurt. The peace
+          holds, fragile as glass.
+        ship: { culture: 0.13, tech: -0.08 }
+        fuel: -10
+        energy: -8
+      - text: "Walk in alone, unarmed"
+        outcomes:
+          - weight: 50
+            outcome: >
+              The leader stares. Then she laughs. "You're either brave
+              or stupid." You sit down. You talk. By dawn, there's a
+              plan both sides can live with.
+            ship: { culture: 0.12, nav: 0.05 }
+          - weight: 30
+            outcome: >
+              They take you hostage. Three terrifying hours pass before
+              your security chief negotiates your release. The faction
+              gets most of what they wanted.
+            ship: { culture: -0.05, nav: -0.12 }
+            colonists: -3
+          - weight: 20
+            outcome: >
+              The leader listens. Then she shows you what they found
+              behind the engineering bulkhead — a cracked fuel coupling
+              that would have blown in three more jumps. They saved
+              the ship.
+            ship: { culture: 0.10, hull: 0.05, constructors: 0.05 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # GHOST OF EARTH — 3-event branching chain
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: earth_final_broadcast
+    title: "Signal from Home"
+    narrative: >
+      The comms array picks up something impossible — a transmission on
+      an old Earth frequency. It's faint, distorted by light-years of
+      noise, but the header codes are unmistakably from Mission Control.
+      The message is incomplete. Boosting the signal would drain
+      significant power.
+    category: rare
+    tags: [earth, emotional, chain]
+    guard: "encounter >= 8"
+    choices:
+      - text: "Boost the signal — we need to hear this"
+        outcome: >
+          Every watt of spare power feeds into the comms array. The
+          static clears, syllable by syllable. The crew gathers in
+          silence, tears running freely. Earth has something to say.
+        ship: { culture: 0.08 }
+        energy: -12
+        chain:
+          event: earth_goodbye
+          delay: 0
+      - text: "Record what we can and move on"
+        outcome: >
+          The fragment is stored: 11 seconds of a woman's voice, calm
+          and kind, saying words you can't quite make out. Some crew
+          listen to it on repeat. Others can't bear to.
+        ship: { culture: 0.05, tech: -0.03 }
+        chain:
+          event: earth_silence
+          delay: 3
+      - text: "Don't listen — Earth is behind us"
+        outcome: >
+          The signal is logged and filed. The crew respects the
+          decision, but a quiet grief settles over the ship. Some
+          things can't be unfelt.
+        ship: { culture: -0.08, nav: 0.05 }
+
+  - id: earth_goodbye
+    title: "Humanity's Last Words"
+    narrative: >
+      The message reassembles through hours of signal processing. It's
+      the Director of the Exodus Program. She's old now, her voice
+      thin but steady. She knows you'll receive this decades after
+      she's gone.
+    category: rare
+    tags: [earth, emotional, chain, payoff]
+    choices:
+      - text: "Broadcast to the whole ship"
+        outcome: >
+          "You carry every song we ever sang, every story we ever told.
+          You are not the last of us — you are the first of what comes
+          next. We loved you enough to let you go." The ship weeps.
+          Then the ship works harder than it ever has.
+        ship: { culture: 0.20, cryopods: 0.05, nav: 0.03, constructors: 0.05 }
+      - text: "Share it only with the command crew"
+        outcome: >
+          The bridge crew listens in private. The weight of it — the
+          finality — sharpens their focus. They carry it silently,
+          a shared burden that binds them.
+        ship: { culture: 0.10, nav: 0.08, tech: 0.05 }
+      - text: "Archive it for the colony"
+        outcome: >
+          This message belongs to the future, not the journey. It's
+          sealed in the cultural database, to be opened on the day
+          the first child is born on the new world.
+        ship: { culture: 0.12 }
+        nextPlanet:
+          atmosphere: 0.05
+          biodiversity: 0.03
+
+  - id: earth_silence
+    title: "Static"
+    narrative: >
+      The signal processing completes. The fragment is analyzed,
+      enhanced, filtered through every algorithm the ship has. The
+      result is definitive: there is no message. It was solar noise
+      shaped by wishful thinking. Earth sent nothing. Earth is silent.
+    category: rare
+    tags: [earth, emotional, chain, payoff]
+    choices:
+      - text: "Tell the crew the truth"
+        outcomes:
+          - weight: 60
+            outcome: >
+              The disappointment is crushing. But something unexpected
+              follows — a defiant resolve. "Then we'll be our own
+              message," someone says. It catches on.
+            ship: { culture: 0.08, nav: 0.03 }
+          - weight: 40
+            outcome: >
+              The news hits hard. Colonists who had been holding onto
+              hope now face the void. Cryopod requests spike. The
+              corridors feel emptier.
+            ship: { culture: -0.12, cryopods: -0.05 }
+            colonists: -5
+      - text: "Fabricate a hopeful message"
+        outcomes:
+          - weight: 50
+            outcome: >
+              The synthetic message is perfect. The crew smiles for the
+              first time in weeks. The lie holds. For now.
+            ship: { culture: 0.12 }
+          - weight: 50
+            outcome: >
+              A comms technician spots the fabrication. The betrayal
+              spreads faster than the fake hope did. Trust in command
+              evaporates.
+            ship: { culture: -0.20, tech: -0.05 }
+      - text: "Say nothing — let the fragment speak for itself"
+        outcome: >
+          The 11 seconds of noise become the ship's most listened-to
+          recording. Everyone hears something different in it. Maybe
+          that's enough.
+        ship: { culture: 0.05 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # STOWAWAY GROWS UP
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: stowaway_teenager
+    title: "The Ship-Born"
+    narrative: >
+      The child found in the cargo hold years ago is a teenager now —
+      the only person aboard who has never known Earth, never breathed
+      unrecycled air, never seen a sky. She's brilliant, restless, and
+      has opinions about where the ship should go. She's petitioned
+      for a role in navigation.
+    category: rare
+    tags: [crew, emotional, growth]
+    guard: "encounter >= 12 and planetsScanned >= 2"
+    choices:
+      - text: "Give her a navigation apprenticeship"
+        outcome: >
+          She takes to stellar cartography like she was born for it —
+          which, in a way, she was. Her intuitions about planetary
+          systems are uncanny, as if growing up in space gave her an
+          instinct for it.
+        ship: { nav: 0.08, gravimetricScanner: 0.05, culture: 0.05 }
+      - text: "Train her in engineering"
+        outcome: >
+          She understands the ship's systems the way a native speaker
+          understands grammar — not through study but through bone-deep
+          familiarity. She optimizes power routing in her first week.
+        ship: { tech: 0.08, constructors: 0.05, culture: 0.05 }
+        energy: 5
+      - text: "Let her choose her own path"
+        outcomes:
+          - weight: 40
+            outcome: >
+              She becomes the ship's first historian, documenting the
+              voyage with a clarity that makes the crew see themselves
+              anew. Morale lifts.
+            ship: { culture: 0.15 }
+          - weight: 30
+            outcome: >
+              She disappears into the hydroponics bay and emerges weeks
+              later with a new strain of algae that doubles oxygen
+              output. She shrugs: "I was bored."
+            ship: { tech: 0.05, cryopods: 0.05 }
+            nextPlanet:
+              biodiversity: 0.05
+              atmosphere: 0.03
+          - weight: 30
+            outcome: >
+              She tries everything, masters nothing, but connects people
+              across every department. She becomes the ship's heart —
+              the person everyone trusts.
+            ship: { culture: 0.10, nav: 0.03, tech: 0.03 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # COLLECTIVE DOUBT
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: collective_doubt
+    title: "The Question No One Asks"
+    narrative: >
+      It starts in the mess hall. A single question, spoken quietly:
+      "What if there's nowhere to land?" The words spread like cold
+      through the ship. Crew efficiency drops. Arguments break out
+      over rationing. For the first time, the mission's success feels
+      uncertain to the people carrying it.
+    category: common
+    tags: [crew, emotional, crisis, morale]
+    guard: "hull < 0.6 and colonists < 800"
+    choices:
+      - text: "Make an inspiring speech"
+        outcomes:
+          - weight: 55
+            outcome: >
+              You stand on a cargo crate in the mess and speak from the
+              heart. About Earth. About the children in cryo. About
+              the stubborn human refusal to die quietly. When you
+              finish, someone starts clapping.
+            ship: { culture: 0.15, nav: 0.03 }
+          - weight: 45
+            outcome: >
+              The words don't land. Faces stare back, unmoved. "Pretty
+              speech," someone mutters. "Show us a planet." The doubt
+              deepens.
+            ship: { culture: -0.05, nav: -0.03 }
+      - text: "Hold an open vote on the mission"
+        outcomes:
+          - weight: 40
+            outcome: >
+              The vote is overwhelming: continue. Even the skeptics
+              rally once they feel heard. Democracy, it turns out,
+              works even in the void.
+            ship: { culture: 0.12, nav: 0.05 }
+          - weight: 35
+            outcome: >
+              The vote splits 52-48. The narrow margin satisfies no one.
+              Both sides feel vindicated and resentful.
+            ship: { culture: -0.03 }
+          - weight: 25
+            outcome: >
+              The vote goes against continuing. You override it — you
+              have to. But the cost to trust is enormous.
+            ship: { culture: -0.15, nav: 0.08 }
+      - text: "Acknowledge the fear honestly"
+        outcome: >
+          "You're right to be afraid. I'm afraid too. But fear and
+          giving up are different things." It's not a speech. It's
+          just the truth. Sometimes that's enough.
+        ship: { culture: 0.08, cryopods: 0.03 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # THE DREAMER'S PETITION
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: dreamers_petition
+    title: "The Dreamer's Petition"
+    narrative: >
+      Dr. Yara Osei, a xenobiologist frozen since launch, has filed a
+      formal request to be permanently thawed. Her specialty —
+      interpreting alien biosignatures — could dramatically improve
+      planetary scans. But keeping her awake means continuous life
+      support, food, oxygen, and a cryopod that can never be refilled.
+    category: common
+    tags: [crew, emotional, trade-off, scanner]
+    guard: "encounter >= 6 and planetsScanned >= 1"
+    choices:
+      - text: "Approve — we need her expertise"
+        outcome: >
+          Dr. Osei emerges from cryo with a gasp and a grin. Within
+          hours she's recalibrating the life-signs array with techniques
+          no automated system could match. The scans sharpen overnight.
+        ship: { lifeSignsScanner: 0.12, waterScanner: 0.05, culture: 0.05 }
+        colonists: -1
+        energy: -3
+      - text: "Deny — we can't spare the resources"
+        outcome: >
+          The petition is filed and forgotten. Dr. Osei sleeps on. Her
+          expertise remains frozen alongside her, a potential that may
+          never be realized.
+        ship: { culture: -0.03, cryopods: 0.05 }
+        energy: 3
+      - text: "Compromise — wake her for planetary encounters only"
+        outcome: >
+          A rotating thaw schedule is established. Dr. Osei is groggy
+          each time but effective. The repeated freeze-thaw takes a
+          toll on her body, but she insists it's worth it.
+        ship: { lifeSignsScanner: 0.06, cryopods: -0.03, culture: 0.03 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # NAMES ON THE WALL
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: names_on_the_wall
+    title: "Names on the Wall"
+    narrative: >
+      Someone has started etching names into the bulkhead outside
+      Cryobay 3. Small letters, careful work. The names of colonists
+      who didn't make it. The list is longer than anyone expected.
+      Engineering wants to buff it out — it's technically vandalism.
+      The crew wants to keep it.
+    category: uneventful
+    tags: [crew, emotional, memorial, morale]
+    guard: "colonists < 900"
+    choices:
+      - text: "Preserve it — make it official"
+        outcome: >
+          A small ceremony is held. The list is cleaned, protected
+          behind glass, and a light is mounted above it. Crew members
+          begin leaving small tokens beneath. It becomes the most
+          visited place on the ship.
+        ship: { culture: 0.12, cryopods: 0.03 }
+      - text: "Move it somewhere more prominent"
+        outcome: >
+          The memorial is relocated to the main corridor. Every person
+          on the ship passes it daily. It's a reminder of cost, but
+          also of commitment. No one complains about rations anymore.
+        ship: { culture: 0.10, nav: 0.03 }
+      - text: "Remove it — we need to look forward"
+        outcome: >
+          The wall is cleaned. The names are stored in the digital
+          archive. Officially, it's the pragmatic choice. But the
+          corridor outside Cryobay 3 feels colder now.
+        ship: { culture: -0.08, constructors: 0.05 }
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # FALSE PARADISE
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: false_paradise
+    title: "The Promised World"
+    narrative: >
+      Long-range scanners light up with something extraordinary — a
+      planet ahead with readings that seem too good to be true.
+      Breathable atmosphere, liquid water, temperate climate, rich
+      mineral deposits. The crew erupts in celebration. But the chief
+      science officer pulls you aside: "These readings are impossibly
+      clean. Either we just found paradise, or something is spoofing
+      our sensors."
+    category: rare
+    tags: [exploration, late-game, tension, nextPlanet]
+    guard: "encounter >= 20 and planetsScanned >= 4"
+    choices:
+      - text: "Trust the readings — adjust course"
+        outcomes:
+          - weight: 40
+            outcome: >
+              It's real. Against all odds, against every cynical
+              instinct, the universe delivered. As the planet resolves
+              on the viewscreen, the crew falls silent with awe. Home.
+            nextPlanet:
+              atmosphere: 0.20
+              water: 0.20
+              temperature: 0.15
+              resources: 0.15
+              biodiversity: 0.10
+            ship: { culture: 0.10, nav: -0.03 }
+          - weight: 60
+            outcome: >
+              The planet resolves into a gas giant wreathed in
+              electromagnetic interference. The "readings" were sensor
+              ghosts from its radiation belt. The celebration dies.
+              Crew morale plummets.
+            ship: { culture: -0.15, nav: -0.05 }
+            fuel: -10
+      - text: "Send probes ahead to verify"
+        outcome: >
+          Three days of waiting. The probes return mixed data — the
+          planet is real but far from paradise. Moderate conditions,
+          some promise. Worth a look, nothing more. But honest data
+          is worth more than false hope.
+        ship: { culture: 0.03, nav: 0.05 }
+        probeCost: 2
+        nextPlanet:
+          atmosphere: 0.05
+          water: 0.05
+          resources: 0.05
+      - text: "Ignore it — we follow the original course"
+        outcome: >
+          The crew is furious. You may be right to be cautious, but
+          the cost is a ship that questions its captain. Still, the
+          fuel you saved may matter more in the end.
+        ship: { culture: -0.10, nav: 0.05 }
+        fuel: 10
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # THE FINAL GAMBLE
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  - id: final_gamble
+    title: "The Final Gamble"
+    narrative: >
+      Fuel reserves are critical. The navigation computer presents two
+      options: the charted route — safe but fuel-hungry, requiring
+      every drop you have left — or an uncharted shortcut through a
+      region of gravitational anomalies. The shortcut could save half
+      your remaining fuel. It could also tear the ship apart.
+    category: rare
+    tags: [late-game, tension, risk, fuel]
+    guard: "fuel < 50 and encounter >= 18"
+    choices:
+      - text: "Take the shortcut"
+        outcomes:
+          - weight: 45
+            outcome: >
+              The anomalies are navigable — barely. The ship groans
+              through gravitational eddies that bend the corridors
+              visibly. But the fuel gauge holds. You emerge intact,
+              lighter and luckier.
+            ship: { hull: -0.05, nav: 0.05 }
+            fuel: 20
+          - weight: 30
+            outcome: >
+              A gravitational shear catches the port side. Hull plates
+              buckle. The cryobay shakes hard enough to crack seals.
+              You make it through, but the ship carries new scars.
+            ship: { hull: -0.15, cryopods: -0.08, nav: -0.05 }
+            fuel: 5
+            colonists: -8
+          - weight: 25
+            outcome: >
+              The shortcut opens into a pocket of calm — a gravitational
+              sweet spot between anomalies. The ship coasts in freefall
+              for hours, burning almost nothing. The navigator calls
+              it a miracle.
+            ship: { hull: 0.03, nav: 0.08 }
+            fuel: 30
+      - text: "Stay the course — use every drop"
+        outcome: >
+          The safe route drains the tanks to fumes. Every system is
+          rationed. The lights dim. But the ship holds together, and
+          the course is true.
+        ship: { nav: 0.05, hull: 0.05, shields: 0.03 }
+        fuel: -12
+        energy: -5
+      - text: "Cut speed and drift — conserve everything"
+        outcome: >
+          The engines throttle down to minimum burn. Days stretch into
+          weeks of drifting. The silence is maddening, but the fuel
+          gauge stops falling. You'll arrive late, but you'll arrive.
+        ship: { culture: -0.08, nav: -0.05, shields: 0.05 }
+        fuel: 8
+        energy: -5

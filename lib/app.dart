@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'services/game_music.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
@@ -12,6 +13,9 @@ import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_onboarding/quickapps_onboarding.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
+import 'dart:math';
+import 'data/events.dart';
+import 'logic/puzzle_generator.dart';
 import 'models/event.dart';
 import 'models/puzzle.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
@@ -37,9 +41,36 @@ import 'screens/world_engine_screen.dart';
 import 'screens/mirror_array_screen.dart';
 import 'screens/chrono_vortex_screen.dart';
 import 'screens/voyage_screen.dart';
-import 'services/play_games_service.dart';
+import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'providers/game_providers.dart' show voyageProvider, legacyProvider, codeToSeed, localeProvider;
 import 'theme/app_theme.dart';
+
+/// App-specific route labels for screen coverage tracking.
+const Map<String, String> _screenRouteLabels = {
+  '/': 'Title',
+  '/voyage': 'Voyage',
+  '/scan': 'Scan',
+  '/landing': 'Landing',
+  '/landing-sequence': 'Land Seq',
+  '/ending': 'Ending',
+  '/legacy': 'Legacy',
+  '/codex': 'Codex',
+  '/settings': 'Settings',
+  '/gameover': 'Game Over',
+  '/trader': 'Trader',
+  '/ship-status': 'Ship Status',
+  '/event': 'Event',
+  '/puzzle': 'Puzzle',
+  '/black-hole': 'Black Hole',
+  '/living-nebula': 'Nebula',
+  '/seed-vault': 'Seed Vault',
+  '/dyson-sphere': 'Dyson Sphere',
+  '/world-engine': 'World Engine',
+  '/mirror-array': 'Mirror Array',
+  '/chrono-vortex': 'Chrono Vortex',
+};
+
+final _coverageService = ScreenCoverageService.init(_screenRouteLabels);
 
 ThemeData _patchTheme(ThemeData base) {
   return base.copyWith(
@@ -97,6 +128,17 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
   }
 
   void _handleDeepLink(Uri uri) {
+    // Debug: ?screen=<route> navigates directly to a screen for QA screenshots.
+    final screenParam = uri.queryParameters['screen'];
+    if (screenParam != null && screenParam.isNotEmpty) {
+      if (_showOnboarding || !_loaded) {
+        _pendingDeepLink = uri;
+        return;
+      }
+      _navigateToDebugScreen(screenParam);
+      return;
+    }
+
     final seed = uri.queryParameters['seed'];
     if (seed == null || seed.isEmpty) return;
 
@@ -124,22 +166,130 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     }
   }
 
+  /// Debug: navigate directly to a named screen for QA screenshot automation.
+  /// Deferred to ensure widget tree is ready.
+  void _navigateToDebugScreen(String screen) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _doNavigateDebugScreen(screen);
+    });
+  }
+
+  Future<void> _doNavigateDebugScreen(String screen) async {
+    final nav = _navigatorKey.currentState;
+    if (nav == null) return;
+
+    final navContext = _navigatorKey.currentContext;
+    if (navContext == null) return;
+    final l10n = Localizations.of<AppLocalizations>(navContext, AppLocalizations);
+    if (l10n == null) return;
+
+    final notifier = ref.read(voyageProvider.notifier);
+
+    // Screens that don't need game state — navigate directly.
+    const noStateNeeded = {'settings', 'legacy', 'codex'};
+    if (noStateNeeded.contains(screen)) {
+      nav.pushNamed('/$screen');
+      return;
+    }
+
+    // Start a fresh voyage for debug screens (don't restore saved state).
+    notifier.reset();
+    final upgrades = ref.read(legacyProvider).upgrades;
+    notifier.startVoyage(upgrades: upgrades, l10n: l10n);
+
+    // Screens that need a planet — scan and wait for ONNX.
+    const needsPlanet = {'scan', 'landing', 'landing-sequence', 'ending'};
+    if (needsPlanet.contains(screen) && ref.read(voyageProvider).currentPlanet == null) {
+      notifier.scanPlanet();
+      // Wait for planet generation (ONNX inference can take a moment).
+      for (var i = 0; i < 30; i++) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        if (ref.read(voyageProvider).currentPlanet != null) break;
+      }
+    }
+
+    // Visual event screens — need a GameEvent argument.
+    final pool = buildEventPool(l10n);
+    final eventScreens = <String, String>{
+      'black-hole': 'black_hole_lens',
+      'living-nebula': 'living_nebula',
+      'seed-vault': 'seed_vault',
+      'dyson-sphere': 'dyson_sphere',
+      'world-engine': 'relic_world_engine',
+      'mirror-array': 'relic_mirror_array',
+      'chrono-vortex': 'chrono_vortex',
+    };
+
+    if (eventScreens.containsKey(screen)) {
+      final eventId = eventScreens[screen]!;
+      final matches = pool.where((e) => e.id == eventId);
+      if (matches.isEmpty) {
+        QaLogger.app.warning('Debug screen: event "$eventId" not found');
+        return;
+      }
+      nav.pushNamed('/$screen', arguments: matches.first);
+      return;
+    }
+
+    // Event screen — pick a random event.
+    if (screen == 'event') {
+      final event = pool.isNotEmpty ? pool.first : null;
+      if (event != null) {
+        nav.pushNamed('/event', arguments: event);
+      }
+      return;
+    }
+
+    // Puzzle screen — generate one.
+    if (screen == 'puzzle') {
+      final puzzle = PuzzleGenerator.generate(
+        Random(),
+        ref.read(voyageProvider),
+      );
+      nav.pushNamed('/puzzle', arguments: puzzle);
+      return;
+    }
+
+    // Ship status needs degraded systems for visual testing.
+    if (screen == 'ship-status') {
+      notifier.debugDegradeSystem('hull', 0.40);
+      notifier.debugDegradeSystem('nav', 0.60);
+      notifier.debugDegradeSystem('shields', 0.70);
+      notifier.debugDegradeSystem('constructors', 0.50);
+      notifier.debugDegradeSystem('landingSystem', 0.55);
+    }
+
+    // Game over — navigate to /gameover directly (it reads state from provider).
+    if (screen == 'gameover') {
+      nav.pushNamed('/gameover');
+      return;
+    }
+
+    nav.pushNamed('/$screen');
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      FlameAudio.bgm.pause();
-      GameMusic().pauseEngineHum();
+      if (!kIsWeb) {
+        FlameAudio.bgm.pause();
+        GameMusic().pauseEngineHum();
+      }
+      // Save active voyage so it survives if the OS kills the process.
+      ref.read(voyageProvider.notifier).saveState();
     } else if (state == AppLifecycleState.resumed) {
-      FlameAudio.bgm.resume();
-      GameMusic().resumeEngineHum();
+      if (!kIsWeb) {
+        FlameAudio.bgm.resume();
+        GameMusic().resumeEngineHum();
+      }
     }
   }
 
   Future<void> _checkOnboarding() async {
     var completed = await QaOnboardingScreen.isCompleted();
     // Skip onboarding for returning premium users (e.g. after reinstall).
-    if (!completed && QaIapService().isPremium.value) {
+    if (!completed && QaIapService().isPremium) {
       SettingsRepository().setBool('onboarding_completed', true);
       completed = true;
     }
@@ -148,7 +298,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       _loaded = true;
     });
     _processPendingDeepLink();
-    if (completed) PlayGamesService.signIn();
+    if (completed && !kIsWeb) PlayGamesService.signIn();
   }
 
   void _processPendingDeepLink() {
@@ -166,7 +316,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     SettingsRepository().setBool('onboarding_completed', true);
     setState(() => _showOnboarding = false);
     _processPendingDeepLink();
-    PlayGamesService.signIn();
+    if (!kIsWeb) PlayGamesService.signIn();
   }
 
   @override
@@ -191,7 +341,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       theme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       darkTheme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       themeMode: ThemeMode.dark,
-      navigatorObservers: [QaAnalyticsObserver()],
+      navigatorObservers: [QaAnalyticsObserver(), ScreenCoverageObserver(_coverageService)],
       home: !_loaded
           ? const Scaffold(
               backgroundColor: SpaceColors.deepSpace,
@@ -245,86 +395,108 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const TitleScreen());
           case '/voyage':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const VoyageScreen());
           case '/scan':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const ScanScreen());
           case '/landing':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const LandingScreen());
           case '/landing-sequence':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const LandingSequenceScreen());
           case '/ending':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const EndingScreen());
           case '/legacy':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const LegacyScreen());
           case '/codex':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const CodexScreen());
           case '/settings':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const local.SettingsScreen());
           case '/gameover':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const GameOverScreen());
           case '/trader':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const TraderScreen());
           case '/ship-status':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const ShipStatusScreen());
           case '/debug-trader':
             return MaterialPageRoute(
+                settings: settings,
                 builder: (context) => const TraderScreen());
           case '/event':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => EventScreen(event: event),
             );
           case '/puzzle':
             final puzzle = settings.arguments as AlienPuzzle;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => PuzzleScreen(puzzle: puzzle),
             );
           case '/black-hole':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => BlackHoleScreen(event: event),
             );
           case '/living-nebula':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => LivingNebulaScreen(event: event),
             );
           case '/seed-vault':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => SeedVaultScreen(event: event),
             );
           case '/dyson-sphere':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => DysonSphereScreen(event: event),
             );
           case '/world-engine':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => WorldEngineScreen(event: event),
             );
           case '/mirror-array':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => MirrorArrayScreen(event: event),
             );
           case '/chrono-vortex':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
+              settings: settings,
               builder: (context) => ChronoVortexScreen(event: event),
             );
           default:

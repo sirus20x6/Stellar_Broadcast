@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -142,8 +142,152 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
     super.dispose();
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        'LIVING NEBULA',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 4,
+          shadows: [
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
+              blurRadius: 20,
+            ),
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
+              blurRadius: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    if (!_resolved && widget.event.narrative.isNotEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white.withValues(alpha: 0.05),
+          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
+        ),
+        child: Text(
+          _displayedText,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    if (_resolved && _selectedPath != null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: (_selectedPath == 0 ? _kCommunicate : _kRetreat)
+              .withValues(alpha: 0.1),
+          border: Border.all(
+            color: (_selectedPath == 0 ? _kCommunicate : _kRetreat)
+                .withValues(alpha: 0.4),
+          ),
+        ),
+        child: Text(
+          widget.event.choices[_selectedPath!].outcome,
+          style: TextStyle(
+            color: _selectedPath == 0 ? _kCommunicate : _kRetreat,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildVisualAreaWidget() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return AnimatedBuilder(
+          animation: Listenable.merge([_nebulaController, _pulseAnim]),
+          builder: (context, _) {
+            return GestureDetector(
+              onTapDown: _resolved
+                  ? null
+                  : (details) => _handleTap(details, constraints),
+              child: CustomPaint(
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+                painter: _NebulaPainter(
+                  animationValue: _nebulaController.value,
+                  pulseValue: _pulseAnim.value,
+                  selectedPath: _selectedPath,
+                  isResolved: _resolved,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_resolved) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+                color: _kAccent.withValues(alpha: 0.08),
+              ),
+              child: Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _kAccent,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
+    }
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screen = ScreenInfo.of(context);
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
     return Scaffold(
       backgroundColor: _kBgColor,
       body: Stack(
@@ -170,199 +314,101 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Title with glow.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        'LIVING NEBULA',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: _kAccent,
-                          letterSpacing: 4,
-                          shadows: [
-                            Shadow(
-                              color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: _kAccent.withValues(
-                                  alpha: _titleGlowAnim.value * 0.5),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Narrative (typewriter).
-                    if (!_resolved && widget.event.narrative.isNotEmpty)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.white.withValues(alpha: 0.05),
-                          border: Border.all(
-                              color: _kAccent.withValues(alpha: 0.2)),
-                        ),
-                        child: Text(
-                          _displayedText,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    // Outcome text.
-                    if (_resolved && _selectedPath != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: (_selectedPath == 0
-                                  ? _kCommunicate
-                                  : _kRetreat)
-                              .withValues(alpha: 0.1),
-                          border: Border.all(
-                            color: (_selectedPath == 0
-                                    ? _kCommunicate
-                                    : _kRetreat)
-                                .withValues(alpha: 0.4),
-                          ),
-                        ),
-                        child: Text(
-                          widget.event.choices[_selectedPath!].outcome,
-                          style: TextStyle(
-                            color: _selectedPath == 0
-                                ? _kCommunicate
-                                : _kRetreat,
-                            fontSize: 15,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    // Nebula visual area.
-                    if (_typewriterDone)
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return AnimatedBuilder(
-                              animation: Listenable.merge(
-                                  [_nebulaController, _pulseAnim]),
-                              builder: (context, _) {
-                                return GestureDetector(
-                                  onTapDown: _resolved
-                                      ? null
-                                      : (details) =>
-                                          _handleTap(details, constraints),
-                                  child: CustomPaint(
-                                    size: Size(constraints.maxWidth,
-                                        constraints.maxHeight),
-                                    painter: _NebulaPainter(
-                                      animationValue: _nebulaController.value,
-                                      pulseValue: _pulseAnim.value,
-                                      selectedPath: _selectedPath,
-                                      isResolved: _resolved,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-
-                    if (!_typewriterDone) ...[
-                      const Spacer(),
-                      Text(
-                        'TAP TO SKIP',
-                        style: TextStyle(
-                          color: _kAccent.withValues(alpha: 0.5),
-                          fontSize: 12,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ],
-
-                    // Effect chips.
-                    if (_showEffects) ...[
-                      const SizedBox(height: 12),
-                      _buildEffectChips(),
-                    ],
-
-                    // Continue button.
-                    if (_resolved)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12, bottom: 8),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.6),
-                                ),
-                                color: _kAccent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                'CONTINUE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 4),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildTitle(),
+          const SizedBox(height: 16),
+          _buildNarrativeCard(),
+          const SizedBox(height: 12),
+          if (_typewriterDone)
+            Expanded(child: _buildVisualAreaWidget()),
+          if (!_typewriterDone) ...[
+            const Spacer(),
+            _buildHintOrContinue(),
+          ],
+          if (_showEffects) ...[
+            const SizedBox(height: 12),
+            _buildEffectChips(),
+          ],
+          if (_resolved) ...[
+            const SizedBox(height: 4),
+            _buildHintOrContinue(),
+          ],
+          const SizedBox(height: 4),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildNarrativeCard(),
+                              if (_showEffects) ...[
+                                const SizedBox(height: 8),
+                                _buildEffectChips(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildHintOrContinue(),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualAreaWidget(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
+import 'package:quickapps_analytics/quickapps_analytics.dart';
 
 import 'package:flutter/services.dart';
 import 'package:stellar_broadcast/data/codex_data.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
-import 'package:stellar_broadcast/services/play_games_service.dart';
+import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/models/legacy.dart';
 import 'package:stellar_broadcast/models/voyage_log_entry.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show legacyProvider, dailySeedCode, dailyPlayedProvider;
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -44,10 +45,216 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
     super.dispose();
   }
 
+  Widget _buildLeaderboardsButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        AnalyticsService().logEvent(name: QaEvents.leaderboardViewed);
+        final shown = await PlayGamesService.showAllLeaderboards();
+        if (!shown && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Play Games unavailable. View leaderboards at stellarbroadcast.org'),
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: _kAccent.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: _kAccent.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.leaderboard, color: _kAccent, size: 20),
+            const SizedBox(width: 10),
+            Text(
+              'LEADERBOARDS',
+              style: TextStyle(
+                color: _kAccent,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSections(BuildContext context, ScreenInfo screen, LegacyData legacy, List<VoyageLogEntry> voyageLogs) {
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
+    if (isLandscape) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left: high scores, upgrades, ad, achievements.
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const SizedBox(height: 16),
+                if (legacy.highScores.isNotEmpty) ...[
+                  _SectionTitle(title: context.l10n.ui_legacy_highScores),
+                  const SizedBox(height: 12),
+                  _HighScoresTable(scores: legacy.highScores),
+                  const SizedBox(height: 28),
+                ],
+                _SectionTitle(title: context.l10n.ui_legacy_upgrades),
+                const SizedBox(height: 12),
+                _UpgradesGrid(
+                  legacy: legacy,
+                  onPurchase: (id, cost) {
+                    ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
+                    AnalyticsService().logEvent(
+                      name: QaEvents.legacyUpgradePurchased,
+                      parameters: {'upgrade_id': id, 'cost': cost},
+                    );
+                  },
+                ),
+                const SizedBox(height: 28),
+                PremiumAdGate(child: AdaptiveNativeAd(
+                  fallback: AdaptiveBannerAd(
+                    size: QaBannerSize.mrec,
+                    fallback: AdFallbackBanner(
+                      height: 250,
+                      onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+                    ),
+                  ),
+                )),
+                const SizedBox(height: 28),
+                _SectionTitle(title: context.l10n.ui_legacy_achievements),
+                const SizedBox(height: 12),
+                _AchievementsList(legacy: legacy),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+          const SizedBox(width: 24),
+          // Right: commander stats, daily, codex, leaderboards, voyage log.
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const SizedBox(height: 16),
+                _SectionTitle(title: context.l10n.ui_legacy_commanderStats),
+                const SizedBox(height: 12),
+                _StatsOverview(legacy: legacy),
+                const SizedBox(height: 28),
+                _DailySection(legacy: legacy),
+                const SizedBox(height: 28),
+                _SectionTitle(title: context.l10n.ui_codex_title),
+                const SizedBox(height: 12),
+                _CodexCard(legacy: legacy),
+                const SizedBox(height: 28),
+                _buildLeaderboardsButton(context),
+                const SizedBox(height: 28),
+                _SectionTitle(title: context.l10n.ui_legacy_voyageLog),
+                const SizedBox(height: 12),
+                _VoyageLog(logs: voyageLogs),
+                const SizedBox(height: 40),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Portrait: original single-column layout.
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        const SizedBox(height: 16),
+
+        // Section 1: Stats overview.
+        _SectionTitle(title: context.l10n.ui_legacy_commanderStats),
+        const SizedBox(height: 12),
+        _StatsOverview(legacy: legacy),
+
+        const SizedBox(height: 28),
+
+        // Section: Daily voyage.
+        _DailySection(legacy: legacy),
+        const SizedBox(height: 28),
+
+        // Section 2: High scores.
+        if (legacy.highScores.isNotEmpty) ...[
+          _SectionTitle(title: context.l10n.ui_legacy_highScores),
+          const SizedBox(height: 12),
+          _HighScoresTable(scores: legacy.highScores),
+          const SizedBox(height: 28),
+        ],
+
+        // Section 3: Upgrades grid.
+        _SectionTitle(title: context.l10n.ui_legacy_upgrades),
+        const SizedBox(height: 12),
+        _UpgradesGrid(
+          legacy: legacy,
+          onPurchase: (id, cost) {
+            ref
+                .read(legacyProvider.notifier)
+                .purchaseUpgrade(id, cost: cost);
+            AnalyticsService().logEvent(
+              name: QaEvents.legacyUpgradePurchased,
+              parameters: {'upgrade_id': id, 'cost': cost},
+            );
+          },
+        ),
+
+        const SizedBox(height: 28),
+
+        // Native ad between sections.
+        PremiumAdGate(child: AdaptiveNativeAd(
+          fallback: AdaptiveBannerAd(
+            size: QaBannerSize.mrec,
+            fallback: AdFallbackBanner(
+              height: 250,
+              onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+            ),
+          ),
+        )),
+
+        const SizedBox(height: 28),
+
+        // Section: Achievements.
+        _SectionTitle(title: context.l10n.ui_legacy_achievements),
+        const SizedBox(height: 12),
+        _AchievementsList(legacy: legacy),
+
+        const SizedBox(height: 28),
+
+        // Section: Codex.
+        _SectionTitle(title: context.l10n.ui_codex_title),
+        const SizedBox(height: 12),
+        _CodexCard(legacy: legacy),
+
+        const SizedBox(height: 28),
+
+        // Leaderboards button.
+        _buildLeaderboardsButton(context),
+        const SizedBox(height: 28),
+
+        // Section 4: Voyage log.
+        _SectionTitle(title: context.l10n.ui_legacy_voyageLog),
+        const SizedBox(height: 12),
+        _VoyageLog(logs: voyageLogs),
+
+        const SizedBox(height: 40),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final legacy = ref.watch(legacyProvider);
     final voyageLogs = legacy.voyageLogs;
+    final screen = ScreenInfo.of(context);
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -76,7 +283,8 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
 
           // Content.
           SafeArea(
-            child: Column(
+            child: ResponsiveContent(
+              child: Column(
               children: [
                 // Header.
                 Padding(
@@ -97,7 +305,7 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                           context.l10n.ui_legacy_title,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: screen.scaledFontSize(24),
                             fontWeight: FontWeight.bold,
                             color: _kAccent,
                             letterSpacing: 4,
@@ -131,120 +339,7 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
 
                 // Scrollable sections.
                 Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    children: [
-                      const SizedBox(height: 16),
-
-                      // Section 1: Stats overview.
-                      _SectionTitle(title: context.l10n.ui_legacy_commanderStats),
-                      const SizedBox(height: 12),
-                      _StatsOverview(legacy: legacy),
-
-                      const SizedBox(height: 28),
-
-                      // Section: Daily voyage.
-                      _DailySection(legacy: legacy),
-                      const SizedBox(height: 28),
-
-                      // Section 2: High scores.
-                      if (legacy.highScores.isNotEmpty) ...[
-                        _SectionTitle(title: context.l10n.ui_legacy_highScores),
-                        const SizedBox(height: 12),
-                        _HighScoresTable(scores: legacy.highScores),
-                        const SizedBox(height: 28),
-                      ],
-
-                      // Section 3: Upgrades grid.
-                      _SectionTitle(title: context.l10n.ui_legacy_upgrades),
-                      const SizedBox(height: 12),
-                      _UpgradesGrid(
-                        legacy: legacy,
-                        onPurchase: (id, cost) {
-                          ref
-                              .read(legacyProvider.notifier)
-                              .purchaseUpgrade(id, cost: cost);
-                        },
-                      ),
-
-                      const SizedBox(height: 28),
-
-                      // Native ad between sections.
-                      PremiumAdGate(child: AdaptiveNativeAd(
-                        fallback: AdaptiveBannerAd(
-                          size: QaBannerSize.mrec,
-                          fallback: AdFallbackBanner(
-                            height: 250,
-                            onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
-                          ),
-                        ),
-                      )),
-
-                      const SizedBox(height: 28),
-
-                      // Section 3: Achievements.
-                      _SectionTitle(title: context.l10n.ui_legacy_achievements),
-                      const SizedBox(height: 12),
-                      _AchievementsList(legacy: legacy),
-
-                      const SizedBox(height: 28),
-
-                      // Section: Codex.
-                      _SectionTitle(title: context.l10n.ui_codex_title),
-                      const SizedBox(height: 12),
-                      _CodexCard(legacy: legacy),
-
-                      const SizedBox(height: 28),
-
-                      // Leaderboards button.
-                      GestureDetector(
-                        onTap: () async {
-                          final shown = await PlayGamesService.showAllLeaderboards();
-                          if (!shown && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Play Games unavailable. View leaderboards at stellarbroadcast.org'),
-                                duration: Duration(seconds: 4),
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          decoration: BoxDecoration(
-                            color: _kAccent.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: _kAccent.withValues(alpha: 0.25)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.leaderboard, color: _kAccent, size: 20),
-                              const SizedBox(width: 10),
-                              Text(
-                                'LEADERBOARDS',
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 3,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 28),
-
-                      // Section 4: Voyage log.
-                      _SectionTitle(title: context.l10n.ui_legacy_voyageLog),
-                      const SizedBox(height: 12),
-                      _VoyageLog(logs: voyageLogs),
-
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+                  child: _buildSections(context, screen, legacy, voyageLogs),
                 ),
 
                 // Banner ad.
@@ -256,6 +351,7 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ],

@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
@@ -176,195 +176,218 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
 
           // Content.
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
+            child: () {
+              final screen = ScreenInfo.of(context);
+              final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+              return isLandscape ? _buildLandscape(event) : _buildPortrait(event);
+            }(),
+          ),
+        ],
+      ),
+    );
+  }
 
-                  // Title with teal glow.
-                  AnimatedBuilder(
-                    animation: _titleGlowAnim,
-                    builder: (_, __) => Text(
-                      'WORLD ENGINE',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: _kAccent,
-                        letterSpacing: 3,
-                        shadows: [
-                          Shadow(
-                            color: _kAccent.withValues(
-                              alpha: _titleGlowAnim.value,
-                            ),
-                            blurRadius: 20,
-                          ),
-                          Shadow(
-                            color: _kAccent.withValues(
-                              alpha: _titleGlowAnim.value * 0.5,
-                            ),
-                            blurRadius: 40,
-                          ),
-                        ],
-                      ),
-                    ),
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        'WORLD ENGINE',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 3,
+          shadows: [
+            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value), blurRadius: 20),
+            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5), blurRadius: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard(GameEvent event) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: _typewriterDone ? null : _skipTypewriter,
+      child: Container(
+        width: double.infinity,
+        constraints: const BoxConstraints(maxHeight: 140),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: _kBgColor.withValues(alpha: 0.85),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: _isResolved ? _kAccent.withValues(alpha: 0.8) : _kAccent.withValues(alpha: 0.3),
+              width: _isResolved ? 2 : 1,
+            ),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 400),
+                  child: Text(
+                    _isResolved ? event.choices[_selectedSystem!].outcome : _displayedText,
+                    key: ValueKey(_isResolved ? 'outcome' : 'narrative'),
+                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5, letterSpacing: 0.3),
                   ),
-
-                  const SizedBox(height: 12),
-
-                  // Narrative / outcome text.
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: _typewriterDone ? null : _skipTypewriter,
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 140,
-                      child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: _kBgColor.withValues(alpha: 0.85),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: _isResolved
-                              ? _kAccent.withValues(alpha: 0.8)
-                              : _kAccent.withValues(alpha: 0.3),
-                          width: _isResolved ? 2 : 1,
-                        ),
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 400),
-                              child: Text(
-                                _isResolved
-                                    ? event
-                                        .choices[_selectedSystem!]
-                                        .outcome
-                                    : _displayedText,
-                                key: ValueKey(
-                                  _isResolved ? 'outcome' : 'narrative',
-                                ),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                            ),
-                            if (_isResolved && _showEffectChips) ...[
-                              const SizedBox(height: 10),
-                              _buildEffectChips(),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  ),
-
-                  if (!_typewriterDone)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        'TAP TO SKIP',
-                        style: TextStyle(
-                          color: _kAccent.withValues(alpha: 0.5),
-                          fontSize: 11,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: 8),
-
-                  // Visual area — the world engine.
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return GestureDetector(
-                          onTapDown: _typewriterDone && !_isResolved
-                              ? (details) =>
-                                    _handleTap(details, constraints.biggest)
-                              : null,
-                          child: AnimatedBuilder(
-                            animation: Listenable.merge([
-                              _pulseController,
-                              _energyController,
-                            ]),
-                            builder: (_, __) => CustomPaint(
-                              size: constraints.biggest,
-                              painter: _WorldEnginePainter(
-                                animationValue: _energyController.value,
-                                pulseValue: _pulseController.value,
-                                selectedSystem: _selectedSystem,
-                                isResolved: _isResolved,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Continue button after resolution.
-                  if (_isResolved)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            GameSfx().playVaried(GameSfx.buttonClick);
-                            Navigator.of(context).pop();
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 20,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: _kAccent.withValues(alpha: 0.6),
-                              ),
-                              color: _kAccent.withValues(alpha: 0.08),
-                            ),
-                            child: const Text(
-                              'CONTINUE',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: _kAccent,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(
-                    height: 58,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: PremiumAdGate(child: AdaptiveBannerAd()),
-                    ),
-                  ),
+                ),
+                if (_isResolved && _showEffectChips) ...[
+                  const SizedBox(height: 10),
+                  _buildEffectChips(),
                 ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualArea() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          onTapDown: _typewriterDone && !_isResolved
+              ? (details) => _handleTap(details, constraints.biggest)
+              : null,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_pulseController, _energyController]),
+            builder: (_, __) => CustomPaint(
+              size: constraints.biggest,
+              painter: _WorldEnginePainter(
+                animationValue: _energyController.value,
+                pulseValue: _pulseController.value,
+                selectedSystem: _selectedSystem,
+                isResolved: _isResolved,
               ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_isResolved) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+                color: _kAccent.withValues(alpha: 0.08),
+              ),
+              child: const Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _kAccent, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 2),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildPortrait(GameEvent event) {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          _buildTitle(),
+          const SizedBox(height: 12),
+          _buildNarrativeCard(event),
+          if (!_typewriterDone)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
+            ),
+          const SizedBox(height: 8),
+          Expanded(child: _buildVisualArea()),
+          const SizedBox(height: 12),
+          if (_isResolved) _buildHintOrContinue(),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLandscape(GameEvent event) {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              // Left: narrative + buttons.
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: _buildNarrativeCard(event),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildHintOrContinue(),
+                    ],
+                  ),
+                ),
+              ),
+              // Right: world engine visualization (full height).
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualArea(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Ad banner full width at bottom.
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 

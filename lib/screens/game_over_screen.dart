@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:stellar_broadcast/models/voyage_log_entry.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/leaderboard_api.dart';
-import 'package:stellar_broadcast/services/play_games_service.dart';
+import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/utils/constants.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -128,6 +130,11 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
       LeaderboardApi.submitScore(
         player: cmdName, score: voyageEncounters, board: 'encounters',
       );
+
+      AnalyticsService().logEvent(
+        name: QaEvents.leaderboardSubmitted,
+        parameters: {'board': 'encounters', 'score': voyageEncounters},
+      );
     });
 
     // Warning icon pulse — continuous.
@@ -228,9 +235,354 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
     super.dispose();
   }
 
+  Widget _buildWarningAndReason(BuildContext context, ScreenInfo screen, String epilogue) {
+    return Column(
+      children: [
+        // Phase 1: Pulsing warning icon + "MISSION FAILED".
+        AnimatedBuilder(
+          animation: _phase1Controller,
+          builder: (_, __) => Opacity(
+            opacity: _glowOpacity.value,
+            child: Column(
+              children: [
+                // Pulsing warning icon with red glow.
+                AnimatedBuilder(
+                  animation: _pulseController,
+                  builder: (_, __) {
+                    final pulse = 0.7 + 0.3 * _pulseController.value;
+                    return Container(
+                      width: 120 + _glowExpand.value * 60,
+                      height: 120 + _glowExpand.value * 60,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: _kWarning.withValues(
+                                alpha: 0.4 *
+                                    _glowOpacity.value *
+                                    pulse),
+                            blurRadius:
+                                40 + _glowExpand.value * 40,
+                            spreadRadius:
+                                _glowExpand.value * 20 * pulse,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.warning_amber_rounded,
+                        size: 80 + _glowExpand.value * 20,
+                        color: _kWarning.withValues(
+                            alpha: _glowOpacity.value * pulse),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  context.l10n.ui_gameOver_missionFailed,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: screen.scaledFontSize(28),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                        .withValues(alpha: _glowOpacity.value),
+                    letterSpacing: 4,
+                    fontFamily: 'monospace',
+                    shadows: [
+                      Shadow(
+                        color: _kWarning.withValues(
+                            alpha: _glowOpacity.value * 0.8),
+                        blurRadius: 30,
+                      ),
+                      Shadow(
+                        color: _kWarning.withValues(
+                            alpha: _glowOpacity.value * 0.4),
+                        blurRadius: 60,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 40),
+
+        // Phase 2: Game over reason text.
+        AnimatedBuilder(
+          animation: _phase2Controller,
+          builder: (_, __) {
+            final opacity =
+                _phase2Controller.value.clamp(0.0, 1.0);
+            final slide =
+                15.0 * (1.0 - _phase2Controller.value);
+            return Opacity(
+              opacity: opacity,
+              child: Transform.translate(
+                offset: Offset(0, slide),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                        color:
+                            _kWarning.withValues(alpha: 0.6)),
+                    color: _kWarning.withValues(alpha: 0.08),
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            _kWarning.withValues(alpha: 0.15),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    _reason,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: _kWarning,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'monospace',
+                      letterSpacing: 2,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 36),
+
+        // Phase 3: Epilogue text.
+        AnimatedBuilder(
+          animation: _phase3Controller,
+          builder: (_, __) {
+            final opacity =
+                _phase3Controller.value.clamp(0.0, 1.0);
+            final slide =
+                20.0 * (1.0 - _phase3Controller.value);
+            return Opacity(
+              opacity: opacity,
+              child: Transform.translate(
+                offset: Offset(0, slide),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color:
+                            _kWarning.withValues(alpha: 0.15)),
+                    color: _kBgColor.withValues(alpha: 0.85),
+                  ),
+                  child: Text(
+                    epilogue,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 15,
+                      height: 1.6,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatsAndButtons(BuildContext context) {
+    return Column(
+      children: [
+        // Phase 4: Voyage stats.
+        AnimatedBuilder(
+          animation: _phase4Controller,
+          builder: (_, __) {
+            final opacity =
+                _phase4Controller.value.clamp(0.0, 1.0);
+            final scale =
+                0.9 + 0.1 * _phase4Controller.value;
+            return Opacity(
+              opacity: opacity,
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color:
+                            _kAccent.withValues(alpha: 0.25)),
+                    color: _kBgColor.withValues(alpha: 0.9),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        context.l10n.ui_gameOver_voyageRecord,
+                        style: TextStyle(
+                          color:
+                              _kAccent.withValues(alpha: 0.7),
+                          fontSize: 14,
+                          letterSpacing: 3,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'monospace',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_encountersSurvived,
+                        value: '$_encountersSurvived',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_probesRemaining,
+                        value: '$_probesRemaining',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_colonistsRemaining,
+                        value: '$_colonistsRemaining',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_finalShipHealth,
+                        value:
+                            '${(_finalHealthAvg * 100).toStringAsFixed(1)}%',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_planetsSkipped,
+                        value: '$_planetsSkipped',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_damageTaken,
+                        value:
+                            '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_fuelRemaining,
+                        value: '$_fuelRemaining',
+                      ),
+                      const SizedBox(height: 10),
+                      _StatRow(
+                        label: context.l10n.ui_gameOver_energyRemaining,
+                        value: '$_energyRemaining',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+
+        const SizedBox(height: 48),
+
+        // Phase 5: Buttons.
+        AnimatedBuilder(
+          animation: _phase5Controller,
+          builder: (_, __) {
+            final opacity =
+                _phase5Controller.value.clamp(0.0, 1.0);
+            return Opacity(
+              opacity: opacity,
+              child: Column(
+                children: [
+                  _GameOverButton(
+                    label: context.l10n.ui_gameOver_challengeFriend,
+                    isPrimary: false,
+                    icon: Icons.share,
+                    onTap: () {
+                      final text = context.l10n.ui_gameOver_shareText(_reason, _seedCode);
+                      Share.share(text);
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _GameOverButton(
+                    label: context.l10n.ui_gameOver_viewLegacy,
+                    isPrimary: true,
+                    onTap: () => Navigator.of(context)
+                        .pushNamedAndRemoveUntil(
+                      '/legacy',
+                      (route) => route.isFirst,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _GameOverButton(
+                    label: context.l10n.ui_gameOver_newVoyage,
+                    isPrimary: false,
+                    onTap: () {
+                      ref
+                          .read(voyageProvider.notifier)
+                          .startVoyage(l10n: context.l10n);
+                      Navigator.of(context)
+                          .pushReplacementNamed('/');
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContent(BuildContext context, ScreenInfo screen, String epilogue) {
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
+    if (isLandscape) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left side: warning icon, reason, epilogue.
+            Expanded(
+              child: SingleChildScrollView(
+                child: _buildWarningAndReason(context, screen, epilogue),
+              ),
+            ),
+            const SizedBox(width: 24),
+            // Right side: stats + buttons.
+            Expanded(
+              child: SingleChildScrollView(
+                child: _buildStatsAndButtons(context),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Portrait: original vertical layout.
+    return Column(
+      children: [
+        const SizedBox(height: 60),
+        _buildWarningAndReason(context, screen, epilogue),
+        const SizedBox(height: 36),
+        _buildStatsAndButtons(context),
+        const SizedBox(height: 40),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final epilogue = _getEpilogue(context);
+    final screen = ScreenInfo.of(context);
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -260,308 +612,8 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
           // Content.
           SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Column(
-                children: [
-                  const SizedBox(height: 60),
-
-                  // Phase 1: Pulsing warning icon + "MISSION FAILED".
-                  AnimatedBuilder(
-                    animation: _phase1Controller,
-                    builder: (_, __) => Opacity(
-                      opacity: _glowOpacity.value,
-                      child: Column(
-                        children: [
-                          // Pulsing warning icon with red glow.
-                          AnimatedBuilder(
-                            animation: _pulseController,
-                            builder: (_, __) {
-                              final pulse = 0.7 + 0.3 * _pulseController.value;
-                              return Container(
-                                width: 120 + _glowExpand.value * 60,
-                                height: 120 + _glowExpand.value * 60,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: _kWarning.withValues(
-                                          alpha: 0.4 *
-                                              _glowOpacity.value *
-                                              pulse),
-                                      blurRadius:
-                                          40 + _glowExpand.value * 40,
-                                      spreadRadius:
-                                          _glowExpand.value * 20 * pulse,
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.warning_amber_rounded,
-                                  size: 80 + _glowExpand.value * 20,
-                                  color: _kWarning.withValues(
-                                      alpha: _glowOpacity.value * pulse),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            context.l10n.ui_gameOver_missionFailed,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                                  .withValues(alpha: _glowOpacity.value),
-                              letterSpacing: 4,
-                              fontFamily: 'monospace',
-                              shadows: [
-                                Shadow(
-                                  color: _kWarning.withValues(
-                                      alpha: _glowOpacity.value * 0.8),
-                                  blurRadius: 30,
-                                ),
-                                Shadow(
-                                  color: _kWarning.withValues(
-                                      alpha: _glowOpacity.value * 0.4),
-                                  blurRadius: 60,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  // Phase 2: Game over reason text.
-                  AnimatedBuilder(
-                    animation: _phase2Controller,
-                    builder: (_, __) {
-                      final opacity =
-                          _phase2Controller.value.clamp(0.0, 1.0);
-                      final slide =
-                          15.0 * (1.0 - _phase2Controller.value);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.translate(
-                          offset: Offset(0, slide),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 14),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color:
-                                      _kWarning.withValues(alpha: 0.6)),
-                              color: _kWarning.withValues(alpha: 0.08),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      _kWarning.withValues(alpha: 0.15),
-                                  blurRadius: 20,
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              _reason,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: _kWarning,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'monospace',
-                                letterSpacing: 2,
-                                height: 1.4,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 36),
-
-                  // Phase 3: Epilogue text.
-                  AnimatedBuilder(
-                    animation: _phase3Controller,
-                    builder: (_, __) {
-                      final opacity =
-                          _phase3Controller.value.clamp(0.0, 1.0);
-                      final slide =
-                          20.0 * (1.0 - _phase3Controller.value);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.translate(
-                          offset: Offset(0, slide),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color:
-                                      _kWarning.withValues(alpha: 0.15)),
-                              color: _kBgColor.withValues(alpha: 0.85),
-                            ),
-                            child: Text(
-                              epilogue,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 15,
-                                height: 1.6,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 36),
-
-                  // Phase 4: Voyage stats.
-                  AnimatedBuilder(
-                    animation: _phase4Controller,
-                    builder: (_, __) {
-                      final opacity =
-                          _phase4Controller.value.clamp(0.0, 1.0);
-                      final scale =
-                          0.9 + 0.1 * _phase4Controller.value;
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.scale(
-                          scale: scale,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color:
-                                      _kAccent.withValues(alpha: 0.25)),
-                              color: _kBgColor.withValues(alpha: 0.9),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  context.l10n.ui_gameOver_voyageRecord,
-                                  style: TextStyle(
-                                    color:
-                                        _kAccent.withValues(alpha: 0.7),
-                                    fontSize: 14,
-                                    letterSpacing: 3,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'monospace',
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_encountersSurvived,
-                                  value: '$_encountersSurvived',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_probesRemaining,
-                                  value: '$_probesRemaining',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_colonistsRemaining,
-                                  value: '$_colonistsRemaining',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_finalShipHealth,
-                                  value:
-                                      '${(_finalHealthAvg * 100).toStringAsFixed(1)}%',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_planetsSkipped,
-                                  value: '$_planetsSkipped',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_damageTaken,
-                                  value:
-                                      '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_fuelRemaining,
-                                  value: '$_fuelRemaining',
-                                ),
-                                const SizedBox(height: 10),
-                                _StatRow(
-                                  label: context.l10n.ui_gameOver_energyRemaining,
-                                  value: '$_energyRemaining',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 48),
-
-                  // Phase 5: Buttons.
-                  AnimatedBuilder(
-                    animation: _phase5Controller,
-                    builder: (_, __) {
-                      final opacity =
-                          _phase5Controller.value.clamp(0.0, 1.0);
-                      return Opacity(
-                        opacity: opacity,
-                        child: Column(
-                          children: [
-                            _GameOverButton(
-                              label: context.l10n.ui_gameOver_challengeFriend,
-                              isPrimary: false,
-                              icon: Icons.share,
-                              onTap: () {
-                                final text = context.l10n.ui_gameOver_shareText(_reason, _seedCode);
-                                Share.share(text);
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            _GameOverButton(
-                              label: context.l10n.ui_gameOver_viewLegacy,
-                              isPrimary: true,
-                              onTap: () => Navigator.of(context)
-                                  .pushNamedAndRemoveUntil(
-                                '/legacy',
-                                (route) => route.isFirst,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            _GameOverButton(
-                              label: context.l10n.ui_gameOver_newVoyage,
-                              isPrimary: false,
-                              onTap: () {
-                                ref
-                                    .read(voyageProvider.notifier)
-                                    .startVoyage(l10n: context.l10n);
-                                Navigator.of(context)
-                                    .pushReplacementNamed('/');
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 40),
-                ],
+              child: ResponsiveContent(
+                child: _buildContent(context, screen, epilogue),
               ),
             ),
           ),

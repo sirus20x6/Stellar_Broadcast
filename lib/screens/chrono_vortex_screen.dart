@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Theme constants.
@@ -181,8 +181,116 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
     super.dispose();
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        'CHRONO-VORTEX',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 4,
+          shadows: [
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
+              blurRadius: 20,
+            ),
+            Shadow(
+              color: _kVortexInner.withValues(alpha: _titleGlowAnim.value * 0.6),
+              blurRadius: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    return _NarrativeCard(
+      text: _showingOutcome
+          ? widget.event.choices[_selectedChoiceIndex!].outcome
+          : _displayedText,
+      isOutcome: _showingOutcome,
+      choice: _showingOutcome
+          ? widget.event.choices[_selectedChoiceIndex!]
+          : null,
+      showEffectChips: _showEffectChips,
+    );
+  }
+
+  Widget _buildVisualArea() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _paintSize = Size(constraints.maxWidth, constraints.maxHeight);
+        return GestureDetector(
+          onTapDown: _handleTapDown,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_vortexController, _pulseController]),
+            builder: (_, __) => CustomPaint(
+              size: Size(constraints.maxWidth, constraints.maxHeight),
+              painter: _ChronoVortexPainter(
+                animationValue: _vortexController.value,
+                pulseValue: _pulseController.value,
+                selectedChoice: _selectedChoiceIndex,
+                isResolved: _showingOutcome,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_showingOutcome) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+                color: _kAccent.withValues(alpha: 0.08),
+              ),
+              child: Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _kAccent,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
+    }
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screen = ScreenInfo.of(context);
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
     return Scaffold(
       backgroundColor: _kBgColor,
       body: Stack(
@@ -209,153 +317,81 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Title.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        'CHRONO-VORTEX',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: _kAccent,
-                          letterSpacing: 4,
-                          shadows: [
-                            Shadow(
-                              color: _kAccent.withValues(
-                                alpha: _titleGlowAnim.value,
-                              ),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: _kVortexInner.withValues(
-                                alpha: _titleGlowAnim.value * 0.6,
-                              ),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Narrative / outcome text.
-                    _NarrativeCard(
-                      text: _showingOutcome
-                          ? widget.event.choices[_selectedChoiceIndex!].outcome
-                          : _displayedText,
-                      isOutcome: _showingOutcome,
-                      choice: _showingOutcome
-                          ? widget.event.choices[_selectedChoiceIndex!]
-                          : null,
-                      showEffectChips: _showEffectChips,
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    // Vortex visual area.
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          _paintSize = Size(constraints.maxWidth, constraints.maxHeight);
-                          return GestureDetector(
-                            onTapDown: _handleTapDown,
-                            child: AnimatedBuilder(
-                              animation: Listenable.merge([
-                                _vortexController,
-                                _pulseController,
-                              ]),
-                              builder: (_, __) => CustomPaint(
-                                size: Size(constraints.maxWidth, constraints.maxHeight),
-                                painter: _ChronoVortexPainter(
-                                  animationValue: _vortexController.value,
-                                  pulseValue: _pulseController.value,
-                                  selectedChoice: _selectedChoiceIndex,
-                                  isResolved: _showingOutcome,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    if (!_typewriterDone)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          'TAP TO SKIP',
-                          style: TextStyle(
-                            color: _kAccent.withValues(alpha: 0.5),
-                            fontSize: 12,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                      ),
-
-                    // Continue button after outcome.
-                    if (_showingOutcome)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.6),
-                                ),
-                                color: _kAccent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                'CONTINUE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildTitle(),
+          const SizedBox(height: 16),
+          _buildNarrativeCard(),
+          const SizedBox(height: 8),
+          Expanded(child: _buildVisualArea()),
+          const SizedBox(height: 8),
+          _buildHintOrContinue(),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: _buildNarrativeCard(),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildHintOrContinue(),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualArea(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -419,9 +455,9 @@ class _NarrativeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final chips = _buildChips();
 
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 160,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.3),
       child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

@@ -7,9 +7,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/widgets/holographic_button.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
-import 'package:stellar_broadcast/widgets/system_bar.dart';
 
 /// The Alien Trader freeform shop screen.
 ///
@@ -259,139 +258,211 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
 
           // Main content.
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                children: [
-                  // Header.
-                  Text(
-                    context.l10n.ui_trader_title,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 6,
-                      color: _accent,
-                      shadows: [
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.8),
-                          blurRadius: 16,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  _buildMoodText(),
-                  const SizedBox(height: 4),
-                  Text(
-                    context.l10n.ui_trader_greeting,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Ship systems + payment selector in scrollable area.
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Ship Systems section.
-                          _sectionLabel(context.l10n.ui_trader_shipSystems),
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withValues(alpha: 0.03),
-                              border: Border.all(
-                                color: _accent.withValues(alpha: 0.12),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                // Core systems.
-                                ...coreSystems.map((name) {
-                                  return _buildSystemRow(
-                                    name,
-                                    coreLabels[name] ?? name,
-                                    ship,
-                                  );
-                                }),
-                                // Divider.
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        context.l10n.ui_voyage_scanners,
-                                        style: TextStyle(
-                                          fontFamily: 'monospace',
-                                          fontSize: 9,
-                                          letterSpacing: 2,
-                                          color:
-                                              _accent.withValues(alpha: 0.4),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Container(
-                                          height: 1,
-                                          color:
-                                              _accent.withValues(alpha: 0.1),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                // Scanner subsystems.
-                                ...ShipSystems.scannerSubsystemNames.map(
-                                    (name) {
-                                  return _buildSystemRow(
-                                    name,
-                                    scannerLabels[name] ?? name,
-                                    ship,
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Payment selector section.
-                          _sectionLabel(context.l10n.ui_trader_payWith),
-                          const SizedBox(height: 6),
-                          ...TradeResource.values.map((resource) {
-                            return _buildPaymentOption(resource);
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Leave button.
-                  HolographicButton(
-                    label: context.l10n.ui_trader_leaveTrader,
-                    isPrimary: false,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  const SizedBox(height: 8),
-                ],
+            child: ResponsiveContent(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: _buildTraderContent(
+                  ship: ship,
+                  coreLabels: coreLabels,
+                  scannerLabels: scannerLabels,
+                  coreSystems: coreSystems,
+                ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTraderHeader() {
+    return Column(
+      children: [
+        Text(
+          context.l10n.ui_trader_title,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 28,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 6,
+            color: _accent,
+            shadows: [
+              Shadow(
+                color: _accent.withValues(alpha: 0.8),
+                blurRadius: 16,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
+        _buildMoodText(),
+        const SizedBox(height: 4),
+        Text(
+          context.l10n.ui_trader_greeting,
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 11,
+            fontStyle: FontStyle.italic,
+            color: Colors.white.withValues(alpha: 0.5),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShipSystemsPanel({
+    required ShipSystems ship,
+    required Map<String, String> coreLabels,
+    required Map<String, String> scannerLabels,
+    required List<String> coreSystems,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionLabel(context.l10n.ui_trader_shipSystems),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white.withValues(alpha: 0.03),
+            border: Border.all(color: _accent.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            children: [
+              ...coreSystems.map((name) {
+                return _buildSystemRow(name, coreLabels[name] ?? name, ship);
+              }),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  children: [
+                    Text(
+                      context.l10n.ui_voyage_scanners,
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 9,
+                        letterSpacing: 2,
+                        color: _accent.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: _accent.withValues(alpha: 0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ...ShipSystems.scannerSubsystemNames.map((name) {
+                return _buildSystemRow(
+                    name, scannerLabels[name] ?? name, ship);
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionLabel(context.l10n.ui_trader_payWith),
+        const SizedBox(height: 6),
+        ...TradeResource.values.map((resource) {
+          return _buildPaymentOption(resource);
+        }),
+      ],
+    );
+  }
+
+  Widget _buildTraderContent({
+    required ShipSystems ship,
+    required Map<String, String> coreLabels,
+    required Map<String, String> scannerLabels,
+    required List<String> coreSystems,
+  }) {
+    final screen = ScreenInfo.of(context);
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
+    if (isLandscape) {
+      return Column(
+        children: [
+          _buildTraderHeader(),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left column: ship systems with repair buttons.
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: _buildShipSystemsPanel(
+                      ship: ship,
+                      coreLabels: coreLabels,
+                      scannerLabels: scannerLabels,
+                      coreSystems: coreSystems,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Right column: payment selector.
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    child: _buildPaymentSection(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          HolographicButton(
+            label: context.l10n.ui_trader_leaveTrader,
+            isPrimary: false,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          const SizedBox(height: 8),
+        ],
+      );
+    }
+
+    // Portrait layout (original).
+    return Column(
+      children: [
+        _buildTraderHeader(),
+        const SizedBox(height: 12),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildShipSystemsPanel(
+                  ship: ship,
+                  coreLabels: coreLabels,
+                  scannerLabels: scannerLabels,
+                  coreSystems: coreSystems,
+                ),
+                const SizedBox(height: 16),
+                _buildPaymentSection(),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        HolographicButton(
+          label: context.l10n.ui_trader_leaveTrader,
+          isPrimary: false,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 

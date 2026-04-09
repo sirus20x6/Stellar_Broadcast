@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
@@ -224,9 +224,161 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
     );
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        'MIRROR ARRAY',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 3,
+          shadows: [
+            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value), blurRadius: 20),
+            Shadow(color: _kStarGlow.withValues(alpha: _titleGlowAnim.value * 0.4), blurRadius: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: _typewriterDone ? null : _skipTypewriter,
+      child: _OutcomeCard(
+        text: _showingOutcome
+            ? widget.event.choices[_selectedRing!].outcome
+            : _displayedText,
+        isOutcome: _showingOutcome,
+        choice: null,
+        showEffectChips: false,
+      ),
+    );
+  }
+
+  Widget _buildVisualArea() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        final h = constraints.maxHeight;
+        final cx = w / 2;
+        final cy = h / 2;
+        const radii = [0.18, 0.30, 0.42];
+        const labels = ['STUDY OPTICS', 'HARVEST MATERIAL', 'MAP ROUTES'];
+        const labelColors = [_kInnerLabel, _kMiddleLabel, _kOuterLabel];
+
+        return Stack(
+          children: [
+            // Mirror visualization (behind buttons).
+            Positioned.fill(
+              child: AnimatedBuilder(
+                animation: Listenable.merge([_starController, _pulseAnim]),
+                builder: (_, __) => CustomPaint(
+                  size: Size(w, h),
+                  painter: _MirrorArrayPainter(
+                    animationValue: _starController.value,
+                    pulseValue: _pulseAnim.value,
+                    selectedRing: _selectedRing,
+                    isResolved: _showingOutcome,
+                  ),
+                ),
+              ),
+            ),
+            // Ring choice buttons (on top of mirrors).
+            if (_typewriterDone && !_showingOutcome)
+              for (var r = 0; r < labels.length && r < widget.event.choices.length; r++)
+                Positioned(
+                  left: cx - w * 0.25,
+                  width: w * 0.5,
+                  top: cy - w * radii[r] - 24,
+                  height: 40,
+                  child: GestureDetector(
+                    onTap: () {
+                      final choice = widget.event.choices[r];
+                      final probes = ref.read(voyageProvider).probes;
+                      if (choice.probeCost > 0 && probes < choice.probeCost) return;
+                      HapticService().selection();
+                      GameSfx().play(GameSfx.interestingFind);
+                      setState(() {
+                        _selectedRing = r;
+                        _showingOutcome = true;
+                      });
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        if (mounted) setState(() => _showEffectChips = true);
+                      });
+                      ref.read(voyageProvider.notifier).handleEvent(choice);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: labelColors[r].withValues(alpha: 0.12),
+                        border: Border.all(color: labelColors[r].withValues(alpha: 0.4)),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        labels[r],
+                        style: TextStyle(
+                          color: labelColors[r],
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
+                          shadows: [Shadow(color: labelColors[r].withValues(alpha: 0.6), blurRadius: 8)],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_showingOutcome) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+                color: _kAccent.withValues(alpha: 0.08),
+              ),
+              child: const Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: _kAccent, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 2),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
+    }
+    return Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final event = widget.event;
+    final screen = ScreenInfo.of(context);
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -251,172 +403,113 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
 
           // Content.
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 8),
-
-                  // ── Title ────────────────────────────────────────────────
-                  AnimatedBuilder(
-                    animation: _titleGlowAnim,
-                    builder: (_, __) => Text(
-                      'MIRROR ARRAY',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: _kAccent,
-                        letterSpacing: 3,
-                        shadows: [
-                          Shadow(
-                            color: _kAccent.withValues(
-                              alpha: _titleGlowAnim.value,
-                            ),
-                            blurRadius: 20,
-                          ),
-                          Shadow(
-                            color: _kStarGlow.withValues(
-                              alpha: _titleGlowAnim.value * 0.4,
-                            ),
-                            blurRadius: 40,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // ── Narrative / outcome text ─────────────────────────────
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: _typewriterDone ? null : _skipTypewriter,
-                    child: _OutcomeCard(
-                      text: _showingOutcome
-                          ? event.choices[_selectedRing!].outcome
-                          : _displayedText,
-                      isOutcome: _showingOutcome,
-                      choice: null,
-                      showEffectChips: false,
-                    ),
-                  ),
-
-                  if (_showEffectChips) ...[
-                    const SizedBox(height: 6),
-                    _buildEffectChipsRow(),
-                  ],
-
-                  const SizedBox(height: 8),
-
-                  // ── Visual area ──────────────────────────────────────────
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return GestureDetector(
-                          onTapDown: (d) => _onTapDown(d, constraints),
-                          child: AnimatedBuilder(
-                            animation: Listenable.merge([
-                              _starController,
-                              _pulseAnim,
-                            ]),
-                            builder: (_, __) => CustomPaint(
-                              size: Size(
-                                constraints.maxWidth,
-                                constraints.maxHeight,
-                              ),
-                              painter: _MirrorArrayPainter(
-                                animationValue: _starController.value,
-                                pulseValue: _pulseAnim.value,
-                                selectedRing: _selectedRing,
-                                isResolved: _showingOutcome,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // ── Tap hint ─────────────────────────────────────────────
-                  if (!_typewriterDone)
-                    Text(
-                      'TAP TO SKIP',
-                      style: TextStyle(
-                        color: _kAccent.withValues(alpha: 0.5),
-                        fontSize: 12,
-                        letterSpacing: 2,
-                      ),
-                    ),
-
-                  if (_typewriterDone && !_showingOutcome)
-                    Text(
-                      'TAP A RING TO CHOOSE',
-                      style: TextStyle(
-                        color: _kAccent.withValues(alpha: 0.6),
-                        fontSize: 12,
-                        letterSpacing: 2,
-                      ),
-                    ),
-
-                  // ── Continue button ──────────────────────────────────────
-                  if (_showingOutcome)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            GameSfx().playVaried(GameSfx.buttonClick);
-                            Navigator.of(context).pop();
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 20,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: _kAccent.withValues(alpha: 0.6),
-                              ),
-                              color: _kAccent.withValues(alpha: 0.08),
-                            ),
-                            child: const Text(
-                              'CONTINUE',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: _kAccent,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: 8),
-
-                  // ── Ad banner ────────────────────────────────────────────
-                  const SizedBox(
-                    height: 58,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: PremiumAdGate(child: AdaptiveBannerAd()),
-                    ),
-                  ),
-                ],
-              ),
+            child: GestureDetector(
+              behavior: _showingOutcome ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
+              onTap: _showingOutcome ? () {
+                GameSfx().playVaried(GameSfx.buttonClick);
+                Navigator.of(context).pop();
+              } : null,
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          _buildTitle(),
+          const SizedBox(height: 16),
+          _buildNarrativeCard(),
+          if (_showEffectChips) ...[
+            const SizedBox(height: 6),
+            _buildEffectChipsRow(),
+          ],
+          const SizedBox(height: 8),
+          if (!_typewriterDone)
+            Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
+          if (_typewriterDone && !_showingOutcome)
+            Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2)),
+          if (_showingOutcome)
+            Text('TAP TO CONTINUE', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
+          const SizedBox(height: 8),
+          Expanded(child: _buildVisualArea()),
+          const SizedBox(height: 8),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              // Left: narrative + buttons.
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildNarrativeCard(),
+                              if (_showEffectChips) ...[
+                                const SizedBox(height: 8),
+                                _buildEffectChipsRow(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      if (!_typewriterDone)
+                        Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
+                      if (_typewriterDone && !_showingOutcome)
+                        Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2)),
+                      if (_showingOutcome)
+                        Text('TAP TO CONTINUE', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
+                    ],
+                  ),
+                ),
+              ),
+              // Right: mirror array visualization (full height).
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualArea(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Ad banner full width at bottom.
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -480,9 +573,9 @@ class _OutcomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final chips = _buildEffectChips();
 
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 190,
+      constraints: const BoxConstraints(maxHeight: 190),
       child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -680,11 +773,8 @@ class _MirrorArrayPainter extends CustomPainter {
     // ── Central artificial star ──────────────────────────────────────────
     _drawStar(canvas, center, w);
 
-    // ── Ring labels and tap zones (before resolution only) ────────────────
-    if (!isResolved) {
-      _drawTapZones(canvas, center, w, size);
-      _drawLabels(canvas, center, w, size);
-    }
+    // Ring labels and tap zones are now rendered as Flutter widgets
+    // overlaid on top of the canvas (see _buildVisualArea).
   }
 
   void _drawStar(Canvas canvas, Offset center, double w) {

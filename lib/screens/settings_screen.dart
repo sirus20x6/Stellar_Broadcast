@@ -5,10 +5,10 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
 
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
-import 'package:stellar_broadcast/providers/game_providers.dart' show localeProvider;
+import 'package:stellar_broadcast/providers/game_providers.dart' show localeProvider, statsOnLeftProvider;
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _localeNames = <String, String>{
@@ -93,6 +93,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
           // Content.
           SafeArea(
+            child: ResponsiveContent(
             child: Column(
               children: [
                 // Header.
@@ -162,6 +163,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                       _buildSectionTitle(context.l10n.ui_settings_language),
                       const SizedBox(height: 12),
                       _LanguageSection(),
+                      // Layout preference (only on widescreen).
+                      if (ScreenInfo.of(context).screenClass != ScreenClass.compact) ...[
+                        const SizedBox(height: 28),
+                        _buildSectionTitle('LAYOUT'),
+                        const SizedBox(height: 12),
+                        _SettingsCard(
+                          children: [
+                            _StatsPositionToggle(),
+                          ],
+                        ),
+                      ],
                       // Native ad (hidden for premium).
                       const SizedBox(height: 28),
                       PremiumAdGate(child: AdaptiveNativeAd(
@@ -210,6 +222,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ],
@@ -509,6 +522,56 @@ class _LanguageTile extends StatelessWidget {
           ? const Icon(Icons.check, color: _kAccent, size: 20)
           : null,
       onTap: onTap,
+    );
+  }
+}
+
+// ── Stats position toggle ───────────────────────────────────────────────────
+
+class _StatsPositionToggle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statsOnLeft = ref.watch(statsOnLeftProvider);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Expanded(
+          child: Text(
+            'Stats & buttons position',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        SegmentedButton<bool>(
+          segments: const [
+            ButtonSegment(value: true, label: Text('LEFT')),
+            ButtonSegment(value: false, label: Text('RIGHT')),
+          ],
+          selected: {statsOnLeft},
+          onSelectionChanged: (v) => ref.read(statsOnLeftProvider.notifier).toggle(),
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return _kAccent.withValues(alpha: 0.15);
+              }
+              return Colors.transparent;
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) return _kAccent;
+              return Colors.white38;
+            }),
+            side: WidgetStateProperty.all(BorderSide(color: _kAccent.withValues(alpha: 0.3))),
+            textStyle: WidgetStateProperty.all(const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 2,
+            )),
+          ),
+        ),
+      ],
     );
   }
 }

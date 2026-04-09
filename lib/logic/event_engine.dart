@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:stellar_broadcast/logic/guard_evaluator.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
@@ -15,47 +16,64 @@ class EventEngine {
   /// - encounter < 2: safe early events only
   /// - encounter 2-5: 30% malfunction, 10% boon, rest common/rare
   /// - encounter 6+: 40-65% malfunction (escalating), 5% boon, rest common
+  ///
+  /// If a chained event is due this encounter, it fires instead of the
+  /// normal selection.
   static GameEvent getRandomEvent(
     Random random,
     VoyageState state,
     List<GameEvent> eventPool,
   ) {
+    // Check for pending chained events first.
+    for (final chain in state.pendingChains) {
+      if (state.encounterCount >= chain.triggerAtEncounter) {
+        final chained = eventPool
+            .where((e) => e.id == chain.eventId)
+            .firstOrNull;
+        if (chained != null) return chained;
+      }
+    }
+
     final encounter = state.encounterCount;
     final unseen =
         eventPool.where((e) => !state.seenEventIds.contains(e.id)).toList();
     final pool = unseen.isNotEmpty ? unseen : eventPool;
 
+    // Filter by guard expressions.
+    List<GameEvent> guardFilter(List<GameEvent> events) =>
+        events.where((e) => GuardEvaluator.evaluate(e.guard, state)).toList();
+
     List<GameEvent> candidates;
 
     if (encounter < 2) {
       // Early game: safe events only.
-      candidates = pool
+      candidates = guardFilter(pool
           .where((e) =>
               e.category == EventCategory.early ||
               e.category == EventCategory.uneventful ||
               e.category == EventCategory.common)
-          .toList();
+          .toList());
     } else if (encounter < 6) {
       // Mid game: 30% malfunction, 10% boon.
       final roll = random.nextDouble();
       if (roll < 0.30) {
-        final malfunctions =
-            pool.where((e) => e.category == EventCategory.malfunction).toList();
+        final malfunctions = guardFilter(
+            pool.where((e) => e.category == EventCategory.malfunction).toList());
         if (malfunctions.isNotEmpty) {
           return malfunctions[random.nextInt(malfunctions.length)];
         }
       } else if (roll < 0.40) {
-        final boons =
-            pool.where((e) => e.category == EventCategory.boon).toList();
+        final boons = guardFilter(
+            pool.where((e) => e.category == EventCategory.boon).toList());
         if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
       }
 
-      candidates = pool
+      candidates = guardFilter(pool
           .where((e) =>
               e.category == EventCategory.common ||
               e.category == EventCategory.rare ||
               e.category == EventCategory.uneventful)
-          .toList();
+          .toList());
     } else {
       // Late game: escalating malfunction chance (40% to 65%).
       final malfunctionChance =
@@ -63,35 +81,77 @@ class EventEngine {
       final roll = random.nextDouble();
 
       if (roll < malfunctionChance) {
-        final malfunctions =
-            pool.where((e) => e.category == EventCategory.malfunction).toList();
+        final malfunctions = guardFilter(
+            pool.where((e) => e.category == EventCategory.malfunction).toList());
         if (malfunctions.isNotEmpty) {
           return malfunctions[random.nextInt(malfunctions.length)];
         }
       }
 
       if (roll < malfunctionChance + 0.05) {
-        final boons =
-            pool.where((e) => e.category == EventCategory.boon).toList();
+        final boons = guardFilter(
+            pool.where((e) => e.category == EventCategory.boon).toList());
         if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
       }
 
       // Rare events still possible but uncommon.
-      candidates = pool
+      candidates = guardFilter(pool
           .where((e) =>
               e.category == EventCategory.common ||
               e.category == EventCategory.rare ||
               e.category == EventCategory.malfunction)
-          .toList();
+          .toList());
     }
 
-    if (candidates.isEmpty) candidates = pool;
+    if (candidates.isEmpty) candidates = guardFilter(pool);
+    if (candidates.isEmpty) candidates = pool; // fallback: skip guards
     return candidates[random.nextInt(candidates.length)];
+  }
+
+  /// Resolves a weighted outcome for [choice] using [random].
+  ///
+  /// If the choice has [EventChoice.outcomes], picks one based on weights
+  /// and returns a synthetic [EventChoice] with that outcome's effects.
+  /// Otherwise returns the original choice unchanged.
+  static EventChoice resolveOutcome(EventChoice choice, Random random) {
+    final outcomes = choice.outcomes;
+    if (outcomes == null || outcomes.isEmpty) return choice;
+
+    final totalWeight = outcomes.fold<int>(0, (sum, o) => sum + o.weight);
+    var roll = random.nextInt(totalWeight);
+    WeightedOutcome selected = outcomes.first;
+    for (final o in outcomes) {
+      roll -= o.weight;
+      if (roll < 0) {
+        selected = o;
+        break;
+      }
+    }
+
+    return EventChoice(
+      text: choice.text,
+      outcome: selected.outcome,
+      shipEffects: selected.shipEffects,
+      planetModifiers: selected.planetModifiers,
+      nextPlanetModifiers: selected.nextPlanetModifiers,
+      probeCost: choice.probeCost, // cost is on the choice, not outcome
+      probeDelta: selected.probeDelta,
+      fuelDelta: selected.fuelDelta,
+      energyDelta: selected.energyDelta,
+      colonistDelta: selected.colonistDelta,
+      opensPlanetScreen: selected.opensPlanetScreen,
+      immediatePlanetMinHabitability: selected.immediatePlanetMinHabitability,
+      guard: choice.guard,
+      chain: selected.chain ?? choice.chain,
+    );
   }
 
   /// Applies a player's [choice] to the current [state], returning a new
   /// [VoyageState] with updated ship systems, planet modifiers, colonists,
   /// log, and probe deductions.
+  ///
+  /// If the choice has weighted outcomes, call [resolveOutcome] first to
+  /// flatten it to a single-outcome choice before passing it here.
   static VoyageState applyChoice(VoyageState state, EventChoice choice, Random random) {
     // Deduct probe cost, then apply probe delta.
     var probes = state.probes;
@@ -174,6 +234,20 @@ class EventEngine {
       }
     }
 
+    // Schedule chained events.
+    var pendingChains = List<PendingChain>.from(state.pendingChains);
+    if (choice.chain != null) {
+      pendingChains.add(PendingChain(
+        eventId: choice.chain!.eventId,
+        triggerAtEncounter: state.encounterCount + choice.chain!.delay,
+      ));
+    }
+
+    // Remove any chained events that have fired this encounter.
+    pendingChains = pendingChains
+        .where((c) => c.triggerAtEncounter > state.encounterCount)
+        .toList();
+
     return state.copyWith(
       ship: ship,
       currentPlanet: planet,
@@ -182,6 +256,7 @@ class EventEngine {
       energy: energy,
       colonists: colonists,
       pendingPlanetModifiers: pendingMods,
+      pendingChains: pendingChains,
       log: [...state.log, choice.outcome],
     );
   }

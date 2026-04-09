@@ -8,10 +8,9 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, seedToCode;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
-import 'package:stellar_broadcast/widgets/holographic_button.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
-import 'package:stellar_broadcast/widgets/system_bar.dart';
 
 /// The main voyage HUD screen displaying ship systems, encounter progress,
 /// and action buttons.
@@ -121,49 +120,228 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
 
           // HUD content.
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                children: [
-                  // — Header —
-                  _buildHeader(voyage),
-                  const SizedBox(height: 16),
-
-                  // — Ship systems —
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          _buildSystemsPanel(ship, isCritical),
-                          const SizedBox(height: 20),
-
-                          // — Narrative context —
-                          _buildNarrative(voyage),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // — Action buttons —
-                  _buildActions(canScan),
-                  const SizedBox(height: 6),
-                  // Seed display.
-                  Text(
-                    context.l10n.ui_voyage_seed(seedToCode(voyage.seed)),
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 10,
-                      letterSpacing: 2,
-                      color: _accent.withValues(alpha: 0.35),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
+            child: ResponsiveContent(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: _buildHudContent(voyage, ship, isCritical, canScan),
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHudContent(
+    VoyageState voyage,
+    ShipSystems ship,
+    bool isCritical,
+    bool canScan,
+  ) {
+    final screen = ScreenInfo.of(context);
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
+
+    if (isLandscape) {
+      return Column(
+        children: [
+          _buildHeader(voyage),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Left column: ship systems in 2-column grid.
+                Expanded(
+                  flex: 3,
+                  child: SingleChildScrollView(
+                    child: _buildSystemsPanelLandscape(ship, isCritical),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Right column: narrative + actions.
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: _buildNarrative(voyage),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildActions(canScan),
+                      const SizedBox(height: 6),
+                      Text(
+                        context.l10n.ui_voyage_seed(seedToCode(voyage.seed)),
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 10,
+                          letterSpacing: 2,
+                          color: _accent.withValues(alpha: 0.35),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      );
+    }
+
+    // Portrait layout (original).
+    return Column(
+      children: [
+        _buildHeader(voyage),
+        const SizedBox(height: 16),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildSystemsPanel(ship, isCritical),
+                const SizedBox(height: 20),
+                _buildNarrative(voyage),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildActions(canScan),
+        const SizedBox(height: 6),
+        Text(
+          context.l10n.ui_voyage_seed(seedToCode(voyage.seed)),
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: 2,
+            color: _accent.withValues(alpha: 0.35),
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  /// Landscape version of the systems panel with 2-column grid.
+  Widget _buildSystemsPanelLandscape(ShipSystems ship, bool isCritical) {
+    final coreLabels = {
+      'hull': context.l10n.ui_voyage_systemHull,
+      'nav': context.l10n.ui_voyage_systemNav,
+      'cryopods': context.l10n.ui_voyage_systemCryopods,
+      'culture': context.l10n.ui_voyage_systemCulture,
+      'tech': context.l10n.ui_voyage_systemTech,
+      'constructors': context.l10n.ui_voyage_systemConstruct,
+      'shields': context.l10n.ui_voyage_systemShields,
+      'landingSystem': context.l10n.ui_voyage_systemLanding,
+    };
+
+    final scannerLabels = {
+      'atmosphericScanner': context.l10n.ui_voyage_scannerAtmo,
+      'gravimetricScanner': context.l10n.ui_voyage_scannerGrav,
+      'mineralScanner': context.l10n.ui_voyage_scannerMineral,
+      'lifeSignsScanner': context.l10n.ui_voyage_scannerLife,
+      'temperatureScanner': context.l10n.ui_voyage_scannerTemp,
+      'waterScanner': context.l10n.ui_voyage_scannerWater,
+    };
+
+    final coreNames = [
+      'hull', 'nav', 'cryopods', 'culture',
+      'tech', 'constructors', 'shields', 'landingSystem',
+    ];
+    final scannerNames = ShipSystems.scannerSubsystemNames.toList();
+
+    // Interleave into 2-column pairs for core systems.
+    final coreWidgets = <Widget>[];
+    for (var i = 0; i < coreNames.length; i += 2) {
+      coreWidgets.add(Row(
+        children: [
+          Expanded(
+            child: SystemBar(
+              label: coreLabels[coreNames[i]] ?? coreNames[i],
+              value: ship.getSystem(coreNames[i]),
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (i + 1 < coreNames.length)
+            Expanded(
+              child: SystemBar(
+                label: coreLabels[coreNames[i + 1]] ?? coreNames[i + 1],
+                value: ship.getSystem(coreNames[i + 1]),
+              ),
+            )
+          else
+            const Expanded(child: SizedBox.shrink()),
+        ],
+      ));
+    }
+
+    // Interleave into 2-column pairs for scanner systems.
+    final scannerWidgets = <Widget>[];
+    for (var i = 0; i < scannerNames.length; i += 2) {
+      scannerWidgets.add(Row(
+        children: [
+          Expanded(
+            child: SystemBar(
+              label: scannerLabels[scannerNames[i]] ?? scannerNames[i],
+              value: ship.getSystem(scannerNames[i]),
+            ),
+          ),
+          const SizedBox(width: 8),
+          if (i + 1 < scannerNames.length)
+            Expanded(
+              child: SystemBar(
+                label: scannerLabels[scannerNames[i + 1]] ?? scannerNames[i + 1],
+                value: ship.getSystem(scannerNames[i + 1]),
+              ),
+            )
+          else
+            const Expanded(child: SizedBox.shrink()),
+        ],
+      ));
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white.withValues(alpha: 0.03),
+        border: Border.all(
+          color: isCritical
+              ? Colors.red.withValues(alpha: 0.4)
+              : _accent.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...coreWidgets,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              children: [
+                Text(
+                  context.l10n.ui_voyage_scanners,
+                  style: TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 9,
+                    letterSpacing: 2,
+                    color: _accent.withValues(alpha: 0.4),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: _accent.withValues(alpha: 0.1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...scannerWidgets,
         ],
       ),
     );
@@ -361,8 +539,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                 ? () {
                     HapticService().medium();
                     GameSfx().play(GameSfx.scanningPlanet);
-                    notifier.scanPlanet();
                     Navigator.pushNamed(context, '/scan');
+                    // Generate planet after navigation so the scan animation
+                    // plays while ONNX inference runs on the next frame.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      notifier.scanPlanet();
+                    });
                   }
                 : null,
           ),
@@ -380,8 +562,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
               nav = Navigator.pushNamed(context, '/puzzle', arguments: puzzle);
             } else {
               final event = notifier2.triggerEvent();
-              // Route visual events to their dedicated screens.
-              const visualRoutes = {
+              // Event.route is authoritative if set (YAML-defined events).
+              // Fall back to legacy hardcoded map for Dart-defined events.
+              const legacyRoutes = {
                 'black_hole_lens': '/black-hole',
                 'living_nebula': '/living-nebula',
                 'seed_vault': '/seed-vault',
@@ -390,7 +573,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                 'relic_mirror_array': '/mirror-array',
                 'chrono_vortex': '/chrono-vortex',
               };
-              final route = visualRoutes[event.id] ?? '/event';
+              final route = event.route ?? legacyRoutes[event.id] ?? '/event';
               nav = Navigator.pushNamed(context, route, arguments: event);
             }
 

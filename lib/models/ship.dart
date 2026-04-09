@@ -227,6 +227,40 @@ class ShipSystems {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        'hull': hull,
+        'nav': nav,
+        'cryopods': cryopods,
+        'culture': culture,
+        'tech': tech,
+        'constructors': constructors,
+        'shields': shields,
+        'landingSystem': landingSystem,
+        'atmosphericScanner': atmosphericScanner,
+        'gravimetricScanner': gravimetricScanner,
+        'mineralScanner': mineralScanner,
+        'lifeSignsScanner': lifeSignsScanner,
+        'temperatureScanner': temperatureScanner,
+        'waterScanner': waterScanner,
+      };
+
+  factory ShipSystems.fromJson(Map<String, dynamic> json) => ShipSystems(
+        hull: (json['hull'] as num).toDouble(),
+        nav: (json['nav'] as num).toDouble(),
+        cryopods: (json['cryopods'] as num).toDouble(),
+        culture: (json['culture'] as num).toDouble(),
+        tech: (json['tech'] as num).toDouble(),
+        constructors: (json['constructors'] as num).toDouble(),
+        shields: (json['shields'] as num).toDouble(),
+        landingSystem: (json['landingSystem'] as num).toDouble(),
+        atmosphericScanner: (json['atmosphericScanner'] as num).toDouble(),
+        gravimetricScanner: (json['gravimetricScanner'] as num).toDouble(),
+        mineralScanner: (json['mineralScanner'] as num).toDouble(),
+        lifeSignsScanner: (json['lifeSignsScanner'] as num).toDouble(),
+        temperatureScanner: (json['temperatureScanner'] as num).toDouble(),
+        waterScanner: (json['waterScanner'] as num).toDouble(),
+      );
+
   @override
   String toString() =>
       'ShipSystems(hull: ${hull.toStringAsFixed(2)}, '

@@ -1,0 +1,454 @@
+{
+  "_meta": {
+    "description": "Canonical features manifest for Stellar Broadcast. Audited from source code and cross-referenced with website/press kit claims.",
+    "lastAudited": "2026-04-08",
+    "auditedVersion": "1.9.3+74"
+  },
+
+  "game": {
+    "name": "Stellar Broadcast",
+    "subtitle": "Humanity's Last Voyage",
+    "version": "1.9.3+74",
+    "package": "com.quickapps.stellar_broadcast",
+    "releaseDate": "2026-04-06",
+    "price": "Free with ads / $5.99 one-time premium (lifetime)",
+    "premiumMonthlyPrice": 2.99,
+    "premiumLifetimePrice": 5.99,
+    "genre": "Roguelike narrative sci-fi / colony ship survival",
+    "offline": true
+  },
+
+  "platforms": {
+    "android": true,
+    "ios": "planned",
+    "steam": "planned"
+  },
+
+  "stats": {
+    "totalEvents": 140,
+    "eventCategories": [
+      "early",
+      "common",
+      "rare",
+      "uneventful",
+      "malfunction",
+      "boon"
+    ],
+    "specialVisualEvents": [
+      "black_hole",
+      "chrono_vortex",
+      "dyson_sphere",
+      "living_nebula",
+      "mirror_array",
+      "seed_vault",
+      "world_engine"
+    ],
+    "puzzleTypes": [
+      "piDigits",
+      "fibonacci",
+      "primes",
+      "spectralId",
+      "starCluster",
+      "chirality"
+    ],
+    "puzzleSpecies": [
+      "synthetic",
+      "geometric",
+      "crystalline"
+    ],
+    "shipSystems": {
+      "core": 6,
+      "coreNames": ["hull", "nav", "cryopods", "culture", "tech", "constructors"],
+      "defense": 1,
+      "defenseNames": ["shields"],
+      "landing": 1,
+      "landingNames": ["landingSystem"],
+      "scanners": 6,
+      "scannerNames": ["atmosphericScanner", "gravimetricScanner", "mineralScanner", "lifeSignsScanner", "temperatureScanner", "waterScanner"],
+      "total": 14
+    },
+    "planetStats": [
+      "atmosphere",
+      "temperature",
+      "water",
+      "resources",
+      "gravity",
+      "biodiversity",
+      "radiation",
+      "anomaly",
+      "nativePresence",
+      "nativeDisposition"
+    ],
+    "scannableStats": [
+      "atmosphere",
+      "temperature",
+      "water",
+      "resources",
+      "gravity",
+      "biodiversity"
+    ],
+    "surfaceFeatures": 42,
+    "surfaceFeaturesList": [
+      "plant_life", "edible_plants", "poisonous_plants", "unicellular_life",
+      "dangerous_fauna", "tameable_fauna", "airtight_caves", "insulated_caves",
+      "outstanding_beauty", "outstanding_ugliness", "ancient_ruins", "monuments",
+      "high_rotation", "low_rotation", "volcanic_activity", "tectonic_instability",
+      "electrical_storms", "toxic_spores", "deep_oceans", "geothermal_vents",
+      "strong_magnetosphere", "weak_magnetosphere", "megafauna", "symbiotic_organisms",
+      "gravity_wells", "subspace_echoes", "bioluminescent_life", "aquatic_megafauna",
+      "floating_islands", "crystal_caverns", "lava_tubes", "ice_tunnels",
+      "orbital_wreckage", "megastructural_fragments", "ancient_observatory",
+      "extreme_seasons", "cryovolcanism", "floating_kelp_forests", "singing_crystals",
+      "fertile_soil", "helium3_deposits", "exotic_isotopes", "medicinal_flora"
+    ],
+    "moonTypes": ["barren", "metalRich", "unstable", "habitable", "ice"],
+    "ringTypes": ["dust", "ice", "rocky", "metallic"],
+    "endingTiers": [
+      { "key": "Golden Age", "minScore": 95 },
+      { "key": "Thriving Colony", "minScore": 75 },
+      { "key": "Survival", "minScore": 55 },
+      { "key": "Struggling", "minScore": 35 },
+      { "key": "Dire", "minScore": 15 },
+      { "key": "Extinction", "minScore": 0 }
+    ],
+    "maxScore": 130,
+    "scoreBreakdownCategories": [
+      "landing", "construction", "technology", "culture",
+      "atmosphere", "gravity", "temperature", "water",
+      "resources", "nativeRelations", "population"
+    ],
+    "legacyUpgrades": [
+      { "id": "reinforced_hull", "cost": 50 },
+      { "id": "advanced_scanner", "cost": 75 },
+      { "id": "warp_nav", "cost": 100 },
+      { "id": "cryo_shield", "cost": 60 },
+      { "id": "culture_archive", "cost": 80 },
+      { "id": "tech_boost", "cost": 90 },
+      { "id": "star_charts", "cost": 120 },
+      { "id": "extra_probe", "cost": 40 }
+    ],
+    "achievements": 10,
+    "achievementIds": [
+      "first_landing",
+      "explorer",
+      "golden_age",
+      "perfectionist",
+      "survivor",
+      "iron_hull",
+      "death_world_survivor",
+      "full_crew",
+      "probe_master",
+      "no_scan"
+    ],
+    "leaderboards": 3,
+    "leaderboardIds": [
+      "best_score",
+      "daily",
+      "encounters"
+    ],
+    "languages": 20,
+    "languageCodes": [
+      "en", "ar", "de", "es", "fr", "hi", "id", "it",
+      "ja", "ko", "ms", "nl", "pl", "pt", "ru", "th",
+      "tr", "vi", "zh", "zh_TW"
+    ]
+  },
+
+  "features": [
+    {
+      "name": "Branching narrative events",
+      "description": "140 GameEvent objects across 6 categories with multiple choices and consequences",
+      "implemented": true,
+      "websiteClaim": "100+ branching narrative events",
+      "discrepancy": "Website says 100+, actual count is 140. Website is accurate (understating)."
+    },
+    {
+      "name": "Ship systems degradation",
+      "description": "14 total systems (6 core + 1 defense + 1 landing + 6 scanners) that degrade during voyage",
+      "implemented": true,
+      "websiteClaim": "8 ship systems",
+      "discrepancy": "Website says 8 (likely counting core + shields + landing = 8 non-scanner systems). Full count including scanners is 14."
+    },
+    {
+      "name": "Interactive alien puzzles",
+      "description": "6 puzzle types (pi digits, fibonacci, primes, spectral identification, star cluster, chirality) x 3 alien species",
+      "implemented": true,
+      "websiteClaim": "spectral analysis, constellation mapping, crystalline decoding",
+      "discrepancy": "Press kit lists 3 puzzle types; actual code has 6 types x 3 species = 18 combinations."
+    },
+    {
+      "name": "Procedural planets",
+      "description": "10 planet stats, 42 surface features, 5 moon types, 4 ring types, native civilizations with disposition",
+      "implemented": true,
+      "websiteClaim": "Procedural planets with moons, rings, native civilizations, government structures",
+      "discrepancy": null
+    },
+    {
+      "name": "Neural network planet naming",
+      "description": "LSTM model generating planet names conditioned on planet stats, running on-device via ONNX Runtime FP16",
+      "implemented": true,
+      "websiteClaim": "Planet names generated by on-device LSTM neural network (ONNX Runtime, FP16)",
+      "discrepancy": null
+    },
+    {
+      "name": "Multiple ending tiers",
+      "description": "6 tiers from Golden Age (95+) to Extinction (0-14), max score 130, with 11 sub-score categories",
+      "implemented": true,
+      "websiteClaim": "Multiple ending tiers from Utopia to Extinction",
+      "discrepancy": "Press kit says 'Utopia to Extinction' but actual tier names are Golden Age, Thriving Colony, Survival, Struggling, Dire, Extinction. No tier is named 'Utopia'."
+    },
+    {
+      "name": "Persistent legacy system",
+      "description": "8 permanent upgrades purchasable with legacy points, plus voyage logs and high score tracking",
+      "implemented": true,
+      "websiteClaim": "Persistent legacy system with permanent upgrades between runs",
+      "discrepancy": null
+    },
+    {
+      "name": "Daily challenge mode",
+      "description": "Daily Voyage with shared seed, separate daily scores, dedicated leaderboard",
+      "implemented": true,
+      "websiteClaim": "Daily challenge mode with shared seeds and Google Play leaderboards",
+      "discrepancy": null
+    },
+    {
+      "name": "Google Play Games integration",
+      "description": "3 leaderboards (best score, daily, encounters) and 10 achievements",
+      "implemented": true,
+      "websiteClaim": "3 Leaderboards, 10 Achievements",
+      "discrepancy": null
+    },
+    {
+      "name": "Localization",
+      "description": "20 .arb language files including zh_TW as a separate locale",
+      "implemented": true,
+      "websiteClaim": "20 languages",
+      "discrepancy": null
+    },
+    {
+      "name": "Ambient soundtrack",
+      "description": "Audio via audioplayers + flame_audio packages, assets/audio/ directory",
+      "implemented": true,
+      "websiteClaim": "Original ambient soundtrack with reactive sound effects",
+      "discrepancy": null
+    },
+    {
+      "name": "Special visual event screens",
+      "description": "7 dedicated animated screens for rare encounters (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine)",
+      "implemented": true,
+      "websiteClaim": "Not explicitly listed on website",
+      "discrepancy": "Website does not highlight these 7 special visual events. Could be a marketing opportunity."
+    },
+    {
+      "name": "Trader encounters",
+      "description": "Dedicated trader screen with trading mechanics, triggered by events with openTraderScreen flag",
+      "implemented": true,
+      "websiteClaim": "Not mentioned",
+      "discrepancy": "Trading system exists but is not mentioned on website or press kit."
+    },
+    {
+      "name": "Codex/encyclopedia",
+      "description": "Codex screen tracking discovered features across voyages",
+      "implemented": true,
+      "websiteClaim": "Not mentioned",
+      "discrepancy": "Codex feature exists but is not mentioned on website or press kit."
+    },
+    {
+      "name": "Seed codes & voyage logs",
+      "description": "6-char alphanumeric seed codes, full voyage log entries stored in legacy data",
+      "implemented": true,
+      "websiteClaim": "Share seed codes to challenge friends on the exact same galaxy",
+      "discrepancy": null
+    },
+    {
+      "name": "Responsive tablet/landscape layouts",
+      "description": "14 screens with dedicated landscape layouts, 7 additional screens with responsive content wrappers",
+      "implemented": true,
+      "websiteClaim": "Not mentioned",
+      "discrepancy": "Responsive tablet support is not advertised anywhere."
+    },
+    {
+      "name": "In-app purchases / Premium",
+      "description": "Premium paywall screen exists, monthly ($2.99) and lifetime ($5.99) options",
+      "implemented": true,
+      "websiteClaim": "$5.99 one-time premium",
+      "discrepancy": "Press kit only mentions $5.99 one-time; code also has $2.99 monthly option."
+    },
+    {
+      "name": "Moon landing choice",
+      "description": "Players can choose to land on habitable moons instead of the planet if the moon is more habitable",
+      "implemented": true,
+      "websiteClaim": "Not mentioned",
+      "discrepancy": "Moon landing mechanic exists but is not advertised."
+    },
+    {
+      "name": "Colony naming",
+      "description": "Players can name their colony at landing, shown in ending and voyage logs",
+      "implemented": true,
+      "websiteClaim": "Not mentioned",
+      "discrepancy": null
+    },
+    {
+      "name": "Government types in endings",
+      "description": "Colony government type generated based on ship state and planet at landing",
+      "implemented": true,
+      "websiteClaim": "government structures mentioned in planet description",
+      "discrepancy": null
+    }
+  ],
+
+  "technical": {
+    "engine": "Flutter/Dart",
+    "flutterVersion": "^3.32.0",
+    "dartSdk": "^3.8.0",
+    "stateManagement": "Riverpod (flutter_riverpod ^2.6.1)",
+    "neuralNetwork": {
+      "model": "LSTM",
+      "runtime": "ONNX (onnxruntime_v2 ^1.23.2)",
+      "precision": "FP16",
+      "assetPath": "assets/models/planet_namer_fp16.onnx",
+      "vocabPath": "assets/models/vocab.json"
+    },
+    "audio": {
+      "packages": ["audioplayers ^6.1.0", "flame_audio ^2.12.0"],
+      "assetDir": "assets/audio/"
+    },
+    "responsiveScreens": {
+      "landscapeLayout": [
+        "black_hole_screen",
+        "chrono_vortex_screen",
+        "dyson_sphere_screen",
+        "ending_screen",
+        "event_screen",
+        "game_over_screen",
+        "landing_screen",
+        "living_nebula_screen",
+        "mirror_array_screen",
+        "scan_screen",
+        "seed_vault_screen",
+        "trader_screen",
+        "voyage_screen",
+        "world_engine_screen"
+      ],
+      "responsiveContentOnly": [
+        "codex_screen",
+        "landing_sequence_screen",
+        "legacy_screen",
+        "puzzle_screen",
+        "settings_screen",
+        "ship_status_screen",
+        "title_screen"
+      ]
+    },
+    "sharedPackages": [
+      "quickapps_storage",
+      "quickapps_ui",
+      "quickapps_ads",
+      "quickapps_analytics",
+      "quickapps_onboarding",
+      "quickapps_audio",
+      "quickapps_logging",
+      "quickapps_game_ui",
+      "quickapps_fx",
+      "quickapps_iap"
+    ]
+  },
+
+  "links": {
+    "website": "https://stellarbroadcast.org",
+    "playStore": "https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast",
+    "itchIo": "https://faustcircuits.itch.io/stellar-broadcast",
+    "discord": "https://discord.gg/8qsMun6vVM",
+    "subreddit": "https://www.reddit.com/r/stellarbroadcast/",
+    "pressKit": "https://stellarbroadcast.org/press/",
+    "developer": "https://faustianbargain.org",
+    "contact": "sirus20x6@gmail.com"
+  },
+
+  "websiteVsCodeDiscrepancies": [
+    {
+      "item": "Event count",
+      "website": "100+",
+      "actual": 140,
+      "severity": "low",
+      "note": "Website understates. Update to '140+' or '135+' for headroom."
+    },
+    {
+      "item": "Ship systems count",
+      "website": "8",
+      "actual": "14 (6 core + 1 shields + 1 landing + 6 scanners)",
+      "severity": "medium",
+      "note": "Website counts 8 non-scanner systems. Could say '14 systems' or '8 core systems + 6 scanners' for accuracy."
+    },
+    {
+      "item": "Puzzle types",
+      "website": "spectral analysis, constellation mapping, crystalline decoding",
+      "actual": "6 types: pi digits, fibonacci, primes, spectral ID, star cluster, chirality",
+      "severity": "medium",
+      "note": "Press kit undersells puzzle variety. 6 distinct puzzle types exist across 3 alien species."
+    },
+    {
+      "item": "Ending tier names",
+      "website": "'Utopia to Extinction'",
+      "actual": "Golden Age, Thriving Colony, Survival, Struggling, Dire, Extinction",
+      "severity": "low",
+      "note": "Press kit says 'Utopia' but the top tier is actually 'Golden Age'. Minor naming mismatch."
+    },
+    {
+      "item": "Premium pricing",
+      "website": "$5.99 one-time premium",
+      "actual": "$2.99/month and $5.99 lifetime options",
+      "severity": "low",
+      "note": "Monthly subscription option not mentioned in press kit."
+    },
+    {
+      "item": "Special visual events",
+      "website": "Not mentioned",
+      "actual": "7 dedicated animated screens (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine)",
+      "severity": "medium",
+      "note": "Major marketing opportunity. These are visually impressive and differentiating."
+    },
+    {
+      "item": "Trader encounters",
+      "website": "Not mentioned",
+      "actual": "Trading system with dedicated screen",
+      "severity": "low",
+      "note": "Could be mentioned as a feature."
+    },
+    {
+      "item": "Codex/encyclopedia",
+      "website": "Not mentioned",
+      "actual": "Feature discovery tracking codex",
+      "severity": "low",
+      "note": "Could be mentioned as a feature for completionists."
+    },
+    {
+      "item": "Responsive layouts",
+      "website": "Not mentioned",
+      "actual": "14 screens with landscape tablet layouts + 7 with responsive wrappers",
+      "severity": "low",
+      "note": "Tablet support could be mentioned for Play Store listing (large screen devices)."
+    },
+    {
+      "item": "Moon landing",
+      "website": "Not mentioned",
+      "actual": "Can land on habitable moons if more habitable than planet",
+      "severity": "low",
+      "note": "Interesting gameplay mechanic not advertised."
+    },
+    {
+      "item": "Surface features count",
+      "website": "Not mentioned",
+      "actual": "42 distinct surface features",
+      "severity": "low",
+      "note": "Could add '40+ surface features' to reinforce procedural depth."
+    },
+    {
+      "item": "Structured data languages",
+      "website": "19 in JSON-LD inLanguage array",
+      "actual": "20 .arb files (zh and zh_TW counted separately)",
+      "severity": "low",
+      "note": "JSON-LD on website lists 19 language codes but claims 20 languages. Missing zh_TW in the array."
+    }
+  ]
+}

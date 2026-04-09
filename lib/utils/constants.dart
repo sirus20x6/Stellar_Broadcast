@@ -76,7 +76,7 @@ class AppConstants {
   static const String kLeaderboardDailyAndroid = 'CgkIpeS6hMofEAIQAg';
   static const String kLeaderboardEncountersAndroid = 'CgkIpeS6hMofEAIQAw';
 
-  // TODO: Replace with actual Game Center leaderboard IDs after setup
+  // Configure in App Store Connect > Game Center > Leaderboards
   static const String kLeaderboardBestScoreIos = 'stellar_best_score';
   static const String kLeaderboardDailyIos = 'stellar_daily';
   static const String kLeaderboardEncountersIos = 'stellar_encounters';
@@ -99,7 +99,7 @@ class AppConstants {
     'no_scan': 'CgkIpeS6hMofEAIQDQ',
   };
 
-  // TODO: Replace with actual Game Center achievement IDs after setup
+  // Configure in App Store Connect > Game Center > Achievements
   static const Map<String, String> achievementIdsIos = {
     'first_landing': 'stellar_first_landing',
     'explorer': 'stellar_explorer',

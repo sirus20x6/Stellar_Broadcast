@@ -6,6 +6,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
     show legacyProvider;
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -67,6 +68,7 @@ class CodexScreen extends ConsumerWidget {
 
           // Content.
           SafeArea(
+            child: ResponsiveContent(
             child: Column(
               children: [
                 // Header.
@@ -195,6 +197,7 @@ class CodexScreen extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ],

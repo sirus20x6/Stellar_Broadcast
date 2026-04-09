@@ -9,8 +9,8 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -208,13 +208,134 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     super.dispose();
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Color get _titleColor => Color.lerp(_kFoodColor, _kHeritageColor,
+      0.5 + 0.5 * sin(_titleGlow.value * pi))!;
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) {
+        final titleColor = _titleColor;
+        return Text(
+          'SEED VAULT CRITICAL',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: titleColor,
+            letterSpacing: 2,
+            shadows: [
+              Shadow(
+                color: titleColor.withValues(alpha: _titleGlowAnim.value),
+                blurRadius: 20,
+              ),
+              Shadow(
+                color: titleColor.withValues(alpha: _titleGlowAnim.value * 0.5),
+                blurRadius: 40,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNarrativeCard() {
+    final event = widget.event;
+    final titleColor = _titleColor;
+    if (!_resolved && event.narrative.isNotEmpty) {
+      return GestureDetector(
+        onTap: _typewriterDone ? null : _skipTypewriter,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white.withValues(alpha: 0.05),
+            border: Border.all(color: titleColor.withValues(alpha: 0.2)),
+          ),
+          child: Text(
+            _displayedText,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+        ),
+      );
+    }
+    if (_resolved && _selectedChoice != null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: _kFoodColor.withValues(alpha: 0.08),
+          border: Border.all(color: _kFoodColor.withValues(alpha: 0.3)),
+        ),
+        child: Text(
+          _selectedChoice!.outcome,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 14,
+            height: 1.5,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildHintOrContinue() {
+    if (_resolved) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              GameSfx().playVaried(GameSfx.buttonClick);
+              Navigator.of(context).pop();
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: _kFoodColor.withValues(alpha: 0.6)),
+                color: _kFoodColor.withValues(alpha: 0.08),
+              ),
+              child: const Text(
+                'CONTINUE',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _kFoodColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    if (!_typewriterDone) {
+      return Text('TAP TO SKIP', style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 11, letterSpacing: 2));
+    }
+    return const SizedBox.shrink();
+  }
+
   // ── Build ────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final event = widget.event;
-    final titleColor = Color.lerp(_kFoodColor, _kHeritageColor,
-        0.5 + 0.5 * sin(_titleGlow.value * pi))!;
+    final screen = ScreenInfo.of(context);
+    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -242,173 +363,104 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-
-                    // Title with green/amber glow.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        'SEED VAULT CRITICAL',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: titleColor,
-                          letterSpacing: 2,
-                          shadows: [
-                            Shadow(
-                              color: titleColor
-                                  .withValues(alpha: _titleGlowAnim.value),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: titleColor.withValues(
-                                  alpha: _titleGlowAnim.value * 0.5),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Narrative (typewriter).
-                    if (!_resolved && event.narrative.isNotEmpty)
-                      GestureDetector(
-                        onTap: _typewriterDone ? null : _skipTypewriter,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white.withValues(alpha: 0.05),
-                            border: Border.all(
-                                color: titleColor.withValues(alpha: 0.2)),
-                          ),
-                          child: Text(
-                            _displayedText,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    if (!_typewriterDone)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text(
-                          'TAP TO SKIP',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.4),
-                            fontSize: 11,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                      ),
-
-                    // Outcome text.
-                    if (_resolved && _selectedChoice != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: _kFoodColor.withValues(alpha: 0.08),
-                            border: Border.all(
-                              color: _kFoodColor.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Text(
-                            _selectedChoice!.outcome,
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    // Visual area — tanks + slider.
-                    if (_typewriterDone) ...[
-                      Expanded(child: _buildVisualArea()),
-                    ] else
-                      const Spacer(),
-
-                    // Effect chips.
-                    if (_showEffects) ...[
-                      const SizedBox(height: 8),
-                      _buildEffectChips(),
-                    ],
-
-                    // Continue button.
-                    if (_resolved)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, bottom: 8),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kFoodColor.withValues(alpha: 0.6),
-                                ),
-                                color: _kFoodColor.withValues(alpha: 0.08),
-                              ),
-                              child: const Text(
-                                'CONTINUE',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kFoodColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 8),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          _buildTitle(),
+          const SizedBox(height: 16),
+          _buildNarrativeCard(),
+          if (!_typewriterDone)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: _buildHintOrContinue(),
+            ),
+          const SizedBox(height: 12),
+          if (_typewriterDone) ...[
+            Expanded(child: _buildVisualArea()),
+          ] else
+            const Spacer(),
+          if (_showEffects) ...[
+            const SizedBox(height: 8),
+            _buildEffectChips(),
+          ],
+          if (_resolved) ...[
+            const SizedBox(height: 10),
+            _buildHintOrContinue(),
+          ],
+          const SizedBox(height: 8),
+          const SizedBox(
+            height: 58,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: PremiumAdGate(child: AdaptiveBannerAd()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLandscape() {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+                  child: Column(
+                    children: [
+                      _buildTitle(),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              _buildNarrativeCard(),
+                              if (_showEffects) ...[
+                                const SizedBox(height: 8),
+                                _buildEffectChips(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildHintOrContinue(),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+                  child: _buildVisualArea(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 58,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: PremiumAdGate(child: AdaptiveBannerAd()),
+          ),
+        ),
+      ],
     );
   }
 

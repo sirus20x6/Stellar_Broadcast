@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Displays a top-down colony ship diagram with per-system health bars,
@@ -64,14 +65,16 @@ class _ShipStatusScreenState extends ConsumerState<ShipStatusScreen>
           // Ship damage overlay.
           Positioned.fill(
             child: SafeArea(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) => CustomPaint(
-                  painter: _ShipDamagePainter(
-                    ship: ship,
-                    animationValue: _controller.value,
+              child: ResponsiveContent(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) => CustomPaint(
+                    painter: _ShipDamagePainter(
+                      ship: ship,
+                      animationValue: _controller.value,
+                    ),
+                    size: Size.infinite,
                   ),
-                  size: Size.infinite,
                 ),
               ),
             ),

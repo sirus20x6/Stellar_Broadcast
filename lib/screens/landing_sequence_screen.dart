@@ -7,6 +7,7 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -346,8 +347,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
 
           // Narrative content.
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: ResponsiveContent(
               child: Column(
                 children: [
                   const SizedBox(height: 40),

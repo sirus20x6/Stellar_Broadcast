@@ -27,6 +27,22 @@ class Moon {
     this.water,
     this.atmosphere,
   });
+
+  Map<String, dynamic> toJson() => {
+        'type': type.name,
+        'size': size,
+        if (habitability != null) 'habitability': habitability,
+        if (water != null) 'water': water,
+        if (atmosphere != null) 'atmosphere': atmosphere,
+      };
+
+  factory Moon.fromJson(Map<String, dynamic> json) => Moon(
+        type: MoonType.values.byName(json['type'] as String),
+        size: (json['size'] as num).toDouble(),
+        habitability: (json['habitability'] as num?)?.toDouble(),
+        water: (json['water'] as num?)?.toDouble(),
+        atmosphere: (json['atmosphere'] as num?)?.toDouble(),
+      );
 }
 
 /// A ring system around a planet.
@@ -40,6 +56,18 @@ class RingSystem {
   final double tiltDegrees;
 
   const RingSystem({required this.type, this.density = 0.5, this.tiltDegrees = 10.0});
+
+  Map<String, dynamic> toJson() => {
+        'type': type.name,
+        'density': density,
+        'tiltDegrees': tiltDegrees,
+      };
+
+  factory RingSystem.fromJson(Map<String, dynamic> json) => RingSystem(
+        type: RingType.values.byName(json['type'] as String),
+        density: (json['density'] as num).toDouble(),
+        tiltDegrees: (json['tiltDegrees'] as num).toDouble(),
+      );
 }
 
 /// Procedurally generated planet model for Stellar Broadcast.
@@ -322,6 +350,47 @@ class Planet {
       rings: rings ?? this.rings,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'description': description,
+        'atmosphere': atmosphere,
+        'temperature': temperature,
+        'water': water,
+        'resources': resources,
+        'gravity': gravity,
+        'biodiversity': biodiversity,
+        'anomaly': anomaly,
+        'radiation': radiation,
+        'nativePresence': nativePresence,
+        'nativeDisposition': nativeDisposition,
+        'surfaceFeatures': surfaceFeatures,
+        'moons': moons.map((m) => m.toJson()).toList(),
+        if (rings != null) 'rings': rings!.toJson(),
+      };
+
+  factory Planet.fromJson(Map<String, dynamic> json) => Planet(
+        name: json['name'] as String,
+        description: json['description'] as String,
+        atmosphere: (json['atmosphere'] as num).toDouble(),
+        temperature: (json['temperature'] as num).toDouble(),
+        water: (json['water'] as num).toDouble(),
+        resources: (json['resources'] as num).toDouble(),
+        gravity: (json['gravity'] as num).toDouble(),
+        biodiversity: (json['biodiversity'] as num).toDouble(),
+        anomaly: (json['anomaly'] as num).toDouble(),
+        radiation: (json['radiation'] as num?)?.toDouble() ?? 0.5,
+        nativePresence: (json['nativePresence'] as num?)?.toDouble() ?? 0.0,
+        nativeDisposition: (json['nativeDisposition'] as num?)?.toDouble() ?? 0.5,
+        surfaceFeatures: (json['surfaceFeatures'] as List<dynamic>?)?.cast<String>() ?? [],
+        moons: (json['moons'] as List<dynamic>?)
+                ?.map((m) => Moon.fromJson(m as Map<String, dynamic>))
+                .toList() ??
+            [],
+        rings: json['rings'] != null
+            ? RingSystem.fromJson(json['rings'] as Map<String, dynamic>)
+            : null,
+      );
 
   @override
   String toString() => 'Planet($name, tier: $tier, hab: ${habitabilityScore.toStringAsFixed(2)})';

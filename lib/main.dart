@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,31 +31,40 @@ Future<void> main() async {
   } catch (e, st) { QaLogger.app.warning('IAP init failed', e, st); }
 
   // Set premium flag before ad init so ads never load for premium users.
-  QaAdConfig.isPremium = QaIapService().isPremium.value;
-  QaIapService().isPremium.addListener(() {
-    QaAdConfig.isPremium = QaIapService().isPremium.value;
-  });
+  QaAdConfig.isPremium = QaIapService().isPremium;
+  QaIapService().addPremiumListener((v) => QaAdConfig.isPremium = v);
 
   try {
+    final adTelemetry = QaAdTelemetry(
+      logEvent: (name, params) => AnalyticsService().logEvent(name: name, parameters: params),
+      setUserProperty: (name, value) => AnalyticsService().setUserProperty(name: name, value: value),
+    );
     await QaAdConfig.initialize(
       adUnitIds: const QaAdUnitIds(
         admobBannerAndroid: AppConstants.prodBannerAndroid,
         admobInterstitialAndroid: AppConstants.prodInterstitialAndroid,
         admobNativeAndroid: AppConstants.prodNativeAndroid,
       ),
+      telemetry: adTelemetry,
     );
   } catch (e, st) { QaLogger.app.warning('Ad config init failed', e, st); }
-  try {
-    await AudioSettings.initialize();
-  } catch (e, st) { QaLogger.app.warning('Audio init failed', e, st); }
-  try {
-    await FlameAudio.bgm.initialize();
-  } catch (e, st) { QaLogger.app.warning('BGM init failed', e, st); }
-  try {
-    await GameSfx().initialize();
-  } catch (e, st) { QaLogger.app.warning('SFX init failed', e, st); }
+  if (!kIsWeb) {
+    try {
+      await AudioSettings.initialize();
+    } catch (e, st) { QaLogger.app.warning('Audio init failed', e, st); }
+    try {
+      await FlameAudio.bgm.initialize();
+    } catch (e, st) { QaLogger.app.warning('BGM init failed', e, st); }
+    try {
+      await GameSfx().initialize();
+    } catch (e, st) { QaLogger.app.warning('SFX init failed', e, st); }
+  }
   try {
     await AnalyticsService().logEvent(name: QaEvents.appOpened);
+    await AnalyticsService().setUserProperty(
+      name: 'premium_status',
+      value: QaIapService().isPremium ? 'premium' : 'free',
+    );
   } catch (e, st) { QaLogger.app.warning('Analytics appOpened failed', e, st); }
 
   // Load ML planet name generator (non-fatal if it fails).

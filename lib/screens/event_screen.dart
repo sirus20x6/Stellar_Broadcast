@@ -6,11 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:stellar_broadcast/logic/event_engine.dart';
+import 'package:stellar_broadcast/logic/guard_evaluator.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Theme constants.
@@ -40,6 +42,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
 
   // Choice state.
   int? _selectedChoiceIndex;
+  EventChoice? _resolvedChoice; // Holds the weighted-outcome-resolved choice.
   bool _showingOutcome = false;
 
   // Effect chips animation.
@@ -142,15 +145,21 @@ class _EventScreenState extends ConsumerState<EventScreen>
     if (_showingOutcome) return;
     final choice = widget.event.choices[index];
 
-    // Check probe cost.
-    final probes = ref.read(voyageProvider).probes;
+    // Check guard and probe cost.
+    final voyage = ref.read(voyageProvider);
+    if (!GuardEvaluator.evaluate(choice.guard, voyage)) return;
+    final probes = voyage.probes;
     if (choice.probeCost > 0 && probes < choice.probeCost) return;
 
     HapticService().selection();
     GameSfx().playVaried(GameSfx.buttonClick);
 
+    // Resolve weighted outcomes (no-op for single-outcome choices).
+    final resolved = EventEngine.resolveOutcome(choice, Random());
+
     setState(() {
       _selectedChoiceIndex = index;
+      _resolvedChoice = resolved;
       _showingOutcome = true;
     });
 
@@ -159,11 +168,11 @@ class _EventScreenState extends ConsumerState<EventScreen>
       if (mounted) setState(() => _showEffectChips = true);
     });
 
-    // Apply effects via provider.
-    ref.read(voyageProvider.notifier).handleEvent(choice);
+    // Apply effects via provider (uses the already-resolved choice).
+    ref.read(voyageProvider.notifier).handleEvent(resolved);
 
     // Play outcome SFX and haptics based on effects.
-    _playOutcomeSfx(choice);
+    _playOutcomeSfx(resolved);
   }
 
   void _playOutcomeSfx(EventChoice choice) {
@@ -191,10 +200,245 @@ class _EventScreenState extends ConsumerState<EventScreen>
     super.dispose();
   }
 
+  // ── Helper builders ──────────────────────────────────────────────────────
+
+  Widget _buildTitle() {
+    return AnimatedBuilder(
+      animation: _titleGlowAnim,
+      builder: (_, __) => Text(
+        widget.event.title,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: ScreenInfo.of(context).scaledFontSize(26),
+          fontWeight: FontWeight.bold,
+          color: _kAccent,
+          letterSpacing: 2,
+          shadows: [
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
+              blurRadius: 20,
+            ),
+            Shadow(
+              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
+              blurRadius: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNarrativeCard({bool expanded = true}) {
+    final card = _NarrativeCard(
+      text: _showingOutcome
+          ? (_resolvedChoice?.outcome ?? widget.event.choices[_selectedChoiceIndex!].outcome)
+          : _displayedText,
+      isOutcome: _showingOutcome,
+      choice: _showingOutcome
+          ? (_resolvedChoice ?? widget.event.choices[_selectedChoiceIndex!])
+          : null,
+      showEffectChips: _showEffectChips,
+    );
+    return expanded ? Expanded(child: card) : card;
+  }
+
+  Widget _buildTraderButton() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            GameSfx().playVaried(GameSfx.buttonClick);
+            Navigator.of(context).pushReplacementNamed('/trader');
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+              color: _kAccent.withValues(alpha: 0.08),
+            ),
+            child: Text(
+              context.l10n.ui_event_enterTrade,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _kAccent,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildChoiceButtons() {
+    final event = widget.event;
+    final voyage = ref.watch(voyageProvider);
+    final probes = voyage.probes;
+    return event.choices.asMap().entries.map((entry) {
+      final choice = entry.value;
+      final hasProbes = probes >= choice.probeCost;
+      final guardPasses = GuardEvaluator.evaluate(choice.guard, voyage);
+      final disabled =
+          (choice.probeCost > 0 && !hasProbes) || !guardPasses;
+      return _ChoiceButton(
+        text: choice.text,
+        probeCost: choice.probeCost,
+        disabled: disabled,
+        guardFailed: !guardPasses,
+        onTap: disabled ? null : () => _onChoiceSelected(entry.key),
+      );
+    }).toList();
+  }
+
+  Widget _buildContinueButton() {
+    final event = widget.event;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            GameSfx().playVaried(GameSfx.buttonClick);
+            final selectedChoice = _resolvedChoice ?? event.choices[_selectedChoiceIndex!];
+            final hasPlanet = ref.read(voyageProvider).currentPlanet != null;
+            if (selectedChoice.opensPlanetScreen && hasPlanet) {
+              Navigator.of(context).pushReplacementNamed('/scan');
+              return;
+            }
+            Navigator.of(context).pop();
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
+              color: _kAccent.withValues(alpha: 0.08),
+            ),
+            child: Text(
+              context.l10n.ui_event_continue,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _kAccent,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTapHint() {
+    return Text(
+      context.l10n.ui_event_tapToSkip,
+      style: TextStyle(
+        color: _kAccent.withValues(alpha: 0.5),
+        fontSize: 12,
+        letterSpacing: 2,
+      ),
+    );
+  }
+
+  Widget _buildAdBanner() {
+    return SizedBox(
+      height: 58,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: PremiumAdGate(child: AdaptiveBannerAd()),
+      ),
+    );
+  }
+
+  /// All action widgets: trader button, choice buttons, or continue button.
+  List<Widget> _buildActions() {
+    final event = widget.event;
+    return [
+      if (_typewriterDone && !_showingOutcome && event.openTraderScreen)
+        _buildTraderButton(),
+      if (_typewriterDone && !_showingOutcome && !event.openTraderScreen)
+        ..._buildChoiceButtons(),
+      if (_showingOutcome) _buildContinueButton(),
+      if (!_typewriterDone) _buildTapHint(),
+    ];
+  }
+
+  // ── Portrait layout ─────────────────────────────────────────────────────
+
+  Widget _buildPortrait() {
+    return ResponsiveContent(
+      child: Column(
+        children: [
+          const SizedBox(height: 32),
+          _buildTitle(),
+          const SizedBox(height: 32),
+          _buildNarrativeCard(),
+          const SizedBox(height: 24),
+          ..._buildActions(),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+
+  // ── Landscape layout ────────────────────────────────────────────────────
+
+  Widget _buildLandscape() {
+    return Row(
+      children: [
+        // Left: title + narrative card (scrollable).
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 12, 8),
+            child: Column(
+              children: [
+                _buildTitle(),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildNarrativeCard(expanded: false),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Right: choice buttons or continue button + effect chips.
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ..._buildActions(),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Build ───────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
-    final event = widget.event;
-    final probes = ref.watch(voyageProvider).probes;
+    final screen = ScreenInfo.of(context);
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     return Scaffold(
       backgroundColor: _kBgColor,
@@ -222,195 +466,15 @@ class _EventScreenState extends ConsumerState<EventScreen>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 32),
-
-                    // Title with glowing cyan.
-                    AnimatedBuilder(
-                      animation: _titleGlowAnim,
-                      builder: (_, __) => Text(
-                        event.title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: _kAccent,
-                          letterSpacing: 2,
-                          shadows: [
-                            Shadow(
-                              color: _kAccent.withValues(
-                                alpha: _titleGlowAnim.value,
-                              ),
-                              blurRadius: 20,
-                            ),
-                            Shadow(
-                              color: _kAccent.withValues(
-                                alpha: _titleGlowAnim.value * 0.5,
-                              ),
-                              blurRadius: 40,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 32),
-
-                    // Narrative card.
-                    Expanded(
-                      child: _NarrativeCard(
-                        text: _showingOutcome
-                            ? event.choices[_selectedChoiceIndex!].outcome
-                            : _displayedText,
-                        isOutcome: _showingOutcome,
-                        choice: _showingOutcome
-                            ? event.choices[_selectedChoiceIndex!]
-                            : null,
-                        showEffectChips: _showEffectChips,
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Trader shortcut: show a single "ENTER TRADE" button
-                    // instead of normal choices when the event opens the trader.
-                    if (_typewriterDone &&
-                        !_showingOutcome &&
-                        event.openTraderScreen)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              Navigator.of(
-                                context,
-                              ).pushReplacementNamed('/trader');
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.6),
-                                ),
-                                color: _kAccent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                context.l10n.ui_event_enterTrade,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    // Choice buttons (visible after typewriter completes).
-                    if (_typewriterDone &&
-                        !_showingOutcome &&
-                        !event.openTraderScreen)
-                      ...event.choices.asMap().entries.map((entry) {
-                        final choice = entry.value;
-                        final hasProbes = probes >= choice.probeCost;
-                        final disabled = choice.probeCost > 0 && !hasProbes;
-                        return _ChoiceButton(
-                          text: choice.text,
-                          probeCost: choice.probeCost,
-                          disabled: disabled,
-                          onTap: disabled
-                              ? null
-                              : () => _onChoiceSelected(entry.key),
-                        );
-                      }),
-
-                    // Continue button after outcome is shown.
-                    if (_showingOutcome)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              GameSfx().playVaried(GameSfx.buttonClick);
-                              final selectedChoice =
-                                  event.choices[_selectedChoiceIndex!];
-                              final hasPlanet =
-                                  ref.read(voyageProvider).currentPlanet !=
-                                  null;
-                              if (selectedChoice.opensPlanetScreen &&
-                                  hasPlanet) {
-                                Navigator.of(
-                                  context,
-                                ).pushReplacementNamed('/scan');
-                                return;
-                              }
-                              Navigator.of(context).pop();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: _kAccent.withValues(alpha: 0.6),
-                                ),
-                                color: _kAccent.withValues(alpha: 0.08),
-                              ),
-                              child: Text(
-                                context.l10n.ui_event_continue,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: _kAccent,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    if (!_typewriterDone)
-                      Text(
-                        context.l10n.ui_event_tapToSkip,
-                        style: TextStyle(
-                          color: _kAccent.withValues(alpha: 0.5),
-                          fontSize: 12,
-                          letterSpacing: 2,
-                        ),
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    const SizedBox(
-                      height: 58,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 8),
-                        child: PremiumAdGate(child: AdaptiveBannerAd()),
-                      ),
-                    ),
-                  ],
-                ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: isLandscape
+                        ? _buildLandscape()
+                        : _buildPortrait(),
+                  ),
+                  _buildAdBanner(),
+                ],
               ),
             ),
           ),
@@ -670,12 +734,16 @@ class _ChoiceButton extends StatefulWidget {
     required this.text,
     this.probeCost = 0,
     this.disabled = false,
+    this.guardFailed = false,
     required this.onTap,
   });
 
   final String text;
   final int probeCost;
   final bool disabled;
+
+  /// True when the choice is disabled because its guard expression failed.
+  final bool guardFailed;
   final VoidCallback? onTap;
 
   @override
@@ -757,6 +825,15 @@ class _ChoiceButtonState extends State<_ChoiceButton>
                         ),
                       ),
                     ),
+                    if (widget.guardFailed)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Icon(
+                          Icons.lock_outline,
+                          size: 16,
+                          color: Colors.grey.withValues(alpha: 0.4),
+                        ),
+                      ),
                     if (widget.probeCost > 0)
                       Container(
                         margin: const EdgeInsets.only(left: 8),

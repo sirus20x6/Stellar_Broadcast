@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
+import 'package:quickapps_iap/quickapps_iap.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
@@ -13,10 +14,11 @@ import 'package:stellar_broadcast/logic/puzzle_generator.dart';
 import 'package:stellar_broadcast/models/puzzle.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
-import 'package:stellar_broadcast/widgets/holographic_button.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/services/play_games_service.dart';
-import 'package:stellar_broadcast/widgets/premium_ad_gate.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:quickapps_play_games/quickapps_play_games.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
+import 'package:stellar_broadcast/services/voyage_save_service.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _dailyAccent = Color(0xFFFFD740);
@@ -41,10 +43,12 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
   Timer? _bgMusicTimer;
   bool _bgMusicStarted = false;
   String _buildLabel = '';
+  bool _hasSavedVoyage = false;
 
   @override
   void initState() {
     super.initState();
+    _checkSavedVoyage();
     PackageInfo.fromPlatform().then((info) {
       if (mounted) setState(() => _buildLabel = 'v${info.version}+${info.buildNumber}');
     });
@@ -142,12 +146,139 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
           );
         }
 
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('DEBUG MENU', style: TextStyle(color: accent, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 2)),
+              const SizedBox(height: 12),
+              // Ad/Premium toggle
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: accent.withValues(alpha: 0.3)),
+                  color: accent.withValues(alpha: 0.06),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'SHOW ADS (override premium)',
+                      style: TextStyle(color: accent, fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
+                    Switch(
+                      value: !ref.read(isPremiumProvider),
+                      activeThumbColor: accent,
+                      onChanged: (showAds) {
+                        // Toggle: showAds=true means NOT premium
+                        QaAdConfig.isPremium = !showAds;
+                        QaIapService().setPremium(!showAds);
+                        setSheetState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Screen coverage tracker
+              Builder(builder: (_) {
+                final coverage = ScreenCoverageService.instance;
+                final status = coverage.getStatus();
+                final visited = coverage.visitedCount;
+                final total = coverage.totalCount;
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: accent.withValues(alpha: 0.3)),
+                    color: accent.withValues(alpha: 0.06),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'SCREEN COVERAGE',
+                        style: TextStyle(color: accent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: LinearProgressIndicator(
+                                value: total > 0 ? visited / total : 0,
+                                backgroundColor: Colors.white.withValues(alpha: 0.1),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  visited == total ? Colors.greenAccent : accent,
+                                ),
+                                minHeight: 6,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            '$visited/$total',
+                            style: TextStyle(
+                              color: accent,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: status.entries.map((e) {
+                          final isVisited = e.value;
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: isVisited
+                                  ? Colors.greenAccent.withValues(alpha: 0.12)
+                                  : Colors.redAccent.withValues(alpha: 0.08),
+                              border: Border.all(
+                                color: isVisited
+                                    ? Colors.greenAccent.withValues(alpha: 0.4)
+                                    : Colors.redAccent.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isVisited ? Icons.check : Icons.close,
+                                  size: 12,
+                                  color: isVisited ? Colors.greenAccent : Colors.redAccent.withValues(alpha: 0.6),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  coverage.labelFor(e.key),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isVisited
+                                        ? Colors.greenAccent
+                                        : Colors.white.withValues(alpha: 0.4),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                );
+              }),
               const SizedBox(height: 12),
               btn('Puzzle (Random)', () {
                 final puzzle = PuzzleGenerator.generate(Random(), const VoyageState(encounterCount: 10));
@@ -281,8 +412,27 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
             ],
           ),
         );
+          },
+        );
       },
     );
+  }
+
+  Future<void> _checkSavedVoyage() async {
+    final has = await VoyageSaveService.hasSave();
+    if (mounted) setState(() => _hasSavedVoyage = has);
+  }
+
+  Future<void> _resumeVoyage() async {
+    GameSfx().play(GameSfx.buttonClick);
+    GameSfx().stopIntroLogo();
+    _startBgMusic();
+    final restored = await ref
+        .read(voyageProvider.notifier)
+        .restoreState(context.l10n);
+    if (restored && mounted) {
+      Navigator.pushNamed(context, '/voyage');
+    }
   }
 
   void _beginVoyage({int? seed, bool isDaily = false}) {
@@ -372,6 +522,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
+    final screen = ScreenInfo.of(context);
 
     return Scaffold(
       backgroundColor: _background,
@@ -475,7 +626,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                   context.l10n.ui_title_stellar,
                   style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 42,
+                    fontSize: screen.scaledFontSize(42),
                     fontWeight: FontWeight.w900,
                     letterSpacing: 10,
                     color: _accent,
@@ -499,7 +650,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                   context.l10n.ui_title_broadcast,
                   style: TextStyle(
                     fontFamily: 'monospace',
-                    fontSize: 42,
+                    fontSize: screen.scaledFontSize(42),
                     fontWeight: FontWeight.w900,
                     letterSpacing: 18,
                     color: _accent,
@@ -546,39 +697,45 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                 const Spacer(flex: 3),
 
                 // Buttons.
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: HolographicButton(
-                    label: context.l10n.ui_title_beginVoyage,
-                    onPressed: _beginVoyage,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: _DailyVoyageButton(
-                    onPressed: () => _beginVoyage(isDaily: true),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: HolographicButton(
-                    label: context.l10n.ui_title_customSeed,
-                    isPrimary: false,
-                    onPressed: _showSeedDialog,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 48),
-                  child: HolographicButton(
-                    label: context.l10n.ui_title_legacyHub,
-                    isPrimary: false,
-                    onPressed: () {
-                      GameSfx().play(GameSfx.buttonClick);
-                      Navigator.pushNamed(context, '/legacy');
-                    },
+                ResponsiveContent(
+                  extraPadding: 24,
+                  child: Column(
+                    children: [
+                      if (_hasSavedVoyage) ...[
+                        HolographicButton(
+                          label: 'RESUME VOYAGE',
+                          onPressed: _resumeVoyage,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      HolographicButton(
+                        label: context.l10n.ui_title_beginVoyage,
+                        onPressed: () {
+                          // Clear any stale save when starting fresh.
+                          VoyageSaveService.clear();
+                          _beginVoyage();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      _DailyVoyageButton(
+                        onPressed: () => _beginVoyage(isDaily: true),
+                      ),
+                      const SizedBox(height: 16),
+                      HolographicButton(
+                        label: context.l10n.ui_title_customSeed,
+                        isPrimary: false,
+                        onPressed: _showSeedDialog,
+                      ),
+                      const SizedBox(height: 16),
+                      HolographicButton(
+                        label: context.l10n.ui_title_legacyHub,
+                        isPrimary: false,
+                        onPressed: () {
+                          GameSfx().play(GameSfx.buttonClick);
+                          Navigator.pushNamed(context, '/legacy');
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 12),
