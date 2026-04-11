@@ -19,9 +19,14 @@ class GuardEvaluator {
   /// Returns true if [guardExpr] is null or empty.
   static bool evaluate(String? guardExpr, VoyageState state) {
     if (guardExpr == null || guardExpr.trim().isEmpty) return true;
-    final tokens = _tokenize(guardExpr);
-    final parser = _Parser(tokens, state);
-    return parser.parseOr();
+    try {
+      final tokens = _tokenize(guardExpr);
+      final parser = _Parser(tokens, state);
+      return parser.parseOr();
+    } on FormatException {
+      // Malformed guard — fail open (show the event rather than crash).
+      return true;
+    }
   }
 
   static List<String> _tokenize(String expr) {

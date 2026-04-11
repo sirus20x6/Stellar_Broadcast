@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
+import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
 
@@ -93,6 +94,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: ResponsiveContent(
             child: Column(
               children: [
@@ -111,8 +113,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                         child: Text(
                           context.l10n.ui_settings_title,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: TextStyle(
+                            fontSize: ScreenInfo.of(context).scaledFontSize(24),
                             fontWeight: FontWeight.bold,
                             color: _kAccent,
                             letterSpacing: 4,
@@ -279,7 +281,13 @@ class _MusicSectionState extends State<_MusicSection> {
         _SettingsToggle(
           label: context.l10n.ui_settings_enabled,
           value: _music.enabled,
-          onChanged: (v) => setState(() => _music.enabled = v),
+          onChanged: (v) {
+            setState(() => _music.enabled = v);
+            AnalyticsService().logEvent(
+              name: QaEvents.settingsChanged,
+              parameters: {'setting': 'music', 'value': v.toString()},
+            );
+          },
         ),
         const SizedBox(height: 12),
         _SettingsSlider(
@@ -310,7 +318,13 @@ class _SfxSectionState extends State<_SfxSection> {
         _SettingsToggle(
           label: context.l10n.ui_settings_enabled,
           value: _sfx.enabled,
-          onChanged: (v) => setState(() => _sfx.enabled = v),
+          onChanged: (v) {
+            setState(() => _sfx.enabled = v);
+            AnalyticsService().logEvent(
+              name: QaEvents.settingsChanged,
+              parameters: {'setting': 'sfx', 'value': v.toString()},
+            );
+          },
         ),
         const SizedBox(height: 12),
         _SettingsSlider(
@@ -351,6 +365,10 @@ class _HapticsSectionState extends State<_HapticsSection> {
                   onTap: () {
                     setState(() => _haptic.level = level);
                     if (level != HapticLevel.off) _haptic.medium();
+                    AnalyticsService().logEvent(
+                      name: QaEvents.settingsChanged,
+                      parameters: {'setting': 'haptics', 'value': level.name},
+                    );
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -466,6 +484,10 @@ class _LanguageSection extends ConsumerWidget {
                       selected: current == null,
                       onTap: () {
                         ref.read(localeProvider.notifier).set(null);
+                        AnalyticsService().logEvent(
+                          name: QaEvents.settingsChanged,
+                          parameters: {'setting': 'language', 'value': 'system'},
+                        );
                         Navigator.pop(ctx);
                       },
                     ),
@@ -482,6 +504,10 @@ class _LanguageSection extends ConsumerWidget {
                             locale.countryCode == current.countryCode,
                         onTap: () {
                           ref.read(localeProvider.notifier).set(locale);
+                          AnalyticsService().logEvent(
+                            name: QaEvents.settingsChanged,
+                            parameters: {'setting': 'language', 'value': locale.languageCode},
+                          );
                           Navigator.pop(ctx);
                         },
                       ),

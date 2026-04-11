@@ -1,14 +1,14 @@
 {
   "_meta": {
     "description": "Canonical features manifest for Stellar Broadcast. Audited from source code and cross-referenced with website/press kit claims.",
-    "lastAudited": "2026-04-08",
-    "auditedVersion": "1.9.3+74"
+    "lastAudited": "2026-04-09",
+    "auditedVersion": "2.0.0+75"
   },
 
   "game": {
     "name": "Stellar Broadcast",
     "subtitle": "Humanity's Last Voyage",
-    "version": "1.9.3+74",
+    "version": "2.0.0+75",
     "package": "com.quickapps.stellar_broadcast",
     "releaseDate": "2026-04-06",
     "price": "Free with ads / $5.99 one-time premium (lifetime)",
@@ -25,7 +25,7 @@
   },
 
   "stats": {
-    "totalEvents": 140,
+    "totalEvents": 167,
     "eventCategories": [
       "early",
       "common",
@@ -41,7 +41,11 @@
       "living_nebula",
       "mirror_array",
       "seed_vault",
-      "world_engine"
+      "world_engine",
+      "void_whale",
+      "phantom_ship",
+      "singularity_engine",
+      "pulsar_lighthouse"
     ],
     "puzzleTypes": [
       "piDigits",
@@ -157,10 +161,10 @@
   "features": [
     {
       "name": "Branching narrative events",
-      "description": "140 GameEvent objects across 6 categories with multiple choices and consequences",
+      "description": "167 GameEvent objects across 6 categories defined via YAML statechart system with guard expressions, weighted random outcomes, and event chains. Multiple choices with divergent consequences per event.",
       "implemented": true,
       "websiteClaim": "100+ branching narrative events",
-      "discrepancy": "Website says 100+, actual count is 140. Website is accurate (understating)."
+      "discrepancy": "Website says 100+, actual count is 167. Website is accurate (understating)."
     },
     {
       "name": "Ship systems degradation",
@@ -234,10 +238,10 @@
     },
     {
       "name": "Special visual event screens",
-      "description": "7 dedicated animated screens for rare encounters (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine)",
+      "description": "11 dedicated animated screens for rare encounters (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine, void whale calf, phantom ship, singularity engine, pulsar lighthouse)",
       "implemented": true,
       "websiteClaim": "Not explicitly listed on website",
-      "discrepancy": "Website does not highlight these 7 special visual events. Could be a marketing opportunity."
+      "discrepancy": "Website does not highlight these 11 special visual events (lists 0). Major marketing opportunity."
     },
     {
       "name": "Trader encounters",
@@ -294,6 +298,37 @@
       "implemented": true,
       "websiteClaim": "government structures mentioned in planet description",
       "discrepancy": null
+    },
+    {
+      "name": "Statechart event system",
+      "description": "YAML-based event definitions with guard expressions, weighted random outcomes, event chains, and tags. Includes audit tooling and Mermaid/SVG graph visualization.",
+      "implemented": true,
+      "websiteClaim": "Not mentioned"
+    },
+    {
+      "name": "Governance ideology axes",
+      "description": "5 ideology axes (authority, culture, economy, faith, military) ranging -1.0 to +1.0, shifted by event choices, affecting colony outcomes",
+      "implemented": true,
+      "websiteClaim": "Not mentioned"
+    },
+    {
+      "name": "Event chain narratives",
+      "description": "Multi-event story arcs that chain across encounters: Mutiny Arc (3 events), Ghost of Earth (3 events), Stowaway Grows Up sequel. Choices in one event trigger follow-up events 2-5 encounters later.",
+      "implemented": true,
+      "websiteClaim": "Not mentioned"
+    },
+    {
+      "name": "Resource sink economy",
+      "description": "Fuel (14 cost events), energy (19 cost events), and probes (25 cost events) function as decision currencies. Players sacrifice resources for better outcomes across dedicated sink events.",
+      "implemented": true,
+      "websiteClaim": "Not mentioned"
+    },
+    {
+      "name": "Deterministic Daily Voyages",
+      "description": "All randomness (event selection, weighted outcomes, landing sequences, trader markup, planet naming) flows from a single seeded RNG for fully reproducible Daily Voyage runs",
+      "implemented": true,
+      "websiteClaim": "Daily challenge mode with shared seeds",
+      "discrepancy": null
     }
   ],
 
@@ -313,6 +348,13 @@
       "packages": ["audioplayers ^6.1.0", "flame_audio ^2.12.0"],
       "assetDir": "assets/audio/"
     },
+    "eventSystem": {
+      "format": "YAML statechart",
+      "loader": "lib/data/event_loader.dart",
+      "guardEvaluator": "lib/logic/guard_evaluator.dart",
+      "auditTool": "tool/audit_events.dart",
+      "graphTool": "tool/event_graph.dart"
+    },
     "responsiveScreens": {
       "landscapeLayout": [
         "black_hole_screen",
@@ -328,7 +370,11 @@
         "seed_vault_screen",
         "trader_screen",
         "voyage_screen",
-        "world_engine_screen"
+        "world_engine_screen",
+        "void_whale_screen",
+        "phantom_ship_screen",
+        "singularity_engine_screen",
+        "pulsar_lighthouse_screen"
       ],
       "responsiveContentOnly": [
         "codex_screen",
@@ -350,7 +396,8 @@
       "quickapps_logging",
       "quickapps_game_ui",
       "quickapps_fx",
-      "quickapps_iap"
+      "quickapps_iap",
+      "quickapps_debug"
     ]
   },
 
@@ -369,9 +416,9 @@
     {
       "item": "Event count",
       "website": "100+",
-      "actual": 140,
+      "actual": 167,
       "severity": "low",
-      "note": "Website understates. Update to '140+' or '135+' for headroom."
+      "note": "Website understates. Update to '167+' or '160+' for headroom."
     },
     {
       "item": "Ship systems count",
@@ -404,9 +451,9 @@
     {
       "item": "Special visual events",
       "website": "Not mentioned",
-      "actual": "7 dedicated animated screens (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine)",
+      "actual": "11 dedicated animated screens (black hole, chrono vortex, dyson sphere, living nebula, mirror array, seed vault, world engine, void whale calf, phantom ship, singularity engine, pulsar lighthouse)",
       "severity": "medium",
-      "note": "Major marketing opportunity. These are visually impressive and differentiating."
+      "note": "Website lists 0 of these. Major marketing opportunity. These are visually impressive and differentiating."
     },
     {
       "item": "Trader encounters",
@@ -449,6 +496,20 @@
       "actual": "20 .arb files (zh and zh_TW counted separately)",
       "severity": "low",
       "note": "JSON-LD on website lists 19 language codes but claims 20 languages. Missing zh_TW in the array."
+    },
+    {
+      "item": "Event chains",
+      "website": "Not mentioned",
+      "actual": "Multi-event story arcs: Mutiny Arc (3 events), Ghost of Earth (3 events), Stowaway Grows Up sequel",
+      "severity": "medium",
+      "note": "Website does not mention multi-event story arcs that chain across encounters. Significant narrative depth undersold."
+    },
+    {
+      "item": "Governance system",
+      "website": "Not mentioned",
+      "actual": "5 ideology axes (authority, culture, economy, faith, military) ranging -1.0 to +1.0, shifted by event choices",
+      "severity": "medium",
+      "note": "Website does not mention ideology axes system. Meaningful strategic layer not advertised."
     }
   ]
 }

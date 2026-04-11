@@ -25,11 +25,20 @@ class EventLoader {
     String yamlString,
     String Function(String key) resolve,
   ) {
-    final doc = loadYaml(yamlString) as YamlMap;
+    final doc = loadYaml(yamlString);
+    if (doc is! YamlMap || doc['events'] is! YamlList) {
+      return const []; // Malformed YAML — return empty pool rather than crash
+    }
     final eventList = doc['events'] as YamlList;
-    return eventList
-        .map((e) => _parseEvent(e as YamlMap, resolve))
-        .toList();
+    final events = <GameEvent>[];
+    for (final e in eventList) {
+      try {
+        events.add(_parseEvent(e as YamlMap, resolve));
+      } catch (_) {
+        // Skip malformed events rather than crash
+      }
+    }
+    return events;
   }
 
   static GameEvent _parseEvent(
@@ -42,7 +51,7 @@ class EventLoader {
         const [];
 
     return GameEvent(
-      id: map['id'] as String,
+      id: map['id']?.toString() ?? 'unknown',
       title: _resolveString(map['title'], resolve),
       narrative: _resolveString(map['narrative'], resolve),
       choices: choices,
@@ -82,6 +91,11 @@ class EventLoader {
       guard: map['guard'] as String?,
       outcomes: outcomes,
       chain: _parseChain(map['chain']),
+      authorityDelta: (map['authority'] as num?)?.toDouble() ?? 0.0,
+      cultureDelta: (map['culture'] as num?)?.toDouble() ?? 0.0,
+      economyDelta: (map['economy'] as num?)?.toDouble() ?? 0.0,
+      faithDelta: (map['faith'] as num?)?.toDouble() ?? 0.0,
+      militaryDelta: (map['military'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -90,7 +104,7 @@ class EventLoader {
     String Function(String) resolve,
   ) {
     return WeightedOutcome(
-      weight: map['weight'] as int,
+      weight: (map['weight'] as int?) ?? 50,
       outcome: _resolveString(map['outcome'], resolve),
       shipEffects: _parseDoubleMap(map['ship']),
       planetModifiers: _parseDoubleMap(map['planet']),
@@ -103,6 +117,11 @@ class EventLoader {
       immediatePlanetMinHabitability:
           (map['minHabitability'] as num?)?.toDouble() ?? 0.0,
       chain: _parseChain(map['chain']),
+      authorityDelta: (map['authority'] as num?)?.toDouble() ?? 0.0,
+      cultureDelta: (map['culture'] as num?)?.toDouble() ?? 0.0,
+      economyDelta: (map['economy'] as num?)?.toDouble() ?? 0.0,
+      faithDelta: (map['faith'] as num?)?.toDouble() ?? 0.0,
+      militaryDelta: (map['military'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

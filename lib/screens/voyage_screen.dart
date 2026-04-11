@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 
 import 'package:stellar_broadcast/models/ship.dart';
-import 'package:stellar_broadcast/models/voyage_state.dart';
+import 'package:stellar_broadcast/app.dart' show routeObserver;
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, seedToCode;
 import 'package:stellar_broadcast/services/game_music.dart';
@@ -22,13 +23,14 @@ class VoyageScreen extends ConsumerStatefulWidget {
 }
 
 class _VoyageScreenState extends ConsumerState<VoyageScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, RouteAware {
   static const _background = Color(0xFF0B1426);
   static const _accent = Color(0xFF00E5FF);
 
   late final AnimationController _starController;
   late final AnimationController _warningController;
   bool _wasCritical = false;
+  int _adRefreshCount = 0;
 
   @override
   void initState() {
@@ -49,10 +51,24 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _starController.dispose();
     _warningController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // A child screen (scan, event, puzzle, etc.) popped back to us.
+    // Refresh the banner ad so AdMob counts a new impression.
+    setState(() => _adRefreshCount++);
   }
 
   /// Returns true when any ship system is critically low (<20 %).
@@ -62,14 +78,25 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
 
   @override
   Widget build(BuildContext context) {
-    final voyage = ref.watch(voyageProvider);
-    final ship = voyage.ship;
+    // Use select() to avoid rebuilding on unrelated state changes (e.g. log
+    // updates shouldn't rebuild the HUD).
+    final ship = ref.watch(voyageProvider.select((v) => v.ship));
+    final encounterCount = ref.watch(voyageProvider.select((v) => v.encounterCount));
+    final probes = ref.watch(voyageProvider.select((v) => v.probes));
+    final fuel = ref.watch(voyageProvider.select((v) => v.fuel));
+    final energy = ref.watch(voyageProvider.select((v) => v.energy));
+    final colonists = ref.watch(voyageProvider.select((v) => v.colonists));
+    final seed = ref.watch(voyageProvider.select((v) => v.seed));
+    final pendingPlanetModifiers = ref.watch(
+        voyageProvider.select((v) => v.pendingPlanetModifiers));
     final isCritical = _hasCritical(ship);
     final canScan = ref.read(voyageProvider.notifier).canScanPlanet;
 
-    // Fire critical haptic when entering critical state.
+    // Fire critical haptic when entering critical state (deferred to avoid side effect in build).
     if (isCritical && !_wasCritical) {
-      HapticService().error();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        HapticService().error();
+      });
     }
     _wasCritical = isCritical;
 
@@ -120,11 +147,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
 
           // HUD content.
           SafeArea(
-            child: ResponsiveContent(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: _buildHudContent(voyage, ship, isCritical, canScan),
-              ),
+            bottom: false,
+            child: _buildLayout(
+              ship: ship,
+              isCritical: isCritical,
+              canScan: canScan,
+              encounterCount: encounterCount,
+              probes: probes,
+              fuel: fuel,
+              energy: energy,
+              colonists: colonists,
+              seed: seed,
+              pendingPlanetModifiers: pendingPlanetModifiers,
             ),
           ),
         ],
@@ -132,87 +166,139 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     );
   }
 
-  Widget _buildHudContent(
-    VoyageState voyage,
-    ShipSystems ship,
-    bool isCritical,
-    bool canScan,
-  ) {
+  Widget _buildLayout({
+    required ShipSystems ship,
+    required bool isCritical,
+    required bool canScan,
+    required int encounterCount,
+    required int probes,
+    required int fuel,
+    required int energy,
+    required int colonists,
+    required int seed,
+    required Map<String, double> pendingPlanetModifiers,
+  }) {
     final screen = ScreenInfo.of(context);
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     if (isLandscape) {
-      return Column(
-        children: [
-          _buildHeader(voyage),
-          const SizedBox(height: 12),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Left column: ship systems in 2-column grid.
-                Expanded(
-                  flex: 3,
-                  child: SingleChildScrollView(
-                    child: _buildSystemsPanelLandscape(ship, isCritical),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Right column: narrative + actions.
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: _buildNarrative(voyage),
-                        ),
+      // Tablet landscape: native ad on left, HUD on right.
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+        child: Row(
+          children: [
+            // Left: native ad centered in full left half of screen.
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PremiumAdGate(
+                      child: AdaptiveNativeAd(
+                        size: QaNativeAdSize.medium,
                       ),
-                      const SizedBox(height: 12),
-                      _buildActions(canScan),
-                      const SizedBox(height: 6),
-                      Text(
-                        context.l10n.ui_voyage_seed(seedToCode(voyage.seed)),
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 10,
-                          letterSpacing: 2,
-                          color: _accent.withValues(alpha: 0.35),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-        ],
+            // Right: HUD content.
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: _buildHudPortrait(
+                  ship: ship,
+                  isCritical: isCritical,
+                  canScan: canScan,
+                  encounterCount: encounterCount,
+                  probes: probes,
+                  fuel: fuel,
+                  energy: energy,
+                  colonists: colonists,
+                  seed: seed,
+                  pendingPlanetModifiers: pendingPlanetModifiers,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
 
-    // Portrait layout (original).
     return Column(
       children: [
-        _buildHeader(voyage),
-        const SizedBox(height: 16),
+        Expanded(
+          child: ResponsiveContent(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: _buildHudContent(
+                ship: ship,
+                isCritical: isCritical,
+                canScan: canScan,
+                encounterCount: encounterCount,
+                probes: probes,
+                fuel: fuel,
+                energy: energy,
+                colonists: colonists,
+                seed: seed,
+                pendingPlanetModifiers: pendingPlanetModifiers,
+              ),
+            ),
+          ),
+        ),
+        PremiumAdGate(
+          child: AdaptiveBannerAd(key: ValueKey('voyage_banner_$_adRefreshCount')),
+        ),
+      ],
+    );
+  }
+
+  /// Right-column HUD for tablet landscape (no ad, no landscape branching).
+  Widget _buildHudPortrait({
+    required ShipSystems ship,
+    required bool isCritical,
+    required bool canScan,
+    required int encounterCount,
+    required int probes,
+    required int fuel,
+    required int energy,
+    required int colonists,
+    required int seed,
+    required Map<String, double> pendingPlanetModifiers,
+  }) {
+    return Column(
+      children: [
+        _buildHeader(
+          encounterCount: encounterCount,
+          probes: probes,
+          fuel: fuel,
+          energy: energy,
+          colonists: colonists,
+        ),
+        const SizedBox(height: 12),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                _buildSystemsPanel(ship, isCritical),
-                const SizedBox(height: 20),
-                _buildNarrative(voyage),
+                _buildSystemsPanelLandscape(ship, isCritical),
+                const SizedBox(height: 12),
+                _buildNarrative(
+                  encounterCount: encounterCount,
+                  pendingPlanetModifiers: pendingPlanetModifiers,
+                ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         _buildActions(canScan),
         const SizedBox(height: 6),
         Text(
-          context.l10n.ui_voyage_seed(seedToCode(voyage.seed)),
+          context.l10n.ui_voyage_seed(seedToCode(seed)),
           style: TextStyle(
             fontFamily: 'monospace',
             fontSize: 10,
@@ -220,32 +306,87 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
             color: _accent.withValues(alpha: 0.35),
           ),
         ),
-        const SizedBox(height: 8),
       ],
     );
   }
 
+  Widget _buildHudContent({
+    required ShipSystems ship,
+    required bool isCritical,
+    required bool canScan,
+    required int encounterCount,
+    required int probes,
+    required int fuel,
+    required int energy,
+    required int colonists,
+    required int seed,
+    required Map<String, double> pendingPlanetModifiers,
+  }) {
+    // Portrait / phone layout only (landscape is handled by _buildLayout).
+    return Column(
+      children: [
+        _buildHeader(
+          encounterCount: encounterCount,
+          probes: probes,
+          fuel: fuel,
+          energy: energy,
+          colonists: colonists,
+        ),
+        const SizedBox(height: 16),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildSystemsPanel(ship, isCritical),
+                const SizedBox(height: 20),
+                _buildNarrative(
+                  encounterCount: encounterCount,
+                  pendingPlanetModifiers: pendingPlanetModifiers,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildActions(canScan),
+        const SizedBox(height: 8),
+        Text(
+          context.l10n.ui_voyage_seed(seedToCode(seed)),
+          style: TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 10,
+            letterSpacing: 2,
+            color: _accent.withValues(alpha: 0.35),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Map<String, String> _coreLabels(l10n) => {
+    'hull': l10n.ui_voyage_systemHull,
+    'nav': l10n.ui_voyage_systemNav,
+    'cryopods': l10n.ui_voyage_systemCryopods,
+    'culture': l10n.ui_voyage_systemCulture,
+    'tech': l10n.ui_voyage_systemTech,
+    'constructors': l10n.ui_voyage_systemConstruct,
+    'shields': l10n.ui_voyage_systemShields,
+    'landingSystem': l10n.ui_voyage_systemLanding,
+  };
+
+  Map<String, String> _scannerLabels(l10n) => {
+    'atmosphericScanner': l10n.ui_voyage_scannerAtmo,
+    'gravimetricScanner': l10n.ui_voyage_scannerGrav,
+    'mineralScanner': l10n.ui_voyage_scannerMineral,
+    'lifeSignsScanner': l10n.ui_voyage_scannerLife,
+    'temperatureScanner': l10n.ui_voyage_scannerTemp,
+    'waterScanner': l10n.ui_voyage_scannerWater,
+  };
+
   /// Landscape version of the systems panel with 2-column grid.
   Widget _buildSystemsPanelLandscape(ShipSystems ship, bool isCritical) {
-    final coreLabels = {
-      'hull': context.l10n.ui_voyage_systemHull,
-      'nav': context.l10n.ui_voyage_systemNav,
-      'cryopods': context.l10n.ui_voyage_systemCryopods,
-      'culture': context.l10n.ui_voyage_systemCulture,
-      'tech': context.l10n.ui_voyage_systemTech,
-      'constructors': context.l10n.ui_voyage_systemConstruct,
-      'shields': context.l10n.ui_voyage_systemShields,
-      'landingSystem': context.l10n.ui_voyage_systemLanding,
-    };
-
-    final scannerLabels = {
-      'atmosphericScanner': context.l10n.ui_voyage_scannerAtmo,
-      'gravimetricScanner': context.l10n.ui_voyage_scannerGrav,
-      'mineralScanner': context.l10n.ui_voyage_scannerMineral,
-      'lifeSignsScanner': context.l10n.ui_voyage_scannerLife,
-      'temperatureScanner': context.l10n.ui_voyage_scannerTemp,
-      'waterScanner': context.l10n.ui_voyage_scannerWater,
-    };
+    final coreLabels = _coreLabels(context.l10n);
+    final scannerLabels = _scannerLabels(context.l10n);
 
     final coreNames = [
       'hull', 'nav', 'cryopods', 'culture',
@@ -347,7 +488,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     );
   }
 
-  Widget _buildHeader(VoyageState voyage) {
+  Widget _buildHeader({
+    required int encounterCount,
+    required int probes,
+    required int fuel,
+    required int energy,
+    required int colonists,
+  }) {
     return Wrap(
       spacing: 6,
       runSpacing: 6,
@@ -356,61 +503,44 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         // Sector counter.
         _HudChip(
           icon: null,
-          label: context.l10n.ui_voyage_sector(voyage.encounterCount),
+          label: context.l10n.ui_voyage_sector(encounterCount),
           color: _accent,
         ),
         // Probe counter.
         _HudChip(
           icon: Icons.satellite_alt,
-          label: '${voyage.probes}',
-          color: voyage.probes > 3 ? _accent : Colors.orange,
-          warn: voyage.probes <= 3,
+          label: '$probes',
+          color: probes > 3 ? _accent : Colors.orange,
+          warn: probes <= 3,
         ),
         // Fuel counter.
         _HudChip(
           icon: Icons.local_gas_station,
-          label: '${voyage.fuel}',
-          color: voyage.fuel > 60 ? _accent : Colors.orange,
-          warn: voyage.fuel <= 60,
+          label: '$fuel',
+          color: fuel > 60 ? _accent : Colors.orange,
+          warn: fuel <= 60,
         ),
         // Energy counter.
         _HudChip(
           icon: Icons.bolt,
-          label: '${voyage.energy}',
-          color: voyage.energy > 10 ? _accent : Colors.orange,
-          warn: voyage.energy <= 10,
+          label: '$energy',
+          color: energy > 10 ? _accent : Colors.orange,
+          warn: energy <= 10,
         ),
         // Colonist counter.
         _HudChip(
           icon: Icons.people,
-          label: '${voyage.colonists}',
-          color: voyage.colonists > 500 ? _accent : Colors.orange,
-          warn: voyage.colonists <= 500,
+          label: '$colonists',
+          color: colonists > 500 ? _accent : Colors.orange,
+          warn: colonists <= 500,
         ),
       ],
     );
   }
 
   Widget _buildSystemsPanel(ShipSystems ship, bool isCritical) {
-    final coreLabels = {
-      'hull': context.l10n.ui_voyage_systemHull,
-      'nav': context.l10n.ui_voyage_systemNav,
-      'cryopods': context.l10n.ui_voyage_systemCryopods,
-      'culture': context.l10n.ui_voyage_systemCulture,
-      'tech': context.l10n.ui_voyage_systemTech,
-      'constructors': context.l10n.ui_voyage_systemConstruct,
-      'shields': context.l10n.ui_voyage_systemShields,
-      'landingSystem': context.l10n.ui_voyage_systemLanding,
-    };
-
-    final scannerLabels = {
-      'atmosphericScanner': context.l10n.ui_voyage_scannerAtmo,
-      'gravimetricScanner': context.l10n.ui_voyage_scannerGrav,
-      'mineralScanner': context.l10n.ui_voyage_scannerMineral,
-      'lifeSignsScanner': context.l10n.ui_voyage_scannerLife,
-      'temperatureScanner': context.l10n.ui_voyage_scannerTemp,
-      'waterScanner': context.l10n.ui_voyage_scannerWater,
-    };
+    final coreLabels = _coreLabels(context.l10n);
+    final scannerLabels = _scannerLabels(context.l10n);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -474,8 +604,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     );
   }
 
-  Widget _buildNarrative(VoyageState voyage) {
-    final sector = voyage.encounterCount;
+  Widget _buildNarrative({
+    required int encounterCount,
+    required Map<String, double> pendingPlanetModifiers,
+  }) {
+    final sector = encounterCount;
     final String message;
 
     if (sector == 0) {
@@ -485,12 +618,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     } else if (sector == 2) {
       message = context.l10n.ui_voyage_narrative2;
     } else if (!ref.read(voyageProvider.notifier).canScanPlanet) {
-      if (voyage.pendingPlanetModifiers.isNotEmpty) {
+      if (pendingPlanetModifiers.isNotEmpty) {
         message = context.l10n.ui_voyage_narrativeFlaggedSystem;
       } else {
         message = context.l10n.ui_voyage_narrativeCalibrating;
       }
-    } else if (voyage.pendingPlanetModifiers.isNotEmpty) {
+    } else if (pendingPlanetModifiers.isNotEmpty) {
       message = context.l10n.ui_voyage_narrativeMarkedSystem;
     } else {
       final phrases = [
@@ -535,6 +668,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         if (canScan)
           HolographicButton(
             label: hasEnergy ? context.l10n.ui_voyage_scanPlanet : context.l10n.ui_voyage_noEnergy,
+            autofocus: true,
             onPressed: hasEnergy
                 ? () {
                     HapticService().medium();
@@ -552,6 +686,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         HolographicButton(
           label: context.l10n.ui_voyage_pressOn,
           isPrimary: !canScan,
+          autofocus: !canScan,
           onPressed: () {
             GameSfx().play(GameSfx.buttonClick);
             final notifier2 = ref.read(voyageProvider.notifier);

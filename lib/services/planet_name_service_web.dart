@@ -1,8 +1,10 @@
+import 'dart:math';
+
 /// Web stub for PlanetNameService — ONNX runtime is not available on web.
 class PlanetNameService {
   bool get isReady => false;
   Future<void> init() async {}
-  String generateName({
+  Future<String> generateName({
     required double atmosphere,
     required double gravity,
     required double resources,
@@ -11,6 +13,7 @@ class PlanetNameService {
     required double water,
     required double radiation,
     double samplingTemperature = 0.8,
-  }) => '';
+    Random? random,
+  }) async => '';
   void dispose() {}
 }

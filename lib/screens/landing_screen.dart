@@ -305,13 +305,14 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
   }
 
   Widget _buildPlanetHeader(Planet planet) {
+    final screen = ScreenInfo.of(context);
     return Column(
       children: [
         Text(
           planet.name.toUpperCase(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 32,
+          style: TextStyle(
+            fontSize: screen.scaledFontSize(32),
             fontWeight: FontWeight.bold,
             color: Colors.white,
             letterSpacing: 4,

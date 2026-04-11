@@ -44,8 +44,8 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
       duration: const Duration(seconds: 90),
     )..repeat();
 
-    // Random markup 0.8 - 1.2.
-    _markup = 0.8 + Random().nextDouble() * 0.4;
+    // Random markup 0.8 - 1.2 — seeded for reproducibility.
+    _markup = 0.8 + ref.read(voyageProvider.notifier).seededRandom.nextDouble() * 0.4;
   }
 
   @override
@@ -276,13 +276,14 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
   }
 
   Widget _buildTraderHeader() {
+    final screen = ScreenInfo.of(context);
     return Column(
       children: [
         Text(
           context.l10n.ui_trader_title,
           style: TextStyle(
             fontFamily: 'monospace',
-            fontSize: 28,
+            fontSize: screen.scaledFontSize(28),
             fontWeight: FontWeight.w900,
             letterSpacing: 6,
             color: _accent,
@@ -502,17 +503,17 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
             ),
           ),
         ),
-        // Repair button.
+        // Repair button — minimum 48dp touch target for accessibility.
         SizedBox(
-          width: 32,
-          height: 24,
+          width: 48,
+          height: 48,
           child: value < 1.0
               ? IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                   icon: Icon(
                     Icons.add_circle_outline,
-                    size: 18,
+                    size: 22,
                     color: canRepair
                         ? _accent
                         : Colors.white.withValues(alpha: 0.15),

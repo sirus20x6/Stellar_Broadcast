@@ -8,7 +8,12 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
-import 'package:stellar_broadcast/providers/game_providers.dart' show voyageProvider, seedToCode, statsOnLeftProvider;
+import 'package:stellar_broadcast/providers/game_providers.dart'
+    show
+        voyageProvider,
+        seedToCode,
+        statsOnLeftProvider,
+        interstitialAdProvider;
 import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
@@ -16,6 +21,7 @@ import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/scanner_upgrade_dialog.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Precomputed scan data shared between portrait and landscape layouts.
@@ -53,11 +59,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
   /// Features detectable from orbit (visible on scan screen).
   static const _obviousFeatures = {
-    'caves', 'airtight_caves', 'insulated_caves',
-    'outstanding_beauty', 'outstanding_ugliness',
-    'plant_life', 'unicellular_life',
-    'floating_islands', 'orbital_wreckage', 'megastructural_fragments',
-    'bioluminescent_life', 'cryovolcanism',
+    'caves',
+    'airtight_caves',
+    'insulated_caves',
+    'outstanding_beauty',
+    'outstanding_ugliness',
+    'plant_life',
+    'unicellular_life',
+    'floating_islands',
+    'orbital_wreckage',
+    'megastructural_fragments',
+    'bioluminescent_life',
+    'cryovolcanism',
   };
 
   // Master timeline: 0.0 -> 0.35 = scan phase, 0.35 -> 1.0 = reveal phase.
@@ -70,15 +83,19 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
   bool _waitingForPlanet = false;
   late final void Function() _onAnimationComplete;
 
-  // Interstitial ad for the 2:1 ad/nudge cycle.
-  late final AdaptiveInterstitialAd _interstitial;
-
   @override
   void initState() {
     super.initState();
-    _interstitial = AdaptiveInterstitialAd();
-    if (!QaIapService().isPremium) {
-      _interstitial.load();
+
+    // Preload an interstitial ad if pressing "Press On" will trigger one.
+    // This gives the ad network the entire scan-screen duration to fill the
+    // request, so the ad is ready instantly when the user taps.
+    final scanned = ref.read(voyageProvider).planetsScanned;
+    if (scanned > 0 &&
+        scanned % 3 == 0 &&
+        !ref.read(isPremiumProvider) &&
+        (scanned ~/ 3) % 3 != 0) {
+      ref.read(interstitialAdProvider).load();
     }
 
     _masterController = AnimationController(
@@ -104,7 +121,12 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     // Start animation immediately if planet is ready, otherwise wait.
     final currentPlanet = ref.read(voyageProvider).currentPlanet;
     if (currentPlanet != null) {
-      _masterController.forward().then((_) => _onAnimationComplete());
+      if (PlatformConfig.skipAnimations) {
+        _masterController.value = 1.0;
+        _onAnimationComplete();
+      } else {
+        _masterController.forward().then((_) => _onAnimationComplete());
+      }
     } else {
       _waitingForPlanet = true;
     }
@@ -151,7 +173,6 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
   @override
   void dispose() {
-    _interstitial.dispose();
     _masterController.dispose();
     _starController.dispose();
     super.dispose();
@@ -162,23 +183,32 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     final voyage = ref.watch(voyageProvider);
     final planet = voyage.currentPlanet;
 
-    // Planet just arrived — kick off the scan animation.
+    // Planet just arrived — kick off the scan animation after the frame
+    // completes to avoid mutating state during build.
     if (planet != null && _waitingForPlanet) {
-      _waitingForPlanet = false;
-      _masterController.forward().then((_) => _onAnimationComplete());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _waitingForPlanet) {
+          setState(() => _waitingForPlanet = false);
+          if (PlatformConfig.skipAnimations) {
+            _masterController.value = 1.0;
+            _onAnimationComplete();
+          } else {
+            _masterController.forward().then((_) => _onAnimationComplete());
+          }
+        }
+      });
     }
 
     return Scaffold(
       backgroundColor: _background,
-      body: AnimatedBuilder(
-        animation: Listenable.merge([_masterController, _starController]),
-        builder: (context, _) {
-          return Stack(
-            children: [
-              // Background stars.
-              Positioned.fill(
-                child: RepaintBoundary(
-                  child: Semantics(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _starController,
+                builder: (context, _) {
+                  return Semantics(
                     label: 'Animated star field background',
                     excludeSemantics: true,
                     child: CustomPaint(
@@ -190,38 +220,47 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                       ),
                       size: Size.infinite,
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-
-              // Scan lines overlay (phase 1 or waiting for planet).
-              if (planet == null || _scanProgress.value < 1.0)
-                Positioned.fill(
-                  child: Semantics(
-                    label: 'Scanning planet',
-                    excludeSemantics: true,
-                    child: CustomPaint(
-                      painter: _ScanLinePainter(
-                        progress: planet == null ? 0.5 : _scanProgress.value,
-                        accent: _accent,
-                      ),
+            ),
+          ),
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _masterController,
+              builder: (context, _) {
+                if (planet != null && _scanProgress.value >= 1.0) {
+                  return const SizedBox.shrink();
+                }
+                return Semantics(
+                  label: 'Scanning planet',
+                  excludeSemantics: true,
+                  child: CustomPaint(
+                    painter: _ScanLinePainter(
+                      progress: planet == null ? 0.5 : _scanProgress.value,
+                      accent: _accent,
                     ),
                   ),
-                ),
-
-              // Content (fades in during phase 2, only when planet ready).
-              if (planet != null)
-                Positioned.fill(
-                  child: SafeArea(
-                    child: Opacity(
+                );
+              },
+            ),
+          ),
+          if (planet != null)
+            Positioned.fill(
+              child: SafeArea(
+            bottom: false,
+                child: AnimatedBuilder(
+                  animation: _masterController,
+                  builder: (context, _) {
+                    return Opacity(
                       opacity: _revealProgress.value.clamp(0.0, 1.0),
                       child: _buildLayout(planet, voyage),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-            ],
-          );
-        },
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -236,7 +275,14 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
   // ─── Shared data prep ──────────────────────────────────────────────
 
-  static const _scannerStats = ['atmosphere', 'gravity', 'resources', 'biodiversity', 'temperature', 'water'];
+  static const _scannerStats = [
+    'atmosphere',
+    'gravity',
+    'resources',
+    'biodiversity',
+    'temperature',
+    'water',
+  ];
 
   _ScanData _prepareScanData(Planet planet, dynamic voyage) {
     final ship = voyage.ship as ShipSystems;
@@ -268,7 +314,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
   // ─── Shared widget builders ────────────────────────────────────────
 
-  Widget _buildHeaderRow(Planet planet, ScreenInfo screen, double revealFraction) {
+  Widget _buildHeaderRow(
+    Planet planet,
+    ScreenInfo screen,
+    double revealFraction,
+  ) {
     return _revealedWidget(
       revealFraction: revealFraction,
       threshold: 0.0,
@@ -297,14 +347,23 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           IconButton(
             onPressed: () => Navigator.pushNamed(context, '/codex'),
             tooltip: 'Codex',
-            icon: Icon(Icons.menu_book_rounded, size: 22, color: _accent.withValues(alpha: 0.5)),
+            icon: Icon(
+              Icons.menu_book_rounded,
+              size: 22,
+              color: _accent.withValues(alpha: 0.5),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDescriptionRow(Planet planet, _ScanData data, double revealFraction, double stagger) {
+  Widget _buildDescriptionRow(
+    Planet planet,
+    _ScanData data,
+    double revealFraction,
+    double stagger,
+  ) {
     return _revealedWidget(
       revealFraction: revealFraction,
       threshold: stagger * 0.5,
@@ -324,7 +383,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.satellite_alt, size: 14, color: _accent.withValues(alpha: 0.7)),
+              Icon(
+                Icons.satellite_alt,
+                size: 14,
+                color: _accent.withValues(alpha: 0.7),
+              ),
               const SizedBox(width: 4),
               Text(
                 'PROBES: ${data.probes}',
@@ -333,7 +396,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                   fontSize: 11,
                   letterSpacing: 2,
                   fontWeight: FontWeight.bold,
-                  color: data.probes > 3 ? _accent.withValues(alpha: 0.7) : Colors.orange,
+                  color: data.probes > 3
+                      ? _accent.withValues(alpha: 0.7)
+                      : Colors.orange,
                 ),
               ),
               if (data.avgUncertainty > 0.01) ...[
@@ -357,7 +422,13 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     );
   }
 
-  List<Widget> _buildStatBars(Planet planet, dynamic voyage, _ScanData data, double revealFraction, double stagger) {
+  List<Widget> _buildStatBars(
+    Planet planet,
+    dynamic voyage,
+    _ScanData data,
+    double revealFraction,
+    double stagger,
+  ) {
     return [
       for (var i = 0; i < _scannerStats.length; i++)
         () {
@@ -367,7 +438,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           final isProbed = data.probedStats.contains(statName);
           final rawReading = data.scannerReadings[statName];
           final scanFailed = rawReading == null && !isProbed;
-          final displayedValue = rawReading ?? (isProbed ? planet.getStat(statName) : null);
+          final displayedValue =
+              rawReading ?? (isProbed ? planet.getStat(statName) : null);
           final maxError = isProbed ? 0.0 : (1.0 - scannerHealth) * 0.4;
           final scannerLevel = voyage.scannerLevels[scannerName] ?? 0;
 
@@ -392,8 +464,14 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     ];
   }
 
-  Widget _buildSolarRecharge(dynamic voyage, double revealFraction, double stagger) {
-    if ((voyage.solarRechargeAmount as int) <= 0) return const SizedBox.shrink();
+  Widget _buildSolarRecharge(
+    dynamic voyage,
+    double revealFraction,
+    double stagger,
+  ) {
+    if ((voyage.solarRechargeAmount as int) <= 0) {
+      return const SizedBox.shrink();
+    }
     return _revealedWidget(
       revealFraction: revealFraction,
       threshold: stagger * (_scannerStats.length + 2) + 0.05,
@@ -403,7 +481,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFFFD740).withValues(alpha: 0.4)),
+            border: Border.all(
+              color: const Color(0xFFFFD740).withValues(alpha: 0.4),
+            ),
             color: const Color(0xFFFFD740).withValues(alpha: 0.06),
           ),
           child: Row(
@@ -444,7 +524,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     );
   }
 
-  Widget _buildHabitabilityBadge(Planet planet, _ScanData data, double revealFraction) {
+  Widget _buildHabitabilityBadge(
+    Planet planet,
+    _ScanData data,
+    double revealFraction,
+  ) {
     return _revealedWidget(
       revealFraction: revealFraction,
       threshold: 0.85,
@@ -457,7 +541,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     );
   }
 
-  Widget _buildSurfaceFeatures(Planet planet, dynamic voyage, double revealFraction) {
+  Widget _buildSurfaceFeatures(
+    Planet planet,
+    dynamic voyage,
+    double revealFraction,
+  ) {
     if (planet.surfaceFeatures.isEmpty) return const SizedBox.shrink();
     return _revealedWidget(
       revealFraction: revealFraction,
@@ -469,7 +557,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           runSpacing: 4,
           alignment: WrapAlignment.center,
           children: planet.surfaceFeatures.map((f) {
-            final isRevealed = _obviousFeatures.contains(f) ||
+            final isRevealed =
+                _obviousFeatures.contains(f) ||
                 (voyage.revealedFeatures as Set<String>).contains(f);
             final label = isRevealed
                 ? localizedSurfaceFeature(context.l10n, f)
@@ -490,7 +579,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (!isRevealed) ...[
-                      Icon(Icons.lock_outline, size: 10, color: chipColor.withValues(alpha: 0.8)),
+                      Icon(
+                        Icons.lock_outline,
+                        size: 10,
+                        color: chipColor.withValues(alpha: 0.8),
+                      ),
                       const SizedBox(width: 4),
                     ],
                     Text(
@@ -500,7 +593,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                         fontSize: 10,
                         color: chipColor.withValues(alpha: 0.8),
                         letterSpacing: 0.5,
-                        fontStyle: isRevealed ? FontStyle.normal : FontStyle.italic,
+                        fontStyle: isRevealed
+                            ? FontStyle.normal
+                            : FontStyle.italic,
                       ),
                     ),
                   ],
@@ -531,10 +626,15 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     );
   }
 
-  Widget _buildActionButtons(dynamic voyage, double revealFraction, {bool vertical = false}) {
+  Widget _buildActionButtons(
+    dynamic voyage,
+    double revealFraction, {
+    bool vertical = false,
+  }) {
     final landBtn = HolographicButton(
       label: context.l10n.ui_scan_landHere,
       compact: true,
+      autofocus: true,
       onPressed: () {
         GameSfx().play(GameSfx.buttonClick);
         Navigator.pushReplacementNamed(context, '/landing');
@@ -555,7 +655,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           if (insertion % 3 == 0) {
             await showPremiumPaywall(context);
           } else {
-            _interstitial.show();
+            final shown = await ref.read(interstitialAdProvider).show();
+            if (!shown && mounted) await showPremiumPaywall(context);
           }
         }
         if (mounted) Navigator.pop(context);
@@ -566,13 +667,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
       revealFraction: revealFraction,
       threshold: 0.92,
       child: vertical
-          ? Column(
-              children: [
-                landBtn,
-                const SizedBox(height: 10),
-                pressOnBtn,
-              ],
-            )
+          ? Column(children: [landBtn, const SizedBox(height: 10), pressOnBtn])
           : Row(
               children: [
                 Expanded(child: landBtn),
@@ -637,9 +732,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
               ),
             );
           }
-          return SingleChildScrollView(
-            child: Column(children: items),
-          );
+          return SingleChildScrollView(child: Column(children: items));
         },
       ),
     );
@@ -677,9 +770,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     Widget adColumn() => Expanded(
       flex: 3,
       child: Center(
-        child: AdaptiveBannerAd(
-          fallback: AdFallbackBanner(
-            onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+        child: PremiumAdGate(
+          child: AdaptiveBannerAd(
+            fallback: AdFallbackBanner(
+              onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+            ),
           ),
         ),
       ),
@@ -712,15 +807,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                   statsColumn(),
                   const SizedBox(width: 16),
                   planetColumn(),
-                  if (!isPremium) ...[
-                    const SizedBox(width: 16),
-                    adColumn(),
-                  ],
+                  if (!isPremium) ...[const SizedBox(width: 16), adColumn()],
                 ] else ...[
-                  if (!isPremium) ...[
-                    adColumn(),
-                    const SizedBox(width: 16),
-                  ],
+                  if (!isPremium) ...[adColumn(), const SizedBox(width: 16)],
                   planetColumn(),
                   const SizedBox(width: 16),
                   statsColumn(),
@@ -740,9 +829,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
   Widget _buildPortraitContent(Planet planet, dynamic voyage) {
     // Stats to show (scannable + radiation/anomaly).
-    const scannerStats = ['atmosphere', 'gravity', 'resources', 'biodiversity', 'temperature', 'water'];
+    const scannerStats = [
+      'atmosphere',
+      'gravity',
+      'resources',
+      'biodiversity',
+      'temperature',
+      'water',
+    ];
     final revealFraction = _revealProgress.value;
-    final stagger = 1.0 / (scannerStats.length + 3); // +1 for radiation, +2 for header+planet
+    final stagger =
+        1.0 /
+        (scannerStats.length + 3); // +1 for radiation, +2 for header+planet
     final ship = voyage.ship as ShipSystems;
     final probedStats = voyage.probedStats as Set<String>;
     final probes = voyage.probes as int;
@@ -763,383 +861,432 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     final avgUncertainty = scannerCount > 0 ? totalError / scannerCount : 0.0;
     final screen = ScreenInfo.of(context);
 
-    return ResponsiveContent(
-      child: Column(
+    return Column(
       children: [
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+          child: ResponsiveContent(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 8),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8),
 
-          // Planet name + codex button.
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: 0.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(width: 36), // balance the icon on the right
-                Flexible(
-                  child: Text(
-                    planet.name.toUpperCase(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: screen.scaledFontSize(28),
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 6,
-                      color: _accent,
-                      shadows: [
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.7),
-                          blurRadius: 16,
+                  // Planet name + codex button.
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: 0.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 36,
+                        ), // balance the icon on the right
+                        Flexible(
+                          child: Text(
+                            planet.name.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: screen.scaledFontSize(28),
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 6,
+                              color: _accent,
+                              shadows: [
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.7),
+                                  blurRadius: 16,
+                                ),
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.4),
+                                  blurRadius: 32,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.4),
-                          blurRadius: 32,
+                        IconButton(
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/codex'),
+                          tooltip: 'Codex',
+                          icon: Icon(
+                            Icons.menu_book_rounded,
+                            size: 22,
+                            color: _accent.withValues(alpha: 0.5),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.pushNamed(context, '/codex'),
-                  tooltip: 'Codex',
-                  icon: Icon(
-                    Icons.menu_book_rounded,
-                    size: 22,
-                    color: _accent.withValues(alpha: 0.5),
-                  ),
-                ),
-              ],
-            ),
-          ),
 
-          const SizedBox(height: 6),
+                  const SizedBox(height: 6),
 
-          // Planet description + probe counter.
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: stagger * 0.5,
-            child: Column(
-              children: [
-                Text(
-                  planet.description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 12,
-                    letterSpacing: 1,
-                    color: Colors.white.withValues(alpha: 0.6),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.satellite_alt, size: 14,
-                        color: _accent.withValues(alpha: 0.7)),
-                    const SizedBox(width: 4),
-                    Text(
-                      'PROBES: $probes',
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 11,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.bold,
-                        color: probes > 3
-                            ? _accent.withValues(alpha: 0.7)
-                            : Colors.orange,
-                      ),
-                    ),
-                    if (avgUncertainty > 0.01) ...[
-                      const SizedBox(width: 16),
-                      Text(
-                        'UNCERTAINTY: ±${(avgUncertainty * 100).round()}%',
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 11,
-                          letterSpacing: 1,
-                          color: avgUncertainty > 0.15
-                              ? Colors.orange
-                              : _accent.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Planet visualization.
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: stagger,
-            child: Semantics(
-              label: 'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
-              child: _PlanetVisualization(planet: planet, accent: _accent, pulse: _starController.value),
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Stats.
-          for (var i = 0; i < scannerStats.length; i++)
-            () {
-              final statName = scannerStats[i];
-              final scannerName = ShipSystems.scannerForStat[statName]!;
-              final scannerHealth = ship.getSystem(scannerName);
-              final isProbed = probedStats.contains(statName);
-              final rawReading = scannerReadings[statName];
-              final scanFailed = rawReading == null && !isProbed;
-              final displayedValue = rawReading ?? (isProbed ? planet.getStat(statName) : null);
-              final maxError = isProbed ? 0.0 : (1.0 - scannerHealth) * 0.4;
-              final t = stagger * (i + 2);
-              final scannerLevel = voyage.scannerLevels[scannerName] ?? 0;
-
-              return _revealedWidget(
-                revealFraction: revealFraction,
-                threshold: t,
-                child: _PlanetStatRowWithProbe(
-                  name: statName,
-                  value: displayedValue,
-                  isProbed: isProbed,
-                  maxError: maxError,
-                  scanFailed: scanFailed,
-                  scannerLevel: scannerLevel,
-                ),
-              );
-            }(),
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: stagger * (scannerStats.length + 2),
-            child: _PlanetStatRow(name: 'radiation', value: planet.radiation),
-          ),
-
-          // Solar recharge notification.
-          if (voyage.solarRechargeAmount > 0)
-            _revealedWidget(
-              revealFraction: revealFraction,
-              threshold: stagger * (scannerStats.length + 2) + 0.05,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFFFD740).withValues(alpha: 0.4)),
-                    color: const Color(0xFFFFD740).withValues(alpha: 0.06),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.wb_sunny, size: 16, color: const Color(0xFFFFD740)),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          "This star's spectrum is compatible with our solar arrays. +${voyage.solarRechargeAmount} energy recharged.",
+                  // Planet description + probe counter.
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: stagger * 0.5,
+                    child: Column(
+                      children: [
+                        Text(
+                          planet.description,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'monospace',
-                            fontSize: 13,
-                            color: const Color(0xFFFFD740),
-                            height: 1.4,
+                            fontSize: 12,
+                            letterSpacing: 1,
+                            color: Colors.white.withValues(alpha: 0.6),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-          const SizedBox(height: 60),
-
-          // LAUNCH PROBE button.
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: 0.82,
-            child: _LaunchProbeButton(
-              probeCount: probes,
-              allProbed: scannerStats.every((s) => probedStats.contains(s)),
-              onLaunch: () {
-                HapticService().selection();
-                ref.read(voyageProvider.notifier).useProbeAll();
-              },
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          // Habitability badge — based on scanner readings, not true stats.
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: 0.85,
-            child: _HabitabilityBadge(
-              planet: planet,
-              accent: _accent,
-              scannerReadings: scannerReadings,
-              probedStats: probedStats,
-            ),
-          ),
-
-          // Surface features (obvious visible, hidden as "???").
-          if (planet.surfaceFeatures.isNotEmpty)
-            _revealedWidget(
-              revealFraction: revealFraction,
-              threshold: 0.88,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  alignment: WrapAlignment.center,
-                  children: planet.surfaceFeatures.map((f) {
-                    final isRevealed = _obviousFeatures.contains(f) ||
-                        voyage.revealedFeatures.contains(f);
-                    final label = isRevealed
-                        ? localizedSurfaceFeature(context.l10n, f)
-                        : '??? Unknown';
-                    final chipColor = !isRevealed
-                        ? Colors.white.withValues(alpha: 0.4)
-                        : _accent;
-                    return Tooltip(
-                      message: isRevealed
-                          ? label
-                          : 'Requires landing to identify',
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: chipColor.withValues(alpha: 0.3),
-                          ),
-                          color: chipColor.withValues(alpha: 0.06),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (!isRevealed) ...[
-                              Icon(
-                                Icons.lock_outline,
-                                size: 10,
-                                color: chipColor.withValues(alpha: 0.8),
-                              ),
-                              const SizedBox(width: 4),
-                            ],
+                            Icon(
+                              Icons.satellite_alt,
+                              size: 14,
+                              color: _accent.withValues(alpha: 0.7),
+                            ),
+                            const SizedBox(width: 4),
                             Text(
-                              label,
+                              'PROBES: $probes',
                               style: TextStyle(
                                 fontFamily: 'monospace',
-                                fontSize: 10,
-                                color: chipColor.withValues(alpha: 0.8),
-                                letterSpacing: 0.5,
-                                fontStyle: isRevealed
-                                    ? FontStyle.normal
-                                    : FontStyle.italic,
+                                fontSize: 11,
+                                letterSpacing: 2,
+                                fontWeight: FontWeight.bold,
+                                color: probes > 3
+                                    ? _accent.withValues(alpha: 0.7)
+                                    : Colors.orange,
                               ),
                             ),
+                            if (avgUncertainty > 0.01) ...[
+                              const SizedBox(width: 16),
+                              Text(
+                                'UNCERTAINTY: ±${(avgUncertainty * 100).round()}%',
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 11,
+                                  letterSpacing: 1,
+                                  color: avgUncertainty > 0.15
+                                      ? Colors.orange
+                                      : _accent.withValues(alpha: 0.6),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Planet visualization.
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: stagger,
+                    child: Semantics(
+                      label:
+                          'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
+                      child: _PlanetVisualization(
+                        planet: planet,
+                        accent: _accent,
+                        pulse: _starController.value,
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Stats.
+                  for (var i = 0; i < scannerStats.length; i++)
+                    () {
+                      final statName = scannerStats[i];
+                      final scannerName = ShipSystems.scannerForStat[statName]!;
+                      final scannerHealth = ship.getSystem(scannerName);
+                      final isProbed = probedStats.contains(statName);
+                      final rawReading = scannerReadings[statName];
+                      final scanFailed = rawReading == null && !isProbed;
+                      final displayedValue =
+                          rawReading ??
+                          (isProbed ? planet.getStat(statName) : null);
+                      final maxError = isProbed
+                          ? 0.0
+                          : (1.0 - scannerHealth) * 0.4;
+                      final t = stagger * (i + 2);
+                      final scannerLevel =
+                          voyage.scannerLevels[scannerName] ?? 0;
+
+                      return _revealedWidget(
+                        revealFraction: revealFraction,
+                        threshold: t,
+                        child: _PlanetStatRowWithProbe(
+                          name: statName,
+                          value: displayedValue,
+                          isProbed: isProbed,
+                          maxError: maxError,
+                          scanFailed: scanFailed,
+                          scannerLevel: scannerLevel,
+                        ),
+                      );
+                    }(),
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: stagger * (scannerStats.length + 2),
+                    child: _PlanetStatRow(
+                      name: 'radiation',
+                      value: planet.radiation,
+                    ),
+                  ),
+
+                  // Solar recharge notification.
+                  if (voyage.solarRechargeAmount > 0)
+                    _revealedWidget(
+                      revealFraction: revealFraction,
+                      threshold: stagger * (scannerStats.length + 2) + 0.05,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: const Color(
+                                0xFFFFD740,
+                              ).withValues(alpha: 0.4),
+                            ),
+                            color: const Color(
+                              0xFFFFD740,
+                            ).withValues(alpha: 0.06),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.wb_sunny,
+                                size: 16,
+                                color: const Color(0xFFFFD740),
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  "This star's spectrum is compatible with our solar arrays. +${voyage.solarRechargeAmount} energy recharged.",
+                                  style: TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: 13,
+                                    color: const Color(0xFFFFD740),
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 60),
+
+                  // LAUNCH PROBE button.
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: 0.82,
+                    child: _LaunchProbeButton(
+                      probeCount: probes,
+                      allProbed: scannerStats.every(
+                        (s) => probedStats.contains(s),
+                      ),
+                      onLaunch: () {
+                        HapticService().selection();
+                        ref.read(voyageProvider.notifier).useProbeAll();
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  // Habitability badge — based on scanner readings, not true stats.
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: 0.85,
+                    child: _HabitabilityBadge(
+                      planet: planet,
+                      accent: _accent,
+                      scannerReadings: scannerReadings,
+                      probedStats: probedStats,
+                    ),
+                  ),
+
+                  // Surface features (obvious visible, hidden as "???").
+                  if (planet.surfaceFeatures.isNotEmpty)
+                    _revealedWidget(
+                      revealFraction: revealFraction,
+                      threshold: 0.88,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          alignment: WrapAlignment.center,
+                          children: planet.surfaceFeatures.map((f) {
+                            final isRevealed =
+                                _obviousFeatures.contains(f) ||
+                                voyage.revealedFeatures.contains(f);
+                            final label = isRevealed
+                                ? localizedSurfaceFeature(context.l10n, f)
+                                : '??? Unknown';
+                            final chipColor = !isRevealed
+                                ? Colors.white.withValues(alpha: 0.4)
+                                : _accent;
+                            return Tooltip(
+                              message: isRevealed
+                                  ? label
+                                  : 'Requires landing to identify',
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: chipColor.withValues(alpha: 0.3),
+                                  ),
+                                  color: chipColor.withValues(alpha: 0.06),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (!isRevealed) ...[
+                                      Icon(
+                                        Icons.lock_outline,
+                                        size: 10,
+                                        color: chipColor.withValues(alpha: 0.8),
+                                      ),
+                                      const SizedBox(width: 4),
+                                    ],
+                                    Text(
+                                      label,
+                                      style: TextStyle(
+                                        fontFamily: 'monospace',
+                                        fontSize: 10,
+                                        color: chipColor.withValues(alpha: 0.8),
+                                        letterSpacing: 0.5,
+                                        fontStyle: isRevealed
+                                            ? FontStyle.normal
+                                            : FontStyle.italic,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+
+                  // Moons section.
+                  if (planet.moons.isNotEmpty)
+                    _revealedWidget(
+                      revealFraction: revealFraction,
+                      threshold: 0.89,
+                      child: _MoonTagSection(moons: planet.moons),
+                    ),
+
+                  // Rings section.
+                  if (planet.rings != null)
+                    _revealedWidget(
+                      revealFraction: revealFraction,
+                      threshold: 0.90,
+                      child: _RingTagSection(rings: planet.rings!),
+                    ),
+
+                  const SizedBox(height: 6),
+
+                  // Action buttons (side by side).
+                  _revealedWidget(
+                    revealFraction: revealFraction,
+                    threshold: 0.92,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: HolographicButton(
+                            label: context.l10n.ui_scan_landHere,
+                            compact: true,
+                            onPressed: () {
+                              GameSfx().play(GameSfx.buttonClick);
+                              Navigator.pushReplacementNamed(
+                                context,
+                                '/landing',
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: HolographicButton(
+                            label: context.l10n.ui_scan_pressOn,
+                            isPrimary: false,
+                            compact: true,
+                            onPressed: () async {
+                              GameSfx().play(GameSfx.buttonClick);
+                              GameMusic().returnToBgMusic();
+                              GameMusic().startEngineHum();
+                              final scanned = ref
+                                  .read(voyageProvider)
+                                  .planetsScanned;
+                              ref.read(voyageProvider.notifier).pressOn();
+                              // Every 3 planets: 2 interstitial ads then 1 premium nudge.
+                              if (scanned > 0 &&
+                                  scanned % 3 == 0 &&
+                                  !ref.read(isPremiumProvider)) {
+                                // Cycle position: 1-based insertion number.
+                                final insertion = scanned ~/ 3;
+                                if (insertion % 3 == 0) {
+                                  await showPremiumPaywall(context);
+                                } else {
+                                  final shown = await ref.read(interstitialAdProvider).show();
+                                  if (!shown && mounted) await showPremiumPaywall(context);
+                                }
+                              }
+                              if (mounted) Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-
-          // Moons section.
-          if (planet.moons.isNotEmpty)
-            _revealedWidget(
-              revealFraction: revealFraction,
-              threshold: 0.89,
-              child: _MoonTagSection(moons: planet.moons),
-            ),
-
-          // Rings section.
-          if (planet.rings != null)
-            _revealedWidget(
-              revealFraction: revealFraction,
-              threshold: 0.90,
-              child: _RingTagSection(rings: planet.rings!),
-            ),
-
-          const SizedBox(height: 6),
-
-          // Action buttons (side by side).
-          _revealedWidget(
-            revealFraction: revealFraction,
-            threshold: 0.92,
-            child: Row(
-              children: [
-                Expanded(
-                  child: HolographicButton(
-                    label: context.l10n.ui_scan_landHere,
-                    compact: true,
-                    onPressed: () {
-                      GameSfx().play(GameSfx.buttonClick);
-                      Navigator.pushReplacementNamed(context, '/landing');
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: HolographicButton(
-                    label: context.l10n.ui_scan_pressOn,
-                    isPrimary: false,
-                    compact: true,
-                    onPressed: () async {
-                      GameSfx().play(GameSfx.buttonClick);
-                      GameMusic().returnToBgMusic();
-                      GameMusic().startEngineHum();
-                      final scanned = ref.read(voyageProvider).planetsScanned;
-                      ref.read(voyageProvider.notifier).pressOn();
-                      // Every 3 planets: 2 interstitial ads then 1 premium nudge.
-                      if (scanned > 0 &&
-                          scanned % 3 == 0 &&
-                          !ref.read(isPremiumProvider)) {
-                        // Cycle position: 1-based insertion number.
-                        final insertion = scanned ~/ 3;
-                        if (insertion % 3 == 0) {
-                          await showPremiumPaywall(context);
-                        } else {
-                          _interstitial.show();
-                        }
-                      }
-                      if (mounted) Navigator.pop(context);
-                    },
+          ),
+                // Seed display.
+                Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 4),
+                  child: Text(
+                    'SEED: ${seedToCode(voyage.seed as int)}',
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 10,
+                      letterSpacing: 2,
+                      color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-
-              ],
-            ),
-          ),
         ),
-        // Seed display — always pinned at the very bottom.
-        Padding(
-          padding: const EdgeInsets.only(top: 4, bottom: 4),
-          child: Text(
-            'SEED: ${seedToCode(voyage.seed as int)}',
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 10,
-              letterSpacing: 2,
-              color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
-            ),
-          ),
-        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
-    ),
     );
   }
 
@@ -1190,11 +1337,7 @@ class _ScanLinePainter extends CustomPainter {
       ..color = accent.withValues(alpha: 0.8 * (1.0 - progress))
       ..strokeWidth = 2.0
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-    canvas.drawLine(
-      Offset(0, sweepY),
-      Offset(size.width, sweepY),
-      edgePaint,
-    );
+    canvas.drawLine(Offset(0, sweepY), Offset(size.width, sweepY), edgePaint);
   }
 
   @override
@@ -1250,7 +1393,10 @@ class _PlanetVisualization extends StatelessWidget {
           // Back half of ring (behind planet).
           if (hasRings)
             Positioned(
-              left: 0, top: 0, width: boxWidth, height: boxHeight,
+              left: 0,
+              top: 0,
+              width: boxWidth,
+              height: boxHeight,
               child: CustomPaint(
                 painter: _RingPainter(
                   rings: planet.rings!,
@@ -1292,7 +1438,10 @@ class _PlanetVisualization extends StatelessWidget {
           // Front half of ring (in front of planet).
           if (hasRings)
             Positioned(
-              left: 0, top: 0, width: boxWidth, height: boxHeight,
+              left: 0,
+              top: 0,
+              width: boxWidth,
+              height: boxHeight,
               child: CustomPaint(
                 painter: _RingPainter(
                   rings: planet.rings!,
@@ -1332,14 +1481,17 @@ class _RingPainter extends CustomPainter {
   List<_Sparkle> _generateSparkles() {
     final count = (40 + rings.density * 40).round();
     final rng = math.Random(rings.density.hashCode ^ rings.type.index);
-    return List.generate(count, (_) => _Sparkle(
-      angle: rng.nextDouble() * 2 * math.pi,
-      band: 0.82 + rng.nextDouble() * 0.36,
-      brightness: 0.2 + rng.nextDouble() * 0.8,
-      phase: rng.nextDouble() * 2 * math.pi,
-      size: 0.5 + rng.nextDouble() * 2.0,
-      colorShift: -0.15 + rng.nextDouble() * 0.3,
-    ));
+    return List.generate(
+      count,
+      (_) => _Sparkle(
+        angle: rng.nextDouble() * 2 * math.pi,
+        band: 0.82 + rng.nextDouble() * 0.36,
+        brightness: 0.2 + rng.nextDouble() * 0.8,
+        phase: rng.nextDouble() * 2 * math.pi,
+        size: 0.5 + rng.nextDouble() * 2.0,
+        colorShift: -0.15 + rng.nextDouble() * 0.3,
+      ),
+    );
   }
 
   @override
@@ -1410,12 +1562,20 @@ class _RingPainter extends CustomPainter {
       ..strokeWidth = (24.0 + d * 18.0) * sc
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 20.0 * sc);
     canvas.drawOval(
-      Rect.fromCenter(center: center, width: ringW * 0.95, height: ringH * 0.95),
+      Rect.fromCenter(
+        center: center,
+        width: ringW * 0.95,
+        height: ringH * 0.95,
+      ),
       fogPaint,
     );
 
     // ── Light scattering halo (sunlit left side only) ──
-    final scatterRect = Rect.fromCenter(center: center, width: ringW * 1.05, height: ringH * 1.05);
+    final scatterRect = Rect.fromCenter(
+      center: center,
+      width: ringW * 1.05,
+      height: ringH * 1.05,
+    );
     final scatterPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.centerLeft,
@@ -1432,17 +1592,67 @@ class _RingPainter extends CustomPainter {
 
     // ── Ring bands (10 bands with varying properties) ──
     final bands = <({double mul, double alpha, Color color, double stroke})>[
-      (mul: 1.16, alpha: baseAlpha * 0.10, color: secondary, stroke: (0.8 + d * 0.8) * sc),
-      (mul: 1.12, alpha: baseAlpha * 0.20, color: primary, stroke: (1.0 + d * 1.2) * sc),
-      (mul: 1.08, alpha: baseAlpha * 0.40, color: secondary, stroke: (1.2 + d * 1.8) * sc),
-      (mul: 1.04, alpha: baseAlpha * 0.65, color: primary, stroke: (1.8 + d * 2.5) * sc),
-      (mul: 1.00, alpha: baseAlpha * 0.85, color: primary, stroke: (2.5 + d * 3.5) * sc),
+      (
+        mul: 1.16,
+        alpha: baseAlpha * 0.10,
+        color: secondary,
+        stroke: (0.8 + d * 0.8) * sc,
+      ),
+      (
+        mul: 1.12,
+        alpha: baseAlpha * 0.20,
+        color: primary,
+        stroke: (1.0 + d * 1.2) * sc,
+      ),
+      (
+        mul: 1.08,
+        alpha: baseAlpha * 0.40,
+        color: secondary,
+        stroke: (1.2 + d * 1.8) * sc,
+      ),
+      (
+        mul: 1.04,
+        alpha: baseAlpha * 0.65,
+        color: primary,
+        stroke: (1.8 + d * 2.5) * sc,
+      ),
+      (
+        mul: 1.00,
+        alpha: baseAlpha * 0.85,
+        color: primary,
+        stroke: (2.5 + d * 3.5) * sc,
+      ),
       // Cassini gap — skip
-      (mul: 0.94, alpha: baseAlpha * 0.75, color: secondary, stroke: (2.0 + d * 3.0) * sc),
-      (mul: 0.90, alpha: baseAlpha * 0.55, color: primary, stroke: (1.5 + d * 2.0) * sc),
-      (mul: 0.86, alpha: baseAlpha * 0.35, color: secondary, stroke: (1.2 + d * 1.5) * sc),
-      (mul: 0.82, alpha: baseAlpha * 0.20, color: primary, stroke: (0.8 + d * 1.0) * sc),
-      (mul: 0.78, alpha: baseAlpha * 0.08, color: secondary, stroke: (0.5 + d * 0.5) * sc),
+      (
+        mul: 0.94,
+        alpha: baseAlpha * 0.75,
+        color: secondary,
+        stroke: (2.0 + d * 3.0) * sc,
+      ),
+      (
+        mul: 0.90,
+        alpha: baseAlpha * 0.55,
+        color: primary,
+        stroke: (1.5 + d * 2.0) * sc,
+      ),
+      (
+        mul: 0.86,
+        alpha: baseAlpha * 0.35,
+        color: secondary,
+        stroke: (1.2 + d * 1.5) * sc,
+      ),
+      (
+        mul: 0.82,
+        alpha: baseAlpha * 0.20,
+        color: primary,
+        stroke: (0.8 + d * 1.0) * sc,
+      ),
+      (
+        mul: 0.78,
+        alpha: baseAlpha * 0.08,
+        color: secondary,
+        stroke: (0.5 + d * 0.5) * sc,
+      ),
     ];
 
     // Cassini-style gap.
@@ -1451,13 +1661,21 @@ class _RingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0 * sc;
     canvas.drawOval(
-      Rect.fromCenter(center: center, width: ringW * 0.97, height: ringH * 0.97),
+      Rect.fromCenter(
+        center: center,
+        width: ringW * 0.97,
+        height: ringH * 0.97,
+      ),
       gapPaint,
     );
 
     // Second smaller gap.
     canvas.drawOval(
-      Rect.fromCenter(center: center, width: ringW * 0.88, height: ringH * 0.88),
+      Rect.fromCenter(
+        center: center,
+        width: ringW * 0.88,
+        height: ringH * 0.88,
+      ),
       gapPaint..strokeWidth = 1.0 * sc,
     );
 
@@ -1485,8 +1703,13 @@ class _RingPainter extends CustomPainter {
     }
 
     // ── Sunlit edge highlight ──
-    final highlightRect = Rect.fromCenter(center: center, width: ringW, height: ringH);
-    final shimmerOffset = math.sin(pulse * 8 * math.pi) * 0.15; // oscillating highlight
+    final highlightRect = Rect.fromCenter(
+      center: center,
+      width: ringW,
+      height: ringH,
+    );
+    final shimmerOffset =
+        math.sin(pulse * 8 * math.pi) * 0.15; // oscillating highlight
     final highlightPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment(-0.8 + shimmerOffset, 0),
@@ -1508,11 +1731,16 @@ class _RingPainter extends CustomPainter {
       final x = cx + rx * math.cos(sp.angle);
       final y = cy + ry * math.sin(sp.angle);
 
-      final twinkle = 0.2 + 0.8 * ((math.sin(shimmerPhase + sp.phase) + 1.0) / 2.0);
+      final twinkle =
+          0.2 + 0.8 * ((math.sin(shimmerPhase + sp.phase) + 1.0) / 2.0);
       final alpha = (sp.brightness * twinkle * baseAlpha * 1.8).clamp(0.0, 1.0);
       if (alpha < 0.03) continue;
 
-      final sparkleColor = Color.lerp(highlight, primary, (sp.colorShift + 0.15) / 0.3)!;
+      final sparkleColor = Color.lerp(
+        highlight,
+        primary,
+        (sp.colorShift + 0.15) / 0.3,
+      )!;
 
       canvas.drawCircle(
         Offset(x, y),
@@ -1540,7 +1768,11 @@ class _RingPainter extends CustomPainter {
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4.0 * sc);
       // Shadow only in center portion where planet would cast shadow.
       canvas.drawArc(
-        Rect.fromCenter(center: center, width: ringW * 0.5, height: ringH * 0.5),
+        Rect.fromCenter(
+          center: center,
+          width: ringW * 0.5,
+          height: ringH * 0.5,
+        ),
         0.3, // start angle
         math.pi * 0.4, // sweep
         false,
@@ -1564,8 +1796,12 @@ class _Sparkle {
   final double size;
   final double colorShift;
   const _Sparkle({
-    required this.angle, required this.band, required this.brightness,
-    required this.phase, required this.size, required this.colorShift,
+    required this.angle,
+    required this.band,
+    required this.brightness,
+    required this.phase,
+    required this.size,
+    required this.colorShift,
   });
 }
 
@@ -1583,16 +1819,33 @@ class _PlanetSurfacePainter extends CustomPainter {
 
   // Deterministic surface patches seeded from planet name.
   late final List<_SurfacePatch> _patches = _generatePatches();
+  // Pre-computed cloud positions (same seed = same output every frame).
+  late final List<({double rx, double ry, double rw, double rh})> _clouds = _generateClouds();
+
+  List<({double rx, double ry, double rw, double rh})> _generateClouds() {
+    if (planet.atmosphere <= 0.4) return const [];
+    final rng = math.Random(planet.name.hashCode ^ 0xC10D);
+    final count = 3 + (planet.atmosphere * 5).round();
+    return List.generate(count, (_) => (
+      rx: -0.6 + rng.nextDouble() * 1.2,
+      ry: -0.7 + rng.nextDouble() * 1.4,
+      rw: 0.3 + rng.nextDouble() * 0.5,
+      rh: 0.08 + rng.nextDouble() * 0.12,
+    ));
+  }
 
   List<_SurfacePatch> _generatePatches() {
     final rng = math.Random(planet.name.hashCode);
     final count = 20 + (planet.biodiversity * 20).round();
-    return List.generate(count, (_) => _SurfacePatch(
-      x: -1.0 + rng.nextDouble() * 2.0,
-      y: -1.0 + rng.nextDouble() * 2.0,
-      radius: 0.08 + rng.nextDouble() * 0.18,
-      isWater: rng.nextDouble() < planet.water,
-    ));
+    return List.generate(
+      count,
+      (_) => _SurfacePatch(
+        x: -1.0 + rng.nextDouble() * 2.0,
+        y: -1.0 + rng.nextDouble() * 2.0,
+        radius: 0.08 + rng.nextDouble() * 0.18,
+        isWater: rng.nextDouble() < planet.water,
+      ),
+    );
   }
 
   @override
@@ -1602,19 +1855,30 @@ class _PlanetSurfacePainter extends CustomPainter {
     final r = size.width / 2;
 
     // Clip to circle.
-    final circlePath = Path()..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
+    final circlePath = Path()
+      ..addOval(Rect.fromCircle(center: Offset(cx, cy), radius: r));
     canvas.clipPath(circlePath);
 
     // ── Opaque base fill ──
-    final waterColor = Color.lerp(const Color(0xFF0D47A1), const Color(0xFF1565C0), 0.5)!;
+    final waterColor = Color.lerp(
+      const Color(0xFF0D47A1),
+      const Color(0xFF1565C0),
+      0.5,
+    )!;
     final landColor = Color.lerp(
-      Color.lerp(const Color(0xFF2E7D32), const Color(0xFF8D6E63), 1.0 - planet.biodiversity)!,
+      Color.lerp(
+        const Color(0xFF2E7D32),
+        const Color(0xFF8D6E63),
+        1.0 - planet.biodiversity,
+      )!,
       const Color(0xFFBF8040), // desert
       (planet.temperature - 0.5).clamp(0.0, 1.0),
     )!;
 
     // Base: water or barren depending on water stat.
-    final baseFill = planet.water > 0.3 ? waterColor : Color.lerp(landColor, const Color(0xFF616161), 0.5)!;
+    final baseFill = planet.water > 0.3
+        ? waterColor
+        : Color.lerp(landColor, const Color(0xFF616161), 0.5)!;
     canvas.drawCircle(Offset(cx, cy), r, Paint()..color = baseFill);
 
     // ── Rotate for surface features ──
@@ -1658,12 +1922,20 @@ class _PlanetSurfacePainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
       // North pole.
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy - r * 0.75), width: r * 0.8, height: r * 0.4),
+        Rect.fromCenter(
+          center: Offset(cx, cy - r * 0.75),
+          width: r * 0.8,
+          height: r * 0.4,
+        ),
         icePaint,
       );
       // South pole.
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy + r * 0.75), width: r * 0.7, height: r * 0.35),
+        Rect.fromCenter(
+          center: Offset(cx, cy + r * 0.75),
+          width: r * 0.7,
+          height: r * 0.35,
+        ),
         icePaint,
       );
     }
@@ -1672,30 +1944,31 @@ class _PlanetSurfacePainter extends CustomPainter {
     if (planet.temperature > 0.7 && planet.water < 0.4) {
       final desertAlpha = ((planet.temperature - 0.7) / 0.3).clamp(0.0, 1.0);
       canvas.drawOval(
-        Rect.fromCenter(center: Offset(cx, cy), width: r * 1.6, height: r * 0.5),
+        Rect.fromCenter(
+          center: Offset(cx, cy),
+          width: r * 1.6,
+          height: r * 0.5,
+        ),
         Paint()
           ..color = const Color(0xFFD4A056).withValues(alpha: desertAlpha * 0.4)
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
       );
     }
 
-    // ── Cloud wisps ──
-    if (planet.atmosphere > 0.4) {
-      final cloudRng = math.Random(planet.name.hashCode ^ 0xC10D);
-      final cloudCount = 3 + (planet.atmosphere * 5).round();
+    // ── Cloud wisps (positions pre-computed) ──
+    if (_clouds.isNotEmpty) {
       final cloudAlpha = (planet.atmosphere - 0.4) / 0.6 * 0.35;
-      for (int i = 0; i < cloudCount; i++) {
-        final cx2 = cx + (-0.6 + cloudRng.nextDouble() * 1.2) * r;
-        final cy2 = cy + (-0.7 + cloudRng.nextDouble() * 1.4) * r;
+      final cloudPaint = Paint()
+        ..color = Colors.white.withValues(alpha: cloudAlpha)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+      for (final c in _clouds) {
         canvas.drawOval(
           Rect.fromCenter(
-            center: Offset(cx2, cy2),
-            width: r * (0.3 + cloudRng.nextDouble() * 0.5),
-            height: r * (0.08 + cloudRng.nextDouble() * 0.12),
+            center: Offset(cx + c.rx * r, cy + c.ry * r),
+            width: r * c.rw,
+            height: r * c.rh,
           ),
-          Paint()
-            ..color = Colors.white.withValues(alpha: cloudAlpha)
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+          cloudPaint,
         );
       }
     }
@@ -1754,7 +2027,12 @@ class _PlanetSurfacePainter extends CustomPainter {
 class _SurfacePatch {
   final double x, y, radius;
   final bool isWater;
-  const _SurfacePatch({required this.x, required this.y, required this.radius, required this.isWater});
+  const _SurfacePatch({
+    required this.x,
+    required this.y,
+    required this.radius,
+    required this.isWater,
+  });
 }
 
 /// Positions a moon orb at an angle around the planet center.
@@ -1870,8 +2148,7 @@ class _MoonTagSection extends StatelessWidget {
               final label = _moonTypeLabel(moon.type);
               final isHabitable = moon.type == MoonType.habitable;
               return Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
@@ -1886,8 +2163,8 @@ class _MoonTagSection extends StatelessWidget {
                       isHabitable
                           ? Icons.eco
                           : moon.type == MoonType.unstable
-                              ? Icons.warning_amber
-                              : Icons.nightlight_round,
+                          ? Icons.warning_amber
+                          : Icons.nightlight_round,
                       size: 10,
                       color: color.withValues(alpha: 0.8),
                     ),
@@ -1899,8 +2176,9 @@ class _MoonTagSection extends StatelessWidget {
                         fontSize: 10,
                         color: color.withValues(alpha: 0.8),
                         letterSpacing: 0.5,
-                        fontWeight:
-                            isHabitable ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isHabitable
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                     if (isHabitable && moon.habitability != null) ...[
@@ -2110,8 +2388,11 @@ class _PlanetStatRowWithProbe extends StatelessWidget {
             const SizedBox(width: 4),
             SizedBox(
               width: 20,
-              child: Icon(Icons.warning_amber, size: 14,
-                  color: Colors.red.withValues(alpha: 0.6)),
+              child: Icon(
+                Icons.warning_amber,
+                size: 14,
+                color: Colors.red.withValues(alpha: 0.6),
+              ),
             ),
             if (scannerLevel > 0) _scannerLevelBadge(),
           ],
@@ -2220,18 +2501,21 @@ class _PlanetStatRowWithProbe extends StatelessWidget {
           SizedBox(
             width: 20,
             child: isProbed
-                ? Icon(Icons.verified, size: 14,
-                    color: const Color(0xFF00E676).withValues(alpha: 0.8))
+                ? Icon(
+                    Icons.verified,
+                    size: 14,
+                    color: const Color(0xFF00E676).withValues(alpha: 0.8),
+                  )
                 : maxError > 0.01
-                    ? Text(
-                        '±${(maxError * 100).round()}',
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 8,
-                          color: Colors.orange.withValues(alpha: 0.7),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
+                ? Text(
+                    '±${(maxError * 100).round()}',
+                    style: TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 8,
+                      color: Colors.orange.withValues(alpha: 0.7),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
           if (scannerLevel > 0) _scannerLevelBadge(),
         ],
@@ -2248,9 +2532,7 @@ class _PlanetStatRowWithProbe extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: _accent.withValues(alpha: 0.15),
-          border: Border.all(
-            color: _accent.withValues(alpha: 0.5),
-          ),
+          border: Border.all(color: _accent.withValues(alpha: 0.5)),
         ),
         child: Center(
           child: Text(
@@ -2291,11 +2573,7 @@ class _PlanetStatRowWithProbe extends StatelessWidget {
       case 'water':
         return const Color(0xFF42A5F5);
       case 'temperature':
-        return Color.lerp(
-          const Color(0xFF42A5F5),
-          const Color(0xFFEF5350),
-          v,
-        )!;
+        return Color.lerp(const Color(0xFF42A5F5), const Color(0xFFEF5350), v)!;
       case 'biodiversity':
         return const Color(0xFF66BB6A);
       default:
@@ -2349,7 +2627,9 @@ class _LaunchProbeButton extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(
-              allProbed ? context.l10n.ui_scan_allStatsVerified : context.l10n.ui_scan_launchProbe,
+              allProbed
+                  ? context.l10n.ui_scan_allStatsVerified
+                  : context.l10n.ui_scan_launchProbe,
               style: TextStyle(
                 fontFamily: 'monospace',
                 fontSize: 14,
@@ -2505,11 +2785,7 @@ class _PlanetStatRow extends StatelessWidget {
       case 'water':
         return const Color(0xFF42A5F5);
       case 'temperature':
-        return Color.lerp(
-          const Color(0xFF42A5F5),
-          const Color(0xFFEF5350),
-          v,
-        )!;
+        return Color.lerp(const Color(0xFF42A5F5), const Color(0xFFEF5350), v)!;
       case 'biodiversity':
         return const Color(0xFF66BB6A);
       case 'anomaly':
@@ -2548,6 +2824,7 @@ class _HabitabilityBadge extends StatelessWidget {
       final reading = scannerReadings[name];
       return (reading ?? 0.5) * weight;
     }
+
     return stat('water', 0.21) +
         stat('atmosphere', 0.20) +
         stat('temperature', 0.13) +
@@ -2608,10 +2885,7 @@ class _HabitabilityBadge extends StatelessWidget {
               fontWeight: FontWeight.w900,
               color: tierColor,
               shadows: [
-                Shadow(
-                  color: tierColor.withValues(alpha: 0.6),
-                  blurRadius: 8,
-                ),
+                Shadow(color: tierColor.withValues(alpha: 0.6), blurRadius: 8),
               ],
             ),
           ),

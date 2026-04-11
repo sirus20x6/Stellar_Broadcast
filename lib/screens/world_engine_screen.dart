@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
@@ -88,6 +89,7 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
     )..repeat();
 
     _startTypewriter();
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     GameSfx().playLong(GameSfx.alienTech);
   }
@@ -176,11 +178,23 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
 
           // Content.
           SafeArea(
-            child: () {
-              final screen = ScreenInfo.of(context);
-              final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
-              return isLandscape ? _buildLandscape(event) : _buildPortrait(event);
-            }(),
+            bottom: false,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: !_typewriterDone
+                  ? _skipTypewriter
+                  : _isResolved
+                      ? () {
+                          GameSfx().playVaried(GameSfx.buttonClick);
+                          Navigator.of(context).pop();
+                        }
+                      : null,
+              child: () {
+                final screen = ScreenInfo.of(context);
+                final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+                return isLandscape ? _buildLandscape(event) : _buildPortrait(event);
+              }(),
+            ),
           ),
         ],
       ),
@@ -190,13 +204,14 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   // ── Shared widget builders ──────────────────────────────────────────
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         'WORLD ENGINE',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 26,
+          fontSize: screen.scaledFontSize(26),
           fontWeight: FontWeight.bold,
           color: _kAccent,
           letterSpacing: 3,
@@ -213,9 +228,8 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _typewriterDone ? null : _skipTypewriter,
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
-        constraints: const BoxConstraints(maxHeight: 140),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -233,7 +247,7 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 400),
                   child: Text(
-                    _isResolved ? event.choices[_selectedSystem!].outcome : _displayedText,
+                    _isResolved && _selectedSystem != null ? event.choices[_selectedSystem!].outcome : _displayedText,
                     key: ValueKey(_isResolved ? 'outcome' : 'narrative'),
                     style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5, letterSpacing: 0.3),
                   ),
@@ -314,31 +328,31 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   }
 
   Widget _buildPortrait(GameEvent event) {
-    return ResponsiveContent(
-      child: Column(
-        children: [
-          const SizedBox(height: 24),
-          _buildTitle(),
-          const SizedBox(height: 12),
-          _buildNarrativeCard(event),
-          if (!_typewriterDone)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
-            ),
-          const SizedBox(height: 8),
-          Expanded(child: _buildVisualArea()),
-          const SizedBox(height: 12),
-          if (_isResolved) _buildHintOrContinue(),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                _buildTitle(),
+                const SizedBox(height: 6),
+                _buildNarrativeCard(event),
+                if (!_typewriterDone)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
+                  ),
+                const SizedBox(height: 4),
+                Expanded(flex: 3, child: _buildVisualArea()),
+                const Spacer(flex: 1),
+                if (_isResolved) _buildHintOrContinue(),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -380,13 +394,7 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
           ),
         ),
         // Ad banner full width at bottom.
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }

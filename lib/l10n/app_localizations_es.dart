@@ -4413,6 +4413,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Consejo Tribal';
 
   @override
+  String get ending_governmentTheocracy => 'Theocracy';
+
+  @override
+  String get ending_governmentMilitaryJunta => 'Military Junta';
+
+  @override
+  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+
+  @override
+  String get ending_governmentFascistState => 'Fascist State';
+
+  @override
+  String get ending_governmentCommune => 'Commune';
+
+  @override
   String get ending_cultureRenaissance => 'Renacimiento';
 
   @override
@@ -4462,6 +4477,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ending_nativesConflict => 'Conflicto';
+
+  @override
+  String get ending_nativesAlliance => 'Alliance';
+
+  @override
+  String get ending_nativesSubjugation => 'Subjugation';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4607,6 +4628,31 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String ending_govSentenceTheocracy(String planetName) {
+    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+  }
+
+  @override
+  String ending_govSentenceMilitaryJunta(String planetName) {
+    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+  }
+
+  @override
+  String ending_govSentenceCorporateOligarchy(String planetName) {
+    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+  }
+
+  @override
+  String ending_govSentenceFascistState(String planetName) {
+    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+  }
+
+  @override
+  String ending_govSentenceCommune(String planetName) {
+    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+  }
+
+  @override
   String ending_govSentenceDefault(String planetName) {
     return 'Los colonos de $planetName se organizaron lo mejor que pudieron.';
   }
@@ -4731,6 +4777,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String ending_nativeSentenceConflict(String planetName) {
     return 'El conflicto abierto con la civilización nativa de $planetName definió la historia temprana de la colonia, drenando recursos y vidas de ambos bandos en una lucha que ninguno podía ganar realmente.';
+  }
+
+  @override
+  String ending_nativeSentenceAlliance(String planetName) {
+    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+  }
+
+  @override
+  String ending_nativeSentenceSubjugation(String planetName) {
+    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
   }
 
   @override

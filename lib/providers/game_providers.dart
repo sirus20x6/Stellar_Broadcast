@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui' show Locale;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
@@ -32,6 +33,24 @@ import 'package:stellar_broadcast/utils/constants.dart';
 
 /// Resources the player can spend at the Alien Trader to repair ship systems.
 enum TradeResource { probes, fuel, energy, colonists, culture, tech }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Interstitial ad (long-lived, survives screen transitions)
+// ═══════════════════════════════════════════════════════════════════════════
+
+final interstitialAdProvider = Provider<AdLifecycleManager>((ref) {
+  final adapter = QaAdConfig.adapter;
+  final adUnitId = QaAdConfig.resolveAdUnitId(QaAdFormat.interstitial);
+  late final QaInterstitialAdHandle handle;
+  if (adapter == null || adUnitId == null) {
+    handle = noOpInterstitialHandle();
+  } else {
+    handle = adapter.createInterstitialAd(adUnitId: adUnitId);
+  }
+  final manager = AdLifecycleManager(handle: handle);
+  ref.onDispose(manager.dispose);
+  return manager;
+});
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Seed utilities
@@ -88,14 +107,37 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   static Future<void> preloadYamlEvents() async {
     _yamlEventCache = await EventLoader.loadEvents(
       'assets/events/events.yaml',
-      (key) => key, // Prototype: @key passthrough (new events use inline strings)
+      (key) =>
+          key, // Prototype: @key passthrough (new events use inline strings)
     );
   }
 
   final PlanetNameService? _nameService;
 
   late Random _random = Random();
+
+  /// Exposes the seeded RNG for screens that need reproducible randomness
+  /// (e.g. weighted outcome resolution, landing sequences).
+  Random get seededRandom => _random;
+
   late List<GameEvent> _eventPool = const [];
+  Map<String, GameEvent> _eventIndex = const {};
+
+  void _refreshEventPool(AppLocalizations l10n) {
+    final localizedEvents = getEventPool(l10n);
+    if (!useYamlEvents || _yamlEventCache == null) {
+      _eventPool = localizedEvents;
+      _eventIndex = {for (final event in _eventPool) event.id: event};
+      return;
+    }
+
+    final existingIds = localizedEvents.map((e) => e.id).toSet();
+    _eventPool = [
+      ...localizedEvents,
+      ..._yamlEventCache!.where((e) => !existingIds.contains(e.id)),
+    ];
+    _eventIndex = {for (final event in _eventPool) event.id: event};
+  }
 
   /// Begins a fresh voyage with pristine ship systems and 10 probes.
   /// If [upgrades] is provided, purchased upgrades boost starting stats.
@@ -105,15 +147,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     Map<String, bool> upgrades = const {},
     required AppLocalizations l10n,
   }) {
-    _eventPool = buildEventPool(l10n);
-    if (useYamlEvents && _yamlEventCache != null) {
-      // Merge YAML events, skipping IDs that already exist in the Dart pool.
-      final existingIds = _eventPool.map((e) => e.id).toSet();
-      _eventPool = [
-        ..._eventPool,
-        ..._yamlEventCache!.where((e) => !existingIds.contains(e.id)),
-      ];
-    }
+    _refreshEventPool(l10n);
     if (isDaily) {
       seed = dailySeed();
     } else {
@@ -183,7 +217,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       name: isDaily ? QaEvents.dailyChallengeStarted : QaEvents.voyageStarted,
       parameters: {
         'seed': seed,
-        'is_daily': isDaily,
+        'is_daily': isDaily ? 1 : 0,
         'upgrade_count': upgrades.values.where((v) => v).length,
       },
     );
@@ -201,8 +235,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   /// Generates a new planet and assigns it as the current scan target.
   /// Generates deceptive scanner readings based on scanner subsystem health.
   /// Consumes 2 energy per scan.
-  void scanPlanet() {
-    var planet = PlanetGenerator.generate(
+  Future<void> scanPlanet() async {
+    var planet = await PlanetGenerator.generate(
       _random,
       scannerLevels: state.scannerLevels,
       nameService: _nameService,
@@ -222,6 +256,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
         if (_random.nextDouble() < bypassChance) return stat;
         return stat.clamp(0.0, ceiling);
       }
+
       planet = planet.copyWith(
         atmosphere: cap(planet.atmosphere),
         gravity: cap(planet.gravity),
@@ -261,11 +296,12 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       energyConsumed: state.energyConsumed + 2,
       solarRechargeAmount: rechargeAmount,
       pendingPlanetModifiers: const {},
-      log: [
-        ...state.log,
-        'Scanned ${planet.name}. (-2 energy)',
-        if (rechargeAmount > 0) 'Solar panels recharged +$rechargeAmount energy from stellar radiation.',
-      ],
+      log: List<String>.of(state.log)
+        ..add('Scanned ${planet.name}. (-2 energy)')
+        ..addAll([
+          if (rechargeAmount > 0)
+            'Solar panels recharged +$rechargeAmount energy from stellar radiation.',
+        ]),
     );
 
     AnalyticsService().logEvent(
@@ -343,7 +379,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       scannerLevels: updated,
       pendingScannerUpgrade: false,
       scannersUpgraded: state.scannersUpgraded + 1,
-      log: [...state.log, 'Upgraded $scannerName to level ${current + 1}.'],
+      log: List<String>.of(state.log)
+        ..add('Upgraded $scannerName to level ${current + 1}.'),
     );
 
     AnalyticsService().logEvent(
@@ -413,7 +450,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       probes: state.probes - 1,
       probedStats: {...state.probedStats, planetStat},
       scannerReadings: updatedReadings,
-      log: [...state.log, 'Deployed probe to verify $planetStat readings.'],
+      log: List<String>.of(state.log)
+        ..add('Deployed probe to verify $planetStat readings.'),
     );
 
     AnalyticsService().logEvent(
@@ -446,10 +484,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     hiddenFeatures.shuffle(_random);
     final maxReveal = 2 + _random.nextInt(2); // 2-3
     final revealed = hiddenFeatures.take(maxReveal).toList();
-    final newRevealed = <String>{
-      ...state.revealedFeatures,
-      ...revealed,
-    };
+    final newRevealed = <String>{...state.revealedFeatures, ...revealed};
 
     final featureMsg = revealed.isEmpty
         ? 'all surface features already identified.'
@@ -460,7 +495,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       probedStats: updatedProbed,
       revealedFeatures: newRevealed,
       scannerReadings: updatedReadings,
-      log: [...state.log, 'Deployed probe — scanner readings verified, $featureMsg'],
+      log: List<String>.of(state.log)
+        ..add('Deployed probe — scanner readings verified, $featureMsg'),
     );
 
     AnalyticsService().logEvent(
@@ -477,7 +513,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     state = state.copyWith(
       probes: state.probes - 1,
       ship: boosted,
-      log: [...state.log, 'Sacrificed a probe to repair $system.'],
+      log: List<String>.of(state.log)
+        ..add('Sacrificed a probe to repair $system.'),
     );
 
     AnalyticsService().logEvent(
@@ -488,12 +525,20 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 
   /// Triggers a random narrative event and returns it for the UI to display.
   GameEvent triggerEvent() {
-    final event = EventEngine.getRandomEvent(_random, state, _eventPool);
+    final event = EventEngine.getRandomEvent(
+      _random,
+      state,
+      _eventPool,
+      eventIndex: _eventIndex,
+    );
     state = state.copyWith(seenEventIds: [...state.seenEventIds, event.id]);
     return event;
   }
 
   /// Applies the player's chosen [EventChoice] to the current state.
+  ///
+  /// Important: callers should `await` this method because it may trigger
+  /// async planet generation ([_openImmediatePlanet]) that mutates state.
   Future<void> handleEvent(EventChoice choice) async {
     // Note: weighted outcomes should be resolved by the caller before passing
     // here, so the choice's outcome/effects are already finalized.
@@ -510,8 +555,12 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     AnalyticsService().logEvent(
       name: QaEvents.eventChoiceMade,
       parameters: {
-        'event_id': state.seenEventIds.isNotEmpty ? state.seenEventIds.last : 'unknown',
-        'choice_label': choice.text.length > 40 ? choice.text.substring(0, 40) : choice.text,
+        'event_id': state.seenEventIds.isNotEmpty
+            ? state.seenEventIds.last
+            : 'unknown',
+        'choice_label': choice.text.length > 40
+            ? choice.text.substring(0, 40)
+            : choice.text,
       },
     );
 
@@ -535,17 +584,26 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   }
 
   /// Applies puzzle result (reward or penalty) and advances the encounter.
-  void handlePuzzleResult(EventChoice choice) {
+  void handlePuzzleResult(EventChoice choice, {bool isCorrect = true}) {
     state = EventEngine.applyChoice(state, choice, _random);
     state = state.copyWith(encounterCount: state.encounterCount + 1);
 
     AnalyticsService().logEvent(
       name: QaEvents.puzzleCompleted,
       parameters: {
-        'choice_label': choice.text.length > 40 ? choice.text.substring(0, 40) : choice.text,
+        'choice_label': choice.text.length > 40
+            ? choice.text.substring(0, 40)
+            : choice.text,
         'encounter': state.encounterCount,
+        'is_correct': isCorrect ? 1 : 0,
       },
     );
+    if (!isCorrect) {
+      AnalyticsService().logEvent(
+        name: 'puzzle_failed',
+        parameters: {'encounter': state.encounterCount},
+      );
+    }
 
     _checkGameOver();
     saveState();
@@ -565,7 +623,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       // Yield every iteration — ONNX name inference is heavy.
       await Future.delayed(Duration.zero);
 
-      var candidate = PlanetGenerator.generate(
+      var candidate = await PlanetGenerator.generate(
         _random,
         scannerLevels: state.scannerLevels,
         nameService: _nameService,
@@ -589,7 +647,12 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       }
     }
 
-    if (bestPlanet == null || bestReadings == null) return;
+    if (bestPlanet == null || bestReadings == null) {
+      QaLogger.app.warning(
+        '_openImmediatePlanet: no suitable planet found after 24 candidates (minHabitability=$minHabitability)',
+      );
+      return;
+    }
 
     state = state.copyWith(
       currentPlanet: bestPlanet,
@@ -598,7 +661,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       planetsScanned: state.planetsScanned + 1,
       pendingScannerUpgrade: (state.planetsScanned + 1) % 3 == 0,
       pendingPlanetModifiers: const {},
-      log: [...state.log, 'Guided to ${bestPlanet.name} by alien sentinels.'],
+      log: List<String>.of(state.log)
+        ..add('Guided to ${bestPlanet.name} by alien sentinels.'),
     );
   }
 
@@ -630,14 +694,14 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       colonyName: state.colonyName,
       fuel: state.fuel,
       landedOnMoon: state.landedOnMoon,
+      voyage: state,
     );
 
     state = state.copyWith(
       isComplete: true,
-      log: [
-        ...state.log,
-        'Landed on ${state.currentPlanet!.name}. Score: ${result.score}.',
-      ],
+      log: List<String>.of(
+        state.log,
+      )..add('Landed on ${state.currentPlanet!.name}. Score: ${result.score}.'),
     );
 
     AnalyticsService().logEvent(
@@ -657,10 +721,10 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   /// Reject the current planet and continue the voyage.
   void pressOn() {
     final hadPlanet = state.currentPlanet != null;
-    final logs = <String>[
-      ...state.log,
-      if (hadPlanet) 'Left ${state.currentPlanet!.name} behind and pressed on.',
-    ];
+    final logs = List<String>.of(state.log);
+    if (hadPlanet) {
+      logs.add('Left ${state.currentPlanet!.name} behind and pressed on.');
+    }
 
     // Fuel consumption: 5-10 per pressOn.
     final fuelCost = 5 + _random.nextInt(6);
@@ -760,7 +824,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
           'reason': state.gameOverReason,
           'encounter_count': state.encounterCount,
           'planets_scanned': state.planetsScanned,
-          'is_daily': state.isDaily,
+          'is_daily': state.isDaily ? 1 : 0,
         },
       );
     }
@@ -828,10 +892,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       fuel: fuel,
       energy: energy,
       colonists: colonists,
-      log: [
-        ...state.log,
-        'Traded ${resource.name} to repair $system (+10%).',
-      ],
+      log: List<String>.of(state.log)
+        ..add('Traded ${resource.name} to repair $system (+10%).'),
     );
 
     AnalyticsService().logEvent(
@@ -844,10 +906,35 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 
   // ─── Mid-run save / restore ──────────────────────────────────────────
 
+  bool _saving = false;
+  bool _saveQueued = false;
+
   /// Persists the current voyage state to local storage.
+  /// Serialized: concurrent calls coalesce so the newest state wins.
   Future<void> saveState() async {
-    if (!state.isComplete && !state.isGameOver && state.encounterCount > 0) {
-      await VoyageSaveService.save(state);
+    if (state.isComplete || state.isGameOver || state.encounterCount <= 0) {
+      return;
+    }
+
+    _saveQueued = true;
+    if (_saving) {
+      return;
+    }
+
+    _saving = true;
+    try {
+      while (_saveQueued) {
+        _saveQueued = false;
+        final snapshot = state;
+        if (snapshot.isComplete ||
+            snapshot.isGameOver ||
+            snapshot.encounterCount <= 0) {
+          continue;
+        }
+        await VoyageSaveService.save(snapshot);
+      }
+    } finally {
+      _saving = false;
     }
   }
 
@@ -855,14 +942,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   Future<bool> restoreState(AppLocalizations l10n) async {
     final saved = await VoyageSaveService.load();
     if (saved == null) return false;
-    _eventPool = buildEventPool(l10n);
-    if (useYamlEvents && _yamlEventCache != null) {
-      final existingIds = _eventPool.map((e) => e.id).toSet();
-      _eventPool = [
-        ..._eventPool,
-        ..._yamlEventCache!.where((e) => !existingIds.contains(e.id)),
-      ];
-    }
+    _refreshEventPool(l10n);
     _random = Random(saved.seed + saved.encounterCount);
     state = saved;
 
@@ -871,7 +951,14 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       parameters: {
         'encounter_count': saved.encounterCount,
         'planets_scanned': saved.planetsScanned,
-        'is_daily': saved.isDaily,
+        'is_daily': saved.isDaily ? 1 : 0,
+      },
+    );
+    AnalyticsService().logEvent(
+      name: QaEvents.voyageResumed,
+      parameters: {
+        'encounter_count': saved.encounterCount,
+        'planets_scanned': saved.planetsScanned,
       },
     );
 
@@ -927,18 +1014,39 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
       }).toList();
 
       final rawDaily = map['dailyScores'] as List? ?? [];
-      final dailyScores = rawDaily
-          .map<HighScoreEntry>(
-            (e) => HighScoreEntry.fromJson(e as Map<String, dynamic>),
-          )
-          .toList();
+      final dailyScores = rawDaily.map<HighScoreEntry>((e) {
+        try {
+          return HighScoreEntry.fromJson(e as Map<String, dynamic>);
+        } catch (parseErr) {
+          QaLogger.app.warning(
+            'Skipping malformed daily score entry: $parseErr',
+          );
+          return HighScoreEntry(score: 0, seed: 0, timestamp: 0);
+        }
+      }).toList();
 
       final rawDiscovered = map['discoveredFeatures'] as List? ?? [];
       final discoveredFeatures = Set<String>.from(rawDiscovered);
 
+      final loadedVersion = map['scoreVersion'] as int? ?? 1;
+      var bestScore = map['bestScore'] as int? ?? 0;
+      var legacyBestScore = map['legacyBestScore'] as int? ?? 0;
+
+      // Migration: if data predates scoreVersion 2, archive the old best score
+      // and reset bestScore so the new 0-100K system starts fresh.
+      if (loadedVersion < 2) {
+        QaLogger.app.info(
+          'Migrating legacy data from scoreVersion $loadedVersion to 2 (bestScore=$bestScore)',
+        );
+        if (legacyBestScore == 0 && bestScore > 0) {
+          legacyBestScore = bestScore;
+        }
+        bestScore = 0;
+      }
+
       state = LegacyData(
         totalVoyages: map['totalVoyages'] as int? ?? 0,
-        bestScore: map['bestScore'] as int? ?? 0,
+        bestScore: bestScore,
         achievements: List<String>.from(map['achievements'] as List? ?? []),
         upgrades: Map<String, bool>.from(map['upgrades'] as Map? ?? {}),
         legacyPoints: map['legacyPoints'] as int? ?? 0,
@@ -946,8 +1054,15 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
         highScores: highScores,
         dailyScores: dailyScores,
         discoveredFeatures: discoveredFeatures,
+        legacyBestScore: legacyBestScore,
+        scoreVersion: 2,
       );
-    } catch (e, st) { QaLogger.app.warning('Failed to load legacy data', e, st); }
+
+      // Persist the migration immediately so it only runs once.
+      if (loadedVersion < 2) _saveToStorage();
+    } catch (e, st) {
+      QaLogger.app.warning('Failed to load legacy data', e, st);
+    }
   }
 
   Future<void> _saveToStorage() async {
@@ -962,9 +1077,13 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
         'highScores': state.highScores.map((e) => e.toJson()).toList(),
         'dailyScores': state.dailyScores.map((e) => e.toJson()).toList(),
         'discoveredFeatures': state.discoveredFeatures.toList(),
+        'legacyBestScore': state.legacyBestScore,
+        'scoreVersion': state.scoreVersion,
       };
       await _settings.setString('legacy_data', jsonEncode(map));
-    } catch (e, st) { QaLogger.app.warning('Failed to save legacy data', e, st); }
+    } catch (e, st) {
+      QaLogger.app.warning('Failed to save legacy data', e, st);
+    }
   }
 
   /// Parse voyage logs from storage, handling both legacy strings and structured entries.
@@ -972,7 +1091,9 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     return raw.map<VoyageLogEntry>((item) {
       if (item is String) return VoyageLogEntry.fromLegacyString(item);
       if (item is Map<String, dynamic>) return VoyageLogEntry.fromJson(item);
-      if (item is Map) return VoyageLogEntry.fromJson(Map<String, dynamic>.from(item));
+      if (item is Map) {
+        return VoyageLogEntry.fromJson(Map<String, dynamic>.from(item));
+      }
       return const VoyageLogEntry();
     }).toList();
   }
@@ -980,8 +1101,15 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   void addVoyageResult(VoyageLogEntry entry, {bool isDaily = false}) {
     final score = entry.score;
     final seed = entry.seed;
-    final points = (score / 10).ceil();
+    final points = (score / 8000).ceil();
     final voyageNum = state.totalVoyages + 1;
+
+    if (state.totalVoyages == 0) {
+      AnalyticsService().logEvent(
+        name: 'first_voyage_completed',
+        parameters: {'score': score},
+      );
+    }
 
     final today = _todayUtc();
     final hsEntry = HighScoreEntry(
@@ -1078,9 +1206,9 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     checkAchievement('first_landing', state.totalVoyages >= 1);
     checkAchievement('explorer', state.totalVoyages >= 10);
 
-    // Score based.
-    checkAchievement('golden_age', score >= 90);
-    checkAchievement('perfectionist', score >= 95);
+    // Score based (100K scoring system).
+    checkAchievement('golden_age', score >= 90000);
+    checkAchievement('perfectionist', score >= 95000);
 
     // Ship state based (only for successful landings, not game overs).
     if (!voyage.isGameOver) {
@@ -1129,8 +1257,9 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
 // Locale override
 // ═══════════════════════════════════════════════════════════════════════════
 
-final localeProvider =
-    StateNotifierProvider<LocaleNotifier, Locale?>((ref) => LocaleNotifier());
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
+  (ref) => LocaleNotifier(),
+);
 
 class LocaleNotifier extends StateNotifier<Locale?> {
   LocaleNotifier() : super(null) {
@@ -1168,8 +1297,9 @@ class LocaleNotifier extends StateNotifier<Locale?> {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// Whether stats/buttons appear on the left (true, default) or right (false).
-final statsOnLeftProvider =
-    StateNotifierProvider<StatsOnLeftNotifier, bool>((ref) => StatsOnLeftNotifier());
+final statsOnLeftProvider = StateNotifierProvider<StatsOnLeftNotifier, bool>(
+  (ref) => StatsOnLeftNotifier(),
+);
 
 class StatsOnLeftNotifier extends StateNotifier<bool> {
   StatsOnLeftNotifier() : super(true) {

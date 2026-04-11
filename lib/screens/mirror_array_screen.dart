@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
@@ -92,6 +93,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
     );
 
     _startTypewriter();
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     // SFX on load.
     GameSfx().playLong(GameSfx.alienTech);
@@ -123,53 +125,6 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
       _charIndex = widget.event.narrative.length;
       _typewriterDone = true;
     });
-  }
-
-  void _onTapDown(TapDownDetails details, BoxConstraints constraints) {
-    if (_showingOutcome) return;
-    if (!_typewriterDone) _skipTypewriter();
-    if (widget.event.choices.isEmpty) return;
-
-    final w = constraints.maxWidth;
-    final h = constraints.maxHeight;
-    final cx = w / 2;
-    final cy = h / 2;
-    final tapPos = details.localPosition;
-
-    // Find the closest ring label to the tap position.
-    const radii = [0.18, 0.30, 0.42]; // matches _rings
-    int? ring;
-    double bestDist = double.infinity;
-    for (var r = 0; r < 3; r++) {
-      final labelY = cy - w * radii[r] - 10;
-      final dist = (tapPos.dy - labelY).abs();
-      if (dist < bestDist && dist < 22 && (tapPos.dx - cx).abs() < w * 0.35) {
-        bestDist = dist;
-        ring = r;
-      }
-    }
-
-    if (ring == null) return;
-    if (ring >= widget.event.choices.length) return;
-
-    // Check probe cost.
-    final choice = widget.event.choices[ring];
-    final probes = ref.read(voyageProvider).probes;
-    if (choice.probeCost > 0 && probes < choice.probeCost) return;
-
-    HapticService().selection();
-    GameSfx().play(GameSfx.interestingFind);
-
-    setState(() {
-      _selectedRing = ring;
-      _showingOutcome = true;
-    });
-
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) setState(() => _showEffectChips = true);
-    });
-
-    ref.read(voyageProvider.notifier).handleEvent(choice);
   }
 
   @override
@@ -227,13 +182,14 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
   // ── Shared widget builders ──────────────────────────────────────────
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         'MIRROR ARRAY',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 26,
+          fontSize: screen.scaledFontSize(26),
           fontWeight: FontWeight.bold,
           color: _kAccent,
           letterSpacing: 3,
@@ -251,7 +207,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
       behavior: HitTestBehavior.opaque,
       onTap: _typewriterDone ? null : _skipTypewriter,
       child: _OutcomeCard(
-        text: _showingOutcome
+        text: _showingOutcome && _selectedRing != null
             ? widget.event.choices[_selectedRing!].outcome
             : _displayedText,
         isOutcome: _showingOutcome,
@@ -339,42 +295,6 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_showingOutcome) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: const Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: _kAccent, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 2),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
-    }
-    return Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2));
-  }
-
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
@@ -403,12 +323,17 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: GestureDetector(
-              behavior: _showingOutcome ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
-              onTap: _showingOutcome ? () {
-                GameSfx().playVaried(GameSfx.buttonClick);
-                Navigator.of(context).pop();
-              } : null,
+              behavior: HitTestBehavior.opaque,
+              onTap: !_typewriterDone
+                  ? _skipTypewriter
+                  : _showingOutcome
+                      ? () {
+                          GameSfx().playVaried(GameSfx.buttonClick);
+                          Navigator.of(context).pop();
+                        }
+                      : null,
               child: isLandscape ? _buildLandscape() : _buildPortrait(),
             ),
           ),
@@ -418,9 +343,12 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
   }
 
   Widget _buildPortrait() {
-    return ResponsiveContent(
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
           const SizedBox(height: 8),
           _buildTitle(),
           const SizedBox(height: 16),
@@ -439,15 +367,12 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
           const SizedBox(height: 8),
           Expanded(child: _buildVisualArea()),
           const SizedBox(height: 8),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -502,13 +427,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
           ),
         ),
         // Ad banner full width at bottom.
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -752,7 +671,6 @@ class _MirrorArrayPainter extends CustomPainter {
     (radius: 0.42, count: 20, size: 6.5, speed: 0.45),
   ];
 
-  static const _ringLabels = ['STUDY OPTICS', 'HARVEST MATERIAL', 'MAP ROUTES'];
   static const _ringLabelColors = [_kInnerLabel, _kMiddleLabel, _kOuterLabel];
 
   @override
@@ -941,68 +859,10 @@ class _MirrorArrayPainter extends CustomPainter {
     }
   }
 
-  /// Semi-transparent tap zone indicators.
-  void _drawTapZones(Canvas canvas, Offset center, double w, Size size) {
-    for (var r = 0; r < _rings.length; r++) {
-      final ring = _rings[r];
-      final radius = w * ring.radius;
-      final color = _ringLabelColors[r];
-      final zonePaint = Paint()
-        ..color = color.withValues(alpha: 0.08)
-        ..style = PaintingStyle.fill;
-      final zoneBorder = Paint()
-        ..color = color.withValues(alpha: 0.15)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
-      // Draw a horizontal band around the label position.
-      final labelY = center.dy - radius - 10;
-      final rect = RRect.fromRectAndRadius(
-        Rect.fromCenter(center: Offset(center.dx, labelY), width: w * 0.5, height: 36),
-        const Radius.circular(8),
-      );
-      canvas.drawRRect(rect, zonePaint);
-      canvas.drawRRect(rect, zoneBorder);
-    }
-  }
-
-  void _drawLabels(Canvas canvas, Offset center, double w, Size size) {
-    for (var r = 0; r < _rings.length; r++) {
-      final ring = _rings[r];
-      final radius = w * ring.radius;
-      final label = _ringLabels[r];
-      final color = _ringLabelColors[r];
-
-      final textSpan = TextSpan(
-        text: label,
-        style: TextStyle(
-          color: color.withValues(alpha: 0.9),
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.5,
-          shadows: [
-            Shadow(
-              color: color.withValues(alpha: 0.6),
-              blurRadius: 8,
-            ),
-          ],
-        ),
-      );
-
-      final tp = TextPainter(
-        text: textSpan,
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      final labelX = center.dx - tp.width / 2;
-      final labelY = center.dy - radius - tp.height - 4;
-
-      // Only draw if within bounds.
-      if (labelY > 0) {
-        tp.paint(canvas, Offset(labelX, labelY));
-      }
-    }
-  }
-
   @override
-  bool shouldRepaint(_MirrorArrayPainter old) => true;
+  bool shouldRepaint(_MirrorArrayPainter old) =>
+      animationValue != old.animationValue ||
+      pulseValue != old.pulseValue ||
+      selectedRing != old.selectedRing ||
+      isResolved != old.isResolved;
 }

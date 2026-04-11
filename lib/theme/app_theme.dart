@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
 
 /// Game-specific space colors used throughout Stellar Broadcast.
 ///
@@ -43,12 +44,15 @@ class SpaceStyles {
     );
   }
 
-  static TextStyle get titleStyle {
-    return const TextStyle(
-      fontSize: 28,
+  /// Responsive title style. Use [ScreenInfo.scaledFontSize] for context-aware
+  /// sizing; this static getter uses a sensible default base of 28.
+  static TextStyle titleStyle(BuildContext context) {
+    final screen = ScreenInfo.of(context);
+    return TextStyle(
+      fontSize: screen.scaledFontSize(28),
       fontWeight: FontWeight.bold,
       color: SpaceColors.cyan,
-      shadows: [
+      shadows: const [
         Shadow(
           color: SpaceColors.cyan,
           blurRadius: 12,
@@ -57,9 +61,11 @@ class SpaceStyles {
     );
   }
 
-  static TextStyle get bodyStyle {
-    return const TextStyle(
-      fontSize: 16,
+  /// Responsive body style with a base size of 16.
+  static TextStyle bodyStyle(BuildContext context) {
+    final screen = ScreenInfo.of(context);
+    return TextStyle(
+      fontSize: screen.scaledFontSize(16),
       fontWeight: FontWeight.normal,
       color: Colors.white,
     );

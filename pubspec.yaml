@@ -1,7 +1,7 @@
 name: stellar_broadcast
 description: "Humanity's last colony ship searches for a new home among the stars."
 publish_to: 'none'
-version: 2.0.0+75
+version: 2.0.2+83
 
 environment:
   sdk: ^3.8.0
@@ -37,6 +37,7 @@ dependencies:
     path: ../../packages/quickapps_ui
   quickapps_ads:
     path: ../../packages/quickapps_ads
+  google_mobile_ads: ^5.3.0
   quickapps_analytics:
     path: ../../packages/quickapps_analytics
   quickapps_onboarding:
@@ -51,6 +52,9 @@ dependencies:
     path: ../../packages/quickapps_fx
   quickapps_iap:
     path: ../../packages/quickapps_iap
+  quickapps_debug:
+    path: ../../packages/quickapps_debug
+  window_manager: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +62,15 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
+  msix: ^3.16.0
+
+msix_config:
+  display_name: Stellar Broadcast
+  publisher_display_name: Faustian Bargain
+  identity_name: com.quickapps.stellarbroadcast
+  msix_version: 2.0.0.0
+  logo_path: assets/Icon_512.png
+  capabilities: internetClient
 
 flutter_launcher_icons:
   android: true

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
+import 'package:stellar_broadcast/app.dart' show routeObserver;
 
 import 'package:flutter/services.dart';
 import 'package:stellar_broadcast/data/codex_data.dart';
@@ -18,6 +20,62 @@ const _kBgColor = Color(0xFF0B1426);
 const _kAccent = Color(0xFF00E5FF);
 const _kDailyAccent = Color(0xFFFFD740);
 
+/// Defers building [child] until the slot is scrolled into the viewport.
+///
+/// Prevents native ad requests from firing when the ad is below the fold,
+/// avoiding matched-but-never-shown waste that tanks show rate.
+class _LazyAdSlot extends StatefulWidget {
+  final double height;
+  final WidgetBuilder builder;
+  const _LazyAdSlot({required this.height, required this.builder});
+
+  @override
+  State<_LazyAdSlot> createState() => _LazyAdSlotState();
+}
+
+class _LazyAdSlotState extends State<_LazyAdSlot> {
+  bool _activated = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_activated) _checkVisibility();
+  }
+
+  void _checkVisibility() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _activated) return;
+      final ro = context.findRenderObject();
+      if (ro == null || !ro.attached) return;
+      final viewport = RenderAbstractViewport.maybeOf(ro);
+      if (viewport == null) return;
+      final offset = viewport.getOffsetToReveal(ro, 0.0).offset;
+      final scrollable = Scrollable.maybeOf(context);
+      if (scrollable == null) return;
+      final pixels = scrollable.position.pixels;
+      final viewportHeight = scrollable.position.viewportDimension;
+      // Activate if the slot is within one viewport height of the current scroll.
+      if (offset < pixels + viewportHeight * 2) {
+        setState(() => _activated = true);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_activated) return widget.builder(context);
+
+    // Placeholder that listens for scroll to check visibility.
+    return NotificationListener<ScrollNotification>(
+      onNotification: (_) {
+        _checkVisibility();
+        return false;
+      },
+      child: SizedBox(height: widget.height),
+    );
+  }
+}
+
 /// Legacy Hub -- meta-progression screen with upgrades, achievements, and logs.
 class LegacyScreen extends ConsumerStatefulWidget {
   const LegacyScreen({super.key});
@@ -27,8 +85,9 @@ class LegacyScreen extends ConsumerStatefulWidget {
 }
 
 class _LegacyScreenState extends ConsumerState<LegacyScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   late final AnimationController _starController;
+  int _adRefreshCount = 0;
 
   @override
   void initState() {
@@ -40,9 +99,21 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _starController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() => _adRefreshCount++);
   }
 
   Widget _buildLeaderboardsButton(BuildContext context) {
@@ -119,15 +190,18 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                   },
                 ),
                 const SizedBox(height: 28),
-                PremiumAdGate(child: AdaptiveNativeAd(
-                  fallback: AdaptiveBannerAd(
-                    size: QaBannerSize.mrec,
-                    fallback: AdFallbackBanner(
-                      height: 250,
-                      onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+                _LazyAdSlot(
+                  height: 300,
+                  builder: (_) => PremiumAdGate(child: AdaptiveNativeAd(
+                    fallback: AdaptiveBannerAd(
+                      size: QaBannerSize.mrec,
+                      fallback: AdFallbackBanner(
+                        height: 250,
+                        onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+                      ),
                     ),
-                  ),
-                )),
+                  )),
+                ),
                 const SizedBox(height: 28),
                 _SectionTitle(title: context.l10n.ui_legacy_achievements),
                 const SizedBox(height: 12),
@@ -209,16 +283,19 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
 
         const SizedBox(height: 28),
 
-        // Native ad between sections.
-        PremiumAdGate(child: AdaptiveNativeAd(
-          fallback: AdaptiveBannerAd(
-            size: QaBannerSize.mrec,
-            fallback: AdFallbackBanner(
-              height: 250,
-              onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+        // Native ad between sections (lazy-loaded on scroll).
+        _LazyAdSlot(
+          height: 300,
+          builder: (_) => PremiumAdGate(child: AdaptiveNativeAd(
+            fallback: AdaptiveBannerAd(
+              size: QaBannerSize.mrec,
+              fallback: AdFallbackBanner(
+                height: 250,
+                onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+              ),
             ),
-          ),
-        )),
+          )),
+        ),
 
         const SizedBox(height: 28),
 
@@ -283,6 +360,7 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: ResponsiveContent(
               child: Column(
               children: [
@@ -343,12 +421,8 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                 ),
 
                 // Banner ad.
-                const SizedBox(
-                  height: 58,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: PremiumAdGate(child: AdaptiveBannerAd()),
-                  ),
+                PremiumAdGate(
+                  child: AdaptiveBannerAd(key: ValueKey('legacy_banner_$_adRefreshCount')),
                 ),
               ],
             ),
@@ -444,12 +518,13 @@ class _StatColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screen = ScreenInfo.of(context);
     return Column(
       children: [
         Text(
           value,
           style: TextStyle(
-            fontSize: 28,
+            fontSize: screen.scaledFontSize(28),
             fontWeight: FontWeight.bold,
             color: valueColor,
           ),
@@ -698,7 +773,7 @@ class _DailySection extends ConsumerWidget {
                       '${todayScore.first.score}',
                       style: TextStyle(
                         fontFamily: 'monospace',
-                        fontSize: 36,
+                        fontSize: ScreenInfo.of(context).scaledFontSize(36),
                         fontWeight: FontWeight.bold,
                         color: _kDailyAccent,
                         shadows: [
@@ -915,14 +990,16 @@ class _UpgradesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screen = ScreenInfo.of(context);
+    final crossAxisCount = (screen.width / 200).floor().clamp(2, 4);
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
         mainAxisSpacing: 12,
         crossAxisSpacing: 12,
-        childAspectRatio: 0.85,
+        childAspectRatio: crossAxisCount > 2 ? 0.95 : 0.85,
       ),
       itemCount: _upgrades.length,
       itemBuilder: (context, index) {

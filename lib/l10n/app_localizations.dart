@@ -7225,6 +7225,36 @@ abstract class AppLocalizations {
   /// **'Tribal Council'**
   String get ending_governmentTribalCouncil;
 
+  /// No description provided for @ending_governmentTheocracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Theocracy'**
+  String get ending_governmentTheocracy;
+
+  /// No description provided for @ending_governmentMilitaryJunta.
+  ///
+  /// In en, this message translates to:
+  /// **'Military Junta'**
+  String get ending_governmentMilitaryJunta;
+
+  /// No description provided for @ending_governmentCorporateOligarchy.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate Oligarchy'**
+  String get ending_governmentCorporateOligarchy;
+
+  /// No description provided for @ending_governmentFascistState.
+  ///
+  /// In en, this message translates to:
+  /// **'Fascist State'**
+  String get ending_governmentFascistState;
+
+  /// No description provided for @ending_governmentCommune.
+  ///
+  /// In en, this message translates to:
+  /// **'Commune'**
+  String get ending_governmentCommune;
+
   /// No description provided for @ending_cultureRenaissance.
   ///
   /// In en, this message translates to:
@@ -7326,6 +7356,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Conflict'**
   String get ending_nativesConflict;
+
+  /// No description provided for @ending_nativesAlliance.
+  ///
+  /// In en, this message translates to:
+  /// **'Alliance'**
+  String get ending_nativesAlliance;
+
+  /// No description provided for @ending_nativesSubjugation.
+  ///
+  /// In en, this message translates to:
+  /// **'Subjugation'**
+  String get ending_nativesSubjugation;
 
   /// No description provided for @ending_landscapeGravityHigh.
   ///
@@ -7531,6 +7573,36 @@ abstract class AppLocalizations {
   /// **'The few survivors on {planetName} organized into small clans, governed by a council of elders who made decisions around shared fires.'**
   String ending_govSentenceTribalCouncil(String planetName);
 
+  /// No description provided for @ending_govSentenceTheocracy.
+  ///
+  /// In en, this message translates to:
+  /// **'A theocratic council guides {planetName}, drawing wisdom from the faith that sustained the colonists through the void.'**
+  String ending_govSentenceTheocracy(String planetName);
+
+  /// No description provided for @ending_govSentenceMilitaryJunta.
+  ///
+  /// In en, this message translates to:
+  /// **'A military command structure governs {planetName}, the discipline that saved them in space now defining their civilization.'**
+  String ending_govSentenceMilitaryJunta(String planetName);
+
+  /// No description provided for @ending_govSentenceCorporateOligarchy.
+  ///
+  /// In en, this message translates to:
+  /// **'A consortium of resource managers leads {planetName}, their economic acumen having proven essential for survival.'**
+  String ending_govSentenceCorporateOligarchy(String planetName);
+
+  /// No description provided for @ending_govSentenceFascistState.
+  ///
+  /// In en, this message translates to:
+  /// **'An authoritarian regime controls {planetName} with an iron fist, civil liberties sacrificed for order in the new world.'**
+  String ending_govSentenceFascistState(String planetName);
+
+  /// No description provided for @ending_govSentenceCommune.
+  ///
+  /// In en, this message translates to:
+  /// **'The people of {planetName} govern themselves collectively, sharing resources and decisions equally among all colonists.'**
+  String ending_govSentenceCommune(String planetName);
+
   /// No description provided for @ending_govSentenceDefault.
   ///
   /// In en, this message translates to:
@@ -7704,6 +7776,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open conflict with the native civilization of {planetName} defined the colony\'s early history, draining resources and lives from both sides in a struggle neither could truly win.'**
   String ending_nativeSentenceConflict(String planetName);
+
+  /// No description provided for @ending_nativeSentenceAlliance.
+  ///
+  /// In en, this message translates to:
+  /// **'A formal alliance binds the colonists and the native civilization of {planetName}, their combined knowledge building something greater than either could alone.'**
+  String ending_nativeSentenceAlliance(String planetName);
+
+  /// No description provided for @ending_nativeSentenceSubjugation.
+  ///
+  /// In en, this message translates to:
+  /// **'The native population of {planetName} lives under colonial rule, their culture suppressed as the colonists impose their own order.'**
+  String ending_nativeSentenceSubjugation(String planetName);
 
   /// No description provided for @ending_outlookGoldenAge.
   ///

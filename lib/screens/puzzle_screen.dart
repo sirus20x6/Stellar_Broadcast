@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:quickapps_ads/quickapps_ads.dart';
@@ -13,6 +14,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -60,6 +62,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   // Shake animation for wrong answer.
   late final AnimationController _shakeController;
   late final Animation<double> _shakeAnim;
+
+  // Keyboard navigation for web.
+  int _focusedAnswerIndex = 0;
+  final FocusNode _keyboardFocusNode = FocusNode();
 
   late Color _accent;
   late List<String> _shuffledAnswers;
@@ -109,6 +115,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     } else {
       _startTypewriter();
     }
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
   }
 
@@ -152,17 +159,18 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     if (correct) {
       GameSfx().play(GameSfx.systemRepair, volume: 0.8);
       HapticService().success();
-      ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.reward);
+      ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.reward, isCorrect: true);
     } else {
       GameSfx().play(GameSfx.minorDamage, volume: 0.8);
       HapticService().error();
       _shakeController.forward();
       if (widget.puzzle.penalty != null) {
-        ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.penalty!);
+        ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.penalty!, isCorrect: false);
       } else {
         // Still increment encounter even with no penalty.
         ref.read(voyageProvider.notifier).handlePuzzleResult(
           EventChoice(text: '', outcome: ''),
+          isCorrect: false,
         );
       }
     }
@@ -172,6 +180,68 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     });
   }
 
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final answerCount = _shuffledAnswers.length;
+
+    if (!_typewriterDone) {
+      if (event.logicalKey == LogicalKeyboardKey.space ||
+          event.logicalKey == LogicalKeyboardKey.enter) {
+        _skipTypewriter();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    if (_resolved) {
+      // Enter/Space triggers continue.
+      if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.space) {
+        Navigator.of(context).pop();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    // Navigate answers.
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      setState(() {
+        _focusedAnswerIndex = (_focusedAnswerIndex - 1).clamp(0, answerCount - 1);
+      });
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
+        event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      setState(() {
+        _focusedAnswerIndex = (_focusedAnswerIndex + 1).clamp(0, answerCount - 1);
+      });
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.space) {
+      if (_focusedAnswerIndex < answerCount) {
+        _onAnswerTapped(_shuffledAnswers[_focusedAnswerIndex]);
+      }
+      return KeyEventResult.handled;
+    }
+    // Number keys 1-9 select answers directly.
+    final digitKeys = {
+      LogicalKeyboardKey.digit1: 0, LogicalKeyboardKey.digit2: 1,
+      LogicalKeyboardKey.digit3: 2, LogicalKeyboardKey.digit4: 3,
+      LogicalKeyboardKey.digit5: 4, LogicalKeyboardKey.digit6: 5,
+      LogicalKeyboardKey.digit7: 6, LogicalKeyboardKey.digit8: 7,
+      LogicalKeyboardKey.digit9: 8,
+    };
+    final idx = digitKeys[event.logicalKey];
+    if (idx != null && idx < answerCount) {
+      _onAnswerTapped(_shuffledAnswers[idx]);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
+  }
+
   @override
   void dispose() {
     _typewriterTimer?.cancel();
@@ -179,6 +249,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     _titleGlow.dispose();
     _pulseController.dispose();
     _shakeController.dispose();
+    _keyboardFocusNode.dispose();
     super.dispose();
   }
 
@@ -186,13 +257,14 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
 
   Widget _buildTitle() {
     final puzzle = widget.puzzle;
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         puzzle.title,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 24,
+          fontSize: screen.scaledFontSize(24),
           fontWeight: FontWeight.bold,
           color: _accent,
           letterSpacing: 2,
@@ -266,6 +338,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     final puzzle = widget.puzzle;
     if (!_typewriterDone) return const SizedBox.shrink();
 
+    if (puzzle.sequenceType == SequenceType.signalFilter) {
+      return _buildSignalFilterChoices();
+    }
     if (puzzle.sequenceType == SequenceType.spectralId) {
       return _buildSpectralChoices();
     }
@@ -348,47 +423,48 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   }
 
   Widget _buildAdBanner() {
-    return const SizedBox(
-      height: 58,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: 8),
-        child: PremiumAdGate(child: AdaptiveBannerAd()),
-      ),
-    );
+    return PremiumAdGate(child: AdaptiveBannerAd());
   }
 
   bool get _isCanvasType {
     final t = widget.puzzle.sequenceType;
     return t == SequenceType.spectralId ||
         t == SequenceType.starCluster ||
-        t == SequenceType.chirality;
+        t == SequenceType.chirality ||
+        t == SequenceType.signalFilter;
   }
 
   // ── Portrait layout ─────────────────────────────────────────────────────
 
   Widget _buildPortrait() {
     final puzzle = widget.puzzle;
-    return ResponsiveContent(
-      child: Column(
-        children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          _buildOutcomeCard(),
-          SizedBox(height: puzzle.sequenceType == SequenceType.spectralId ? 12 : 24),
-          _buildPuzzleVisual(),
-          if (_showEffects) ...[
-            const SizedBox(height: 16),
-            _buildEffectChips(),
-          ],
-          if (!_isCanvasType) const Spacer(),
-          _buildContinueButton(),
-          _buildTapHint(),
-          const SizedBox(height: 12),
-          _buildAdBanner(),
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                _buildOutcomeCard(),
+                SizedBox(height: puzzle.sequenceType == SequenceType.spectralId ? 12 : 24),
+                _buildPuzzleVisual(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 16),
+                  _buildEffectChips(),
+                ],
+                if (!_isCanvasType) const Spacer(),
+                _buildContinueButton(),
+                _buildTapHint(),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+        _buildAdBanner(),
+      ],
     );
   }
 
@@ -455,36 +531,42 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
+    return Focus(
+      focusNode: _keyboardFocusNode,
+      autofocus: true,
+      onKeyEvent: _handleKeyEvent,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _starController,
+                  builder: (_, __) => CustomPaint(
+                    painter: StarFieldPainter(
+                      animationValue: _starController.value,
+                      farStarCount: 80,
+                      midStarCount: 30,
+                      nearStarCount: 10,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // Content.
-          SafeArea(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
+            // Content.
+            SafeArea(
+            bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _typewriterDone ? null : _skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -602,6 +684,126 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   }
 
   /// Renders 4 tappable spectrum bars — one per compound, no labels.
+  // ── Signal filter (boolean logic gate) puzzle ───────────────────────────
+
+  Widget _buildSignalFilterChoices() {
+    final puzzle = widget.puzzle;
+
+    // Parse "A|1,0,1,1", "B|0,1,1,0", "OUT|0,0,1,0"
+    List<int> parseBits(String encoded) =>
+        encoded.split('|')[1].split(',').map(int.parse).toList();
+    final inputA = parseBits(puzzle.displayedSequence[0]);
+    final inputB = parseBits(puzzle.displayedSequence[1]);
+    final target = parseBits(puzzle.displayedSequence[2]);
+
+    // Build gate answer list (correct + distractors, shuffled).
+    final gates = [puzzle.correctAnswer, ...puzzle.distractors];
+    gates.shuffle(); // Already shuffled by generator, but defensive.
+
+    const gateSymbols = {
+      'AND': '&', 'OR': '|', 'XOR': '^',
+      'NAND': '~&', 'NOR': '~|', 'XNOR': '~^',
+    };
+
+    return Expanded(
+      child: Column(
+        children: [
+          // Signal visualization
+          Expanded(
+            flex: 3,
+            child: AnimatedBuilder(
+              animation: _starController,
+              builder: (_, __) => CustomPaint(
+                size: Size.infinite,
+                painter: _SignalFilterPainter(
+                  inputA: inputA,
+                  inputB: inputB,
+                  target: target,
+                  animationValue: _starController.value,
+                  resolved: _resolved,
+                  isCorrect: _isCorrect,
+                  accent: _accent,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Gate option buttons
+          Expanded(
+            flex: 2,
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              alignment: WrapAlignment.center,
+              children: gates.map((gate) {
+                final isSelected = _selectedAnswer == gate;
+                final isCorrectGate = gate == puzzle.correctAnswer;
+
+                Color bg;
+                Color border;
+                if (_resolved && isSelected) {
+                  bg = (_isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.2);
+                  border = _isCorrect ? Colors.green : Colors.red;
+                } else if (_resolved && isCorrectGate) {
+                  bg = Colors.green.withValues(alpha: 0.1);
+                  border = Colors.green.withValues(alpha: 0.5);
+                } else {
+                  bg = _accent.withValues(alpha: 0.08);
+                  border = _accent.withValues(alpha: 0.3);
+                }
+
+                return GestureDetector(
+                  onTap: _resolved ? null : () => _onAnswerTapped(gate),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: bg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: border, width: isSelected ? 2 : 1),
+                      boxShadow: isSelected && _resolved
+                          ? [BoxShadow(
+                              color: (_isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            )]
+                          : null,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          gate,
+                          style: TextStyle(
+                            color: _resolved && !isSelected && !isCorrectGate
+                                ? Colors.white30
+                                : Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          gateSymbols[gate] ?? gate,
+                          style: TextStyle(
+                            color: _accent.withValues(alpha: 0.6),
+                            fontFamily: 'monospace',
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSpectralChoices() {
     final puzzle = widget.puzzle;
     // Parse "key|wl1,wl2,..." entries.
@@ -1081,7 +1283,9 @@ class _SpectralPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _SpectralPainter old) => true;
+  bool shouldRepaint(covariant _SpectralPainter old) =>
+      animationValue != old.animationValue ||
+      wavelengths != old.wavelengths;
 }
 
 /// Draws an HR diagram with main sequence line and star groups.
@@ -1242,7 +1446,14 @@ class _HRDiagramPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _HRDiagramPainter old) => true;
+  bool shouldRepaint(covariant _HRDiagramPainter old) =>
+      twinkle != old.twinkle ||
+      selectedClass != old.selectedClass ||
+      correctClass != old.correctClass ||
+      isResolved != old.isResolved ||
+      isCorrect != old.isCorrect ||
+      accent != old.accent ||
+      groups != old.groups;
 }
 
 /// Draws an atom diagram: nucleus cluster in the center, concentric orbital
@@ -1558,4 +1769,184 @@ class _AlaninePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _AlaninePainter old) =>
       old.isL != isL || old.rotationDeg != rotationDeg || old.pulseValue != pulseValue;
+}
+
+// ─── Signal filter painter ─────────────────────────────────────────────────
+
+class _SignalFilterPainter extends CustomPainter {
+  final List<int> inputA;
+  final List<int> inputB;
+  final List<int> target;
+  final double animationValue;
+  final bool resolved;
+  final bool isCorrect;
+  final Color accent;
+
+  _SignalFilterPainter({
+    required this.inputA,
+    required this.inputB,
+    required this.target,
+    required this.animationValue,
+    required this.resolved,
+    required this.isCorrect,
+    required this.accent,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final bits = inputA.length;
+
+    // Layout: 3 rows (A, B, OUT) vertically centered.
+    const rowCount = 3;
+    final rowH = h / (rowCount + 1); // Extra space for labels.
+    final circleR = (w / (bits * 3)).clamp(8.0, 20.0);
+
+    // Subtle grid lines (circuit board aesthetic).
+    final gridPaint = Paint()
+      ..color = accent.withValues(alpha: 0.05)
+      ..strokeWidth = 0.5;
+    for (var gx = 0.0; gx < w; gx += 24) {
+      canvas.drawLine(Offset(gx, 0), Offset(gx, h), gridPaint);
+    }
+    for (var gy = 0.0; gy < h; gy += 24) {
+      canvas.drawLine(Offset(0, gy), Offset(w, gy), gridPaint);
+    }
+
+    final rows = [
+      _SignalRow('A', inputA, accent),
+      _SignalRow('B', inputB, accent),
+      _SignalRow('OUT', target, const Color(0xFFFFB300)), // amber
+    ];
+
+    // Measure the widest label so all rows align.
+    final labelStyle = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 2,
+    );
+    double maxLabelW = 0;
+    for (final row in rows) {
+      final tp = TextPainter(
+        text: TextSpan(text: row.label, style: labelStyle),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      if (tp.width > maxLabelW) maxLabelW = tp.width;
+    }
+    final lineStartX = maxLabelW + 20;
+
+    for (var r = 0; r < rows.length; r++) {
+      final row = rows[r];
+      final cy = rowH * (r + 0.8);
+
+      // Label (right-aligned within the fixed label column).
+      final labelPainter = TextPainter(
+        text: TextSpan(
+          text: row.label,
+          style: labelStyle.copyWith(color: row.color.withValues(alpha: 0.6)),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      labelPainter.paint(
+        canvas,
+        Offset(lineStartX - 12 - labelPainter.width, cy - labelPainter.height / 2),
+      );
+
+      // Signal line.
+      final linePaint = Paint()
+        ..color = row.color.withValues(alpha: 0.15)
+        ..strokeWidth = 1.5;
+      canvas.drawLine(Offset(lineStartX, cy), Offset(w - 8, cy), linePaint);
+
+      // Bits.
+      for (var b = 0; b < row.bits.length; b++) {
+        final cx = lineStartX + (b + 0.5) * ((w - lineStartX - 8) / bits);
+        final isOn = row.bits[b] == 1;
+
+        if (isOn) {
+          // Glow.
+          final glowPaint = Paint()
+            ..color = row.color.withValues(alpha: 0.2)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+          canvas.drawCircle(Offset(cx, cy), circleR * 1.6, glowPaint);
+
+          // Filled circle.
+          final fillPaint = Paint()..color = row.color;
+          canvas.drawCircle(Offset(cx, cy), circleR, fillPaint);
+
+          // Inner bright spot.
+          final spotPaint = Paint()
+            ..color = Colors.white.withValues(alpha: 0.6);
+          canvas.drawCircle(Offset(cx - circleR * 0.25, cy - circleR * 0.25),
+              circleR * 0.3, spotPaint);
+        } else {
+          // Dim outline.
+          final outlinePaint = Paint()
+            ..color = row.color.withValues(alpha: 0.25)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5;
+          canvas.drawCircle(Offset(cx, cy), circleR, outlinePaint);
+
+          // Tiny dim center.
+          final dimPaint = Paint()
+            ..color = row.color.withValues(alpha: 0.08);
+          canvas.drawCircle(Offset(cx, cy), circleR * 0.4, dimPaint);
+        }
+
+        // Animated pulse traveling across the row.
+        final pulsePhase = (animationValue * 2 + r * 0.15) % 1.0;
+        final pulseFrac = b / bits;
+        final dist = (pulsePhase - pulseFrac).abs();
+        if (dist < 0.15) {
+          final alpha = (1.0 - dist / 0.15) * 0.4;
+          final pulsePaint = Paint()
+            ..color = row.color.withValues(alpha: alpha)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+          canvas.drawCircle(Offset(cx, cy), circleR * 1.3, pulsePaint);
+        }
+      }
+
+      // Connecting traces between rows A→OUT and B→OUT.
+      if (r < 2) {
+        final nextCy = rowH * (2 + 0.8); // OUT row Y.
+        final tracePaint = Paint()
+          ..color = accent.withValues(alpha: 0.06)
+          ..strokeWidth = 1;
+        for (var b = 0; b < bits; b++) {
+          final cx = lineStartX + (b + 0.5) * ((w - lineStartX - 8) / bits);
+          canvas.drawLine(
+            Offset(cx, cy + circleR + 2),
+            Offset(cx, nextCy - circleR - 2),
+            tracePaint,
+          );
+        }
+      }
+    }
+
+    // Post-resolution overlay: green/red tint on OUT row.
+    if (resolved) {
+      final outCy = rowH * 2.8;
+      final overlayPaint = Paint()
+        ..color = (isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.08)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset(w / 2, outCy), width: w, height: rowH * 0.8),
+        overlayPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SignalFilterPainter old) =>
+      old.animationValue != animationValue ||
+      old.resolved != resolved ||
+      old.isCorrect != isCorrect;
+}
+
+class _SignalRow {
+  final String label;
+  final List<int> bits;
+  final Color color;
+  const _SignalRow(this.label, this.bits, this.color);
 }

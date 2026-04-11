@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:quickapps_ads/quickapps_ads.dart';
@@ -13,6 +14,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Theme constants.
@@ -48,6 +50,10 @@ class _EventScreenState extends ConsumerState<EventScreen>
   // Effect chips animation.
   bool _showEffectChips = false;
 
+  // Keyboard navigation for web.
+  int _focusedChoiceIndex = 0;
+  final FocusNode _keyboardFocusNode = FocusNode();
+
   // Title glow animation.
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
@@ -71,6 +77,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
     ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _startTypewriter();
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     // Play SFX based on event category.
     _playEventSfx(widget.event);
@@ -155,7 +162,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
     GameSfx().playVaried(GameSfx.buttonClick);
 
     // Resolve weighted outcomes (no-op for single-outcome choices).
-    final resolved = EventEngine.resolveOutcome(choice, Random());
+    final resolved = EventEngine.resolveOutcome(choice, ref.read(voyageProvider.notifier).seededRandom);
 
     setState(() {
       _selectedChoiceIndex = index;
@@ -192,11 +199,90 @@ class _EventScreenState extends ConsumerState<EventScreen>
     }
   }
 
+  KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    final choiceCount = widget.event.choices.length;
+
+    if (!_typewriterDone) {
+      // Any key skips typewriter.
+      if (event.logicalKey == LogicalKeyboardKey.space ||
+          event.logicalKey == LogicalKeyboardKey.enter) {
+        _skipTypewriter();
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    if (_showingOutcome) {
+      // Enter/Space triggers continue.
+      if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.space) {
+        final selectedChoice = _resolvedChoice ??
+            (_selectedChoiceIndex != null
+                ? widget.event.choices[_selectedChoiceIndex!]
+                : null);
+        if (selectedChoice == null) return KeyEventResult.ignored;
+        final hasPlanet = ref.read(voyageProvider).currentPlanet != null;
+        if (selectedChoice.opensPlanetScreen && hasPlanet) {
+          Navigator.of(context).pushReplacementNamed('/scan');
+        } else {
+          Navigator.of(context).pop();
+        }
+        return KeyEventResult.handled;
+      }
+      return KeyEventResult.ignored;
+    }
+
+    // Navigate choices with arrow keys.
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      setState(() {
+        _focusedChoiceIndex = (_focusedChoiceIndex - 1).clamp(0, choiceCount - 1);
+      });
+      return KeyEventResult.handled;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
+        event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      setState(() {
+        _focusedChoiceIndex = (_focusedChoiceIndex + 1).clamp(0, choiceCount - 1);
+      });
+      return KeyEventResult.handled;
+    }
+    // Select choice with Enter/Space.
+    if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.space) {
+      if (_focusedChoiceIndex < choiceCount) {
+        _onChoiceSelected(_focusedChoiceIndex);
+      }
+      return KeyEventResult.handled;
+    }
+    // Number keys 1-9 select choices directly.
+    final digit = _digitFromKey(event.logicalKey);
+    if (digit != null && digit >= 1 && digit <= choiceCount) {
+      _onChoiceSelected(digit - 1);
+      return KeyEventResult.handled;
+    }
+
+    return KeyEventResult.ignored;
+  }
+
+  int? _digitFromKey(LogicalKeyboardKey key) {
+    final digitKeys = {
+      LogicalKeyboardKey.digit1: 1, LogicalKeyboardKey.digit2: 2,
+      LogicalKeyboardKey.digit3: 3, LogicalKeyboardKey.digit4: 4,
+      LogicalKeyboardKey.digit5: 5, LogicalKeyboardKey.digit6: 6,
+      LogicalKeyboardKey.digit7: 7, LogicalKeyboardKey.digit8: 8,
+      LogicalKeyboardKey.digit9: 9,
+    };
+    return digitKeys[key];
+  }
+
   @override
   void dispose() {
     _typewriterTimer?.cancel();
     _starController.dispose();
     _titleGlow.dispose();
+    _keyboardFocusNode.dispose();
     super.dispose();
   }
 
@@ -229,14 +315,13 @@ class _EventScreenState extends ConsumerState<EventScreen>
   }
 
   Widget _buildNarrativeCard({bool expanded = true}) {
+    final resolvedForCard = _showingOutcome && _selectedChoiceIndex != null
+        ? (_resolvedChoice ?? widget.event.choices[_selectedChoiceIndex!])
+        : null;
     final card = _NarrativeCard(
-      text: _showingOutcome
-          ? (_resolvedChoice?.outcome ?? widget.event.choices[_selectedChoiceIndex!].outcome)
-          : _displayedText,
+      text: resolvedForCard?.outcome ?? _displayedText,
       isOutcome: _showingOutcome,
-      choice: _showingOutcome
-          ? (_resolvedChoice ?? widget.event.choices[_selectedChoiceIndex!])
-          : null,
+      choice: resolvedForCard,
       showEffectChips: _showEffectChips,
     );
     return expanded ? Expanded(child: card) : card;
@@ -292,6 +377,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
         probeCost: choice.probeCost,
         disabled: disabled,
         guardFailed: !guardPasses,
+        isFocused: _focusedChoiceIndex == entry.key && _typewriterDone && !_showingOutcome,
         onTap: disabled ? null : () => _onChoiceSelected(entry.key),
       );
     }).toList();
@@ -306,7 +392,11 @@ class _EventScreenState extends ConsumerState<EventScreen>
         child: InkWell(
           onTap: () {
             GameSfx().playVaried(GameSfx.buttonClick);
-            final selectedChoice = _resolvedChoice ?? event.choices[_selectedChoiceIndex!];
+            final selectedChoice = _resolvedChoice ??
+                (_selectedChoiceIndex != null
+                    ? event.choices[_selectedChoiceIndex!]
+                    : null);
+            if (selectedChoice == null) return;
             final hasPlanet = ref.read(voyageProvider).currentPlanet != null;
             if (selectedChoice.opensPlanetScreen && hasPlanet) {
               Navigator.of(context).pushReplacementNamed('/scan');
@@ -351,13 +441,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
   }
 
   Widget _buildAdBanner() {
-    return SizedBox(
-      height: 58,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: PremiumAdGate(child: AdaptiveBannerAd()),
-      ),
-    );
+    return PremiumAdGate(child: AdaptiveBannerAd());
   }
 
   /// All action widgets: trader button, choice buttons, or continue button.
@@ -367,7 +451,12 @@ class _EventScreenState extends ConsumerState<EventScreen>
       if (_typewriterDone && !_showingOutcome && event.openTraderScreen)
         _buildTraderButton(),
       if (_typewriterDone && !_showingOutcome && !event.openTraderScreen)
-        ..._buildChoiceButtons(),
+        FocusTraversalGroup(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _buildChoiceButtons(),
+          ),
+        ),
       if (_showingOutcome) _buildContinueButton(),
       if (!_typewriterDone) _buildTapHint(),
     ];
@@ -440,45 +529,51 @@ class _EventScreenState extends ConsumerState<EventScreen>
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
+    return Focus(
+      focusNode: _keyboardFocusNode,
+      autofocus: true,
+      onKeyEvent: _handleKeyEvent,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field background.
+            Positioned.fill(
+              child: RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _starController,
+                  builder: (_, __) => CustomPaint(
+                    painter: StarFieldPainter(
+                      animationValue: _starController.value,
+                      farStarCount: 80,
+                      midStarCount: 30,
+                      nearStarCount: 10,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // Content.
-          SafeArea(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: isLandscape
-                        ? _buildLandscape()
-                        : _buildPortrait(),
-                  ),
-                  _buildAdBanner(),
-                ],
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _typewriterDone ? null : _skipTypewriter,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: isLandscape
+                          ? _buildLandscape()
+                          : _buildPortrait(),
+                    ),
+                    _buildAdBanner(),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -735,6 +830,7 @@ class _ChoiceButton extends StatefulWidget {
     this.probeCost = 0,
     this.disabled = false,
     this.guardFailed = false,
+    this.isFocused = false,
     required this.onTap,
   });
 
@@ -744,6 +840,9 @@ class _ChoiceButton extends StatefulWidget {
 
   /// True when the choice is disabled because its guard expression failed.
   final bool guardFailed;
+
+  /// True when this choice has keyboard focus (web/desktop).
+  final bool isFocused;
   final VoidCallback? onTap;
 
   @override
@@ -772,26 +871,30 @@ class _ChoiceButtonState extends State<_ChoiceButton>
   @override
   Widget build(BuildContext context) {
     final isDisabled = widget.disabled;
+    final isFocused = widget.isFocused && !isDisabled;
     final borderColor = isDisabled
         ? Colors.grey.withValues(alpha: 0.3)
-        : _kAccent.withValues(alpha: 0.6);
+        : isFocused
+            ? _kAccent
+            : _kAccent.withValues(alpha: 0.6);
     final textColor = isDisabled
         ? Colors.grey.withValues(alpha: 0.4)
         : _kAccent;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: AnimatedBuilder(
-        animation: _shimmer,
-        builder: (_, __) {
-          final shimmerAlpha = isDisabled
-              ? 0.0
-              : 0.15 * (0.5 + 0.5 * sin(_shimmer.value * 2 * pi));
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: widget.onTap,
-              borderRadius: BorderRadius.circular(8),
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _shimmer,
+          builder: (_, __) {
+            final shimmerAlpha = isDisabled
+                ? 0.0
+                : 0.15 * (0.5 + 0.5 * sin(_shimmer.value * 2 * pi));
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: widget.onTap,
+                borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
@@ -800,17 +903,23 @@ class _ChoiceButtonState extends State<_ChoiceButton>
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: borderColor),
+                  border: Border.all(
+                    color: borderColor,
+                    width: isFocused ? 2.0 : 1.0,
+                  ),
                   gradient: isDisabled
                       ? null
                       : LinearGradient(
                           colors: [
-                            _kAccent.withValues(alpha: 0.05),
+                            _kAccent.withValues(alpha: isFocused ? 0.12 : 0.05),
                             _kAccent.withValues(alpha: shimmerAlpha),
-                            _kAccent.withValues(alpha: 0.05),
+                            _kAccent.withValues(alpha: isFocused ? 0.12 : 0.05),
                           ],
                           stops: [0.0, _shimmer.value, 1.0],
                         ),
+                  boxShadow: isFocused
+                      ? [BoxShadow(color: _kAccent.withValues(alpha: 0.3), blurRadius: 12)]
+                      : null,
                 ),
                 child: Row(
                   children: [
@@ -882,7 +991,8 @@ class _ChoiceButtonState extends State<_ChoiceButton>
               ),
             ),
           );
-        },
+          },
+        ),
       ),
     );
   }

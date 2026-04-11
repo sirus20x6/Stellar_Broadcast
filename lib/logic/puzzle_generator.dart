@@ -21,20 +21,26 @@ class PuzzleGenerator {
   // -----------------------------------------------------------------------
 
   static const _titles = {
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.synthetic: 'SYNTHETIC PROBE SIGNAL',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.geometric: 'GEOMETRIC ENTITY CONTACT',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.crystalline: 'CRYSTALLINE TRANSMISSION',
   };
 
   static const _narratives = {
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.synthetic:
         'A swarm of self-replicating probes encircles the ship. '
         'Their transmissions resolve into a pattern of binary pulses — '
         'they seem to be testing our intelligence before sharing data.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.geometric:
         'An enormous being of folded light drifts alongside the ship. '
         'It projects geometric shapes onto the hull in a deliberate sequence, '
         'waiting for us to complete the pattern.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.crystalline:
         'A lattice of crystalline filaments blooms across the sensor array. '
         'Within its structure, symbols pulse in a repeating pattern — '
@@ -42,23 +48,29 @@ class PuzzleGenerator {
   };
 
   static const _correctOutcomes = {
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.synthetic:
         'The probes chirp in unison and begin repairing micro-fractures '
         'along the hull. They approve.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.geometric:
         'The entity flares with brilliant light and folds a gift into '
         'our navigation array before drifting away.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.crystalline:
         'The lattice restructures into a navigational chart of extraordinary '
         'detail. Star routes we never knew existed flow into our computers.',
   };
 
   static const _incorrectOutcomes = {
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.synthetic:
         'The probes pause, then scatter. One clips a survey probe on its way out — a small price for a failed test.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.geometric:
         'The entity dims and contracts. A pulse of energy rattles the hull '
         'as it withdraws — displeasure, perhaps.',
+    // TODO(l10n): Move to ARB files for internationalization.
     AlienSpecies.crystalline:
         'The lattice shatters. Crystal shards pierce the outer hull before '
         'dissolving into subspace. The transmission was not forgiving of error.',
@@ -69,10 +81,22 @@ class PuzzleGenerator {
   // -----------------------------------------------------------------------
 
   static AlienPuzzle generate(Random random, VoyageState state) {
-    final species = AlienSpecies.values[random.nextInt(AlienSpecies.values.length)];
-    final seqType = SequenceType.values[random.nextInt(SequenceType.values.length)];
+    var species = AlienSpecies.values[random.nextInt(AlienSpecies.values.length)];
+    var seqType = SequenceType.values[random.nextInt(SequenceType.values.length)];
+
+    // Signal filter is synthetic-only. If it was rolled for another species,
+    // re-roll the puzzle type. Conversely, give synthetic a 30% chance to
+    // get signal filter regardless of initial roll.
+    if (seqType == SequenceType.signalFilter && species != AlienSpecies.synthetic) {
+      seqType = SequenceType.values[random.nextInt(SequenceType.values.length - 1)]; // exclude signalFilter
+    } else if (species == AlienSpecies.synthetic && random.nextDouble() < 0.30) {
+      seqType = SequenceType.signalFilter;
+    }
 
     // Visual identification puzzles use their own generators.
+    if (seqType == SequenceType.signalFilter) {
+      return _generateSignalFilterPuzzle(random, state);
+    }
     if (seqType == SequenceType.spectralId) {
       return _generateSpectralPuzzle(random, species, state);
     }
@@ -100,24 +124,29 @@ class PuzzleGenerator {
     // Pi and Fibonacci must always start from the beginning — the pattern
     // is only recognisable from its origin. Primes are identifiable from
     // any starting point.
+    // Clamp seqLength to usable elements so we never overrun the list.
+    final effectiveSeqLength = seqLength.clamp(1, usable);
     int start;
     if (seqType == SequenceType.primes) {
-      final maxStart = (usable - seqLength).clamp(0, rawSeq.length - seqLength);
+      final maxStart = (usable - effectiveSeqLength).clamp(0, rawSeq.length - effectiveSeqLength);
       start = maxStart <= 0 ? 0 : random.nextInt(maxStart);
     } else {
       start = 0;
     }
-    final slice = rawSeq.sublist(start, start + seqLength);
+    final end = (start + effectiveSeqLength).clamp(0, rawSeq.length);
+    final slice = rawSeq.sublist(start, end);
 
     // Blank position: always last for easy, can be earlier for hard.
+    // Use slice.length (not seqLength) so blankIndex is always in bounds.
     int blankIndex;
     if (enc < 6) {
-      blankIndex = seqLength - 1;
+      blankIndex = slice.length - 1;
     } else if (enc < 12) {
-      blankIndex = seqLength - 1 - random.nextInt(2); // last or penultimate
+      blankIndex = slice.length - 1 - random.nextInt(2); // last or penultimate
     } else {
-      blankIndex = seqLength - 1 - random.nextInt(3); // last 3
+      blankIndex = slice.length - 1 - random.nextInt(3); // last 3
     }
+    blankIndex = blankIndex.clamp(0, slice.length - 1);
 
     final correctValue = slice[blankIndex];
     final correctAnswer = system.convert(correctValue);
@@ -200,6 +229,7 @@ class PuzzleGenerator {
       id: 'puzzle_spectral_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.spectralId,
+      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHAT DO YOU SEEK?',
       narrative: '',
       displayedSequence: displayed,
@@ -221,9 +251,11 @@ class PuzzleGenerator {
         outcome: '',
         shipEffects: {'atmosphericScanner': -0.03},
       ),
+      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'Oxygen. The unmistakable signature of a living atmosphere. '
           'Navigation banks updated — our next target looks far more promising.',
+      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The alien considers our answer, then dims. A pulse of '
           'interference scrambles the atmospheric scanner as it withdraws.',
@@ -289,6 +321,7 @@ class PuzzleGenerator {
       id: 'puzzle_stars_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.starCluster,
+      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHERE IS HOME?',
       narrative: '',
       displayedSequence: displayed,
@@ -310,10 +343,12 @@ class PuzzleGenerator {
         outcome: '',
         shipEffects: {'nav': -0.05},
       ),
+      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'G-type stars. Yellow dwarfs like the one that warmed Earth. '
           'The navigation computer locks onto the cluster — our next '
           'destination will orbit a familiar kind of sun.',
+      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The stars are beautiful, but wrong. Not the kind of sun '
           'that could nurture a world like the one we left behind.',
@@ -354,6 +389,7 @@ class PuzzleGenerator {
       id: 'puzzle_chirality_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.chirality,
+      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHICH HAND IS LIFE?',
       narrative: '',
       displayedSequence: displayed,
@@ -376,15 +412,132 @@ class PuzzleGenerator {
           'atmosphere': -0.04,
         },
       ),
+      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'Left-handed. The same chirality as every amino acid that '
           'built every protein on Earth. The probe pulses with recognition — '
           'our next destination may harbour familiar biochemistry.',
+      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The mirror image. A world built on D-amino acids would be alien '
           'at the molecular level — its proteins incompatible, its food '
           'poisonous. The navigation computer adjusts expectations downward.',
     );
+  }
+
+  // -----------------------------------------------------------------------
+  // Signal filter (boolean logic gate) puzzle
+  // -----------------------------------------------------------------------
+
+  /// Logic gate operations for the signal filter puzzle.
+  static const _gateOps = <String, int Function(int, int)>{
+    'AND': _gateAnd,
+    'OR': _gateOr,
+    'XOR': _gateXor,
+    'NAND': _gateNand,
+    'NOR': _gateNor,
+    'XNOR': _gateXnor,
+  };
+
+  static int _gateAnd(int a, int b) => a & b;
+  static int _gateOr(int a, int b) => a | b;
+  static int _gateXor(int a, int b) => a ^ b;
+  static int _gateNand(int a, int b) => (~(a & b)) & 1;
+  static int _gateNor(int a, int b) => (~(a | b)) & 1;
+  static int _gateXnor(int a, int b) => (~(a ^ b)) & 1;
+
+  /// Difficulty pools: easy has fewer gate options to choose from.
+  static List<String> _gatePool(int encounters) {
+    if (encounters < 6) return const ['AND', 'OR', 'XOR'];
+    if (encounters < 12) return const ['AND', 'OR', 'XOR', 'NAND'];
+    return const ['AND', 'OR', 'XOR', 'NAND', 'NOR', 'XNOR'];
+  }
+
+  /// Apply a gate bitwise across two 4-bit input lists.
+  static List<int> _applyGate(String gate, List<int> a, List<int> b) {
+    final op = _gateOps[gate]!;
+    return List.generate(a.length, (i) => op(a[i], b[i]));
+  }
+
+  static AlienPuzzle _generateSignalFilterPuzzle(
+    Random random,
+    VoyageState state,
+  ) {
+    final enc = state.encounterCount;
+    final pool = _gatePool(enc);
+    const bits = 4;
+
+    // Try generating inputs where the correct gate's output is unique
+    // among all gates in the pool. Retry up to 50 times.
+    late String correctGate;
+    late List<int> inputA;
+    late List<int> inputB;
+    late List<int> targetOut;
+
+    for (var attempt = 0; attempt < 50; attempt++) {
+      correctGate = pool[random.nextInt(pool.length)];
+      inputA = List.generate(bits, (_) => random.nextInt(2));
+      inputB = List.generate(bits, (_) => random.nextInt(2));
+      targetOut = _applyGate(correctGate, inputA, inputB);
+
+      // Check that no other gate in the pool produces the same output.
+      var unique = true;
+      for (final other in pool) {
+        if (other == correctGate) continue;
+        if (_listsEqual(_applyGate(other, inputA, inputB), targetOut)) {
+          unique = false;
+          break;
+        }
+      }
+      if (unique) break;
+    }
+
+    // Encode signals: "label|b1,b2,b3,b4"
+    final displayed = <String>[
+      'A|${inputA.join(',')}',
+      'B|${inputB.join(',')}',
+      'OUT|${targetOut.join(',')}',
+    ];
+
+    // Distractors are the other gates in the pool.
+    final distractors = pool.where((g) => g != correctGate).toList()
+      ..shuffle(random);
+
+    final reward = _buildReward(AlienSpecies.synthetic, enc);
+    final penalty = _buildPenalty(AlienSpecies.synthetic, enc);
+
+    return AlienPuzzle(
+      id: 'puzzle_signalfilter_${state.encounterCount}',
+      species: AlienSpecies.synthetic,
+      sequenceType: SequenceType.signalFilter,
+      title: 'FILTER THE SIGNAL',
+      narrative:
+          'A synthetic relay station drifts ahead, its antenna array pulsing '
+          'with two interleaved signals. A third channel carries the target '
+          'pattern. The probes want us to show we understand how to combine '
+          'the signals.',
+      displayedSequence: displayed,
+      blankIndex: -1,
+      correctAnswer: correctGate,
+      distractors: distractors,
+      reward: reward,
+      penalty: penalty,
+      correctOutcome:
+          'The relay station hums to life. Data streams pour through the '
+          'newly opened channel as the probes patch micro-fractures along '
+          'the hull.',
+      incorrectOutcome:
+          'The relay station powers down. The probes scatter, one clipping '
+          'a survey probe as they go.',
+    );
+  }
+
+  static bool _listsEqual(List<int> a, List<int> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   /// species. Binary needs small numbers, geometric uses single-digit mapping
@@ -415,6 +568,7 @@ class PuzzleGenerator {
       case SequenceType.spectralId:
       case SequenceType.starCluster:
       case SequenceType.chirality:
+      case SequenceType.signalFilter:
         return const []; // Never called — visual puzzles use separate path.
     }
   }

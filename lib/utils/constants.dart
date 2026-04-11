@@ -52,6 +52,10 @@ class AppConstants {
       'ca-app-pub-8340454950181235/7724095898';
   static const String prodNativeAndroid =
       'ca-app-pub-8340454950181235/5313554970';
+  // TODO: Create iOS ad units in AdMob console, then paste the IDs here.
+  static const String prodBannerIos = '';
+  static const String prodInterstitialIos = '';
+  static const String prodNativeIos = '';
 
   // ---------------------------------------------------------------------------
   // Upgrade costs (Legacy Points)

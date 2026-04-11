@@ -1,49 +1,57 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:app_links/app_links.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'services/game_music.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:stellar_broadcast/l10n/app_localizations.dart';
-import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
+import 'package:quickapps_iap/quickapps_iap.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_onboarding/quickapps_onboarding.dart';
-import 'package:quickapps_storage/quickapps_storage.dart';
-import 'dart:math';
-import 'data/events.dart';
-import 'logic/puzzle_generator.dart';
-import 'models/event.dart';
-import 'models/puzzle.dart';
-import 'package:quickapps_ads/quickapps_ads.dart';
-import 'package:quickapps_iap/quickapps_iap.dart';
-import 'screens/event_screen.dart';
-import 'screens/puzzle_screen.dart';
-import 'screens/game_over_screen.dart';
-import 'screens/landing_screen.dart';
-import 'screens/landing_sequence_screen.dart';
-import 'screens/ending_screen.dart';
-import 'screens/codex_screen.dart';
-import 'screens/legacy_screen.dart';
-import 'screens/scan_screen.dart';
-import 'screens/ship_status_screen.dart';
-import 'screens/settings_screen.dart' as local;
-import 'screens/title_screen.dart';
-import 'screens/trader_screen.dart';
-import 'screens/black_hole_screen.dart';
-import 'screens/living_nebula_screen.dart';
-import 'screens/seed_vault_screen.dart';
-import 'screens/dyson_sphere_screen.dart';
-import 'screens/world_engine_screen.dart';
-import 'screens/mirror_array_screen.dart';
-import 'screens/chrono_vortex_screen.dart';
-import 'screens/voyage_screen.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
-import 'providers/game_providers.dart' show voyageProvider, legacyProvider, codeToSeed, localeProvider;
-import 'theme/app_theme.dart';
+import 'package:quickapps_storage/quickapps_storage.dart';
+import 'package:quickapps_ui/quickapps_ui.dart';
+
+import 'package:stellar_broadcast/utils/platform_config.dart';
+import 'package:stellar_broadcast/data/events.dart';
+import 'package:stellar_broadcast/l10n/app_localizations.dart';
+import 'package:stellar_broadcast/logic/puzzle_generator.dart';
+import 'package:stellar_broadcast/models/event.dart';
+import 'package:stellar_broadcast/models/puzzle.dart';
+import 'package:stellar_broadcast/providers/game_providers.dart'
+    show voyageProvider, legacyProvider, codeToSeed, localeProvider;
+import 'package:stellar_broadcast/screens/black_hole_screen.dart';
+import 'package:stellar_broadcast/screens/chrono_vortex_screen.dart';
+import 'package:stellar_broadcast/screens/codex_screen.dart';
+import 'package:stellar_broadcast/screens/dyson_sphere_screen.dart';
+import 'package:stellar_broadcast/screens/ending_screen.dart';
+import 'package:stellar_broadcast/screens/event_screen.dart';
+import 'package:stellar_broadcast/screens/game_over_screen.dart';
+import 'package:stellar_broadcast/screens/landing_screen.dart';
+import 'package:stellar_broadcast/screens/landing_sequence_screen.dart';
+import 'package:stellar_broadcast/screens/legacy_screen.dart';
+import 'package:stellar_broadcast/screens/living_nebula_screen.dart';
+import 'package:stellar_broadcast/screens/mirror_array_screen.dart';
+import 'package:stellar_broadcast/screens/phantom_ship_screen.dart';
+import 'package:stellar_broadcast/screens/pulsar_lighthouse_screen.dart';
+import 'package:stellar_broadcast/screens/puzzle_screen.dart';
+import 'package:stellar_broadcast/screens/scan_screen.dart';
+import 'package:stellar_broadcast/screens/seed_vault_screen.dart';
+import 'package:stellar_broadcast/screens/settings_screen.dart' as local;
+import 'package:stellar_broadcast/screens/ship_status_screen.dart';
+import 'package:stellar_broadcast/screens/singularity_engine_screen.dart';
+import 'package:stellar_broadcast/screens/title_screen.dart';
+import 'package:stellar_broadcast/screens/trader_screen.dart';
+import 'package:stellar_broadcast/screens/void_whale_screen.dart';
+import 'package:stellar_broadcast/screens/voyage_screen.dart';
+import 'package:stellar_broadcast/screens/world_engine_screen.dart';
+import 'package:stellar_broadcast/services/game_music.dart';
+import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 
 /// App-specific route labels for screen coverage tracking.
 const Map<String, String> _screenRouteLabels = {
@@ -68,6 +76,10 @@ const Map<String, String> _screenRouteLabels = {
   '/world-engine': 'World Engine',
   '/mirror-array': 'Mirror Array',
   '/chrono-vortex': 'Chrono Vortex',
+  '/void-whale': 'Void Whale',
+  '/phantom-ship': 'Phantom Ship',
+  '/singularity-engine': 'Singularity Engine',
+  '/pulsar-lighthouse': 'Pulsar Lighthouse',
 };
 
 final _coverageService = ScreenCoverageService.init(_screenRouteLabels);
@@ -89,6 +101,10 @@ class StellarBroadcastApp extends ConsumerStatefulWidget {
   ConsumerState<StellarBroadcastApp> createState() =>
       _StellarBroadcastAppState();
 }
+
+/// Global route observer for screens that need to detect when they come back
+/// into view (e.g., to refresh banner ads after a child screen pops).
+final routeObserver = RouteObserver<ModalRoute<void>>();
 
 class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     with WidgetsBindingObserver {
@@ -117,11 +133,14 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     final appLinks = AppLinks();
 
     // Cold start.
-    appLinks.getInitialLink().then((uri) {
-      if (uri != null) _handleDeepLink(uri);
-    }).catchError((e) {
-      QaLogger.app.warning('Failed to get initial link', e);
-    });
+    appLinks
+        .getInitialLink()
+        .then((uri) {
+          if (uri != null) _handleDeepLink(uri);
+        })
+        .catchError((e) {
+          QaLogger.app.warning('Failed to get initial link', e);
+        });
 
     // Warm start.
     _linkSub = appLinks.uriLinkStream.listen(_handleDeepLink);
@@ -129,8 +148,11 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
   void _handleDeepLink(Uri uri) {
     // Debug: ?screen=<route> navigates directly to a screen for QA screenshots.
+    // Optional &skip=true skips animations for instant screenshot capture.
     final screenParam = uri.queryParameters['screen'];
     if (screenParam != null && screenParam.isNotEmpty) {
+      PlatformConfig.skipAnimations =
+          (uri.queryParameters['skip'] == 'true');
       if (_showOnboarding || !_loaded) {
         _pendingDeepLink = uri;
         return;
@@ -150,17 +172,27 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
     // Don't interrupt an active voyage.
     final voyage = ref.read(voyageProvider);
-    if (!voyage.isComplete && !voyage.isGameOver && voyage.encounterCount > 0) return;
+    if (!voyage.isComplete && !voyage.isGameOver && voyage.encounterCount > 0) {
+      return;
+    }
 
     try {
       final seedInt = codeToSeed(seed);
       final upgrades = ref.read(legacyProvider).upgrades;
       final navContext = _navigatorKey.currentContext;
       if (navContext == null) return;
-      final l10n = Localizations.of<AppLocalizations>(navContext, AppLocalizations);
+      final l10n = Localizations.of<AppLocalizations>(
+        navContext,
+        AppLocalizations,
+      );
       if (l10n == null) return;
-      ref.read(voyageProvider.notifier).startVoyage(seed: seedInt, upgrades: upgrades, l10n: l10n);
-      _navigatorKey.currentState?.pushNamedAndRemoveUntil('/voyage', (r) => r.isFirst);
+      ref
+          .read(voyageProvider.notifier)
+          .startVoyage(seed: seedInt, upgrades: upgrades, l10n: l10n);
+      _navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        '/voyage',
+        (r) => r.isFirst,
+      );
     } catch (e, st) {
       QaLogger.app.warning('Failed to handle deep link', e, st);
     }
@@ -180,7 +212,10 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
     final navContext = _navigatorKey.currentContext;
     if (navContext == null) return;
-    final l10n = Localizations.of<AppLocalizations>(navContext, AppLocalizations);
+    final l10n = Localizations.of<AppLocalizations>(
+      navContext,
+      AppLocalizations,
+    );
     if (l10n == null) return;
 
     final notifier = ref.read(voyageProvider.notifier);
@@ -199,17 +234,13 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
     // Screens that need a planet — scan and wait for ONNX.
     const needsPlanet = {'scan', 'landing', 'landing-sequence', 'ending'};
-    if (needsPlanet.contains(screen) && ref.read(voyageProvider).currentPlanet == null) {
-      notifier.scanPlanet();
-      // Wait for planet generation (ONNX inference can take a moment).
-      for (var i = 0; i < 30; i++) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        if (ref.read(voyageProvider).currentPlanet != null) break;
-      }
+    if (needsPlanet.contains(screen) &&
+        ref.read(voyageProvider).currentPlanet == null) {
+      await notifier.scanPlanet();
     }
 
     // Visual event screens — need a GameEvent argument.
-    final pool = buildEventPool(l10n);
+    final pool = getEventPool(l10n);
     final eventScreens = <String, String>{
       'black-hole': 'black_hole_lens',
       'living-nebula': 'living_nebula',
@@ -275,6 +306,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       if (!kIsWeb) {
         FlameAudio.bgm.pause();
         GameMusic().pauseEngineHum();
+        GameSfx().pauseLongAudio();
       }
       // Save active voyage so it survives if the OS kills the process.
       ref.read(voyageProvider.notifier).saveState();
@@ -282,6 +314,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       if (!kIsWeb) {
         FlameAudio.bgm.resume();
         GameMusic().resumeEngineHum();
+        GameSfx().resumeLongAudio();
       }
     }
   }
@@ -293,12 +326,17 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       SettingsRepository().setBool('onboarding_completed', true);
       completed = true;
     }
+    if (!completed) {
+      AnalyticsService().logEvent(name: QaEvents.onboardingStarted);
+    }
     setState(() {
       _showOnboarding = !completed;
       _loaded = true;
     });
     _processPendingDeepLink();
-    if (completed && !kIsWeb) PlayGamesService.signIn();
+    if (completed && PlatformConfig.supportsPlayGames) {
+      PlayGamesService.signIn();
+    }
   }
 
   void _processPendingDeepLink() {
@@ -314,15 +352,26 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     // (The QaConsentChoice widget bypasses the onboarding screen's own
     // _complete() when hideDefaultButton is true.)
     SettingsRepository().setBool('onboarding_completed', true);
+    AnalyticsService().logEvent(name: QaEvents.onboardingCompleted);
     setState(() => _showOnboarding = false);
     _processPendingDeepLink();
-    if (!kIsWeb) PlayGamesService.signIn();
+    if (PlatformConfig.supportsPlayGames) PlayGamesService.signIn();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
+      builder: (context, child) {
+        return Actions(
+          actions: <Type, Action<Intent>>{
+            DismissIntent: CallbackAction<DismissIntent>(
+              onInvoke: (_) => Navigator.of(context).maybePop(),
+            ),
+          },
+          child: child!,
+        );
+      },
       title: 'Stellar Broadcast',
       debugShowCheckedModeBanner: false,
       locale: ref.watch(localeProvider),
@@ -341,110 +390,128 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       theme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       darkTheme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       themeMode: ThemeMode.dark,
-      navigatorObservers: [QaAnalyticsObserver(), ScreenCoverageObserver(_coverageService)],
+      navigatorObservers: [
+        routeObserver,
+        QaAnalyticsObserver(),
+        ScreenCoverageObserver(_coverageService),
+      ],
       home: !_loaded
           ? const Scaffold(
               backgroundColor: SpaceColors.deepSpace,
               body: Center(child: CircularProgressIndicator()),
             )
           : _showOnboarding
-              ? Builder(builder: (ctx) => QaOnboardingScreen(
-                  pages: [
-                    OnboardingPage(
-                      title: ctx.l10n.onboarding_page0_title,
-                      description: ctx.l10n.onboarding_page0_description,
-                      icon: Icons.public,
-                      iconColor: Color(0xFFFF6B35),
-                    ),
-                    OnboardingPage(
-                      title: ctx.l10n.onboarding_page1_title,
-                      description: ctx.l10n.onboarding_page1_description,
-                      icon: Icons.auto_awesome,
-                      iconColor: SpaceColors.cyan,
-                    ),
-                    OnboardingPage(
-                      title: ctx.l10n.onboarding_page2_title,
-                      description: ctx.l10n.onboarding_page2_description,
-                      icon: Icons.flag,
-                      iconColor: Color(0xFFFFD700),
-                    ),
-                    OnboardingPage(
-                      title: ctx.l10n.onboarding_page3_title,
-                      description: ctx.l10n.onboarding_page3_description,
-                      icon: Icons.shield,
-                      iconColor: Color(0xFF8B5CF6),
-                      hideDefaultButton: true,
-                      customWidget: QaConsentChoice(
-                        adFreePrice: '\$5.99 one-time',
-                        adFreeProductId: 'premium_lifetime',
-                        onPurchase: (id) => QaIapService().buy(id),
-                        onComplete: _onOnboardingComplete,
-                        onChoiceLogged: (choice) =>
-                            AnalyticsService().logEvent(
-                          name: QaEvents.featureUsed,
-                          parameters: {'feature': choice},
-                        ),
-                        appNoun: 'game',
+          ? Builder(
+              builder: (ctx) => QaOnboardingScreen(
+                pages: [
+                  OnboardingPage(
+                    title: ctx.l10n.onboarding_page0_title,
+                    description: ctx.l10n.onboarding_page0_description,
+                    icon: Icons.public,
+                    iconColor: Color(0xFFFF6B35),
+                  ),
+                  OnboardingPage(
+                    title: ctx.l10n.onboarding_page1_title,
+                    description: ctx.l10n.onboarding_page1_description,
+                    icon: Icons.auto_awesome,
+                    iconColor: SpaceColors.cyan,
+                  ),
+                  OnboardingPage(
+                    title: ctx.l10n.onboarding_page2_title,
+                    description: ctx.l10n.onboarding_page2_description,
+                    icon: Icons.flag,
+                    iconColor: Color(0xFFFFD700),
+                  ),
+                  OnboardingPage(
+                    title: ctx.l10n.onboarding_page3_title,
+                    description: ctx.l10n.onboarding_page3_description,
+                    icon: Icons.shield,
+                    iconColor: Color(0xFF8B5CF6),
+                    hideDefaultButton: true,
+                    customWidget: QaConsentChoice(
+                      adFreePrice: '\$5.99 one-time',
+                      adFreeProductId: 'premium_lifetime',
+                      onPurchase: (id) => QaIapService().buy(id),
+                      onComplete: _onOnboardingComplete,
+                      onChoiceLogged: (choice) => AnalyticsService().logEvent(
+                        name: QaEvents.featureUsed,
+                        parameters: {'feature': choice},
                       ),
+                      appNoun: 'game',
                     ),
-                  ],
-                  onComplete: _onOnboardingComplete,
-                ))
-              : const TitleScreen(),
+                  ),
+                ],
+                onComplete: _onOnboardingComplete,
+              ),
+            )
+          : const TitleScreen(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const TitleScreen());
+              settings: settings,
+              builder: (context) => const TitleScreen(),
+            );
           case '/voyage':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const VoyageScreen());
+              settings: settings,
+              builder: (context) => const VoyageScreen(),
+            );
           case '/scan':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const ScanScreen());
+              settings: settings,
+              builder: (context) => const ScanScreen(),
+            );
           case '/landing':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const LandingScreen());
+              settings: settings,
+              builder: (context) => const LandingScreen(),
+            );
           case '/landing-sequence':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const LandingSequenceScreen());
+              settings: settings,
+              builder: (context) => const LandingSequenceScreen(),
+            );
           case '/ending':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const EndingScreen());
+              settings: settings,
+              builder: (context) => const EndingScreen(),
+            );
           case '/legacy':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const LegacyScreen());
+              settings: settings,
+              builder: (context) => const LegacyScreen(),
+            );
           case '/codex':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const CodexScreen());
+              settings: settings,
+              builder: (context) => const CodexScreen(),
+            );
           case '/settings':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const local.SettingsScreen());
+              settings: settings,
+              builder: (context) => const local.SettingsScreen(),
+            );
           case '/gameover':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const GameOverScreen());
+              settings: settings,
+              builder: (context) => const GameOverScreen(),
+            );
           case '/trader':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const TraderScreen());
+              settings: settings,
+              builder: (context) => const TraderScreen(),
+            );
           case '/ship-status':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const ShipStatusScreen());
+              settings: settings,
+              builder: (context) => const ShipStatusScreen(),
+            );
           case '/debug-trader':
             return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => const TraderScreen());
+              settings: settings,
+              builder: (context) => const TraderScreen(),
+            );
           case '/event':
             final event = settings.arguments as GameEvent;
             return MaterialPageRoute(
@@ -498,6 +565,30 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
             return MaterialPageRoute(
               settings: settings,
               builder: (context) => ChronoVortexScreen(event: event),
+            );
+          case '/void-whale':
+            final event = settings.arguments as GameEvent;
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => VoidWhaleScreen(event: event),
+            );
+          case '/phantom-ship':
+            final event = settings.arguments as GameEvent;
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => PhantomShipScreen(event: event),
+            );
+          case '/singularity-engine':
+            final event = settings.arguments as GameEvent;
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => SingularityEngineScreen(event: event),
+            );
+          case '/pulsar-lighthouse':
+            final event = settings.arguments as GameEvent;
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => PulsarLighthouseScreen(event: event),
             );
           default:
             return null;

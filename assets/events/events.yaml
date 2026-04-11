@@ -82,7 +82,8 @@ events:
     choices:
       - text: "@event_gravityWell_choice0_text"
         outcome: "@event_gravityWell_choice0_outcome"
-        ship: { nav: -0.08, hull: -0.06 }
+        ship: { nav: -0.05, hull: -0.06 }
+        energy: -8
       - text: "@event_gravityWell_choice1_text"
         outcome: "@event_gravityWell_choice1_outcome"
         ship: { nav: 0.08, cryopods: -0.10, hull: -0.05 }
@@ -229,6 +230,11 @@ events:
       - text: "@event_ancientBeacon_choice1_text"
         outcome: "@event_ancientBeacon_choice1_outcome"
         ship: { nav: 0.05, culture: 0.03 }
+      - text: "Power all scanners to maximum"
+        outcome: "Every sensor array blazes at full power. The beacon's data floods in — star charts, mineral signatures, atmospheric compositions. The energy cost is steep but the data is priceless."
+        ship: { tech: 0.08, atmosphericScanner: 0.08, gravimetricScanner: 0.05 }
+        energy: -12
+        planet: { atmosphere: 0.05, resources: 0.05 }
 
   - id: frozen_garden
     title: "@event_frozenGarden_title"
@@ -285,7 +291,8 @@ events:
         ship: { nav: -0.08, gravimetricScanner: -0.03 }
       - text: "@event_navMalfunction_choice1_text"
         outcome: "@event_navMalfunction_choice1_outcome"
-        ship: { nav: -0.12 }
+        ship: { nav: -0.08 }
+        fuel: -10
       - text: "@event_navMalfunction_choice2_text"
         outcome: "@event_navMalfunction_choice2_outcome"
         ship: { nav: -0.05, culture: 0.05, tech: -0.03 }
@@ -297,8 +304,9 @@ events:
     choices:
       - text: "@event_cryopodFailure_choice0_text"
         outcome: "@event_cryopodFailure_choice0_outcome"
-        ship: { cryopods: -0.03, tech: 0.03, hull: 0.04 }
+        ship: { tech: 0.03, hull: 0.04 }
         colonists: -5
+        energy: -8
       - text: "@event_cryopodFailure_choice1_text"
         outcome: "@event_cryopodFailure_choice1_outcome"
         ship: { cryopods: -0.18, culture: 0.10 }
@@ -327,7 +335,8 @@ events:
     choices:
       - text: "@event_powerFluctuation_choice0_text"
         outcome: "@event_powerFluctuation_choice0_outcome"
-        ship: { tech: 0.08, culture: -0.15 }
+        energy: -10
+        ship: { tech: 0.08, shields: 0.05, culture: -0.12 }
       - text: "@event_powerFluctuation_choice1_text"
         outcome: "@event_powerFluctuation_choice1_outcome"
         ship: { tech: 0.05, atmosphericScanner: -0.12 }
@@ -360,6 +369,7 @@ events:
   - id: living_nebula
     title: "@event_livingNebula_title"
     category: rare
+    route: "/living-nebula"
     narrative: "@event_livingNebula_narrative"
     choices:
       - text: "@event_livingNebula_choice0_text"
@@ -571,6 +581,7 @@ events:
     title: "@event_blackHoleLens_title"
     narrative: "@event_blackHoleLens_narrative"
     category: rare
+    route: "/black-hole"
     choices:
       - text: "@event_blackHoleLens_choice0_text"
         outcomes:
@@ -592,6 +603,7 @@ events:
   - id: seed_vault
     title: "@event_seedVault_title"
     narrative: "@event_seedVault_narrative"
+    route: "/seed-vault"
     choices:
       - text: "@event_seedVault_choice0_text"
         outcome: "@event_seedVault_choice0_outcome"
@@ -609,6 +621,7 @@ events:
     title: "@event_phantomShip_title"
     narrative: "@event_phantomShip_narrative"
     category: rare
+    route: "/phantom-ship"
     choices:
       - text: "@event_phantomShip_choice0_text"
         outcomes:
@@ -891,11 +904,12 @@ events:
     narrative: "@event_roguePlanet_narrative"
     choices:
       - text: "@event_roguePlanet_choice0_text"
+        fuel: -8
         outcomes:
           - weight: 65
             outcome: "@event_roguePlanet_choice0_outcome"
             ship: { mineralScanner: 0.08, tech: 0.05 }
-            planet: { biodiversity: 0.08, water: 0.05 }
+            planet: { biodiversity: 0.10, water: 0.07 }
           - weight: 25
             outcome: "The probe returns carrying unknown microbial hitchhikers. A contamination scare forces the crew into emergency decontamination protocols, straining medical supplies and morale."
             ship: { tech: -0.08, cryopods: -0.08 }
@@ -1010,6 +1024,7 @@ events:
   - id: relic_mirror_array
     title: "@event_relicMirrorArray_title"
     narrative: "@event_relicMirrorArray_narrative"
+    route: "/mirror-array"
     choices:
       - text: "@event_relicMirrorArray_choice0_text"
         outcome: "@event_relicMirrorArray_choice0_outcome"
@@ -1152,6 +1167,7 @@ events:
   - id: relic_world_engine
     title: "@event_relicWorldEngine_title"
     narrative: "@event_relicWorldEngine_narrative"
+    route: "/world-engine"
     choices:
       - text: "@event_relicWorldEngine_choice0_text"
         outcome: "@event_relicWorldEngine_choice0_outcome"
@@ -1407,6 +1423,7 @@ events:
   - id: dyson_sphere
     title: "@event_dysonSphere_title"
     category: rare
+    route: "/dyson-sphere"
     narrative: "@event_dysonSphere_narrative"
     choices:
       - text: "@event_dysonSphere_choice0_text"
@@ -1415,7 +1432,8 @@ events:
         colonists: -5
       - text: "@event_dysonSphere_choice1_text"
         outcome: "@event_dysonSphere_choice1_outcome"
-        ship: { tech: 0.12, hull: 0.05, shields: 0.05, nav: -0.08, fuel: 0.10 }
+        ship: { tech: 0.12, hull: 0.05, shields: 0.05, nav: -0.08 }
+        fuel: 10
       - text: "@event_dysonSphere_choice2_text"
         outcome: "@event_dysonSphere_choice2_outcome"
         ship: { constructors: 0.10, tech: 0.08, culture: 0.05 }
@@ -2064,6 +2082,7 @@ events:
   - id: chrono_vortex
     title: "@event_chronoVortex_title"
     category: rare
+    route: "/chrono-vortex"
     narrative: "@event_chronoVortex_narrative"
     choices:
       - text: "@event_chronoVortex_choice0_text"
@@ -2125,6 +2144,7 @@ events:
   - id: singularity_engine
     title: "@event_singularityEngine_title"
     category: rare
+    route: "/singularity-engine"
     narrative: "@event_singularityEngine_narrative"
     choices:
       - text: "@event_singularityEngine_choice0_text"
@@ -2160,6 +2180,7 @@ events:
   - id: void_whale_calf
     title: "@event_voidWhaleCalf_title"
     category: boon
+    route: "/void-whale"
     narrative: "@event_voidWhaleCalf_narrative"
     choices:
       - text: "@event_voidWhaleCalf_choice0_text"
@@ -2184,6 +2205,7 @@ events:
   - id: pulsar_lighthouse
     title: "@event_pulsarLighthouse_title"
     category: rare
+    route: "/pulsar-lighthouse"
     narrative: "@event_pulsarLighthouse_narrative"
     choices:
       - text: "@event_pulsarLighthouse_choice0"
@@ -2220,7 +2242,7 @@ events:
         colonists: -12
       - text: "@event_derelictArmada_choice1"
         outcome: "@event_derelictArmada_outcome1"
-        ship: { culture: 0.08, technology: 0.08 }
+        ship: { culture: 0.08, tech: 0.08 }
 
   - id: alien_quarantine_zone
     title: "@event_alienQuarantineZone_title"
@@ -2229,7 +2251,7 @@ events:
     choices:
       - text: "@event_alienQuarantineZone_choice0"
         outcome: "@event_alienQuarantineZone_outcome0"
-        ship: { technology: 0.15, mineralScanner: 0.10, cryopods: -0.10 }
+        ship: { tech: 0.15, mineralScanner: 0.10, cryopods: -0.10 }
         colonists: -15
       - text: "@event_alienQuarantineZone_choice1"
         outcome: "@event_alienQuarantineZone_outcome1"
@@ -2968,3 +2990,214 @@ events:
         ship: { culture: -0.08, nav: -0.05, shields: 0.05 }
         fuel: 8
         energy: -5
+  - id: power_diversion
+    title: "Cascading Overload"
+    narrative: >
+      A power surge ripples through the ship's grid. Three critical
+      systems are failing simultaneously — you only have enough
+      reserve energy to save two. The third will take serious damage.
+    category: malfunction
+    tags: [malfunction, energy-sink, trade-off]
+    choices:
+      - text: "Save navigation and cryopods"
+        outcome: >
+          Energy floods into nav computers and cryogenic cooling.
+          Both stabilize. The hull monitoring system goes dark —
+          stress fractures will go undetected until the next scan.
+        ship: { nav: 0.05, cryopods: 0.05, hull: -0.12 }
+        energy: -10
+      - text: "Save hull integrity and navigation"
+        outcome: >
+          Structural reinforcement and course correction get priority.
+          The cryopod bay temperature spikes briefly. Most pods hold,
+          but the oldest units fail.
+        ship: { hull: 0.05, nav: 0.05, cryopods: -0.10 }
+        energy: -10
+        colonists: -8
+      - text: "Save cryopods and hull"
+        outcome: >
+          Life preservation takes priority. The navigation system
+          reboots from scratch, losing accumulated calibration data.
+          You'll be flying partially blind for a while.
+        ship: { cryopods: 0.05, hull: 0.05, nav: -0.12, gravimetricScanner: -0.05 }
+        energy: -10
+      - text: "Emergency shutdown — save everything at energy cost"
+        outcome: >
+          A full system restart. Every light goes dark for ninety
+          terrifying seconds. When power returns, everything works —
+          but the energy reserves are gutted.
+        ship: { hull: -0.03, nav: -0.03, cryopods: -0.03 }
+        energy: -25
+
+  - id: emergency_burn
+    title: "Debris Field Alert"
+    narrative: >
+      Proximity sensors scream. A cloud of metallic debris — remnants
+      of some ancient collision — fills the space ahead. At current
+      speed, impact is inevitable. The engines can push through with
+      a hard burn, but it will cost precious fuel.
+    category: malfunction
+    tags: [hazard, fuel-sink]
+    choices:
+      - text: "Emergency burn — full thrust"
+        outcome: >
+          The engines roar to life at maximum output. The ship lurches
+          sideways, threading through gaps in the debris. Fuel gauges
+          drop visibly, but the hull stays intact.
+        ship: { nav: 0.03 }
+        fuel: -15
+      - text: "Shields up — push through"
+        outcome: >
+          The debris hammers the shields and hull alike. Fragments
+          ping off the exterior like metallic rain. When it's over,
+          the damage is real but manageable.
+        ship: { hull: -0.12, shields: -0.08 }
+      - text: "Divert energy to point defense"
+        outcome: >
+          Power floods into the automated defense grid. Lasers pick
+          off the largest fragments while the ship weaves through the
+          rest. Effective, but the energy reserves take a hit.
+        ship: { hull: -0.03, shields: -0.03 }
+        energy: -12
+
+  - id: deep_scan_opportunity
+    title: "Scanning Window"
+    narrative: >
+      A rare alignment of gravitational lenses creates a brief window
+      of extraordinary clarity. For the next few hours, your scanners
+      could reach systems light-years ahead — but only if you divert
+      significant energy to the sensor arrays.
+    category: common
+    tags: [exploration, energy-sink, nextPlanet]
+    guard: "planetsScanned >= 1"
+    choices:
+      - text: "Full power to sensors"
+        outcome: >
+          The scanner arrays drink power like water. Images resolve
+          of distant worlds — atmospheric composition, water signatures,
+          mineral deposits. When the window closes, you have a treasure
+          trove of data about what lies ahead.
+        ship: { atmosphericScanner: 0.05, mineralScanner: 0.05 }
+        energy: -15
+        nextPlanet:
+          atmosphere: 0.08
+          water: 0.06
+          resources: 0.05
+          biodiversity: 0.03
+      - text: "Moderate scan — balance power"
+        outcome: >
+          A cautious approach yields partial data. The readings are
+          useful but incomplete — enough to know there's something
+          promising ahead, not enough to know what.
+        ship: { atmosphericScanner: 0.03 }
+        energy: -6
+        nextPlanet:
+          atmosphere: 0.03
+          water: 0.03
+      - text: "Log the coordinates and save power"
+        outcome: >
+          The window passes unused. The coordinates are stored for
+          future reference. Some of the crew look disappointed, but
+          the energy reserves hold steady.
+        ship: { culture: -0.03, nav: 0.03 }
+
+  - id: fuel_cache_gamble
+    title: "Abandoned Fuel Depot"
+    narrative: >
+      Long-range sensors detect a structure matching pre-war fuel depot
+      schematics. It's off-course — reaching it means burning fuel to
+      get there. The depot could be fully stocked, partially looted,
+      or completely empty. Detour or stay the course?
+    category: common
+    tags: [exploration, fuel-sink, risk, weighted]
+    choices:
+      - text: "Detour to the depot"
+        outcomes:
+          - weight: 35
+            outcome: >
+              The depot is intact. Automated systems still function.
+              Fuel flows into your tanks as the crew cheers. The
+              detour paid for itself ten times over.
+            fuel: 40
+            ship: { hull: 0.03 }
+          - weight: 40
+            outcome: >
+              The depot has been partially scavenged. Some fuel remains
+              in the lower tanks — enough to offset the detour cost
+              with a modest surplus.
+            fuel: 8
+          - weight: 25
+            outcome: >
+              Empty. Stripped clean centuries ago. The detour cost you
+              fuel you couldn't afford to lose. The crew is silent on
+              the flight back to course.
+            ship: { culture: -0.05 }
+        fuel: -15
+      - text: "Send a probe to check first"
+        outcome: >
+          The probe confirms partial fuel reserves. Not enough to
+          justify the full detour, but a targeted extraction run
+          brings back a modest haul.
+        fuel: 5
+        probeCost: 1
+      - text: "Stay on course"
+        outcome: >
+          The depot shrinks on the rear sensors. Maybe it was full.
+          You'll never know. The crew understands, but some stare
+          at the fuel gauge a little longer than usual.
+        ship: { culture: -0.03, nav: 0.03 }
+
+  - id: solar_recharge_risk
+    title: "Solar Slingshot"
+    narrative: >
+      A young star blazes ahead. Its radiation is intense but its
+      energy is free. A close pass could recharge depleted systems —
+      fuel cells, batteries, even the solar panels themselves. But
+      "close" near a star means hull stress, radiation exposure, and
+      a narrow margin between recharge and incineration.
+    category: common
+    tags: [cosmic, fuel-sink, energy-sink, risk, weighted]
+    guard: "fuel < 100 or energy < 20"
+    choices:
+      - text: "Close pass — maximum recharge"
+        outcomes:
+          - weight: 50
+            outcome: >
+              The hull glows cherry-red. Alarms blare. But the solar
+              collectors drink deep, and the fuel cells surge with
+              converted radiation. When you pull away, the ship is
+              battered but brimming with power.
+            ship: { hull: -0.08, shields: -0.05 }
+            fuel: 25
+            energy: 15
+          - weight: 30
+            outcome: >
+              A solar flare catches the port side mid-pass. The
+              recharge is partial — some collectors burned out before
+              they could fill. Worth it, barely.
+            ship: { hull: -0.12, shields: -0.08, atmosphericScanner: -0.05 }
+            fuel: 12
+            energy: 8
+          - weight: 20
+            outcome: >
+              Perfect execution. The navigator threads the gravity
+              well like a needle. Full recharge, minimal exposure.
+              The crew applauds.
+            ship: { hull: -0.03, nav: 0.05 }
+            fuel: 35
+            energy: 20
+      - text: "Safe distance — partial recharge"
+        outcome: >
+          A conservative orbit captures steady solar energy over
+          several hours. No drama, no damage, no stories to tell.
+          The gauges climb slowly but surely.
+        ship: { culture: 0.03 }
+        fuel: 10
+        energy: 8
+      - text: "Burn fuel to slingshot past"
+        outcome: >
+          You use the star's gravity to accelerate, trading proximity
+          for speed. No recharge, but the momentum boost saves fuel
+          on the next leg of the journey.
+        fuel: -8
+        ship: { nav: 0.05, hull: 0.03 }

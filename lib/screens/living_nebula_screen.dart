@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -82,6 +83,7 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
     } else {
       _startTypewriter();
     }
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     GameSfx().playLong(GameSfx.spaceWhales);
   }
@@ -145,13 +147,14 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
   // ── Shared widget builders ──────────────────────────────────────────
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         'LIVING NEBULA',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 24,
+          fontSize: screen.scaledFontSize(24),
           fontWeight: FontWeight.bold,
           color: _kAccent,
           letterSpacing: 4,
@@ -311,6 +314,7 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
@@ -323,9 +327,12 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
   }
 
   Widget _buildPortrait() {
-    return ResponsiveContent(
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
           const SizedBox(height: 32),
           _buildTitle(),
           const SizedBox(height: 16),
@@ -346,15 +353,12 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
             _buildHintOrContinue(),
           ],
           const SizedBox(height: 4),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -401,13 +405,7 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
             ],
           ),
         ),
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -939,5 +937,9 @@ class _NebulaPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _NebulaPainter old) => true;
+  bool shouldRepaint(covariant _NebulaPainter old) =>
+      animationValue != old.animationValue ||
+      pulseValue != old.pulseValue ||
+      selectedPath != old.selectedPath ||
+      isResolved != old.isResolved;
 }

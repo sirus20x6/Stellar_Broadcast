@@ -13,6 +13,7 @@ import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -202,6 +203,14 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
   }
 
   Future<void> _startPhaseSequence() async {
+    if (PlatformConfig.skipAnimations) {
+      _phase1Controller.value = 1.0;
+      _phase2Controller.value = 1.0;
+      _phase3Controller.value = 1.0;
+      _phase4Controller.value = 1.0;
+      _phase5Controller.value = 1.0;
+      return;
+    }
     await Future.delayed(const Duration(milliseconds: 600));
     if (!mounted) return;
     await _phase1Controller.forward();

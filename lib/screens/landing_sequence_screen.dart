@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
@@ -8,6 +6,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -32,7 +31,6 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
     with TickerProviderStateMixin {
   late final AnimationController _starController;
 
-  final _random = Random();
   final _lines = <_NarrativeLine>[];
   int _currentLine = 0;
   bool _sequenceComplete = false;
@@ -55,6 +53,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
     _buildSequence();
     GameSfx().playLong(GameSfx.landingSequence);
     _playSequence();
+    if (PlatformConfig.skipAnimations) _skip();
   }
 
   void _buildSequence() {
@@ -103,7 +102,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
         ),
       );
       _cryopodDamage += 0.12;
-      _colonistLoss += 40 + _random.nextInt(60);
+      _colonistLoss += 40 + ref.read(voyageProvider.notifier).seededRandom.nextInt(60);
     }
 
     // Phase 2: Atmosphere.
@@ -117,7 +116,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
       );
       _hullDamage += 0.15;
       _landingDamage += 0.12;
-      _colonistLoss += 30 + _random.nextInt(50);
+      _colonistLoss += 30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(50);
     } else {
       _lines.add(
         _NarrativeLine(
@@ -135,7 +134,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
       );
       _hullDamage += 0.08;
       _cryopodDamage += 0.05;
-      _colonistLoss += 20 + _random.nextInt(30);
+      _colonistLoss += 20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(30);
     }
     if (extremeTemp) {
       _lines.add(
@@ -146,7 +145,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
       );
       _hullDamage += 0.12;
       _cryopodDamage += 0.08;
-      _colonistLoss += 50 + _random.nextInt(80);
+      _colonistLoss += 50 + ref.read(voyageProvider.notifier).seededRandom.nextInt(80);
     }
     if (oceanWorld) {
       _lines.add(
@@ -171,7 +170,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
       _lines.add(_NarrativeLine(gravMsg, color: _kDanger));
       _hullDamage += 0.10;
       _landingDamage += 0.08;
-      _colonistLoss += 20 + _random.nextInt(40);
+      _colonistLoss += 20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
     }
     if (dangerousTerrain) {
       _lines.add(
@@ -199,7 +198,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
         ),
       );
       _landingDamage += 0.1;
-      _colonistLoss += 10 + _random.nextInt(20);
+      _colonistLoss += 10 + ref.read(voyageProvider.notifier).seededRandom.nextInt(20);
     }
     _lines.add(_NarrativeLine('Final approach locked. Committing to touchdown.'));
 
@@ -222,7 +221,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
         ),
       );
       _hullDamage += 0.15;
-      _colonistLoss += 80 + _random.nextInt(100);
+      _colonistLoss += 80 + ref.read(voyageProvider.notifier).seededRandom.nextInt(100);
     } else if (damagedLanding && lowFuel) {
       _lines.add(
         _NarrativeLine(
@@ -230,7 +229,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
           color: _kDanger,
         ),
       );
-      _colonistLoss += 30 + _random.nextInt(40);
+      _colonistLoss += 30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
       _hullDamage += 0.05;
     } else if (damagedLanding || lowFuel || crushingGrav || thinAtmo) {
       _lines.add(
@@ -290,6 +289,10 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
   void _applyLandingDamage() {
     final notifier = ref.read(voyageProvider.notifier);
     final voyage = ref.read(voyageProvider);
+
+    // Cache RNG result before any state mutations.
+    final fuelCost = 20 + notifier.seededRandom.nextInt(11);
+
     var ship = voyage.ship;
 
     if (_hullDamage > 0) ship = ship.degrade('hull', _hullDamage);
@@ -299,7 +302,6 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
     }
 
     // Consume landing fuel (20-30).
-    final fuelCost = 20 + _random.nextInt(11);
     final newColonists = (voyage.colonists - _colonistLoss).clamp(0, 1000);
 
     // We need to update state directly through the notifier.

@@ -1,5 +1,6 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 /// Centralized SFX manager for Stellar Broadcast using flame_audio.
 ///
@@ -52,7 +53,9 @@ class GameSfx {
         success1,
         success2,
       ]);
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to initialize audio cache: $e');
+    }
   }
 
   /// Play a one-shot sound effect.
@@ -61,16 +64,43 @@ class GameSfx {
     if (!sfx.enabled) return;
     try {
       await FlameAudio.play(filename, volume: volume * sfx.volume);
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to play SFX "$filename": $e');
+    }
   }
+
+  /// Active long-audio players (paused/resumed with app lifecycle).
+  final List<AudioPlayer> _longPlayers = [];
 
   /// Play a longer sound effect (>5s) using mediaPlayer mode.
   Future<void> playLong(String filename, {double volume = 1.0}) async {
     final sfx = SfxPlayer();
     if (!sfx.enabled) return;
     try {
-      await FlameAudio.playLongAudio(filename, volume: volume * sfx.volume);
-    } catch (_) {}
+      final player = await FlameAudio.playLongAudio(filename, volume: volume * sfx.volume);
+      _longPlayers.add(player);
+      // Remove from list when playback completes.
+      player.onPlayerComplete.listen((_) {
+        _longPlayers.remove(player);
+        player.dispose();
+      });
+    } catch (e) {
+      QaLogger.audio.warning('Failed to play long SFX "$filename": $e');
+    }
+  }
+
+  /// Pause all active long-audio players (app backgrounded).
+  void pauseLongAudio() {
+    for (final p in _longPlayers) {
+      try { p.pause(); } catch (_) {}
+    }
+  }
+
+  /// Resume all active long-audio players (app foregrounded).
+  void resumeLongAudio() {
+    for (final p in _longPlayers) {
+      try { p.resume(); } catch (_) {}
+    }
   }
 
   AudioPlayer? _introPlayer;
@@ -81,7 +111,9 @@ class GameSfx {
     if (!sfx.enabled) return;
     try {
       _introPlayer = await FlameAudio.playLongAudio(introLogo, volume: volume * sfx.volume);
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to play intro logo audio: $e');
+    }
   }
 
   Future<void> stopIntroLogo() async {
@@ -89,7 +121,9 @@ class GameSfx {
       await _introPlayer?.stop();
       await _introPlayer?.dispose();
       _introPlayer = null;
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to stop intro logo audio: $e');
+    }
   }
 
   /// Play with slight pitch variation (for repeated sounds like clicks).
@@ -110,7 +144,9 @@ class GameSfx {
     try {
       _enginePlayer = await FlameAudio.loopLongAudio(warpEngine, volume: 0.8 * sfx.volume);
       _enginePlaying = true;
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to start engine hum: $e');
+    }
   }
 
   /// Stop the engine hum.
@@ -121,20 +157,30 @@ class GameSfx {
       await _enginePlayer?.dispose();
       _enginePlayer = null;
       _enginePlaying = false;
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to stop engine hum: $e');
+    }
   }
 
   /// Pause the engine hum (app backgrounded).
   void pauseEngineHum() {
     if (_enginePlaying) {
-      try { _enginePlayer?.pause(); } catch (_) {}
+      try {
+        _enginePlayer?.pause();
+      } catch (e) {
+        QaLogger.audio.warning('Failed to pause engine hum: $e');
+      }
     }
   }
 
   /// Resume the engine hum (app foregrounded).
   void resumeEngineHum() {
     if (_enginePlaying) {
-      try { _enginePlayer?.resume(); } catch (_) {}
+      try {
+        _enginePlayer?.resume();
+      } catch (e) {
+        QaLogger.audio.warning('Failed to resume engine hum: $e');
+      }
     }
   }
 }

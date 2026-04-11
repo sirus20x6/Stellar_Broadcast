@@ -13,7 +13,7 @@ enum AlienSpecies {
 }
 
 /// The type of puzzle challenge.
-enum SequenceType { piDigits, fibonacci, primes, spectralId, starCluster, chirality }
+enum SequenceType { piDigits, fibonacci, primes, spectralId, starCluster, chirality, signalFilter }
 
 /// A puzzle encounter from an alien probe.
 class AlienPuzzle {

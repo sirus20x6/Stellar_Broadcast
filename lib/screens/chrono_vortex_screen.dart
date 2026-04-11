@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 /// Theme constants.
@@ -92,6 +93,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
     )..repeat();
 
     _startTypewriter();
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     GameSfx().playLong(GameSfx.alienTech);
   }
@@ -184,13 +186,14 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   // ── Shared widget builders ──────────────────────────────────────────
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         'CHRONO-VORTEX',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 26,
+          fontSize: screen.scaledFontSize(26),
           fontWeight: FontWeight.bold,
           color: _kAccent,
           letterSpacing: 4,
@@ -210,14 +213,13 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   }
 
   Widget _buildNarrativeCard() {
+    final resolvedChoice = _showingOutcome && _selectedChoiceIndex != null
+        ? widget.event.choices[_selectedChoiceIndex!]
+        : null;
     return _NarrativeCard(
-      text: _showingOutcome
-          ? widget.event.choices[_selectedChoiceIndex!].outcome
-          : _displayedText,
+      text: resolvedChoice?.outcome ?? _displayedText,
       isOutcome: _showingOutcome,
-      choice: _showingOutcome
-          ? widget.event.choices[_selectedChoiceIndex!]
-          : null,
+      choice: resolvedChoice,
       showEffectChips: _showEffectChips,
     );
   }
@@ -314,6 +316,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
@@ -326,9 +329,12 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   }
 
   Widget _buildPortrait() {
-    return ResponsiveContent(
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
           const SizedBox(height: 32),
           _buildTitle(),
           const SizedBox(height: 16),
@@ -337,15 +343,12 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
           Expanded(child: _buildVisualArea()),
           const SizedBox(height: 8),
           _buildHintOrContinue(),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -384,13 +387,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
             ],
           ),
         ),
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }

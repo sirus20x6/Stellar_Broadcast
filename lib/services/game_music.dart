@@ -1,5 +1,6 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 import 'sfx_service.dart';
 
@@ -59,7 +60,9 @@ class GameMusic {
     try {
       await FlameAudio.bgm.play(filename, volume: music.volume);
       _currentTrack = filename;
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to play music track "$filename": $e');
+    }
   }
 
   // ── Engine hum (delegates to GameSfx) ──────────────────────────────
@@ -98,7 +101,9 @@ class GameMusic {
     try {
       await FlameAudio.bgm.stop();
       _currentTrack = null;
-    } catch (_) {}
+    } catch (e) {
+      QaLogger.audio.warning('Failed to stop music: $e');
+    }
     await stopEngineHum();
   }
 }

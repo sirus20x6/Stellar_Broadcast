@@ -22,58 +22,64 @@ class EventEngine {
   static GameEvent getRandomEvent(
     Random random,
     VoyageState state,
-    List<GameEvent> eventPool,
-  ) {
+    List<GameEvent> eventPool, {
+    Map<String, GameEvent>? eventIndex,
+  }) {
+    // Build an index for O(1) lookup of chained events by ID.
+    final indexedEvents =
+        eventIndex ?? <String, GameEvent>{for (final e in eventPool) e.id: e};
+
     // Check for pending chained events first.
     for (final chain in state.pendingChains) {
       if (state.encounterCount >= chain.triggerAtEncounter) {
-        final chained = eventPool
-            .where((e) => e.id == chain.eventId)
-            .firstOrNull;
+        final chained = indexedEvents[chain.eventId];
         if (chained != null) return chained;
       }
     }
 
     final encounter = state.encounterCount;
-    final unseen =
-        eventPool.where((e) => !state.seenEventIds.contains(e.id)).toList();
-    final pool = unseen.isNotEmpty ? unseen : eventPool;
 
-    // Filter by guard expressions.
-    List<GameEvent> guardFilter(List<GameEvent> events) =>
-        events.where((e) => GuardEvaluator.evaluate(e.guard, state)).toList();
+    // Convert seenEventIds to Set for O(1) contains checks.
+    final seenSet = state.seenEventIds.toSet();
+
+    // Build the filtered pool once: prefer unseen events, then apply guards.
+    final unseen = eventPool.where((e) => !seenSet.contains(e.id)).toList();
+    final pool = unseen.isNotEmpty ? unseen : eventPool;
+    final guarded = pool
+        .where((e) => GuardEvaluator.evaluate(e.guard, state))
+        .toList();
+    final available = guarded.isNotEmpty ? guarded : pool;
+
+    // Pre-index available events by category — one pass instead of many.
+    final byCategory = <EventCategory, List<GameEvent>>{};
+    for (final e in available) {
+      byCategory.putIfAbsent(e.category, () => []).add(e);
+    }
+
+    final malfunctions = byCategory[EventCategory.malfunction] ?? [];
+    final boons = byCategory[EventCategory.boon] ?? [];
+    final common = byCategory[EventCategory.common] ?? [];
+    final rare = byCategory[EventCategory.rare] ?? [];
+    final uneventful = byCategory[EventCategory.uneventful] ?? [];
+    final early = byCategory[EventCategory.early] ?? [];
 
     List<GameEvent> candidates;
 
     if (encounter < 2) {
       // Early game: safe events only.
-      candidates = guardFilter(pool
-          .where((e) =>
-              e.category == EventCategory.early ||
-              e.category == EventCategory.uneventful ||
-              e.category == EventCategory.common)
-          .toList());
+      candidates = [...early, ...uneventful, ...common];
     } else if (encounter < 6) {
       // Mid game: 30% malfunction, 10% boon.
       final roll = random.nextDouble();
       if (roll < 0.30) {
-        final malfunctions = guardFilter(
-            pool.where((e) => e.category == EventCategory.malfunction).toList());
         if (malfunctions.isNotEmpty) {
           return malfunctions[random.nextInt(malfunctions.length)];
         }
       } else if (roll < 0.40) {
-        final boons = guardFilter(
-            pool.where((e) => e.category == EventCategory.boon).toList());
         if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
       }
 
-      candidates = guardFilter(pool
-          .where((e) =>
-              e.category == EventCategory.common ||
-              e.category == EventCategory.rare ||
-              e.category == EventCategory.uneventful)
-          .toList());
+      candidates = [...common, ...rare, ...uneventful];
     } else {
       // Late game: escalating malfunction chance (40% to 65%).
       final malfunctionChance =
@@ -81,30 +87,20 @@ class EventEngine {
       final roll = random.nextDouble();
 
       if (roll < malfunctionChance) {
-        final malfunctions = guardFilter(
-            pool.where((e) => e.category == EventCategory.malfunction).toList());
         if (malfunctions.isNotEmpty) {
           return malfunctions[random.nextInt(malfunctions.length)];
         }
-      }
-
-      if (roll < malfunctionChance + 0.05) {
-        final boons = guardFilter(
-            pool.where((e) => e.category == EventCategory.boon).toList());
+      } else if (roll < malfunctionChance + 0.05) {
         if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
       }
 
       // Rare events still possible but uncommon.
-      candidates = guardFilter(pool
-          .where((e) =>
-              e.category == EventCategory.common ||
-              e.category == EventCategory.rare ||
-              e.category == EventCategory.malfunction)
-          .toList());
+      candidates = [...common, ...rare, ...malfunctions];
     }
 
-    if (candidates.isEmpty) candidates = guardFilter(pool);
+    if (candidates.isEmpty) candidates = available;
     if (candidates.isEmpty) candidates = pool; // fallback: skip guards
+    if (candidates.isEmpty) return eventPool[random.nextInt(eventPool.length)];
     return candidates[random.nextInt(candidates.length)];
   }
 
@@ -143,6 +139,11 @@ class EventEngine {
       immediatePlanetMinHabitability: selected.immediatePlanetMinHabitability,
       guard: choice.guard,
       chain: selected.chain ?? choice.chain,
+      authorityDelta: selected.authorityDelta,
+      cultureDelta: selected.cultureDelta,
+      economyDelta: selected.economyDelta,
+      faithDelta: selected.faithDelta,
+      militaryDelta: selected.militaryDelta,
     );
   }
 
@@ -152,7 +153,11 @@ class EventEngine {
   ///
   /// If the choice has weighted outcomes, call [resolveOutcome] first to
   /// flatten it to a single-outcome choice before passing it here.
-  static VoyageState applyChoice(VoyageState state, EventChoice choice, Random random) {
+  static VoyageState applyChoice(
+    VoyageState state,
+    EventChoice choice,
+    Random random,
+  ) {
     // Deduct probe cost, then apply probe delta.
     var probes = state.probes;
     if (choice.probeCost > 0) {
@@ -176,7 +181,8 @@ class EventEngine {
     final remapped = <String, double>{};
     for (final entry in choice.shipEffects.entries) {
       if (entry.key == 'scanners') {
-        final perScanner = entry.value / ShipSystems.scannerSubsystemNames.length;
+        final perScanner =
+            entry.value / ShipSystems.scannerSubsystemNames.length;
         for (final sub in ShipSystems.scannerSubsystemNames) {
           remapped[sub] = (remapped[sub] ?? 0) + perScanner;
         }
@@ -221,7 +227,8 @@ class EventEngine {
       } else {
         // No current planet — store as pending for next scan.
         for (final entry in choice.planetModifiers.entries) {
-          pendingMods[entry.key] = (pendingMods[entry.key] ?? 0.0) + entry.value;
+          pendingMods[entry.key] =
+              (pendingMods[entry.key] ?? 0.0) + entry.value;
         }
       }
     }
@@ -237,16 +244,37 @@ class EventEngine {
     // Schedule chained events.
     var pendingChains = List<PendingChain>.from(state.pendingChains);
     if (choice.chain != null) {
-      pendingChains.add(PendingChain(
-        eventId: choice.chain!.eventId,
-        triggerAtEncounter: state.encounterCount + choice.chain!.delay,
-      ));
+      pendingChains.add(
+        PendingChain(
+          eventId: choice.chain!.eventId,
+          triggerAtEncounter: state.encounterCount + choice.chain!.delay,
+        ),
+      );
     }
 
     // Remove any chained events that have fired this encounter.
     pendingChains = pendingChains
         .where((c) => c.triggerAtEncounter > state.encounterCount)
         .toList();
+
+    // Apply governance axis shifts.
+    final authorityAxis = (state.authorityAxis + choice.authorityDelta).clamp(
+      -1.0,
+      1.0,
+    );
+    final cultureAxis = (state.cultureAxis + choice.cultureDelta).clamp(
+      -1.0,
+      1.0,
+    );
+    final economyAxis = (state.economyAxis + choice.economyDelta).clamp(
+      -1.0,
+      1.0,
+    );
+    final faithAxis = (state.faithAxis + choice.faithDelta).clamp(-1.0, 1.0);
+    final militaryAxis = (state.militaryAxis + choice.militaryDelta).clamp(
+      -1.0,
+      1.0,
+    );
 
     return state.copyWith(
       ship: ship,
@@ -257,7 +285,12 @@ class EventEngine {
       colonists: colonists,
       pendingPlanetModifiers: pendingMods,
       pendingChains: pendingChains,
-      log: [...state.log, choice.outcome],
+      log: List<String>.of(state.log)..add(choice.outcome),
+      authorityAxis: authorityAxis,
+      cultureAxis: cultureAxis,
+      economyAxis: economyAxis,
+      faithAxis: faithAxis,
+      militaryAxis: militaryAxis,
     );
   }
 
@@ -277,8 +310,7 @@ class EventEngine {
     var natDisp = planet.nativeDisposition;
 
     for (final entry in modifiers.entries) {
-      double apply(double current) =>
-          (current + entry.value).clamp(0.0, 1.0);
+      double apply(double current) => (current + entry.value).clamp(0.0, 1.0);
 
       switch (entry.key) {
         case 'atmosphere':

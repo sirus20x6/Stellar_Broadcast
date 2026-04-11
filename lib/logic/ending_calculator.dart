@@ -1,62 +1,111 @@
-import 'dart:math' show log;
+import 'dart:math' show log, max;
 
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
+import 'package:stellar_broadcast/models/voyage_state.dart';
 
-/// Score breakdown with 11 sub-scores (0-10 each).
+/// Score breakdown for the 100,000-point scoring system.
+///
+/// Five major base components, compound multipliers, additive bonuses,
+/// and penalties — all exposed for the ending screen to display.
 class ScoreBreakdown {
-  final double scoreLanding;
-  final double scoreConstruction;
-  final double scoreTechnology;
-  final double scoreCulture;
-  final double scoreAtmosphere;
-  final double scoreGravity;
-  final double scoreTemperature;
-  final double scoreWater;
-  final double scoreResources;
-  final double scoreNativeRelations;
-  final double scorePopulation;
+  // --- Base score components ---
+  final double planetQuality;       // 0–25000
+  final double shipCondition;       // 0–20000
+  final double colonyViability;     // 0–15000
+  final double nativeRelations;     // 0–10000
+  final double landingPrecision;    // 0–5000
+
+  // --- Multipliers (compound, applied to base total) ---
+  final double habitabilityMultiplier;  // 0.7–1.08
+  final double governanceMultiplier;    // 1.0–1.05
+  final double encountersMultiplier;    // 1.0–1.2
+  final double efficiencyMultiplier;    // 0.97–1.05
+
+  // --- Additive bonuses (post-multiplier) ---
+  final double moonBonus;
+  final double ringBonus;
+  final double surfaceFeatureBonus;
+  final double featureInteractionBonus; // synergies, cancellations, etc.
+  final double scannerUpgradeBonus;
+  final double perfectSystemsBonus;
+  final double fullCrewBonus;
+  final double governanceClarityBonus;
+
+  // --- Penalties (subtracted from total) ---
+  final double healthPenalty;
+  final double colonistLossPenalty;
+  final double skipPenalty;
 
   const ScoreBreakdown({
-    required this.scoreLanding,
-    required this.scoreConstruction,
-    required this.scoreTechnology,
-    required this.scoreCulture,
-    required this.scoreAtmosphere,
-    required this.scoreGravity,
-    required this.scoreTemperature,
-    required this.scoreWater,
-    required this.scoreResources,
-    required this.scoreNativeRelations,
-    required this.scorePopulation,
+    required this.planetQuality,
+    required this.shipCondition,
+    required this.colonyViability,
+    required this.nativeRelations,
+    required this.landingPrecision,
+    required this.habitabilityMultiplier,
+    required this.governanceMultiplier,
+    required this.encountersMultiplier,
+    required this.efficiencyMultiplier,
+    required this.moonBonus,
+    required this.ringBonus,
+    required this.surfaceFeatureBonus,
+    required this.featureInteractionBonus,
+    required this.scannerUpgradeBonus,
+    required this.perfectSystemsBonus,
+    required this.fullCrewBonus,
+    required this.governanceClarityBonus,
+    required this.healthPenalty,
+    required this.colonistLossPenalty,
+    required this.skipPenalty,
   });
 
-  double get total =>
-      scoreLanding +
-      scoreConstruction +
-      scoreTechnology +
-      scoreCulture +
-      scoreAtmosphere +
-      scoreGravity +
-      scoreTemperature +
-      scoreWater +
-      scoreResources +
-      scoreNativeRelations +
-      scorePopulation;
+  double get baseTotal =>
+      planetQuality + shipCondition + colonyViability + nativeRelations + landingPrecision;
 
+  double get compoundMultiplier =>
+      habitabilityMultiplier *
+      governanceMultiplier *
+      encountersMultiplier *
+      efficiencyMultiplier;
+
+  double get totalBonuses =>
+      moonBonus +
+      ringBonus +
+      surfaceFeatureBonus +
+      featureInteractionBonus +
+      scannerUpgradeBonus +
+      perfectSystemsBonus +
+      fullCrewBonus +
+      governanceClarityBonus;
+
+  double get totalPenalties => healthPenalty + colonistLossPenalty + skipPenalty;
+
+  double get total => baseTotal * compoundMultiplier + totalBonuses - totalPenalties;
+
+  /// Localised entries for the ending screen breakdown display.
   List<MapEntry<String, double>> localizedEntries(AppLocalizations l10n) => [
-    MapEntry(l10n.ending_scoreLabel_landing, scoreLanding),
-    MapEntry(l10n.ending_scoreLabel_construction, scoreConstruction),
-    MapEntry(l10n.ending_scoreLabel_technology, scoreTechnology),
-    MapEntry(l10n.ending_scoreLabel_culture, scoreCulture),
-    MapEntry(l10n.ending_scoreLabel_atmosphere, scoreAtmosphere),
-    MapEntry(l10n.ending_scoreLabel_gravity, scoreGravity),
-    MapEntry(l10n.ending_scoreLabel_temperature, scoreTemperature),
-    MapEntry(l10n.ending_scoreLabel_water, scoreWater),
-    MapEntry(l10n.ending_scoreLabel_resources, scoreResources),
-    MapEntry(l10n.ending_scoreLabel_nativeRelations, scoreNativeRelations),
-    MapEntry(l10n.ending_scoreLabel_population, scorePopulation),
+    MapEntry(l10n.ending_scoreLabel_landing, landingPrecision),
+    MapEntry(l10n.ending_scoreLabel_construction, colonyViability),
+    MapEntry(l10n.ending_scoreLabel_technology, shipCondition),
+    MapEntry(l10n.ending_scoreLabel_atmosphere, planetQuality),
+    MapEntry(l10n.ending_scoreLabel_nativeRelations, nativeRelations),
+    MapEntry(l10n.ending_scoreLabel_population, totalBonuses),
+  ];
+
+  /// Detailed entries with all sub-scores for a full breakdown view.
+  List<MapEntry<String, double>> detailedEntries(AppLocalizations l10n) => [
+    // Base components
+    MapEntry(l10n.ending_scoreLabel_atmosphere, planetQuality),
+    MapEntry(l10n.ending_scoreLabel_technology, shipCondition),
+    MapEntry(l10n.ending_scoreLabel_construction, colonyViability),
+    MapEntry(l10n.ending_scoreLabel_nativeRelations, nativeRelations),
+    MapEntry(l10n.ending_scoreLabel_landing, landingPrecision),
+    // Bonuses
+    MapEntry(l10n.ending_scoreLabel_culture, totalBonuses),
+    // Penalties
+    MapEntry(l10n.ending_scoreLabel_population, -totalPenalties),
   ];
 }
 
@@ -80,7 +129,7 @@ class EndingResult {
   final String constructionLevel;
 
   /// The relationship with any native civilizations on the planet.
-  final String nativeRelations;
+  final String nativeRelationsLabel;
 
   /// A narrative paragraph describing the colony's unique character.
   final String colonyDescription;
@@ -103,7 +152,7 @@ class EndingResult {
     required this.cultureLevel,
     required this.technologyLevel,
     required this.constructionLevel,
-    required this.nativeRelations,
+    required this.nativeRelationsLabel,
     required this.colonyDescription,
     required this.landscapeDescription,
     required this.breakdown,
@@ -114,11 +163,11 @@ class EndingResult {
   String toString() => 'EndingResult($score — $tier)';
 }
 
-/// Combines ship health and planet habitability into a scored ending.
+/// Combines ship health, planet habitability, and voyage ideology into a scored ending.
 class EndingCalculator {
   EndingCalculator._();
 
-  /// Ship health contributes 40 %, planet habitability 60 %.
+  /// Main scoring entry point — 0 to 100,000 scale.
   static EndingResult calculate(
     ShipSystems ship,
     Planet planet,
@@ -127,21 +176,15 @@ class EndingCalculator {
     String? colonyName,
     int fuel = 200,
     bool landedOnMoon = false,
+    required VoyageState voyage,
   }) {
-    final breakdown = _calculateBreakdown(ship, planet, colonists, fuel, landedOnMoon);
-    // Penalise low average ship health: up to -15 points at 0% avg health.
-    final healthPenalty = (1.0 - ship.averageHealth) * 15.0;
-    // Hostile planets drag down the entire score — a perfect ship can't fully
-    // compensate for a terrible planet. The multiplier ranges from 0.45 (death
-    // world, hab=0) to 1.0 (utopia, hab≥0.75).
-    final hab = planet.habitabilityScore.clamp(0.0, 1.0);
-    final habitabilityMultiplier = 0.45 + 0.55 * (hab / 0.75).clamp(0.0, 1.0);
-    final rawScore = (breakdown.total - healthPenalty) * habitabilityMultiplier;
-    final score = rawScore.round().clamp(0, 130);
+    final breakdown = _calculateBreakdown(ship, planet, colonists, fuel, landedOnMoon, voyage);
+    final rawScore = breakdown.total;
+    final score = rawScore.round().clamp(0, 100000);
 
     final tierKey = _tierKeyFor(score);
     final tier = _localizeTier(tierKey, l10n);
-    // When landing on a moon, use the colony name or "moon of [planet]".
+
     final String effectiveName;
     if (landedOnMoon && colonyName == null) {
       effectiveName = '${planet.name} Moon';
@@ -151,7 +194,7 @@ class EndingCalculator {
     final title = _titleFor(tierKey, effectiveName, l10n);
     final epilogue = _epilogueFor(tierKey, planet, l10n, landedOnMoon: landedOnMoon);
 
-    final govKey = _governmentKeyFor(ship, planet);
+    final govKey = _governmentKeyFor(ship, voyage);
     final governmentType = _localizeGovernment(govKey, l10n);
     final cultureKey = _cultureKeyFor(ship, planet);
     final cultureLevel = _localizeCulture(cultureKey, l10n);
@@ -159,9 +202,9 @@ class EndingCalculator {
     final technologyLevel = _localizeTechnology(techKey, l10n);
     final constructKey = _constructionKeyFor(ship, planet);
     final constructionLevel = _localizeConstruction(constructKey, l10n);
-    final nativeKey = _nativeRelationsKeyFor(planet);
-    final nativeRelations = _localizeNativeRelations(nativeKey, l10n);
-    final landscapeDescription = _landscapeDescription(planet, l10n, landedOnMoon);
+    final nativeKey = _nativeRelationsKeyFor(planet, voyage);
+    final nativeRelationsLabel = _localizeNativeRelations(nativeKey, l10n);
+    final landscapeDescription = _landscapeDescription(planet, ship, l10n, landedOnMoon);
     final colonyDescription = _colonyDescriptionFor(
       planet: planet,
       governmentKey: govKey,
@@ -185,7 +228,7 @@ class EndingCalculator {
       cultureLevel: cultureLevel,
       technologyLevel: technologyLevel,
       constructionLevel: constructionLevel,
-      nativeRelations: nativeRelations,
+      nativeRelationsLabel: nativeRelationsLabel,
       colonyDescription: colonyDescription,
       landscapeDescription: landscapeDescription,
       breakdown: breakdown,
@@ -194,243 +237,254 @@ class EndingCalculator {
   }
 
   // ---------------------------------------------------------------------------
-  // Score breakdown
+  // Score breakdown — 100,000-point system
   // ---------------------------------------------------------------------------
 
   static ScoreBreakdown _calculateBreakdown(
     ShipSystems ship,
     Planet planet,
-    int colonists, [
-    int fuel = 200,
-    bool landedOnMoon = false,
-  ]) {
-    // Landing score includes fuel bonus: full fuel adds up to 2 extra points.
-    final fuelBonus = (fuel / 200.0).clamp(0.0, 1.0) * 2.0;
+    int colonists,
+    int fuel,
+    bool landedOnMoon,
+    VoyageState voyage,
+  ) {
+    // --- Planet Quality (0–25000) ---
+    // 6 planet stats, each log-scaled with weights.
+    final pqAtmo = _logScore(planet.atmosphere, 5000.0, 12.0);
+    final pqTemp = _logScore(planet.temperature, 4500.0, 10.0);
+    final pqWater = _logScore(planet.water, 4500.0, 12.0);
+    final pqResources = _logScore(planet.resources, 4000.0, 8.0);
+    final pqGravity = _logScore(planet.gravity, 3500.0, 3.0);
+    final pqBio = _logScore(planet.biodiversity, 3500.0, 9.0);
+    final planetQuality = (pqAtmo + pqTemp + pqWater + pqResources + pqGravity + pqBio)
+        .clamp(0.0, 25000.0);
 
-    var techScore = (ship.tech * 0.7 + planet.resources * 0.3) * 10;
-    var constructionScore =
-        (ship.constructors * 0.7 + planet.resources * 0.3) * 10;
-    var cultureScore = (ship.culture * 0.7 + planet.biodiversity * 0.3) * 10;
-    var waterScore = _logScore(planet.water, 12.0, 9.0);
+    // --- Ship Condition (0–20000) ---
+    // 14 ship system healths, weighted (hull/nav/cryopods worth more).
+    final shipCondition = _shipConditionScore(ship).clamp(0.0, 20000.0);
 
-    // --- Multi-moon scoring ---
-    final moonEffects = _applyMoonEffects(planet, landedOnMoon);
-    techScore *= moonEffects['techMultiplier'] ?? 1.0;
-    constructionScore *= moonEffects['constructionMultiplier'] ?? 1.0;
-    techScore += moonEffects['tech'] ?? 0;
-    constructionScore += moonEffects['construction'] ?? 0;
-    cultureScore += moonEffects['culture'] ?? 0;
-    waterScore += moonEffects['water'] ?? 0;
+    // --- Colony Viability (0–15000) ---
+    // Colonists alive (scaled), fuel remaining, construction/tech/culture.
+    final cvColonists = (colonists / 1000.0).clamp(0.0, 1.0) * 6000.0;
+    final cvFuel = (fuel / 200.0).clamp(0.0, 1.0) * 2000.0;
+    final cvConstruction = ship.constructors * 2500.0;
+    final cvTech = ship.tech * 2500.0;
+    final cvCulture = ship.culture * 2000.0;
+    final colonyViability = (cvColonists + cvFuel + cvConstruction + cvTech + cvCulture)
+        .clamp(0.0, 15000.0);
 
-    // No moons at all: resource penalty on tech/construction when resources are low.
-    if (planet.moons.isEmpty) {
-      if (planet.resources >= 0.3 && planet.resources < 0.6) {
-        techScore *= 0.90;
-        constructionScore *= 0.90;
-      } else if (planet.resources < 0.3) {
-        techScore *= 0.75;
-        constructionScore *= 0.75;
+    // --- Native Relations (0–10000) ---
+    double nativeRelScore;
+    if (planet.nativePresence < 0.1) {
+      nativeRelScore = 5000.0; // neutral — no natives
+    } else {
+      nativeRelScore = planet.nativePresence * planet.nativeDisposition * 10000.0;
+      // Bonus for high integration (disposition > 0.7 and presence > 0.5).
+      if (planet.nativeDisposition > 0.7 && planet.nativePresence > 0.5) {
+        nativeRelScore += 2000.0;
       }
     }
+    nativeRelScore = nativeRelScore.clamp(0.0, 10000.0);
 
-    // --- Ring system scoring ---
-    final ringEffects = _applyRingEffects(planet);
-    cultureScore += ringEffects['culture'] ?? 0;
-    waterScore += ringEffects['water'] ?? 0;
-    techScore += ringEffects['tech'] ?? 0;
-    constructionScore += ringEffects['construction'] ?? 0;
-    // Ring resources applied after resourcesScore is initialised below.
-    final ringResourcesBonus = ringEffects['resources'] ?? 0;
+    // --- Landing Precision (0–5000) ---
+    final lpBase = ship.landingSystem * 3000.0;
+    final lpFuel = (fuel / 200.0).clamp(0.0, 1.0) * 1000.0;
+    final lpMoon = landedOnMoon ? 1000.0 : 0.0;
+    final landingPrecision = (lpBase + lpFuel + lpMoon).clamp(0.0, 5000.0);
 
-    // Landing difficulty adjustment for moon landing.
-    var landingScore = ship.landingSystem * 10 + fuelBonus;
-    if (landedOnMoon && planet.bestHabitableMoon != null) {
-      // Lower gravity on moons makes landing easier: +1.0 bonus.
-      landingScore += 1.0;
+    // --- Multipliers (kept modest so 100K requires near-perfect run) ---
+    // Max compound: ~1.08 × 1.05 × 1.05 × 1.05 = ~1.25x
+    // A 75K base + 1.25x = 93.7K + bonuses → only true perfection hits 100K.
+    final hab = planet.habitabilityScore.clamp(0.0, 1.0);
+    final habitabilityMult = (0.7 + 0.38 * hab).clamp(0.7, 1.08);
+
+    // Governance coherence: max absolute axis > 0.5 gives small bonus.
+    final maxAxis = [
+      voyage.authorityAxis.abs(),
+      voyage.cultureAxis.abs(),
+      voyage.economyAxis.abs(),
+      voyage.faithAxis.abs(),
+      voyage.militaryAxis.abs(),
+    ].reduce((a, b) => a > b ? a : b);
+    final governanceMultFinal = maxAxis > 0.5
+        ? (1.0 + 0.05 * ((maxAxis - 0.5) / 0.5)).clamp(1.0, 1.05)
+        : 1.0;
+
+    // Encounters multiplier: small reward for surviving more encounters.
+    final maxEnc = voyage.maxEncounters > 0 ? voyage.maxEncounters : 30;
+    final encountersMult = maxEnc > 0
+        ? (1.0 + (voyage.encounterCount / maxEnc) * 0.05).clamp(1.0, 1.05)
+        : 1.0;
+
+    // Efficiency multiplier: small reward for fuel conservation.
+    final efficiencyMult = (0.97 + (fuel / 200.0) * 0.08).clamp(0.97, 1.05);
+
+    // --- Additive Bonuses ---
+    final moonBonus = landedOnMoon ? 2000.0 : 0.0;
+
+    double ringBonus = 0.0;
+    if (planet.rings != null) {
+      final d = planet.rings!.density;
+      ringBonus = switch (planet.rings!.type) {
+        RingType.dust => 500.0 * d,
+        RingType.ice => 1000.0 * d,
+        RingType.rocky => 1500.0 * d,
+        RingType.metallic => 2000.0 * d,
+      };
     }
-    // Log-scale scoring for planet stats: low values are severely punished.
-    // Formula: log(1 + stat * k) / log(1 + k) * weight
-    // k controls the curve — higher k = more penalty for low values.
-    // Gravity uses a gentler curve (more tolerable at low values).
-    var atmosphereScore = _logScore(planet.atmosphere, 12.0, 9.0);
-    var temperatureScore = _logScore(planet.temperature, 10.0, 9.0);
-    var resourcesScore = _logScore(planet.resources, 8.0, 12.0) + ringResourcesBonus;
-    var populationScore = _populationScore(colonists);
 
-    // Apply surface feature effects.
-    final featureEffects = _applySurfaceFeatureEffects(planet, ship);
-    resourcesScore += featureEffects['resources'] ?? 0;
-    cultureScore += featureEffects['culture'] ?? 0;
-    atmosphereScore += featureEffects['atmosphere'] ?? 0;
-    temperatureScore += featureEffects['temperature'] ?? 0;
-    techScore += featureEffects['technology'] ?? 0;
-    constructionScore += featureEffects['construction'] ?? 0;
-    populationScore += featureEffects['population'] ?? 0;
-    waterScore += featureEffects['water'] ?? 0;
-    landingScore += featureEffects['landing'] ?? 0;
+    // Surface feature bonus.
+    double surfaceFeatureBonus = 0.0;
+    for (final feature in planet.surfaceFeatures) {
+      surfaceFeatureBonus += _surfaceFeatureRarity(feature);
+    }
+
+    // Scanner upgrades.
+    final scannerUpgradeBonus = voyage.scannersUpgraded * 500.0;
+
+    // Perfect systems: all 14 ship systems >= 0.8.
+    final allSystems = [
+      ship.hull, ship.nav, ship.cryopods, ship.culture, ship.tech,
+      ship.constructors, ship.shields, ship.landingSystem,
+      ship.atmosphericScanner, ship.gravimetricScanner, ship.mineralScanner,
+      ship.lifeSignsScanner, ship.temperatureScanner, ship.waterScanner,
+    ];
+    final perfectSystemsBonus = allSystems.every((s) => s >= 0.8) ? 1000.0 : 0.0;
+
+    // Full crew.
+    final fullCrewBonus = colonists >= 950 ? 1000.0 : 0.0;
+
+    // Governance clarity bonus.
+    double govClarityBonus = 0.0;
+    if (maxAxis > 0.5) {
+      govClarityBonus = (500.0 + 1500.0 * ((maxAxis - 0.5) / 0.5)).clamp(500.0, 2000.0);
+    }
+
+    // --- Penalties ---
+    final healthPenalty = (1.0 - ship.averageHealth) * 5000.0;
+    final colonistLoss = (1000 - colonists).clamp(0, 1000);
+    final colonistLossPenalty = (colonistLoss * 10.0).clamp(0.0, 10000.0);
+    final skipped = voyage.planetsSkipped;
+    final skipPenalty = max(0, skipped - 3) * 200.0;
 
     return ScoreBreakdown(
-      scoreLanding: landingScore,
-      scoreConstruction: constructionScore,
-      // Culture/tech can exceed 1.0 (up to 1.5) so scores can reach 15.
-      scoreTechnology: techScore,
-      scoreCulture: cultureScore,
-      scoreAtmosphere: atmosphereScore,
-      scoreGravity: _logScore(planet.gravity, 10.0, 3.0), // gentler curve
-      scoreTemperature: temperatureScore,
-      scoreWater: waterScore,
-      scoreResources: resourcesScore,
-      scoreNativeRelations: _nativeRelationScore(planet),
-      scorePopulation: populationScore,
+      planetQuality: planetQuality,
+      shipCondition: shipCondition,
+      colonyViability: colonyViability,
+      nativeRelations: nativeRelScore,
+      landingPrecision: landingPrecision,
+      habitabilityMultiplier: habitabilityMult,
+      governanceMultiplier: governanceMultFinal,
+      encountersMultiplier: encountersMult,
+      efficiencyMultiplier: efficiencyMult,
+      moonBonus: moonBonus,
+      ringBonus: ringBonus,
+      surfaceFeatureBonus: surfaceFeatureBonus,
+      featureInteractionBonus: _calculateFeatureInteractions(planet, ship),
+      scannerUpgradeBonus: scannerUpgradeBonus,
+      perfectSystemsBonus: perfectSystemsBonus,
+      fullCrewBonus: fullCrewBonus,
+      governanceClarityBonus: govClarityBonus,
+      healthPenalty: healthPenalty,
+      colonistLossPenalty: colonistLossPenalty,
+      skipPenalty: skipPenalty,
     );
   }
 
-  static double _nativeRelationScore(Planet planet) {
-    if (planet.nativePresence < 0.1) return 5.0; // neutral
-    return planet.nativeDisposition * planet.nativePresence * 10;
+  /// Weighted ship condition score (0–20000).
+  /// Hull, nav, and cryopods are worth more than other systems.
+  static double _shipConditionScore(ShipSystems ship) {
+    // Weights: hull 3, nav 3, cryopods 3, culture 1.5, tech 1.5,
+    // constructors 1.5, shields 1, landingSystem 1.5, scanners 0.5 each.
+    const totalWeight = 3.0 + 3.0 + 3.0 + 1.5 + 1.5 + 1.5 + 1.0 + 1.5 + (0.5 * 6);
+    final weighted =
+        ship.hull * 3.0 +
+        ship.nav * 3.0 +
+        ship.cryopods * 3.0 +
+        ship.culture * 1.5 +
+        ship.tech * 1.5 +
+        ship.constructors * 1.5 +
+        ship.shields * 1.0 +
+        ship.landingSystem * 1.5 +
+        ship.atmosphericScanner * 0.5 +
+        ship.gravimetricScanner * 0.5 +
+        ship.mineralScanner * 0.5 +
+        ship.lifeSignsScanner * 0.5 +
+        ship.temperatureScanner * 0.5 +
+        ship.waterScanner * 0.5;
+    return (weighted / totalWeight) * 20000.0;
+  }
+
+  /// Rarity-based bonus per surface feature (100–500).
+  static double _surfaceFeatureRarity(String feature) {
+    // Rare/exotic features are worth more.
+    return switch (feature) {
+      'singing_crystals' => 500.0,
+      'megastructural_fragments' => 500.0,
+      'subspace_echoes' => 500.0,
+      'helium3_deposits' => 450.0,
+      'exotic_isotopes' => 450.0,
+      'floating_islands' => 400.0,
+      'gravity_wells' => 400.0,
+      'ancient_observatory' => 400.0,
+      'ancient_ruins' => 350.0,
+      'bioluminescent_life' => 350.0,
+      'geothermal_vents' => 300.0,
+      'crystal_caverns' => 300.0,
+      'fertile_soil' => 300.0,
+      'medicinal_flora' => 300.0,
+      'monuments' => 250.0,
+      'deep_oceans' => 250.0,
+      'symbiotic_organisms' => 250.0,
+      'aquatic_megafauna' => 250.0,
+      'floating_kelp_forests' => 200.0,
+      'megafauna' => 200.0,
+      'airtight_caves' => 200.0,
+      'insulated_caves' => 200.0,
+      'lava_tubes' => 200.0,
+      'ice_tunnels' => 200.0,
+      'orbital_wreckage' => 200.0,
+      'tameable_fauna' => 150.0,
+      'edible_plants' => 150.0,
+      'plant_life' => 100.0,
+      'unicellular_life' => 100.0,
+      'cryovolcanism' => 150.0,
+      'strong_magnetosphere' => 150.0,
+      'ghost_cities' => 500.0,
+      'archive_vaults' => 450.0,
+      'perpetual_aurora' => 350.0,
+      'petrified_megaflora' => 300.0,
+      'underground_rivers' => 250.0,
+      'carnivorous_flora' => 250.0,
+      'apex_predator' => 200.0,
+      'obsidian_plains' => 200.0,
+      'salt_flats' => 150.0,
+      'sinkhole_fields' => 150.0,
+      _ => 100.0, // unknown features get base rarity
+    };
   }
 
   /// Log-scale scoring: punishes low stats harder than linear.
   /// [stat] is 0.0–1.0, [weight] is the max score, [k] controls curvature.
-  /// k=3 is gentle (gravity), k=9 is moderate, k=12 is harsh (resources).
-  /// At k=9: stat 0.1 → 28% of max, stat 0.5 → 70%, stat 1.0 → 100%.
-  /// At k=12: stat 0.1 → 23% of max, stat 0.5 → 66%, stat 1.0 → 100%.
-  /// At k=3: stat 0.1 → 48% of max, stat 0.5 → 82%, stat 1.0 → 100%.
   static double _logScore(double stat, double weight, double k) {
     if (stat <= 0) return 0.0;
     return (log(1.0 + stat * k) / log(1.0 + k)) * weight;
   }
 
-  static double _populationScore(int colonists) {
-    if (colonists >= 950) return 10.0;
-    if (colonists >= 850) return 8.0;
-    if (colonists >= 700) return 6.0;
-    if (colonists >= 500) return 4.0;
-    if (colonists >= 250) return 2.0;
-    if (colonists > 0) return 1.0;
-    return 0.0;
-  }
-
-  /// Calculates additive and multiplicative effects from all moons.
-  ///
-  /// Returns a map with keys: 'tech', 'construction', 'culture', 'water',
-  /// 'techMultiplier', 'constructionMultiplier'.
-  static Map<String, double> _applyMoonEffects(Planet planet, bool landedOnMoon) {
-    final effects = <String, double>{};
-    void add(String k, double v) => effects[k] = (effects[k] ?? 0) + v;
-
-    var techMult = 1.0;
-    var conMult = 1.0;
-    var metalRichCount = 0;
-
-    for (final moon in planet.moons) {
-      switch (moon.type) {
-        case MoonType.barren:
-          // Neutral — no effect.
-          break;
-
-        case MoonType.metalRich:
-          // Diminishing returns: each additional gives 60 % of previous.
-          final diminish = _pow(0.6, metalRichCount);
-          metalRichCount++;
-
-          double techM;
-          double conM;
-          if (planet.resources < 0.3) {
-            techM = 1.10;
-            conM = 1.08;
-          } else if (planet.resources <= 0.6) {
-            techM = 1.03;
-            conM = 1.02;
-          } else {
-            techM = 1.05;
-            conM = 1.05;
-          }
-
-          // Scale bonus portion by moon.size and diminishing factor.
-          techMult *= 1.0 + (techM - 1.0) * moon.size * diminish;
-          conMult *= 1.0 + (conM - 1.0) * moon.size * diminish;
-
-        case MoonType.unstable:
-          // Full penalty each time — no diminishing returns.
-          add('tech', -2.0 * moon.size);
-          add('construction', -1.0 * moon.size);
-
-        case MoonType.habitable:
-          // Culture bonus from hope/inspiration — always applies.
-          add('culture', 1.0);
-
-          // If this is the moon we landed on, use its habitability for scoring.
-          if (landedOnMoon && moon == planet.bestHabitableMoon) {
-            // Habitability bonus scales tech and culture.
-            final hab = moon.habitability ?? 0.5;
-            add('tech', hab * 1.5);
-            add('culture', hab * 1.0);
-          }
-
-          // Water bonus from habitable moons with good water.
-          if ((moon.water ?? 0) > 0.6) {
-            add('water', 0.5 * moon.size);
-          }
-
-        case MoonType.ice:
-          // Water bonus inversely proportional to planet water (dry planets benefit more).
-          add('water', 2.0 * moon.size * (1.0 - planet.water));
-          // Ice harvesting infrastructure.
-          add('construction', 0.5 * moon.size);
-          // Water extraction technology.
-          add('tech', 0.3 * moon.size);
-      }
-    }
-
-    effects['techMultiplier'] = techMult;
-    effects['constructionMultiplier'] = conMult;
-    return effects;
-  }
-
-  /// Calculates additive effects from the ring system.
-  static Map<String, double> _applyRingEffects(Planet planet) {
-    final rings = planet.rings;
-    if (rings == null) return const {};
-
-    final d = rings.density;
-    switch (rings.type) {
-      case RingType.dust:
-        return {'culture': 1.0 * d};
-      case RingType.ice:
-        return {'culture': 1.5 * d, 'water': 0.5 * d};
-      case RingType.rocky:
-        return {'resources': 1.0 * d, 'construction': 0.5 * d};
-      case RingType.metallic:
-        return {'resources': 1.5 * d, 'tech': 1.0 * d};
-    }
-  }
-
-  /// Integer power for diminishing returns: base^exp (both non-negative).
-  static double _pow(double base, int exp) {
-    var result = 1.0;
-    for (var i = 0; i < exp; i++) {
-      result *= base;
-    }
-    return result;
-  }
-
   // ---------------------------------------------------------------------------
-  // Surface feature scoring
+  // Tier, title, and epilogue
   // ---------------------------------------------------------------------------
 
-  /// Calculates additive, multiplicative, and cancellation effects from
-  /// surface features. Returns a map of score category → delta.
-  static Map<String, double> _applySurfaceFeatureEffects(
-    Planet planet,
-    ShipSystems ship,
-  ) {
+  /// Calculates the net bonus from surface feature interactions (synergies,
+  /// cancellations, conditional effects). Restores the detailed feature
+  /// interaction system from the original scoring, scaled to the 100K system.
+  /// Old effects were 0–10 scale; we multiply by 500 for the 0–100K scale.
+  static double _calculateFeatureInteractions(Planet planet, ShipSystems ship) {
+    const scale = 500.0;
     final features = planet.surfaceFeatures.toSet();
-    final effects = <String, double>{};
+    var total = 0.0;
 
-    void add(String category, double value) {
-      effects[category] = (effects[category] ?? 0) + value;
-    }
+    void add(double value) { total += value * scale; }
 
     // --- Cancellation flags ---
     final hasDangerous = features.contains('dangerous_fauna');
@@ -442,434 +496,267 @@ class EndingCalculator {
     final hasRuins = features.contains('ancient_ruins');
     final hasMonuments = features.contains('monuments');
 
-    // --- Additive effects ---
-
+    // --- Plants & animals ---
     if (hasEdible) {
       var bonus = 1.5;
-      // Cancellation: poisonous + edible → edible bonus halved.
-      if (hasPoisonous) bonus = 0.75;
-      add('resources', bonus);
+      if (hasPoisonous) bonus = 0.75; // Cancellation: halved
+      add(bonus);
+      if (planet.water > 0.6) add(bonus * 0.15); // wet world bonus
+      if (planet.water < 0.2) add(-bonus * 0.2); // dry world penalty
     }
-
-    if (features.contains('plant_life')) {
-      add('culture', 0.5);
-      add('atmosphere', 0.5);
-    }
-
-    if (hasPoisonous) {
-      // Cancellation: poisonous + edible → poison penalty removed.
-      if (!hasEdible) {
-        add('population', -1.0);
-      }
-    }
-
-    if (hasTameable) {
-      add('resources', 1.0);
-      add('culture', 0.5);
-    }
-
+    if (features.contains('plant_life')) { add(0.5); add(0.5); }
+    if (hasPoisonous && !hasEdible) add(-1.0); // population penalty
+    if (hasTameable) { add(1.0); add(0.5); }
     if (hasDangerous) {
-      // Cancellation: dangerous + tameable → population penalty halved.
-      var popPenalty = -1.5;
-      if (hasTameable) popPenalty = -0.75;
-      add('population', popPenalty);
-      add('construction', -0.5);
+      var pop = -1.5;
+      if (hasTameable) pop = -0.75;
+      if (planet.biodiversity > 0.7) pop *= 2.0;
+      add(pop);
+      add(-0.5);
     }
+    if (features.contains('unicellular_life')) add(0.5);
 
-    if (features.contains('unicellular_life')) {
-      add('technology', 0.5);
-    }
+    // --- Caves ---
+    if (features.contains('airtight_caves')) { add(1.0); add(0.5); }
+    if (features.contains('insulated_caves')) { add(1.0); add(0.5); }
 
-    if (features.contains('airtight_caves')) {
-      add('construction', 1.0);
-      add('atmosphere', 0.5);
-    }
-
-    if (features.contains('insulated_caves')) {
-      add('construction', 1.0);
-      add('temperature', 0.5);
-    }
-
+    // --- Beauty / ugliness ---
     if (hasBeauty && hasUgliness) {
-      // Comedy and drama — two halves of the same mask. Culture doubles.
-      add('culture', 4.0);
+      add(4.0); // comedy + drama
     } else if (hasBeauty) {
-      add('culture', 2.0);
+      add(2.0);
     } else if (hasUgliness) {
-      add('culture', -1.0);
+      add(-1.0);
     }
 
-    if (hasRuins) {
-      add('technology', 2.0);
-      add('culture', 1.0);
-    }
+    // --- Ruins & monuments ---
+    if (hasRuins) { add(2.0); add(1.0); if (ship.tech > 0.7) add(2.0); }
+    if (hasMonuments) { add(1.5); add(0.5); }
+    if (hasRuins && hasMonuments) add(1.0); // synergy
+    if (hasPoisonous && planet.biodiversity > 0.7) add(1.0); // pharma
 
-    if (hasMonuments) {
-      add('culture', 1.5);
-      add('technology', 0.5);
-    }
-
-    // Synergy: ancient_ruins + monuments → extra culture.
-    if (hasRuins && hasMonuments) {
-      add('culture', 1.0);
-    }
-
-    // --- Multiplicative effects ---
-
-    if (hasEdible) {
-      if (planet.water > 0.6) {
-        // Scale existing resources bonus by 1.15.
-        final current = effects['resources'] ?? 0;
-        effects['resources'] = current * 1.15;
-      } else if (planet.water < 0.2) {
-        final current = effects['resources'] ?? 0;
-        effects['resources'] = current * 0.8;
-      }
-    }
-
-    if (hasDangerous && planet.biodiversity > 0.7) {
-      // Population penalty doubles: adjust from current to -3.0 base
-      // (before tameable halving).
-      final currentPop = effects['population'] ?? 0;
-      // Replace the dangerous_fauna contribution with doubled version.
-      final basePenalty = hasTameable ? -0.75 : -1.5;
-      final doubledPenalty = hasTameable ? -1.5 : -3.0;
-      effects['population'] = currentPop - basePenalty + doubledPenalty;
-    }
-
-    if (hasRuins && ship.tech > 0.7) {
-      // Technology bonus doubles: add another +2.0.
-      add('technology', 2.0);
-    }
-
-    if (hasPoisonous && planet.biodiversity > 0.7) {
-      // Pharma potential.
-      add('technology', 1.0);
-    }
-
-    // --- Rotation rate effects ---
-
-    if (features.contains('high_rotation')) {
-      // Short days: Coriolis effects hamper construction and landing,
-      // but the rapid spin stabilises atmosphere and boosts effective gravity.
-      add('construction', -1.0);
-      // Landing penalty: crosswinds from Coriolis.
-      add('atmosphere', 0.5);
-    }
-
+    // --- Rotation ---
+    if (features.contains('high_rotation')) { add(-1.0); add(0.5); }
     if (features.contains('low_rotation')) {
-      // Long days: extreme thermal swings between day/night hemispheres,
-      // but tidal-locked twilight zones harbour diverse life.
-      add('temperature', -1.0);
-      add('population', -0.5);
-      if (planet.biodiversity > 0.4) {
-        add('culture', 0.5);
-      }
+      add(-1.0); add(-0.5);
+      if (planet.biodiversity > 0.4) add(0.5);
     }
 
-    // --- Geological effects ---
-
+    // --- Geological ---
     if (features.contains('volcanic_activity')) {
-      // Lava fields expose minerals but make construction treacherous.
-      add('resources', 1.5);
-      add('construction', -1.5);
-      add('temperature', -0.5);
-      // Synergy: insulated caves shelter colonists from eruptions.
-      if (features.contains('insulated_caves')) {
-        add('construction', 1.0); // partially cancels penalty
-      }
+      add(1.5); add(-1.5); add(-0.5);
+      if (features.contains('insulated_caves')) add(1.0);
     }
-
     if (features.contains('tectonic_instability')) {
-      // Quakes expose mineral veins but flatten anything built.
-      add('resources', 1.0);
-      add('construction', -1.5);
-      add('population', -1.0);
-      // Synergy: airtight caves = underground cities survive quakes.
-      if (features.contains('airtight_caves')) {
-        add('construction', 0.5);
-        add('population', 0.5);
-      }
+      add(1.0); add(-1.5); add(-1.0);
+      if (features.contains('airtight_caves')) { add(0.5); add(0.5); }
     }
 
-    // --- Atmospheric effects ---
-
+    // --- Atmospheric ---
     if (features.contains('electrical_storms')) {
-      // Constant lightning fries exposed electronics but is an energy source.
-      add('technology', -1.0);
-      add('construction', -0.5);
-      // High-tech colonies can harness the energy.
-      if (ship.tech > 0.7) {
-        add('technology', 1.5); // net +0.5
-        add('resources', 0.5);
-      }
-      // Cancels beauty — hard to admire scenery through static.
-      if (hasBeauty) {
-        add('culture', -1.0);
-      }
+      add(-1.0); add(-0.5);
+      if (ship.tech > 0.7) { add(1.5); add(0.5); }
+      if (hasBeauty) add(-1.0);
     }
-
     if (features.contains('toxic_spores')) {
-      // Airborne biological contaminants threaten colonist health.
-      add('population', -1.5);
-      add('atmosphere', -0.5);
-      // High-tech filtration systems reduce the threat.
-      if (ship.tech > 0.7) {
-        add('population', 0.75);
-      }
-      // Pharma potential from the spores themselves.
-      if (planet.biodiversity > 0.5) {
-        add('technology', 0.5);
-      }
+      add(-1.5); add(-0.5);
+      if (ship.tech > 0.7) add(0.75);
+      if (planet.biodiversity > 0.5) add(0.5);
     }
 
-    // --- Hydrological effects ---
-
+    // --- Hydrological ---
     if (features.contains('deep_oceans')) {
-      // Vast oceans boost water score but submerge resources and limit land.
-      add('resources', -1.0);
-      add('construction', -1.0);
-      // Synergy: edible plants + deep oceans = aquaculture.
-      if (hasEdible) {
-        add('resources', 1.5);
-        add('population', 0.5);
-      }
-      // Culture bonus: ocean worlds inspire art and wonder.
-      add('culture', 0.5);
+      add(-1.0); add(-1.0); add(0.5);
+      if (hasEdible) { add(1.5); add(0.5); }
     }
-
     if (features.contains('geothermal_vents')) {
-      // Rare and valuable: energy, warmth, mineral-rich water.
-      add('temperature', 1.0);
-      add('resources', 1.0);
-      add('technology', 1.0);
-      // Synergy: deep oceans + geothermal = thriving ecosystem.
-      if (features.contains('deep_oceans')) {
-        add('resources', 0.5);
-        add('technology', 0.5);
-      }
+      add(1.0); add(1.0); add(1.0);
+      if (features.contains('deep_oceans')) { add(0.5); add(0.5); }
     }
 
-    // --- Magnetosphere effects ---
-
+    // --- Magnetosphere ---
     if (features.contains('strong_magnetosphere')) {
-      // Shields the surface from stellar radiation but disrupts electronics.
-      add('technology', -0.5);
-      add('population', 1.0);
-      // Effective radiation shielding.
-      if (planet.radiation > 0.6) {
-        // Planet has high radiation — magnetosphere compensates.
-        add('atmosphere', 1.0);
-      }
+      add(-0.5); add(1.0);
+      if (planet.radiation > 0.6) add(1.0);
     }
-
     if (features.contains('weak_magnetosphere')) {
-      // Surface exposed to stellar wind — radiation hazard.
-      add('population', -1.0);
-      add('atmosphere', -0.5);
-      // But: spectacular auroras inspire culture.
-      add('culture', 0.5);
-      // Synergy: beauty + weak magnetosphere = aurora world.
-      if (hasBeauty) {
-        add('culture', 1.5);
-      }
+      add(-1.0); add(-0.5); add(0.5);
+      if (hasBeauty) add(1.5);
     }
 
-    // --- Exotic life effects ---
-
+    // --- Exotic life ---
     if (features.contains('megafauna')) {
-      // Enormous creatures: dangerous but awe-inspiring.
-      add('population', -1.0);
-      add('construction', -0.5);
-      add('culture', 1.5);
-      // Synergy: dangerous fauna + megafauna = apex predator hell.
-      if (hasDangerous) {
-        add('population', -1.0);
-      }
-      // Synergy: tameable fauna + megafauna = beast of burden potential.
-      if (hasTameable) {
-        add('construction', 1.0);
-        add('resources', 0.5);
-      }
+      add(-1.0); add(-0.5); add(1.5);
+      if (hasDangerous) add(-1.0);
+      if (hasTameable) { add(1.0); add(0.5); }
     }
-
     if (features.contains('symbiotic_organisms')) {
-      // Cooperative biology amplifies other life features.
-      add('population', 0.5);
-      add('resources', 0.5);
-      // Amplifies edible plants.
-      if (hasEdible) {
-        add('resources', 0.5);
-      }
-      // Amplifies tameable fauna.
-      if (hasTameable) {
-        add('culture', 0.5);
-        add('resources', 0.5);
-      }
-      // High biodiversity synergy.
-      if (planet.biodiversity > 0.6) {
-        add('technology', 0.5);
-      }
+      add(0.5); add(0.5);
+      if (hasEdible) add(0.5);
+      if (hasTameable) { add(0.5); add(0.5); }
+      if (planet.biodiversity > 0.6) add(0.5);
     }
 
-    // --- Anomaly effects ---
-
+    // --- Anomaly ---
     if (features.contains('gravity_wells')) {
-      // Localised gravity distortions: dangerous but scientifically priceless.
-      add('construction', -1.5);
-      // Landing is treacherous in warped gravity.
-      if (ship.tech > 0.7) {
-        add('technology', 2.0);
-      } else {
-        add('technology', 0.5);
-      }
-      add('population', -0.5);
+      add(-1.5); add(-0.5);
+      add(ship.tech > 0.7 ? 2.0 : 0.5);
     }
-
     if (features.contains('subspace_echoes')) {
-      // The planet resonates with something beyond normal space.
-      // Enormous culture value — the planet "remembers."
-      add('culture', 2.0);
-      // Synergy: ancient ruins + subspace echoes = alien memory palace.
-      if (hasRuins) {
-        add('culture', 1.5);
-        add('technology', 1.5);
-      }
-      // Synergy: monuments + echoes = living memorials.
-      if (hasMonuments) {
-        add('culture', 1.0);
-      }
+      add(2.0);
+      if (hasRuins) { add(1.5); add(1.5); }
+      if (hasMonuments) add(1.0);
     }
 
-    // --- Life features ---
-
-    if (features.contains('bioluminescent_life')) {
-      add('culture', 1.0); // beauty/wonder
-      add('technology', 0.5); // study value
-    }
-
+    // --- Life ---
+    if (features.contains('bioluminescent_life')) { add(1.0); add(0.5); }
     if (features.contains('aquatic_megafauna')) {
-      add('resources', 1.0); // fishing
-      add('construction', -0.5); // ocean obstacles
-      // Synergy: deep oceans + aquatic megafauna = thriving marine economy.
-      if (features.contains('deep_oceans')) {
-        add('resources', 1.0);
-      }
+      add(1.0); add(-0.5);
+      if (features.contains('deep_oceans')) add(1.0);
     }
+    if (features.contains('floating_kelp_forests')) { add(1.5); add(0.5); }
+    if (features.contains('medicinal_flora')) { add(1.5); add(0.5); }
 
-    if (features.contains('floating_kelp_forests')) {
-      add('resources', 1.5); // sustainable harvest
-      add('water', 0.5);
-    }
-
-    if (features.contains('medicinal_flora')) {
-      add('population', 1.5);
-      add('technology', 0.5); // pharmaceutical research
-    }
-
-    // --- Terrain features ---
-
+    // --- Terrain ---
     if (features.contains('floating_islands')) {
-      add('culture', 2.0); // awe-inspiring
-      add('construction', 1.0); // natural platforms
-      // Synergy: outstanding beauty + floating islands = iconic vistas.
-      if (hasBeauty) {
-        add('culture', 1.0);
-      }
+      add(2.0); add(1.0);
+      if (hasBeauty) add(1.0);
     }
-
     if (features.contains('crystal_caverns')) {
-      add('resources', 1.0);
-      add('culture', 1.0); // beauty
-      // Synergy: singing crystals + crystal caverns = harmonic caves.
-      if (features.contains('singing_crystals')) {
-        add('culture', 1.5);
-      }
+      add(1.0); add(1.0);
+      if (features.contains('singing_crystals')) add(1.5);
     }
-
-    if (features.contains('lava_tubes')) {
-      add('construction', 1.0); // natural shelter
-      add('atmosphere', 0.5); // sealable tunnels
-      add('population', -0.5); // heat hazard
-    }
-
-    if (features.contains('ice_tunnels')) {
-      add('construction', 1.0); // natural shelter
-      add('atmosphere', 0.5); // sealable tunnels
-      add('water', 0.5); // meltwater
-    }
+    if (features.contains('lava_tubes')) { add(1.0); add(0.5); add(-0.5); }
+    if (features.contains('ice_tunnels')) { add(1.0); add(0.5); add(0.5); }
 
     // --- Space debris ---
-
-    if (features.contains('orbital_wreckage')) {
-      add('technology', 1.5); // salvage
-      add('resources', 1.0); // scrap metal
-      add('construction', -0.5); // debris rain risk
-    }
-
-    if (features.contains('megastructural_fragments')) {
-      add('technology', 3.0); // alien engineering
-      add('construction', 1.5); // prefab materials
-      add('culture', -1.0); // existential dread of fallen civilization
-    }
-
-    if (features.contains('ancient_observatory')) {
-      add('technology', 2.0); // star charts
-      add('culture', 1.0); // knowledge
-      add('landing', 0.5); // nav bonus on ship
-    }
+    if (features.contains('orbital_wreckage')) { add(1.5); add(1.0); add(-0.5); }
+    if (features.contains('megastructural_fragments')) { add(3.0); add(1.5); add(-1.0); }
+    if (features.contains('ancient_observatory')) { add(2.0); add(1.0); add(0.5); }
 
     // --- Environmental ---
-
-    if (features.contains('extreme_seasons')) {
-      add('construction', -1.0); // weather damage
-      add('population', -0.5); // harsh transitions
-      add('resources', 0.5); // seasonal adaptation / biodiversity
-    }
-
-    if (features.contains('cryovolcanism')) {
-      add('resources', 1.0); // mineral deposits
-      add('construction', -0.5); // unstable ground
-      add('water', 0.5); // ice geysers
-    }
+    if (features.contains('extreme_seasons')) { add(-1.0); add(-0.5); add(0.5); }
+    if (features.contains('cryovolcanism')) { add(1.0); add(-0.5); add(0.5); }
 
     // --- Rare/exotic ---
+    if (features.contains('singing_crystals')) { add(2.0); add(0.5); }
+    if (features.contains('fertile_soil')) { add(2.0); add(1.0); }
+    if (features.contains('helium3_deposits')) { add(2.0); add(1.0); }
+    if (features.contains('exotic_isotopes')) { add(1.5); add(1.0); add(-0.5); }
 
-    if (features.contains('singing_crystals')) {
-      add('culture', 2.0); // unique beauty/music
-      add('technology', 0.5); // piezoelectric potential
+    // --- New features ---
+    if (features.contains('perpetual_aurora')) {
+      add(2.0); // culture/wonder
+      // Synergy: aurora + outstanding beauty = iconic world.
+      if (hasBeauty) add(2.0);
+      // Synergy: aurora + weak magnetosphere = the aurora IS from the weak field.
+      if (features.contains('weak_magnetosphere')) add(1.0);
+    }
+    if (features.contains('petrified_megaflora')) {
+      add(1.0); add(0.5); // resources + culture
+      // Synergy: petrified forest + ancient ruins = what killed everything?
+      if (hasRuins) { add(1.5); add(1.0); } // mystery + forensic study
+    }
+    if (features.contains('underground_rivers')) {
+      add(1.0); add(0.5); // water + construction
+      // Synergy: underground rivers + airtight caves = underground civilization.
+      if (features.contains('airtight_caves')) { add(1.0); add(0.5); }
+      // Synergy: underground rivers + sinkhole fields = navigable sinkholes.
+      if (features.contains('sinkhole_fields')) add(1.0); // partially cancels sinkhole penalty
+      // Synergy: underground rivers + salt flats = hidden oasis.
+      if (features.contains('salt_flats')) add(1.0); // water beneath the salt
+    }
+    if (features.contains('obsidian_plains')) {
+      add(0.5); add(-0.5); // resources, -bio
+      // Synergy: obsidian plains + crystal caverns = geological treasure.
+      if (features.contains('crystal_caverns')) add(1.0);
+    }
+    if (features.contains('salt_flats')) {
+      add(1.0); // mineral wealth
+    }
+    if (features.contains('carnivorous_flora')) {
+      add(-1.5); add(0.5); // -population, +bio
+      // Synergy: carnivorous + medicinal flora = dangerous pharma potential.
+      if (features.contains('medicinal_flora')) add(1.5); // tech/pharma
+      // Synergy: carnivorous flora + apex predator = everything here kills.
+      if (features.contains('apex_predator')) add(-1.0); // stacking lethality
+    }
+    if (features.contains('ghost_cities')) {
+      add(3.0); add(2.0); add(1.0); // massive tech + construction + culture
+      // Synergy: ghost cities + ancient ruins.
+      if (hasRuins) add(1.5);
+      // Synergy: ghost cities + archive vaults = knowledge within the city.
+      if (features.contains('archive_vaults')) { add(2.0); add(1.0); }
+      // Synergy: ghost cities + subspace echoes = alien ghosts haunt the city.
+      if (features.contains('subspace_echoes')) { add(2.0); add(1.5); }
+    }
+    if (features.contains('archive_vaults')) {
+      add(2.5); add(1.0); // tech + culture
+      if (ship.tech > 0.7) add(1.5); // high-tech unlocks more
+      // Synergy: archive vaults + ancient ruins.
+      if (hasRuins) add(1.5);
+    }
+    if (features.contains('sinkhole_fields')) {
+      // Base penalty reduced if underground rivers present (handled above).
+      final sinkPop = features.contains('underground_rivers') ? -0.5 : -1.0;
+      final sinkCon = features.contains('underground_rivers') ? -0.75 : -1.5;
+      add(sinkCon); add(sinkPop);
+    }
+    if (features.contains('apex_predator')) {
+      add(-2.0); add(-0.5); add(1.5); // -population, -construction, +culture (legends)
+      if (hasDangerous) add(-1.0); // stacks with dangerous fauna
+      // Synergy: apex predator + megafauna = terrifying apex chain (pure negative).
+      if (features.contains('megafauna')) { add(-2.0); add(-1.0); }
     }
 
-    if (features.contains('fertile_soil')) {
-      add('resources', 2.0); // agriculture
-      add('population', 1.0); // food security
+    // --- Anti-synergies (negative feature interactions) ---
+
+    // Toxic spores contaminate the food supply.
+    if (features.contains('toxic_spores') && hasEdible) add(-1.0);
+    // Tectonic instability + sinkholes = ground can't be trusted at all.
+    if (features.contains('tectonic_instability') && features.contains('sinkhole_fields')) {
+      add(-1.5); add(-0.5);
+    }
+    // Eruptions destroy floating island platforms.
+    if (features.contains('volcanic_activity') && features.contains('floating_islands')) add(-1.0);
+    // Lightning shatters the singing crystals.
+    if (features.contains('electrical_storms') && features.contains('singing_crystals')) add(-1.0);
+    // Toxic spores make medicinal flora harder to harvest safely.
+    if (features.contains('toxic_spores') && features.contains('medicinal_flora')) add(-0.5);
+    // Gravity wells pull floating islands down.
+    if (features.contains('gravity_wells') && features.contains('floating_islands')) {
+      add(-1.5); add(-1.0);
+    }
+    // Sinkholes on an ocean world flood catastrophically.
+    if (features.contains('deep_oceans') && features.contains('sinkhole_fields')) add(-1.5);
+    // Quakes crumble the ghost cities, destroying irreplaceable data.
+    if (features.contains('tectonic_instability') && features.contains('ghost_cities')) add(-1.0);
+    // Volcanic activity melts ice tunnel infrastructure.
+    if (features.contains('volcanic_activity') && features.contains('ice_tunnels')) add(-1.0);
+    // Radiation mutates toxic spores into something worse.
+    if (features.contains('weak_magnetosphere') && features.contains('toxic_spores')) add(-1.0);
+    // Glass floor collapses into sinkholes beneath.
+    if (features.contains('obsidian_plains') && features.contains('sinkhole_fields')) {
+      add(-1.0); add(-0.5);
+    }
+    // Seasonal hunger cycles make carnivorous flora more aggressive.
+    if (features.contains('extreme_seasons') && features.contains('carnivorous_flora')) add(-0.5);
+    // Ice geysers flood the lava tubes.
+    if (features.contains('cryovolcanism') && features.contains('lava_tubes')) add(-0.5);
+    // Coriolis + storms = planet-spanning hyperstorms.
+    if (features.contains('high_rotation') && features.contains('electrical_storms')) {
+      add(-1.0); add(-0.5);
     }
 
-    if (features.contains('helium3_deposits')) {
-      add('technology', 2.0); // fusion fuel
-      add('resources', 1.0); // energy exports
-    }
-
-    if (features.contains('exotic_isotopes')) {
-      add('technology', 1.5); // research
-      add('resources', 1.0);
-      add('population', -0.5); // radiation risk
-    }
-
-    return effects;
+    return total;
   }
 
-  // ---------------------------------------------------------------------------
-  // Tier, title, and epilogue (original logic)
-  // ---------------------------------------------------------------------------
-
-  /// Internal tier key (not localized — used for switch logic).
   static String _tierKeyFor(int score) {
-    if (score >= 95) return 'Golden Age';
-    if (score >= 75) return 'Thriving Colony';
-    if (score >= 55) return 'Survival';
-    if (score >= 35) return 'Struggling';
-    if (score >= 15) return 'Dire';
+    if (score >= 80000) return 'Golden Age';
+    if (score >= 60000) return 'Thriving Colony';
+    if (score >= 40000) return 'Survival';
+    if (score >= 20000) return 'Struggling';
+    if (score >= 5000) return 'Dire';
     return 'Extinction';
   }
 
@@ -921,7 +808,6 @@ class EndingCalculator {
     AppLocalizations l10n, {
     bool landedOnMoon = false,
   }) {
-    // Use "a moon of [planet]" when landed on moon for narrative context.
     final name = landedOnMoon ? 'a moon of ${planet.name}' : planet.name;
     switch (tierKey) {
       case 'Golden Age':
@@ -942,32 +828,50 @@ class EndingCalculator {
   }
 
   // ---------------------------------------------------------------------------
-  // Government type
+  // Government type — 10 types using ideology axes
   // ---------------------------------------------------------------------------
 
-  static String _governmentKeyFor(ShipSystems ship, Planet planet) {
-    final cultureHealth = ship.culture;
-    final techHealth = ship.tech;
-    final cryoHealth = ship.cryopods;
+  static String _governmentKeyFor(ShipSystems ship, VoyageState voyage) {
+    // 1. Tribal Council — cryopods < 0.15 (civilization collapse)
+    if (ship.cryopods < 0.15) return 'Tribal Council';
 
-    if (cryoHealth < 0.15) return 'Tribal Council';
+    // 2. Fascist State — authorityAxis > 0.5 AND militaryAxis > 0.2
+    if (voyage.authorityAxis > 0.5 && voyage.militaryAxis > 0.2) {
+      return 'Fascist State';
+    }
 
-    if (cultureHealth > 0.7) {
-      if (techHealth > 0.7) return 'Democracy';
+    // 3. Military Junta — militaryAxis > 0.4 AND authorityAxis > 0.2
+    if (voyage.militaryAxis > 0.4 && voyage.authorityAxis > 0.2) {
+      return 'Military Junta';
+    }
+
+    // 4. Theocracy — faithAxis > 0.4
+    if (voyage.faithAxis > 0.4) return 'Theocracy';
+
+    // 5. Corporate Oligarchy — economyAxis > 0.4
+    if (voyage.economyAxis > 0.4) return 'Corporate Oligarchy';
+
+    // 6. Commune — economyAxis < -0.4 AND authorityAxis < -0.2
+    if (voyage.economyAxis < -0.4 && voyage.authorityAxis < -0.2) {
+      return 'Commune';
+    }
+
+    // 7. Technocracy — ship.tech > ship.culture + 0.2
+    if (ship.tech > ship.culture + 0.2) return 'Technocracy';
+
+    // 8. Democracy — authorityAxis < -0.3 AND cultureAxis > 0.0
+    if (voyage.authorityAxis < -0.3 && voyage.cultureAxis > 0.0) {
       return 'Democracy';
     }
 
-    if (cultureHealth > 0.4) {
-      if (techHealth > cultureHealth) return 'Technocracy';
+    // 9. Republic — authorityAxis between -0.3 and 0.1 AND cultureAxis > -0.2
+    if (voyage.authorityAxis >= -0.3 &&
+        voyage.authorityAxis <= 0.1 &&
+        voyage.cultureAxis > -0.2) {
       return 'Republic';
     }
 
-    if (cultureHealth > 0.2) {
-      if (techHealth > 0.5) return 'Technocracy';
-      return 'Autocracy';
-    }
-
-    if (cryoHealth < 0.3) return 'Tribal Council';
+    // 10. Autocracy — fallback
     return 'Autocracy';
   }
 
@@ -983,6 +887,16 @@ class EndingCalculator {
         return l10n.ending_governmentAutocracy;
       case 'Tribal Council':
         return l10n.ending_governmentTribalCouncil;
+      case 'Fascist State':
+        return l10n.ending_governmentFascistState;
+      case 'Military Junta':
+        return l10n.ending_governmentMilitaryJunta;
+      case 'Theocracy':
+        return l10n.ending_governmentTheocracy;
+      case 'Corporate Oligarchy':
+        return l10n.ending_governmentCorporateOligarchy;
+      case 'Commune':
+        return l10n.ending_governmentCommune;
       default:
         return key;
     }
@@ -1023,14 +937,13 @@ class EndingCalculator {
   static String _technologyKeyFor(ShipSystems ship, Planet planet) {
     var techScore = ship.tech * 0.5 + planet.resources * 0.5;
 
-    // Moon effects on tech level thresholds.
     for (final moon in planet.moons) {
       if (moon.type == MoonType.unstable) {
-        techScore -= 0.15 * moon.size; // Bombardment risk damages technology.
+        techScore -= 0.15 * moon.size;
       } else if (moon.type == MoonType.metalRich && planet.resources < 0.3) {
-        techScore += 0.10 * moon.size; // Moon compensates for poor resources.
+        techScore += 0.10 * moon.size;
       } else if (moon.type == MoonType.ice) {
-        techScore += 0.03 * moon.size; // Minor tech from water extraction.
+        techScore += 0.03 * moon.size;
       }
     }
 
@@ -1062,14 +975,13 @@ class EndingCalculator {
   static String _constructionKeyFor(ShipSystems ship, Planet planet) {
     var score = ship.constructors * 0.5 + planet.resources * 0.5;
 
-    // Moon effects on construction level.
     for (final moon in planet.moons) {
       if (moon.type == MoonType.unstable) {
-        score -= 0.08 * moon.size; // Debris damages infrastructure.
+        score -= 0.08 * moon.size;
       } else if (moon.type == MoonType.metalRich && planet.resources < 0.3) {
-        score += 0.07 * moon.size; // Moon minerals supplement poor resources.
+        score += 0.07 * moon.size;
       } else if (moon.type == MoonType.ice) {
-        score += 0.03 * moon.size; // Ice harvesting infrastructure.
+        score += 0.03 * moon.size;
       }
     }
 
@@ -1095,27 +1007,36 @@ class EndingCalculator {
   }
 
   // ---------------------------------------------------------------------------
-  // Native relations
+  // Native relations — 7 types using ideology axes
   // ---------------------------------------------------------------------------
 
-  static String _nativeRelationsKeyFor(Planet planet) {
+  static String _nativeRelationsKeyFor(Planet planet, VoyageState voyage) {
+    // 1. None — presence < 0.1
     if (planet.nativePresence < 0.1) return 'None';
 
     final disposition = planet.nativeDisposition;
-    final presence = planet.nativePresence;
 
-    if (disposition > 0.7) {
-      if (presence > 0.5) return 'Integrated';
-      return 'Coexistence';
+    // 2. Integrated — disposition > 0.7 AND militaryAxis < 0.0
+    if (disposition > 0.7 && voyage.militaryAxis < 0.0) return 'Integrated';
+
+    // 3. Alliance — disposition > 0.5 AND authorityAxis < 0.2
+    if (disposition > 0.5 && voyage.authorityAxis < 0.2) return 'Alliance';
+
+    // 4. Coexistence — disposition > 0.3
+    if (disposition > 0.3) return 'Coexistence';
+
+    // 5. Subjugation — militaryAxis > 0.3 AND authorityAxis > 0.3
+    if (voyage.militaryAxis > 0.3 && voyage.authorityAxis > 0.3) {
+      return 'Subjugation';
     }
 
-    if (disposition > 0.4) {
-      if (presence > 0.6) return 'Tension';
-      return 'Coexistence';
-    }
+    // 6. Tension — disposition 0.1 to 0.3
+    if (disposition >= 0.1 && disposition <= 0.3) return 'Tension';
 
-    if (presence > 0.5) return 'Conflict';
-    return 'Tension';
+    // 7. Conflict — disposition < 0.1 AND presence > 0.3
+    if (disposition < 0.1 && planet.nativePresence > 0.3) return 'Conflict';
+
+    return 'Tension'; // fallback
   }
 
   static String _localizeNativeRelations(String key, AppLocalizations l10n) {
@@ -1124,8 +1045,12 @@ class EndingCalculator {
         return l10n.ending_nativesNone;
       case 'Integrated':
         return l10n.ending_nativesIntegrated;
+      case 'Alliance':
+        return l10n.ending_nativesAlliance;
       case 'Coexistence':
         return l10n.ending_nativesCoexistence;
+      case 'Subjugation':
+        return l10n.ending_nativesSubjugation;
       case 'Tension':
         return l10n.ending_nativesTension;
       case 'Conflict':
@@ -1139,7 +1064,7 @@ class EndingCalculator {
   // Landscape description
   // ---------------------------------------------------------------------------
 
-  static String _landscapeDescription(Planet planet, AppLocalizations l10n, [bool landedOnMoon = false]) {
+  static String _landscapeDescription(Planet planet, ShipSystems ship, AppLocalizations l10n, [bool landedOnMoon = false]) {
     final buf = StringBuffer();
 
     // Gravity description.
@@ -1171,6 +1096,38 @@ class EndingCalculator {
       buf.write(l10n.ending_landscapeAtmoLow);
     }
 
+    // Temperature description.
+    if (planet.temperature > 0.8) {
+      buf.write('Surface temperatures are punishing. Exposed metal blisters in the heat, and settlers must time their work to the cooler hours. ');
+    } else if (planet.temperature > 0.6) {
+      buf.write('The climate runs hot, with long dry seasons and shimmering heat haze over the lowlands. ');
+    } else if (planet.temperature < 0.15) {
+      buf.write('The world is locked in deep cold, where breath crystallizes instantly and exposed skin freezes in minutes. ');
+    } else if (planet.temperature < 0.3) {
+      buf.write('Frost clings to every surface and long winters dominate the calendar. ');
+    }
+    // Mid-range (0.3-0.6) is comfortable — no special mention needed.
+
+    // Radiation description.
+    if (planet.radiation > 0.7) {
+      buf.write('Background radiation is dangerously elevated. Settlers will need shielded habitats and limited surface exposure. ');
+    } else if (planet.radiation > 0.5) {
+      buf.write('Moderate radiation levels require careful monitoring and periodic shelter rotations. ');
+    } else if (planet.radiation < 0.15) {
+      buf.write('Radiation levels are remarkably low, allowing unrestricted surface activity. ');
+    }
+
+    // Biodiversity description.
+    if (planet.biodiversity > 0.8) {
+      buf.write('Life teems across every surface; the biosphere is dense, complex, and aggressively competitive. ');
+    } else if (planet.biodiversity > 0.6) {
+      buf.write('A rich web of native organisms covers much of the planet, promising both resources and challenges. ');
+    } else if (planet.biodiversity < 0.15) {
+      buf.write('The world is biologically barren: sterile rock and dust with no detectable organic activity. ');
+    } else if (planet.biodiversity < 0.3) {
+      buf.write('Only the hardiest organisms cling to existence here, scattered across an otherwise lifeless landscape. ');
+    }
+
     // Moons in the sky.
     if (planet.moons.isNotEmpty) {
       buf.write(_moonLandscapeDescription(planet, l10n, landedOnMoon));
@@ -1178,7 +1135,6 @@ class EndingCalculator {
 
     // Moon landing narrative.
     if (landedOnMoon && planet.bestHabitableMoon != null) {
-      // TODO(l10n): ending_landscapeMoonLanding
       buf.write('The colony was founded on the surface of the habitable moon, '
           'where lighter gravity eases the burden of construction. ');
     }
@@ -1188,51 +1144,8 @@ class EndingCalculator {
       buf.write(_ringLandscapeDescription(planet.rings!, l10n));
     }
 
-    // Rotation rate.
-    if (planet.surfaceFeatures.contains('high_rotation')) {
-      buf.write(l10n.ending_landscapeHighRotation);
-    } else if (planet.surfaceFeatures.contains('low_rotation')) {
-      buf.write(l10n.ending_landscapeLowRotation);
-    }
-
-    // Geological.
-    if (planet.surfaceFeatures.contains('volcanic_activity')) {
-      buf.write(l10n.ending_landscapeVolcanic);
-    }
-    if (planet.surfaceFeatures.contains('tectonic_instability')) {
-      buf.write(l10n.ending_landscapeTectonic);
-    }
-
-    // Atmospheric.
-    if (planet.surfaceFeatures.contains('electrical_storms')) {
-      buf.write(l10n.ending_landscapeElectricalStorms);
-    }
-    if (planet.surfaceFeatures.contains('toxic_spores')) {
-      buf.write(l10n.ending_landscapeToxicSpores);
-    }
-
-    // Hydrological.
-    if (planet.surfaceFeatures.contains('deep_oceans')) {
-      buf.write(l10n.ending_landscapeDeepOceans);
-    }
-    if (planet.surfaceFeatures.contains('geothermal_vents')) {
-      buf.write(l10n.ending_landscapeGeothermalVents);
-    }
-
-    // Magnetosphere.
-    if (planet.surfaceFeatures.contains('strong_magnetosphere')) {
-      buf.write(l10n.ending_landscapeStrongMagnetosphere);
-    } else if (planet.surfaceFeatures.contains('weak_magnetosphere')) {
-      buf.write(l10n.ending_landscapeWeakMagnetosphere);
-    }
-
-    // Exotic life.
-    if (planet.surfaceFeatures.contains('megafauna')) {
-      buf.write(l10n.ending_landscapeMegafauna);
-    }
-    if (planet.surfaceFeatures.contains('symbiotic_organisms')) {
-      buf.write(l10n.ending_landscapeSymbioticOrganisms);
-    }
+    // (Common feature prose for rotation, geological, atmospheric, magnetosphere,
+    // exotic life is now handled in the dedicated prose section below.)
 
     // Anomalies.
     if (planet.surfaceFeatures.contains('gravity_wells')) {
@@ -1242,32 +1155,125 @@ class EndingCalculator {
       buf.write(l10n.ending_landscapeSubspaceEchoes);
     }
 
+    // Common biological features (skip if biosphere described as barren).
+    if (planet.surfaceFeatures.contains('plant_life') && planet.biodiversity >= 0.15) {
+      buf.write('Green growth carpets the lowlands, the first sign of a world that can sustain terrestrial crops. ');
+    }
+    if (planet.surfaceFeatures.contains('edible_plants')) {
+      buf.write('Field teams confirmed edible plant species, a crucial head start on food independence. ');
+    }
+    if (planet.surfaceFeatures.contains('poisonous_plants')) {
+      buf.write('Many native plants carry potent toxins; colonists will need to learn which species to avoid. ');
+    }
+    if (planet.surfaceFeatures.contains('unicellular_life')) {
+      buf.write('Microbial life thrives in the soil and water, a building block for future ecological integration. ');
+    }
+    if (planet.surfaceFeatures.contains('dangerous_fauna')) {
+      buf.write('Aggressive predators roam the surface, making armed escorts a necessity for any expedition. ');
+    }
+    if (planet.surfaceFeatures.contains('tameable_fauna')) {
+      buf.write('Several native species show signs of domesticability: potential labor animals and companions. ');
+    }
+
+    // Common terrain features.
+    if (planet.surfaceFeatures.contains('airtight_caves')) {
+      buf.write('Networks of naturally sealed caves offer ready-made shelter, requiring minimal modification for habitation. ');
+    }
+    if (planet.surfaceFeatures.contains('insulated_caves')) {
+      buf.write('Deep caves maintain stable temperatures year-round, natural refuges from the surface extremes. ');
+    }
+
+    // Common aesthetic features.
+    if (planet.surfaceFeatures.contains('outstanding_beauty') && planet.surfaceFeatures.contains('outstanding_ugliness')) {
+      buf.write('The landscape is a study in contrasts: breathtaking beauty beside nightmarish desolation, as if two worlds were stitched together at the seams. ');
+    } else if (planet.surfaceFeatures.contains('outstanding_beauty')) {
+      buf.write('The landscape is breathtaking, with sweeping vistas that lift the spirit and remind the colonists why they crossed the stars. ');
+    } else if (planet.surfaceFeatures.contains('outstanding_ugliness')) {
+      buf.write('The terrain is bleak and hostile to the eye. Twisted rock formations and discolored soil stretch to every horizon. ');
+    }
+
+    // Common archaeological features.
+    if (planet.surfaceFeatures.contains('ancient_ruins')) {
+      buf.write('Weathered alien ruins dot the landscape, their builders long vanished but their engineering still standing. ');
+    }
+    if (planet.surfaceFeatures.contains('monuments')) {
+      buf.write('Towering monuments of unknown origin stand sentinel across the plains, carved from materials that resist all weathering. ');
+    }
+
+    // Rotation features.
+    if (planet.surfaceFeatures.contains('high_rotation')) {
+      buf.write('The planet spins rapidly. Days are short and Coriolis winds buffet anything above ground level. ');
+    }
+    if (planet.surfaceFeatures.contains('low_rotation')) {
+      buf.write('The world turns slowly, with punishingly long days and nights that drive extreme thermal swings. ');
+    }
+
+    // Geological features.
+    if (planet.surfaceFeatures.contains('volcanic_activity')) {
+      buf.write('Active volcanoes paint the horizon with smoke and ash, the ground itself restless beneath the colony. ');
+    }
+    if (planet.surfaceFeatures.contains('tectonic_instability')) {
+      buf.write('The ground shakes with regular tremors, a reminder that this world\'s crust is young and unsettled. ');
+    }
+
+    // Atmospheric features.
+    if (planet.surfaceFeatures.contains('electrical_storms')) {
+      buf.write('Lightning laces the sky with alarming frequency, electromagnetic interference a constant nuisance. ');
+    }
+    if (planet.surfaceFeatures.contains('toxic_spores')) {
+      buf.write('Clouds of biological spores drift on the wind, requiring sealed habitats and filtered breathing equipment. ');
+    }
+
+    // Magnetosphere features.
+    if (planet.surfaceFeatures.contains('strong_magnetosphere')) {
+      buf.write('A powerful magnetosphere shields the surface, deflecting stellar radiation but playing havoc with compasses and unshielded electronics. ');
+    }
+    if (planet.surfaceFeatures.contains('weak_magnetosphere')) {
+      buf.write('The planet\'s weak magnetic field offers little protection from stellar wind, but paints the sky with shimmering auroral displays. ');
+    }
+
+    // Hydrological features.
+    if (planet.surfaceFeatures.contains('deep_oceans')) {
+      buf.write('The planet is mostly ocean: vast, dark waters stretching to every horizon, with only scattered archipelagos breaking the surface. ');
+    }
+    if (planet.surfaceFeatures.contains('geothermal_vents')) {
+      buf.write('Geothermal vents line the seabed and crater rims, pumping mineral-rich heat into the surrounding waters and soil. ');
+    }
+
+    // Exotic life features.
+    if (planet.surfaceFeatures.contains('megafauna')) {
+      buf.write('Enormous creatures roam the surface, dwarfing anything in Earth\'s fossil record and shaking the ground with every step. ');
+    }
+    if (planet.surfaceFeatures.contains('symbiotic_organisms')) {
+      buf.write('A web of cooperative organisms permeates the ecosystem, linking species in mutual dependency. ');
+    }
+
     // Life features.
     if (planet.surfaceFeatures.contains('bioluminescent_life')) {
-      buf.write('At night, the surface glows with bioluminescent organisms. ');
+      buf.write('At night, bioluminescent organisms set the landscape alight, turning forests and shorelines into rivers of cold fire. ');
     }
     if (planet.surfaceFeatures.contains('aquatic_megafauna')) {
-      buf.write('Colossal creatures glide through the planet\'s waters, dwarfing anything from Earth\'s oceans. ');
+      buf.write('Colossal creatures glide through the planet\'s waters, their shadows darkening the seabed for hundreds of metres. ');
     }
     if (planet.surfaceFeatures.contains('floating_kelp_forests')) {
       buf.write('Vast kelp forests sway in the currents, a sustainable bounty for the colony. ');
     }
     if (planet.surfaceFeatures.contains('medicinal_flora')) {
-      buf.write('The native flora holds remarkable pharmaceutical potential. ');
+      buf.write('The native flora holds remarkable pharmaceutical potential, with compounds that could treat diseases Earth medicine never solved. ');
     }
 
     // Terrain features.
     if (planet.surfaceFeatures.contains('floating_islands')) {
-      buf.write('Massive stone formations drift through the atmosphere, defying gravity. ');
+      buf.write('Impossibly, stone formations the size of mountains drift through the atmosphere, trailing waterfalls into the void below. ');
     }
     if (planet.surfaceFeatures.contains('crystal_caverns')) {
-      buf.write('Vast crystal caverns glitter beneath the surface. ');
+      buf.write('Below the crust, crystal caverns stretch for kilometres, their faceted walls catching and multiplying even the faintest light. ');
     }
     if (planet.surfaceFeatures.contains('lava_tubes')) {
-      buf.write('Networks of lava tubes offer natural shelter beneath the surface. ');
+      buf.write('Networks of lava tubes wind beneath the surface, their smooth walls already shaped for habitation. ');
     }
     if (planet.surfaceFeatures.contains('ice_tunnels')) {
-      buf.write('Tunnels carved through ancient ice provide shelter and meltwater. ');
+      buf.write('Tunnels carved through ancient ice provide insulation and a steady supply of meltwater. ');
     }
 
     // Space debris.
@@ -1275,7 +1281,7 @@ class EndingCalculator {
       buf.write('Debris from an ancient vessel orbits overhead, a graveyard in the sky. ');
     }
     if (planet.surfaceFeatures.contains('megastructural_fragments')) {
-      buf.write('Colossal fragments of alien engineering litter the landscape like fallen monuments. ');
+      buf.write('Colossal fragments of alien engineering litter the landscape like toppled pillars of a civilization that built on a planetary scale. ');
     }
     if (planet.surfaceFeatures.contains('ancient_observatory')) {
       buf.write('An ancient observatory sits atop a peak, its instruments still pointed at the stars. ');
@@ -1294,13 +1300,196 @@ class EndingCalculator {
       buf.write('Crystalline formations hum with an eerie harmony that shifts with the wind. ');
     }
     if (planet.surfaceFeatures.contains('fertile_soil')) {
-      buf.write('Rich, dark soil stretches to the horizon \u2014 a farmer\'s paradise. ');
+      buf.write('Rich, dark soil stretches to the horizon: a farmer\'s paradise. ');
     }
     if (planet.surfaceFeatures.contains('helium3_deposits')) {
       buf.write('Helium-3 deposits in the regolith promise near-limitless fusion fuel. ');
     }
     if (planet.surfaceFeatures.contains('exotic_isotopes')) {
       buf.write('The ground is laced with exotic isotopes, a treasure trove for researchers. ');
+    }
+
+    // New features.
+    if (planet.surfaceFeatures.contains('perpetual_aurora') && !planet.surfaceFeatures.contains('weak_magnetosphere')) {
+      buf.write('Shimmering curtains of light dance endlessly across the sky, painting every night in shifting color. ');
+    }
+    if (planet.surfaceFeatures.contains('petrified_megaflora')) {
+      buf.write('Towering stone trunks of petrified trees stand like gravestones of a long-dead biosphere. ');
+    }
+    if (planet.surfaceFeatures.contains('underground_rivers')) {
+      buf.write('Hidden rivers flow beneath the surface, carving vast cavern networks accessible through sinkholes. ');
+    }
+    if (planet.surfaceFeatures.contains('obsidian_plains')) {
+      buf.write('Vast plains of volcanic glass stretch to the horizon, razor-sharp and mirror-smooth. ');
+    }
+    if (planet.surfaceFeatures.contains('salt_flats')) {
+      buf.write('Blinding white salt flats mark where ancient seas evaporated, leaving mineral wealth behind. ');
+    }
+    if (planet.surfaceFeatures.contains('carnivorous_flora')) {
+      buf.write('The plant life here is aggressive. Tendrils snap at anything that moves too slowly. ');
+    }
+    if (planet.surfaceFeatures.contains('ghost_cities')) {
+      buf.write('An empty alien metropolis stands perfectly preserved, every door open, every street silent, as if the population simply walked away. ');
+    }
+    if (planet.surfaceFeatures.contains('archive_vaults')) {
+      buf.write('Sealed vaults beneath the surface hold alien data in formats no human has seen before. ');
+    }
+    if (planet.surfaceFeatures.contains('sinkhole_fields')) {
+      buf.write('The ground is treacherous; sinkholes open without warning, swallowing anything above. ');
+    }
+    if (planet.surfaceFeatures.contains('apex_predator')) {
+      buf.write('A single apex predator dominates the ecosystem, a terrifying creature that even megafauna avoid. ');
+    }
+
+    // --- Feature interaction prose (synergies & anti-synergies) ---
+
+    // Biological interactions.
+    if (planet.surfaceFeatures.contains('edible_plants') && planet.surfaceFeatures.contains('deep_oceans')) {
+      buf.write('Coastal aquaculture thrives where edible plants meet the shallows, feeding the colony from sea and land alike. ');
+    }
+    if (planet.surfaceFeatures.contains('symbiotic_organisms') && planet.surfaceFeatures.contains('edible_plants')) {
+      buf.write('Symbiotic organisms amplify crop yields, wrapping root systems in nutrient-rich networks. ');
+    }
+    if (planet.surfaceFeatures.contains('symbiotic_organisms') && planet.surfaceFeatures.contains('tameable_fauna')) {
+      buf.write('The symbiotic organisms bond with domesticated animals, making them stronger and more docile. ');
+    }
+    if (planet.surfaceFeatures.contains('dangerous_fauna') && planet.surfaceFeatures.contains('megafauna')) {
+      buf.write('The megafauna attract apex hunters, creating a food chain where colonists are far from the top. ');
+    }
+    if (planet.surfaceFeatures.contains('tameable_fauna') && planet.surfaceFeatures.contains('megafauna')) {
+      buf.write('Some of the megafauna prove tameable: massive beasts of burden that can haul materials no machine could move. ');
+    }
+    if (planet.surfaceFeatures.contains('poisonous_plants') && planet.biodiversity > 0.7) {
+      buf.write('The toxic flora, studied carefully, yields compounds of extraordinary pharmaceutical value. ');
+    }
+    if (planet.surfaceFeatures.contains('toxic_spores') && planet.surfaceFeatures.contains('edible_plants')) {
+      buf.write('Airborne spores contaminate the crops, forcing the colony into sealed greenhouse agriculture. ');
+    }
+    if (planet.surfaceFeatures.contains('toxic_spores') && planet.surfaceFeatures.contains('medicinal_flora')) {
+      buf.write('Harvesting the medicinal plants means braving the toxic spore clouds, a dangerous but necessary risk. ');
+    }
+    if (planet.surfaceFeatures.contains('carnivorous_flora') && planet.surfaceFeatures.contains('medicinal_flora')) {
+      buf.write('The most potent medicines grow alongside the most dangerous plants, requiring hazmat-suited collection teams. ');
+    }
+    if (planet.surfaceFeatures.contains('carnivorous_flora') && planet.surfaceFeatures.contains('apex_predator')) {
+      buf.write('Between the hunting plants and the apex predator, nothing on this world is safe outside fortified walls. ');
+    }
+    if (planet.surfaceFeatures.contains('extreme_seasons') && planet.surfaceFeatures.contains('carnivorous_flora')) {
+      buf.write('Seasonal hunger cycles drive the carnivorous flora into frenzied aggression during lean months. ');
+    }
+
+    // Geological interactions.
+    if (planet.surfaceFeatures.contains('volcanic_activity') && planet.surfaceFeatures.contains('insulated_caves')) {
+      buf.write('The insulated caves provide shelter from eruptions, their thick walls holding firm against the heat. ');
+    }
+    if (planet.surfaceFeatures.contains('tectonic_instability') && planet.surfaceFeatures.contains('airtight_caves')) {
+      buf.write('Underground cities in the sealed caves ride out the quakes, their flexible joints absorbing the tremors. ');
+    }
+    if (planet.surfaceFeatures.contains('volcanic_activity') && planet.surfaceFeatures.contains('floating_islands')) {
+      buf.write('Eruptions threaten the floating platforms, molten debris arcing upward to batter the drifting islands. ');
+    }
+    if (planet.surfaceFeatures.contains('volcanic_activity') && planet.surfaceFeatures.contains('ice_tunnels')) {
+      buf.write('Volcanic heat is slowly melting the ice tunnel network, collapsing passages that took millennia to form. ');
+    }
+    if (planet.surfaceFeatures.contains('tectonic_instability') && planet.surfaceFeatures.contains('sinkhole_fields')) {
+      buf.write('Tremors trigger cascading sinkholes, swallowing entire grid squares of mapped terrain overnight. ');
+    }
+    if (planet.surfaceFeatures.contains('tectonic_instability') && planet.surfaceFeatures.contains('ghost_cities')) {
+      buf.write('The alien city is slowly crumbling under the quakes, irreplaceable architecture lost with every tremor. ');
+    }
+    if (planet.surfaceFeatures.contains('obsidian_plains') && planet.surfaceFeatures.contains('crystal_caverns')) {
+      buf.write('Beneath the obsidian surface lies a geological treasure: crystal caverns formed in the volcanic aftermath. ');
+    }
+    if (planet.surfaceFeatures.contains('obsidian_plains') && planet.surfaceFeatures.contains('sinkhole_fields')) {
+      buf.write('The glass-smooth obsidian conceals sinkholes beneath, a lethal trap for the unwary. ');
+    }
+    if (planet.surfaceFeatures.contains('cryovolcanism') && planet.surfaceFeatures.contains('lava_tubes')) {
+      buf.write('Ice geysers periodically flood the lava tube shelters, forcing evacuations and costly repairs. ');
+    }
+
+    // Hydrological interactions.
+    if (planet.surfaceFeatures.contains('deep_oceans') && planet.surfaceFeatures.contains('geothermal_vents')) {
+      buf.write('Geothermal vents on the ocean floor create thriving ecosystems and natural hot springs along the coast. ');
+    }
+    if (planet.surfaceFeatures.contains('deep_oceans') && planet.surfaceFeatures.contains('sinkhole_fields')) {
+      buf.write('Coastal sinkholes breach into the ocean, flooding lowland settlements with catastrophic surges. ');
+    }
+    if (planet.surfaceFeatures.contains('underground_rivers') && planet.surfaceFeatures.contains('airtight_caves')) {
+      buf.write('Underground rivers connect the sealed cave systems, enabling subterranean civilization with running water. ');
+    }
+    if (planet.surfaceFeatures.contains('underground_rivers') && planet.surfaceFeatures.contains('sinkhole_fields')) {
+      buf.write('The rivers that carved the sinkholes also make them navigable. What was a hazard becomes a highway. ');
+    }
+    if (planet.surfaceFeatures.contains('underground_rivers') && planet.surfaceFeatures.contains('salt_flats')) {
+      buf.write('Beneath the salt crust, hidden rivers carry fresh water: an oasis for those who know where to drill. ');
+    }
+
+    // Atmospheric interactions.
+    if (planet.surfaceFeatures.contains('electrical_storms') && ship.tech > 0.7) {
+      buf.write('Advanced lightning harvesters convert the constant storms into a reliable power grid. ');
+    }
+    if (planet.surfaceFeatures.contains('electrical_storms') && planet.surfaceFeatures.contains('outstanding_beauty')) {
+      buf.write('The storms, for all their danger, paint the sky with violent beauty that no colonist can look away from. ');
+    }
+    if (planet.surfaceFeatures.contains('electrical_storms') && planet.surfaceFeatures.contains('singing_crystals')) {
+      buf.write('Lightning strikes shatter the singing crystals, silencing their harmonics one storm at a time. ');
+    }
+    if (planet.surfaceFeatures.contains('high_rotation') && planet.surfaceFeatures.contains('electrical_storms')) {
+      buf.write('The rapid spin feeds the storms into planet-spanning hyperstorms that circle the equator endlessly. ');
+    }
+    if (planet.surfaceFeatures.contains('weak_magnetosphere') && planet.surfaceFeatures.contains('toxic_spores')) {
+      buf.write('Stellar radiation mutates the spores between seasons, making each bloom more unpredictable than the last. ');
+    }
+    if (planet.surfaceFeatures.contains('weak_magnetosphere') && planet.surfaceFeatures.contains('outstanding_beauty')) {
+      buf.write('The weak magnetic field lets stellar wind pour in unchecked, igniting auroral displays of staggering intensity across every latitude. ');
+    }
+
+    // Anomaly interactions.
+    if (planet.surfaceFeatures.contains('subspace_echoes') && planet.surfaceFeatures.contains('ancient_ruins')) {
+      buf.write('The ruins resonate with subspace echoes, preserving alien memories that surface as vivid hallucinations. ');
+    }
+    if (planet.surfaceFeatures.contains('subspace_echoes') && planet.surfaceFeatures.contains('monuments')) {
+      buf.write('The monuments amplify the subspace echoes, turning the landscape into a living memorial to a vanished people. ');
+    }
+    if (planet.surfaceFeatures.contains('gravity_wells') && planet.surfaceFeatures.contains('floating_islands')) {
+      buf.write('The gravity wells are dragging the floating islands down. Some have already crashed, leaving craters where wonders once drifted. ');
+    }
+    if (planet.surfaceFeatures.contains('gravity_wells') && ship.tech > 0.7) {
+      buf.write('The gravity anomalies, properly harnessed, could revolutionize physics. The colony\'s scientists are already taking measurements. ');
+    }
+
+    // Archaeological interactions.
+    if (planet.surfaceFeatures.contains('ancient_ruins') && planet.surfaceFeatures.contains('monuments')) {
+      buf.write('The ruins and monuments together tell the story of a civilization that built grandly and vanished completely. ');
+    }
+    if (planet.surfaceFeatures.contains('ancient_ruins') && ship.tech > 0.7) {
+      buf.write('High-tech analysis of the ruins is unlocking alien engineering principles decades ahead of human science. ');
+    }
+    if (planet.surfaceFeatures.contains('ghost_cities') && planet.surfaceFeatures.contains('archive_vaults')) {
+      buf.write('Within the ghost city\'s walls, sealed archive vaults contain a civilization\'s worth of knowledge, waiting to be deciphered. ');
+    }
+    if (planet.surfaceFeatures.contains('ghost_cities') && planet.surfaceFeatures.contains('subspace_echoes')) {
+      buf.write('The empty city echoes with subspace whispers. The ghosts of its builders, some colonists say, still walk the streets. ');
+    }
+    if (planet.surfaceFeatures.contains('petrified_megaflora') && planet.surfaceFeatures.contains('ancient_ruins')) {
+      buf.write('Petrified forests surround the ruins, both fossilized at the same moment. Whatever killed this world, it was sudden. ');
+    }
+
+    // New feature interactions.
+    if (planet.surfaceFeatures.contains('perpetual_aurora') && planet.surfaceFeatures.contains('outstanding_beauty')) {
+      buf.write('The perpetual aurora crowns the already stunning landscape, making this one of the most visually magnificent worlds ever catalogued. ');
+    }
+    if (planet.surfaceFeatures.contains('perpetual_aurora') && planet.surfaceFeatures.contains('weak_magnetosphere')) {
+      buf.write('The aurora is a direct consequence of the weak magnetosphere: beautiful, but a constant reminder of the radiation filtering through. ');
+    }
+    if (planet.surfaceFeatures.contains('archive_vaults') && planet.surfaceFeatures.contains('ancient_ruins')) {
+      buf.write('The ruins contain sealed vaults of alien data: a library buried beneath the rubble of its civilization. ');
+    }
+    if (planet.surfaceFeatures.contains('apex_predator') && planet.surfaceFeatures.contains('megafauna')) {
+      buf.write('The apex predator hunts the megafauna, a terrifying display of power that makes all other life (including colonists) irrelevant prey. ');
+    }
+    if (planet.surfaceFeatures.contains('apex_predator') && planet.surfaceFeatures.contains('dangerous_fauna')) {
+      buf.write('Even the dangerous predators avoid the apex species, creating an eerie silence wherever it hunts. ');
     }
 
     // Surface features.
@@ -1329,7 +1518,6 @@ class EndingCalculator {
     final buf = StringBuffer();
 
     if (landedOnMoon) {
-      // Colony is on the moon — the planet dominates the sky.
       buf.write(' The parent planet dominates the horizon, a vast sphere of color and cloud');
       final siblingCount = count - 1;
       if (siblingCount > 0) {
@@ -1349,7 +1537,6 @@ class EndingCalculator {
         buf.write(' $countWord moons hang in the sky');
       }
 
-      // Describe notable types.
       final notable = <String>[];
       if (hasHabitable) notable.add('a habitable world');
       if (hasIce) notable.add('a frozen ice moon');
@@ -1362,7 +1549,6 @@ class EndingCalculator {
       buf.write('. ');
     }
 
-    // Ice moon water harvesting note.
     if (hasIce) {
       buf.write("Ice harvested from the frozen moon supplements the colony's water supply. ");
     }
@@ -1372,8 +1558,6 @@ class EndingCalculator {
 
   /// Generates landscape text describing the ring system.
   static String _ringLandscapeDescription(RingSystem rings, AppLocalizations l10n) {
-    // TODO(l10n): ending_landscapeRingDust, ending_landscapeRingIce,
-    //            ending_landscapeRingRocky, ending_landscapeRingMetallic
     return switch (rings.type) {
       RingType.dust =>
         ' A delicate ring of dust encircles the planet, glowing softly in the starlight. ',
@@ -1464,7 +1648,6 @@ class EndingCalculator {
     final hasIce = planet.moons.any((m) => m.type == MoonType.ice);
 
     if (landedOnMoon) {
-      // Colony is ON the moon — describe the parent planet and sibling moons.
       buf.write('The colony looks up at the vast parent planet filling the sky. ');
       if (otherMoonCount > 0) {
         buf.write('$otherMoonCount sibling moon${otherMoonCount == 1 ? '' : 's'} share${otherMoonCount == 1 ? 's' : ''} the orbit. ');
@@ -1526,6 +1709,16 @@ class EndingCalculator {
         return l10n.ending_govSentenceAutocracy(planetName);
       case 'Tribal Council':
         return l10n.ending_govSentenceTribalCouncil(planetName);
+      case 'Fascist State':
+        return l10n.ending_govSentenceFascistState(planetName);
+      case 'Military Junta':
+        return l10n.ending_govSentenceMilitaryJunta(planetName);
+      case 'Theocracy':
+        return l10n.ending_govSentenceTheocracy(planetName);
+      case 'Corporate Oligarchy':
+        return l10n.ending_govSentenceCorporateOligarchy(planetName);
+      case 'Commune':
+        return l10n.ending_govSentenceCommune(planetName);
       default:
         return l10n.ending_govSentenceDefault(planetName);
     }
@@ -1566,6 +1759,8 @@ class EndingCalculator {
       'Coexistence' => l10n.ending_nativeSentenceCoexistence(planetName),
       'Tension' => l10n.ending_nativeSentenceTension(planetName),
       'Conflict' => l10n.ending_nativeSentenceConflict(planetName),
+      'Alliance' => l10n.ending_nativeSentenceAlliance(planetName),
+      'Subjugation' => l10n.ending_nativeSentenceSubjugation(planetName),
       _ => '',
     };
 
@@ -1581,4 +1776,5 @@ class EndingCalculator {
       _ => l10n.ending_outlookDefault(planetName),
     };
   }
+
 }

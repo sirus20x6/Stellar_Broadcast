@@ -143,6 +143,16 @@ class Planet {
     'helium3_deposits',
     'exotic_isotopes',
     'medicinal_flora',
+    'perpetual_aurora',
+    'petrified_megaflora',
+    'underground_rivers',
+    'obsidian_plains',
+    'salt_flats',
+    'carnivorous_flora',
+    'ghost_cities',
+    'archive_vaults',
+    'sinkhole_fields',
+    'apex_predator',
   ];
 
   /// Human-readable labels for surface features.
@@ -190,6 +200,16 @@ class Planet {
     'helium3_deposits': 'Helium-3 Deposits',
     'exotic_isotopes': 'Exotic Isotopes',
     'medicinal_flora': 'Medicinal Flora',
+    'perpetual_aurora': 'Perpetual Aurora',
+    'petrified_megaflora': 'Petrified Megaflora',
+    'underground_rivers': 'Underground Rivers',
+    'obsidian_plains': 'Obsidian Plains',
+    'salt_flats': 'Salt Flats',
+    'carnivorous_flora': 'Carnivorous Flora',
+    'ghost_cities': 'Ghost Cities',
+    'archive_vaults': 'Archive Vaults',
+    'sinkhole_fields': 'Sinkhole Fields',
+    'apex_predator': 'Apex Predator',
   };
 
   const Planet({

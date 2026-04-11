@@ -4,8 +4,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
-import 'package:quickapps_iap/quickapps_iap.dart';
+import 'package:quickapps_debug/quickapps_debug.dart';
+import 'package:stellar_broadcast/app.dart' show routeObserver;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
@@ -17,7 +19,6 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
-import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:stellar_broadcast/services/voyage_save_service.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
@@ -35,7 +36,7 @@ class TitleScreen extends ConsumerStatefulWidget {
 }
 
 class _TitleScreenState extends ConsumerState<TitleScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   static const _background = Color(0xFF0B1426);
   static const _accent = Color(0xFF00E5FF);
 
@@ -44,13 +45,16 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
   bool _bgMusicStarted = false;
   String _buildLabel = '';
   bool _hasSavedVoyage = false;
+  int _adRefreshCount = 0;
 
   @override
   void initState() {
     super.initState();
     _checkSavedVoyage();
     PackageInfo.fromPlatform().then((info) {
-      if (mounted) setState(() => _buildLabel = 'v${info.version}+${info.buildNumber}');
+      if (mounted) {
+        setState(() => _buildLabel = 'v${info.version}+${info.buildNumber}');
+      }
     });
     _starController = AnimationController(
       vsync: this,
@@ -65,11 +69,24 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _bgMusicTimer?.cancel();
     GameSfx().stopIntroLogo();
     _starController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() => _adRefreshCount++);
+    _checkSavedVoyage();
   }
 
   void _startBgMusic() {
@@ -80,7 +97,9 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
 
   void _handleVersionTap() {
     final upgrades = ref.read(legacyProvider).upgrades;
-    ref.read(voyageProvider.notifier).startVoyage(upgrades: upgrades, l10n: context.l10n);
+    ref
+        .read(voyageProvider.notifier)
+        .startVoyage(upgrades: upgrades, l10n: context.l10n);
     // Degrade systems to various levels for visual testing.
     final notifier = ref.read(voyageProvider.notifier);
     notifier.debugDegradeSystem('hull', 0.40);
@@ -103,318 +122,258 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
     final voyage = ref.read(voyageProvider);
     if (voyage.encounterCount == 0 && !voyage.isComplete) {
       final upgrades = ref.read(legacyProvider).upgrades;
-      ref.read(voyageProvider.notifier).startVoyage(upgrades: upgrades, l10n: context.l10n);
+      ref
+          .read(voyageProvider.notifier)
+          .startVoyage(upgrades: upgrades, l10n: context.l10n);
     }
   }
 
   void _showDebugMenu() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF0B1426),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        final accent = const Color(0xFF00E5FF);
-        Widget btn(String label, VoidCallback onTap) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(ctx);
-                  onTap();
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: accent.withValues(alpha: 0.3)),
-                    color: accent.withValues(alpha: 0.06),
-                  ),
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: accent, fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+    final pool = getEventPool(context.l10n);
 
-        return StatefulBuilder(
-          builder: (ctx, setSheetState) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('DEBUG MENU', style: TextStyle(color: accent, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 2)),
-              const SizedBox(height: 12),
-              // Ad/Premium toggle
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: accent.withValues(alpha: 0.3)),
-                  color: accent.withValues(alpha: 0.06),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'SHOW ADS (override premium)',
-                      style: TextStyle(color: accent, fontSize: 13, fontWeight: FontWeight.w600),
-                    ),
-                    Switch(
-                      value: !ref.read(isPremiumProvider),
-                      activeThumbColor: accent,
-                      onChanged: (showAds) {
-                        // Toggle: showAds=true means NOT premium
-                        QaAdConfig.isPremium = !showAds;
-                        QaIapService().setPremium(!showAds);
-                        setSheetState(() {});
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Screen coverage tracker
-              Builder(builder: (_) {
-                final coverage = ScreenCoverageService.instance;
-                final status = coverage.getStatus();
-                final visited = coverage.visitedCount;
-                final total = coverage.totalCount;
-                return Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: accent.withValues(alpha: 0.3)),
-                    color: accent.withValues(alpha: 0.06),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'SCREEN COVERAGE',
-                        style: TextStyle(color: accent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2),
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: LinearProgressIndicator(
-                                value: total > 0 ? visited / total : 0,
-                                backgroundColor: Colors.white.withValues(alpha: 0.1),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  visited == total ? Colors.greenAccent : accent,
-                                ),
-                                minHeight: 6,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            '$visited/$total',
-                            style: TextStyle(
-                              color: accent,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'monospace',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: status.entries.map((e) {
-                          final isVisited = e.value;
-                          return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: isVisited
-                                  ? Colors.greenAccent.withValues(alpha: 0.12)
-                                  : Colors.redAccent.withValues(alpha: 0.08),
-                              border: Border.all(
-                                color: isVisited
-                                    ? Colors.greenAccent.withValues(alpha: 0.4)
-                                    : Colors.redAccent.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  isVisited ? Icons.check : Icons.close,
-                                  size: 12,
-                                  color: isVisited ? Colors.greenAccent : Colors.redAccent.withValues(alpha: 0.6),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  coverage.labelFor(e.key),
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: isVisited
-                                        ? Colors.greenAccent
-                                        : Colors.white.withValues(alpha: 0.4),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
+    QaDebugMenu.show(
+      context: context,
+      ref: ref,
+      sections: [
+        DebugSection('PUZZLES', [
+          DebugButton('Puzzle (Random)', () {
+            final puzzle = PuzzleGenerator.generate(
+              Random(),
+              const VoyageState(encounterCount: 10),
+            );
+            Navigator.pushNamed(context, '/puzzle', arguments: puzzle);
+          }),
+          DebugButton('Puzzle (Synthetic)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.species != AlienSpecies.synthetic) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Geometric)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.species != AlienSpecies.geometric) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Crystalline)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.species != AlienSpecies.crystalline) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Spectral)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.sequenceType != SequenceType.spectralId) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Star Cluster)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.sequenceType != SequenceType.starCluster) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Chirality)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.sequenceType != SequenceType.chirality) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Signal Filter)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.sequenceType != SequenceType.signalFilter) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 10),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+          DebugButton('Puzzle (Signal Filter - Hard)', () {
+            AlienPuzzle? p;
+            final r = Random();
+            while (p == null || p.sequenceType != SequenceType.signalFilter) {
+              p = PuzzleGenerator.generate(
+                r,
+                const VoyageState(encounterCount: 15),
+              );
+            }
+            Navigator.pushNamed(context, '/puzzle', arguments: p);
+          }),
+        ]),
+        DebugSection('VISUAL EVENTS', [
+          DebugButton('Black Hole Lens', () {
+            final event = pool
+                .where((e) => e.id == 'black_hole_lens')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/black-hole', arguments: event);
+            }
+          }),
+          DebugButton('Living Nebula', () {
+            final event = pool
+                .where((e) => e.id == 'living_nebula')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/living-nebula', arguments: event);
+            }
+          }),
+          DebugButton('Seed Vault', () {
+            final event = pool.where((e) => e.id == 'seed_vault').firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/seed-vault', arguments: event);
+            }
+          }),
+          DebugButton('Dyson Sphere', () {
+            final event = pool.where((e) => e.id == 'dyson_sphere').firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/dyson-sphere', arguments: event);
+            }
+          }),
+          DebugButton('World Engine', () {
+            final event = pool
+                .where((e) => e.id == 'relic_world_engine')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/world-engine', arguments: event);
+            }
+          }),
+          DebugButton('Mirror Array', () {
+            final event = pool
+                .where((e) => e.id == 'relic_mirror_array')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/mirror-array', arguments: event);
+            }
+          }),
+          DebugButton('Chrono Vortex', () {
+            final event = pool
+                .where((e) => e.id == 'chrono_vortex')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/chrono-vortex', arguments: event);
+            }
+          }),
+          DebugButton('Void Whale Calf', () {
+            final event = pool
+                .where((e) => e.id == 'void_whale_calf')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/void-whale', arguments: event);
+            }
+          }),
+          DebugButton('Phantom Ship', () {
+            final event = pool.where((e) => e.id == 'phantom_ship').firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(context, '/phantom-ship', arguments: event);
+            }
+          }),
+          DebugButton('Singularity Engine', () {
+            final event = pool
+                .where((e) => e.id == 'singularity_engine')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(
+                context,
+                '/singularity-engine',
+                arguments: event,
+              );
+            }
+          }),
+          DebugButton('Pulsar Lighthouse', () {
+            final event = pool
+                .where((e) => e.id == 'pulsar_lighthouse')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(
+                context,
+                '/pulsar-lighthouse',
+                arguments: event,
+              );
+            }
+          }),
+        ]),
+        DebugSection('SCREENS', [
+          DebugButton('Ship Status (Damaged)', () => _handleVersionTap()),
+          DebugButton('Voyage', () {
+            _ensureVoyageStarted();
+            Navigator.pushNamed(context, '/voyage');
+          }),
+          DebugButton('Scan', () {
+            _ensureVoyageStarted();
+            ref.read(voyageProvider.notifier).scanPlanet();
+            Navigator.pushNamed(context, '/scan');
+          }),
+          DebugButton('Trader', () {
+            _ensureVoyageStarted();
+            Navigator.pushNamed(context, '/trader');
+          }),
+          DebugButton('Landing', () {
+            _ensureVoyageStarted();
+            ref.read(voyageProvider.notifier).scanPlanet();
+            Navigator.pushNamed(context, '/landing');
+          }),
+          DebugButton('Ending', () {
+            _ensureVoyageStarted();
+            ref.read(voyageProvider.notifier).scanPlanet();
+            Navigator.pushNamed(context, '/ending');
+          }),
+          DebugButton(
+            'Game Over',
+            () => Navigator.pushNamed(context, '/gameover'),
+          ),
+          DebugButton('Legacy', () => Navigator.pushNamed(context, '/legacy')),
+          DebugButton('Codex', () => Navigator.pushNamed(context, '/codex')),
+          DebugButton(
+            'Settings',
+            () => Navigator.pushNamed(context, '/settings'),
+          ),
+        ]),
+        DebugSection('ADS', [
+          DebugButton('Open Ad Inspector', () {
+            MobileAds.instance.openAdInspector((error) {
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Ad Inspector error: ${error.message}'),
                   ),
                 );
-              }),
-              const SizedBox(height: 12),
-              btn('Puzzle (Random)', () {
-                final puzzle = PuzzleGenerator.generate(Random(), const VoyageState(encounterCount: 10));
-                Navigator.pushNamed(context, '/puzzle', arguments: puzzle);
-              }),
-              btn('Puzzle (Synthetic)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.species != AlienSpecies.synthetic) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              btn('Puzzle (Geometric)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.species != AlienSpecies.geometric) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              btn('Puzzle (Crystalline)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.species != AlienSpecies.crystalline) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              btn('Puzzle (Spectral)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.sequenceType != SequenceType.spectralId) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              btn('Puzzle (Star Cluster)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.sequenceType != SequenceType.starCluster) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              btn('Puzzle (Chirality)', () {
-                AlienPuzzle? p;
-                final r = Random();
-                while (p == null || p.sequenceType != SequenceType.chirality) {
-                  p = PuzzleGenerator.generate(r, const VoyageState(encounterCount: 10));
-                }
-                Navigator.pushNamed(context, '/puzzle', arguments: p);
-              }),
-              const SizedBox(height: 8),
-              Text('VISUAL EVENTS', style: TextStyle(color: accent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
-              const SizedBox(height: 4),
-              btn('Black Hole Lens', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'black_hole_lens');
-                Navigator.pushNamed(context, '/black-hole', arguments: event);
-              }),
-              btn('Living Nebula', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'living_nebula');
-                Navigator.pushNamed(context, '/living-nebula', arguments: event);
-              }),
-              btn('Seed Vault', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'seed_vault');
-                Navigator.pushNamed(context, '/seed-vault', arguments: event);
-              }),
-              btn('Dyson Sphere', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'dyson_sphere');
-                Navigator.pushNamed(context, '/dyson-sphere', arguments: event);
-              }),
-              btn('World Engine', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'relic_world_engine');
-                Navigator.pushNamed(context, '/world-engine', arguments: event);
-              }),
-              btn('Mirror Array', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'relic_mirror_array');
-                Navigator.pushNamed(context, '/mirror-array', arguments: event);
-              }),
-              btn('Chrono Vortex', () {
-                final pool = buildEventPool(context.l10n);
-                final event = pool.firstWhere((e) => e.id == 'chrono_vortex');
-                Navigator.pushNamed(context, '/chrono-vortex', arguments: event);
-              }),
-              const SizedBox(height: 8),
-              btn('Ship Status (Damaged)', () {
-                _handleVersionTap();
-              }),
-              btn('Voyage', () {
-                _ensureVoyageStarted();
-                Navigator.pushNamed(context, '/voyage');
-              }),
-              btn('Scan', () {
-                _ensureVoyageStarted();
-                ref.read(voyageProvider.notifier).scanPlanet();
-                Navigator.pushNamed(context, '/scan');
-              }),
-              btn('Trader', () {
-                _ensureVoyageStarted();
-                Navigator.pushNamed(context, '/trader');
-              }),
-              btn('Landing', () {
-                _ensureVoyageStarted();
-                ref.read(voyageProvider.notifier).scanPlanet();
-                Navigator.pushNamed(context, '/landing');
-              }),
-              btn('Ending', () {
-                _ensureVoyageStarted();
-                ref.read(voyageProvider.notifier).scanPlanet();
-                Navigator.pushNamed(context, '/ending');
-              }),
-              btn('Game Over', () {
-                Navigator.pushNamed(context, '/gameover');
-              }),
-              btn('Legacy', () {
-                Navigator.pushNamed(context, '/legacy');
-              }),
-              btn('Codex', () {
-                Navigator.pushNamed(context, '/codex');
-              }),
-              btn('Settings', () {
-                Navigator.pushNamed(context, '/settings');
-              }),
-            ],
-          ),
-        );
-          },
-        );
-      },
+              }
+            });
+          }),
+        ]),
+      ],
     );
   }
 
@@ -442,7 +401,12 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
     final upgrades = ref.read(legacyProvider).upgrades;
     ref
         .read(voyageProvider.notifier)
-        .startVoyage(seed: seed, isDaily: isDaily, upgrades: upgrades, l10n: context.l10n);
+        .startVoyage(
+          seed: seed,
+          isDaily: isDaily,
+          upgrades: upgrades,
+          l10n: context.l10n,
+        );
     Navigator.pushNamed(context, '/voyage');
   }
 
@@ -511,12 +475,15 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                 final seed = codeToSeed(text);
                 _beginVoyage(seed: seed);
               },
-              child: Text(context.l10n.ui_title_startVoyage, style: TextStyle(color: _accent)),
+              child: Text(
+                context.l10n.ui_title_startVoyage,
+                style: TextStyle(color: _accent),
+              ),
             ),
           ],
         );
       },
-    );
+    ).then((_) => controller.dispose());
   }
 
   @override
@@ -559,11 +526,11 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                 label: 'Colony ship silhouette',
                 excludeSemantics: true,
                 child: RepaintBoundary(
-                child: CustomPaint(
-                  size: Size(screenSize.width * 0.35, 100),
-                  painter: _ShipSilhouettePainter(accent: _accent),
+                  child: CustomPaint(
+                    size: Size(screenSize.width * 0.35, 100),
+                    painter: _ShipSilhouettePainter(accent: _accent),
+                  ),
                 ),
-              ),
               ),
             ),
           ),
@@ -617,6 +584,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
 
           // — Foreground UI —
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
                 const Spacer(flex: 4),
@@ -704,12 +672,14 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                       if (_hasSavedVoyage) ...[
                         HolographicButton(
                           label: 'RESUME VOYAGE',
+                          autofocus: true,
                           onPressed: _resumeVoyage,
                         ),
                         const SizedBox(height: 16),
                       ],
                       HolographicButton(
                         label: context.l10n.ui_title_beginVoyage,
+                        autofocus: !_hasSavedVoyage,
                         onPressed: () {
                           // Clear any stale save when starting fresh.
                           VoyageSaveService.clear();
@@ -746,42 +716,57 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
                     IconButton(
                       tooltip: 'Leaderboards',
                       onPressed: () async {
-                        final shown = await PlayGamesService.showAllLeaderboards();
+                        final shown =
+                            await PlayGamesService.showAllLeaderboards();
                         if (!shown && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Play Games unavailable. View leaderboards at stellarbroadcast.org'),
+                              content: Text(
+                                'Play Games unavailable. View leaderboards at stellarbroadcast.org',
+                              ),
                               duration: Duration(seconds: 4),
                             ),
                           );
                         }
                       },
-                      icon: Icon(Icons.leaderboard, color: _accent.withValues(alpha: 0.6), size: 24),
+                      icon: Icon(
+                        Icons.leaderboard,
+                        color: _accent.withValues(alpha: 0.6),
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 16),
                     IconButton(
                       tooltip: 'Settings',
-                      onPressed: () => Navigator.pushNamed(context, '/settings'),
-                      icon: Icon(Icons.settings, color: _accent.withValues(alpha: 0.6), size: 24),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/settings'),
+                      icon: Icon(
+                        Icons.settings,
+                        color: _accent.withValues(alpha: 0.6),
+                        size: 24,
+                      ),
                     ),
                   ],
                 ),
 
                 const Spacer(flex: 2),
-
-                // Banner ad.
-                SizedBox(
-                  height: 58,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: PremiumAdGate(child: AdaptiveBannerAd(
-                      fallback: AdFallbackBanner(
-                        onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
-                      ),
-                    )),
-                  ),
-                ),
               ],
+            ),
+          ),
+
+          // Banner ad — outside SafeArea for flush bottom.
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: PremiumAdGate(
+              child: AdaptiveBannerAd(
+                key: ValueKey('title_banner_$_adRefreshCount'),
+                fallback: AdFallbackBanner(
+                  onRemoveAds: () =>
+                      Navigator.pushNamed(context, '/settings'),
+                ),
+              ),
             ),
           ),
         ],
@@ -855,7 +840,9 @@ class _DailyVoyageButton extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    played ? context.l10n.ui_title_dailyCompleted : context.l10n.ui_title_dailyVoyage,
+                    played
+                        ? context.l10n.ui_title_dailyCompleted
+                        : context.l10n.ui_title_dailyVoyage,
                     style: TextStyle(
                       fontFamily: 'monospace',
                       fontSize: 16,

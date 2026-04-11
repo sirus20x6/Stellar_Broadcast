@@ -89,8 +89,8 @@ class CodexScreen extends ConsumerWidget {
                         child: Text(
                           context.l10n.ui_codex_title,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: TextStyle(
+                            fontSize: ScreenInfo.of(context).scaledFontSize(24),
                             fontWeight: FontWeight.bold,
                             color: _kAccent,
                             letterSpacing: 4,

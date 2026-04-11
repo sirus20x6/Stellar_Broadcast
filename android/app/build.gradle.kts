@@ -69,6 +69,12 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("com.google.android.material:material:1.12.0")
+
+    // AdMob mediation adapters — enable competition for ad inventory.
+    // Configure mediation groups in AdMob console to activate these.
+    implementation("com.google.ads.mediation:applovin:13.1.0.0")
+    implementation("com.google.ads.mediation:unity:4.17.0.0")
+    implementation("com.google.ads.mediation:facebook:6.20.0.2")
 }
 
 flutter {

@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -93,6 +94,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     } else {
       _startTypewriter();
     }
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
 
     GameSfx().playLong(GameSfx.criticalAlarm);
   }
@@ -214,6 +216,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
       0.5 + 0.5 * sin(_titleGlow.value * pi))!;
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) {
@@ -222,7 +225,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
           'SEED VAULT CRITICAL',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: screen.scaledFontSize(22),
             fontWeight: FontWeight.bold,
             color: titleColor,
             letterSpacing: 2,
@@ -360,6 +363,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
@@ -372,9 +376,12 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
   }
 
   Widget _buildPortrait() {
-    return ResponsiveContent(
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
           const SizedBox(height: 24),
           _buildTitle(),
           const SizedBox(height: 16),
@@ -398,15 +405,12 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
             _buildHintOrContinue(),
           ],
           const SizedBox(height: 8),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -453,13 +457,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
             ],
           ),
         ),
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }

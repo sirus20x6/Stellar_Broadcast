@@ -53,6 +53,12 @@ class LegacyData {
   /// Set of all planet feature keys the player has encountered across voyages.
   final Set<String> discoveredFeatures;
 
+  /// Preserves the best score from the old 0-130 scoring system.
+  final int legacyBestScore;
+
+  /// Score version: 1 = old 0-130, 2 = new 0-100K. Used for migration.
+  final int scoreVersion;
+
   const LegacyData({
     this.totalVoyages = 0,
     this.bestScore = 0,
@@ -63,6 +69,8 @@ class LegacyData {
     this.highScores = const [],
     this.dailyScores = const [],
     this.discoveredFeatures = const {},
+    this.legacyBestScore = 0,
+    this.scoreVersion = 2,
   });
 
   LegacyData copyWith({
@@ -75,6 +83,8 @@ class LegacyData {
     List<HighScoreEntry>? highScores,
     List<HighScoreEntry>? dailyScores,
     Set<String>? discoveredFeatures,
+    int? legacyBestScore,
+    int? scoreVersion,
   }) {
     return LegacyData(
       totalVoyages: totalVoyages ?? this.totalVoyages,
@@ -86,11 +96,14 @@ class LegacyData {
       highScores: highScores ?? this.highScores,
       dailyScores: dailyScores ?? this.dailyScores,
       discoveredFeatures: discoveredFeatures ?? this.discoveredFeatures,
+      legacyBestScore: legacyBestScore ?? this.legacyBestScore,
+      scoreVersion: scoreVersion ?? this.scoreVersion,
     );
   }
 
   @override
   String toString() =>
       'LegacyData(voyages: $totalVoyages, best: $bestScore, '
-      'points: $legacyPoints, achievements: ${achievements.length})';
+      'points: $legacyPoints, achievements: ${achievements.length}, '
+      'scoreVersion: $scoreVersion)';
 }

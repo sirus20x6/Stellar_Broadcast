@@ -1,0 +1,1 @@
+Stellar Broadcast versionCode=83minSdk=24targetSdk=35 versionName=2.0.2 | 2026-04-11 10:05 | mode=tablet

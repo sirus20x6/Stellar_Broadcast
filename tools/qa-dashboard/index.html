@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stellar Broadcast - QA Dashboard</title>
+<style>
+  :root {
+    --bg-deep: #060c1a;
+    --bg-panel: #0c1628;
+    --bg-card: #111e38;
+    --bg-hover: #162847;
+    --border: #1a3055;
+    --border-bright: #234178;
+    --cyan: #00d4ff;
+    --cyan-dim: #0088aa;
+    --cyan-glow: rgba(0, 212, 255, 0.15);
+    --green: #00ff88;
+    --green-dim: #00aa55;
+    --red: #ff4466;
+    --red-dim: #aa2244;
+    --yellow: #ffcc00;
+    --text: #c8d6e5;
+    --text-dim: #6b7d99;
+    --text-bright: #e8f0ff;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 15% 55%, rgba(0,212,255,0.3), transparent),
+      radial-gradient(1px 1px at 85% 25%, rgba(0,255,136,0.2), transparent),
+      radial-gradient(1.5px 1.5px at 45% 90%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 60% 55%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,0.2), transparent);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Header */
+  .header {
+    position: relative;
+    z-index: 1;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,212,255,0.05) 0%, transparent 100%);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--cyan) 0%, #0066cc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  .header-title {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .header-subtitle {
+    font-size: 11px;
+    color: var(--cyan-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(0,255,136,0.5);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .refresh-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--cyan);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .refresh-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--cyan-dim);
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+
+  /* Layout */
+  .dashboard {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 1px;
+    min-height: calc(100vh - 81px);
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--bg-panel);
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Build Info Panel */
+  .build-panel { grid-row: 1 / 2; }
+
+  .build-version {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .build-name {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .build-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .meta-label { color: var(--text-dim); }
+  .meta-value { color: var(--text); font-family: var(--font-mono); font-size: 12px; }
+
+  /* Coverage */
+  .coverage-section { margin-top: 20px; }
+
+  .coverage-bar-container {
+    background: var(--bg-deep);
+    border-radius: 4px;
+    height: 24px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .coverage-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan) 0%, var(--green) 100%);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+    box-shadow: 0 0 10px var(--cyan-glow);
+  }
+
+  .coverage-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  .screen-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .screen-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .screen-item:hover {
+    background: var(--bg-hover);
+  }
+
+  .screen-item.active {
+    background: var(--bg-hover);
+    border: 1px solid var(--border-bright);
+  }
+
+  .screen-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .screen-dot.covered { background: var(--green); box-shadow: 0 0 6px rgba(0,255,136,0.4); }
+  .screen-dot.partial { background: var(--yellow); box-shadow: 0 0 6px rgba(255,204,0,0.4); }
+  .screen-dot.missing { background: var(--red); box-shadow: 0 0 6px rgba(255,68,102,0.3); }
+
+  .screen-name { color: var(--text); flex: 1; }
+
+  .device-badges {
+    display: flex;
+    gap: 3px;
+  }
+
+  .device-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .device-badge.on {
+    background: rgba(0,255,136,0.15);
+    color: var(--green);
+    border: 1px solid rgba(0,255,136,0.3);
+  }
+
+  .device-badge.off {
+    background: rgba(255,68,102,0.1);
+    color: var(--red-dim);
+    border: 1px solid rgba(255,68,102,0.2);
+  }
+
+  .snap-btn-mini {
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.25);
+    color: #00e5ff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 6px;
+    margin-left: auto;
+  }
+  .snap-btn-mini:hover { background: rgba(0,229,255,0.25); }
+
+  /* Play Console Panel */
+  .play-panel { grid-row: 2 / 3; }
+
+  .play-status {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .play-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .play-card-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .play-card-value {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+
+  .play-card-detail {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .track-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .track-badge.production {
+    background: rgba(0,255,136,0.15);
+    color: var(--green);
+    border: 1px solid rgba(0,255,136,0.3);
+  }
+
+  .track-badge.beta {
+    background: rgba(255,204,0,0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(255,204,0,0.3);
+  }
+
+  .track-badge.alpha {
+    background: rgba(0,212,255,0.15);
+    color: var(--cyan);
+    border: 1px solid rgba(0,212,255,0.3);
+  }
+
+  .play-error {
+    font-size: 12px;
+    color: var(--red);
+    font-family: var(--font-mono);
+    word-break: break-all;
+  }
+
+  .play-loading {
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* Screenshot Gallery */
+  .gallery-panel {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .gallery-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .gallery-toolbar select, .gallery-toolbar button {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .gallery-toolbar button:hover {
+    border-color: var(--cyan-dim);
+    color: var(--cyan);
+  }
+
+  .snap-btn {
+    background: rgba(0,212,255,0.1) !important;
+    border-color: var(--cyan-dim) !important;
+    color: var(--cyan) !important;
+  }
+
+  .snap-btn:hover {
+    background: rgba(0,212,255,0.2) !important;
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap: 16px;
+  }
+
+  .screenshot-pair {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .screenshot-pair:hover {
+    border-color: var(--border-bright);
+  }
+
+  .pair-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pair-screen-name {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cyan);
+  }
+
+  .pair-timestamp {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .pair-images {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    height: 360px;
+  }
+
+  .pair-image-slot {
+    background: var(--bg-deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    overflow: hidden;
+  }
+
+  /* Phone is portrait (9:21) — narrower. Tablet is landscape (16:10) — wider. */
+  .pair-image-slot.slot-phone { flex: 1; }
+  .pair-image-slot.slot-tablet { flex: 2; }
+
+  .pair-image-slot img {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .pair-image-slot img:hover {
+    transform: scale(1.02);
+  }
+
+  .slot-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .slot-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  /* Empty state */
+  .gallery-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .gallery-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+  }
+
+  .gallery-empty h3 {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .gallery-empty p {
+    font-size: 13px;
+    max-width: 400px;
+    line-height: 1.5;
+  }
+
+  .gallery-empty code {
+    display: block;
+    background: var(--bg-card);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cyan);
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0,212,255,0.2);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--cyan-dim);
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    z-index: 900;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">SB</div>
+    <div>
+      <div class="header-title">Stellar Broadcast</div>
+      <div class="header-subtitle">QA Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono)" id="last-refresh">--</span>
+    <button class="refresh-btn" onclick="refreshAll()">Refresh</button>
+  </div>
+</div>
+
+<div class="dashboard">
+  <!-- Left: Build Info + Coverage -->
+  <div class="panel build-panel">
+    <div class="panel-title">Build Info</div>
+    <div class="build-version" id="build-version">--</div>
+    <div class="build-name" id="build-name">--</div>
+    <div class="build-meta">
+      <div class="meta-row">
+        <span class="meta-label">Build Number</span>
+        <span class="meta-value" id="build-number">--</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Screens</span>
+        <span class="meta-value" id="screen-count">--</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Screenshots</span>
+        <span class="meta-value" id="screenshot-count">--</span>
+      </div>
+    </div>
+
+    <div class="coverage-section">
+      <div class="panel-title">Screen Coverage</div>
+      <div class="coverage-bar-container">
+        <div class="coverage-bar" id="coverage-bar" style="width:0%"></div>
+      </div>
+      <div class="coverage-label" id="coverage-label">0 / 0</div>
+      <div class="screen-list" id="screen-list"></div>
+    </div>
+  </div>
+
+  <!-- Left Bottom: Play Console -->
+  <div class="panel play-panel">
+    <div class="panel-title">Google Play Console</div>
+    <div class="play-status" id="play-status">
+      <div class="play-loading">Loading Play Console data...</div>
+    </div>
+  </div>
+
+  <!-- Right: Screenshot Gallery -->
+  <div class="panel gallery-panel">
+    <div class="panel-title">Screenshot Gallery</div>
+    <div class="gallery-toolbar">
+      <select id="filter-device">
+        <option value="all">All Devices</option>
+        <option value="phone">Phone Only</option>
+        <option value="tablet">Tablet Only</option>
+      </select>
+      <select id="filter-screen">
+        <option value="all">All Screens</option>
+      </select>
+      <button class="snap-btn" onclick="takeScreenshot('phone')">Snap Phone</button>
+      <button class="snap-btn" onclick="takeScreenshot('tablet')">Snap Tablet</button>
+      <button class="snap-btn" onclick="takeScreenshot('both')">Snap Both</button>
+      <span style="border-left:1px solid var(--border);margin:0 4px"></span>
+      <button class="snap-btn" onclick="recordWebm('phone')" style="background:rgba(255,64,94,0.1);border-color:rgba(255,64,94,0.3);color:#fa5c5c">Record Phone</button>
+      <button class="snap-btn" onclick="recordWebm('tablet')" style="background:rgba(255,64,94,0.1);border-color:rgba(255,64,94,0.3);color:#fa5c5c">Record Tablet</button>
+    </div>
+    <div id="gallery-content"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="">
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+let appData = null;
+let playData = null;
+
+async function fetchInfo() {
+  try {
+    const res = await fetch('/api/info');
+    appData = await res.json();
+    renderBuildInfo();
+    renderCoverage();
+    renderGallery();
+  } catch (e) {
+    console.error('Failed to fetch info:', e);
+  }
+}
+
+async function fetchPlayConsole() {
+  const el = document.getElementById('play-status');
+  el.innerHTML = '<div class="play-loading">Querying Play Console API...</div>';
+  try {
+    const res = await fetch('/api/play-console');
+    playData = await res.json();
+    renderPlayConsole();
+  } catch (e) {
+    el.innerHTML = `<div class="play-error">Failed to connect: ${e.message}</div>`;
+  }
+}
+
+function renderBuildInfo() {
+  if (!appData) return;
+  const [semver, buildNum] = appData.version.split('+');
+  document.getElementById('build-version').textContent = `v${semver}`;
+  document.getElementById('build-name').textContent = appData.name.replace(/_/g, ' ');
+  document.getElementById('build-number').textContent = `#${buildNum || '?'}`;
+  document.getElementById('screen-count').textContent = appData.screens.length;
+  document.getElementById('screenshot-count').textContent = appData.screenshots.length;
+}
+
+function renderCoverage() {
+  if (!appData) return;
+  const screens = appData.screens;
+  const shots = appData.screenshots;
+
+  const coverageMap = {};
+  screens.forEach(s => { coverageMap[s] = { phone: false, tablet: false }; });
+  shots.forEach(s => {
+    if (coverageMap[s.screen]) {
+      coverageMap[s.screen][s.device] = true;
+    }
+  });
+
+  const fullCovered = screens.filter(s => coverageMap[s].phone && coverageMap[s].tablet).length;
+  const partialCovered = screens.filter(s => coverageMap[s].phone || coverageMap[s].tablet).length;
+  const pct = screens.length ? Math.round((partialCovered / screens.length) * 100) : 0;
+
+  document.getElementById('coverage-bar').style.width = pct + '%';
+  document.getElementById('coverage-label').textContent =
+    `${fullCovered} full / ${partialCovered} partial / ${screens.length} total`;
+
+  const list = document.getElementById('screen-list');
+  list.innerHTML = '';
+  const filterSelect = document.getElementById('filter-screen');
+  const currentFilter = filterSelect.value;
+  filterSelect.innerHTML = '<option value="all">All Screens</option>';
+
+  screens.forEach(s => {
+    const cov = coverageMap[s];
+    const status = (cov.phone && cov.tablet) ? 'covered' : (cov.phone || cov.tablet) ? 'partial' : 'missing';
+
+    filterSelect.innerHTML += `<option value="${s}">${s}</option>`;
+    filterSelect.value = currentFilter;
+
+    const item = document.createElement('div');
+    item.className = 'screen-item';
+    item.onclick = () => {
+      document.getElementById('filter-screen').value = s;
+      renderGallery();
+    };
+    item.innerHTML = `
+      <div class="screen-dot ${status}"></div>
+      <span class="screen-name">${s}</span>
+      <div class="device-badges">
+        <span class="device-badge ${cov.phone ? 'on' : 'off'}">P</span>
+        <span class="device-badge ${cov.tablet ? 'on' : 'off'}">T</span>
+      </div>
+      <button class="snap-btn-mini" title="Snap both">&#128247;</button>
+      <button class="snap-btn-mini" title="Record both" style="color:#fa5c5c">&#127909;</button>
+    `;
+    item.querySelector('.snap-btn-mini:first-of-type').addEventListener('click', (e) => {
+      e.stopPropagation();
+      takeScreenshot('both', s);
+    });
+    item.querySelector('.snap-btn-mini:last-of-type').addEventListener('click', (e) => {
+      e.stopPropagation();
+      recordWebm('both', s);
+    });
+    list.appendChild(item);
+  });
+}
+
+function renderGallery() {
+  if (!appData) return;
+  const content = document.getElementById('gallery-content');
+  const deviceFilter = document.getElementById('filter-device').value;
+  const screenFilter = document.getElementById('filter-screen').value;
+
+  let shots = appData.screenshots;
+  if (deviceFilter !== 'all') shots = shots.filter(s => s.device === deviceFilter);
+  if (screenFilter !== 'all') shots = shots.filter(s => s.screen === screenFilter);
+
+  if (shots.length === 0) {
+    content.innerHTML = `
+      <div class="gallery-empty">
+        <div class="gallery-empty-icon">&#9898;</div>
+        <h3>No screenshots yet</h3>
+        <p>Use the "Snap" buttons above to capture screenshots from connected emulators, or run the screenshot script:</p>
+        <code>bash /thearray/git/quickapps/apps/starbound_exodus/tools/qa-dashboard/take_screenshots.sh</code>
+      </div>
+    `;
+    return;
+  }
+
+  // Group by screen, prefer webm over png per device
+  const grouped = {};
+  shots.forEach(s => {
+    if (!grouped[s.screen]) grouped[s.screen] = { phone: null, tablet: null, latestTime: 0 };
+    const g = grouped[s.screen];
+    const t = new Date(s.mtime).getTime();
+    const isWebm = s.filename.endsWith('.webm');
+    const existing = g[s.device];
+    // Prefer webm over png; within same type prefer newest
+    if (!existing || (isWebm && !existing.filename.endsWith('.webm')) || t > new Date(existing.mtime).getTime()) {
+      g[s.device] = s;
+    }
+    if (t > g.latestTime) g.latestTime = t;
+  });
+
+  const sortedScreens = Object.entries(grouped).sort((a, b) => b[1].latestTime - a[1].latestTime);
+
+  content.innerHTML = '<div class="gallery-grid">' +
+    sortedScreens.map(([screen, data]) => {
+      const ts = new Date(data.latestTime).toLocaleString();
+      function mediaTag(entry) {
+        if (!entry) return '<div class="slot-empty">No capture</div>';
+        const src = `/screenshots/${entry.filename}`;
+        if (entry.filename.endsWith('.webm')) {
+          return `<video src="${src}" autoplay loop muted playsinline style="height:100%;width:auto;max-width:100%;border-radius:4px;cursor:pointer" onclick="openLightbox(this.src)"></video>`;
+        }
+        return `<img src="${src}" onclick="openLightbox(this.src)" loading="lazy">`;
+      }
+      const phoneSlot = mediaTag(data.phone);
+      const tabletSlot = mediaTag(data.tablet);
+      return `
+        <div class="screenshot-pair">
+          <div class="pair-header">
+            <span class="pair-screen-name">${screen}</span>
+            <span class="pair-timestamp">${ts}</span>
+          </div>
+          <div class="pair-images">
+            <div class="pair-image-slot slot-phone">
+              <div class="slot-label">Phone</div>
+              ${phoneSlot}
+            </div>
+            <div class="pair-image-slot slot-tablet">
+              <div class="slot-label">Tablet</div>
+              ${tabletSlot}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('') +
+    '</div>';
+}
+
+function renderPlayConsole() {
+  const el = document.getElementById('play-status');
+  if (!playData) return;
+
+  if (playData.error) {
+    el.innerHTML = `
+      <div class="play-card">
+        <div class="play-card-label">Status</div>
+        <div class="play-error">${String(playData.error).replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 200)}</div>
+      </div>
+      <button class="refresh-btn" onclick="fetchPlayConsole()" style="margin-top:8px">Retry</button>
+    `;
+    return;
+  }
+
+  let html = '';
+
+  if (playData.tracks && playData.tracks.tracks) {
+    playData.tracks.tracks.forEach(track => {
+      const name = track.track || 'unknown';
+      const releases = track.releases || [];
+      const latest = releases[0];
+      if (!latest) return;
+
+      const versionCodes = (latest.versionCodes || []).join(', ');
+      const status = latest.status || 'unknown';
+      const relName = latest.name || '--';
+
+      html += `
+        <div class="play-card">
+          <div class="play-card-label">
+            <span class="track-badge ${name}">${name}</span>
+          </div>
+          <div class="play-card-value">${relName}</div>
+          <div class="play-card-detail">
+            Version codes: ${versionCodes}<br>
+            Status: ${status}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  if (playData.details) {
+    const d = playData.details;
+    html += `
+      <div class="play-card">
+        <div class="play-card-label">App Details</div>
+        <div class="play-card-detail">
+          Language: ${d.defaultLanguage || '--'}<br>
+          Contact email: ${d.contactEmail || '--'}
+        </div>
+      </div>
+    `;
+  }
+
+  if (!html) {
+    html = '<div class="play-card"><div class="play-card-label">No track data found</div></div>';
+  }
+
+  html += '<button class="refresh-btn" onclick="fetchPlayConsole()" style="margin-top:8px">Refresh</button>';
+  el.innerHTML = html;
+}
+
+async function takeScreenshot(deviceType, screenOverride) {
+  const screenFilter = screenOverride || document.getElementById('filter-screen').value;
+  const screenName = screenFilter !== 'all' ? screenFilter : 'current';
+  const devices = deviceType === 'both' ? ['phone', 'tablet'] : [deviceType];
+
+  for (const dev of devices) {
+    showToast(`Capturing ${dev} screenshot...`);
+    console.log(`[snap] device=${dev} screen=${screenName}`);
+    try {
+      const url = `/api/take-screenshot?device=${encodeURIComponent(dev)}&screen=${encodeURIComponent(screenName)}`;
+      console.log(`[snap] fetching ${url}`);
+      const res = await fetch(url);
+      console.log(`[snap] status=${res.status}`);
+      const data = await res.json();
+      if (data.error) {
+        console.error(`[snap] error: ${data.error}`);
+        showToast(`Error: ${data.error}`);
+      } else {
+        console.log(`[snap] saved: ${data.filename}`);
+        showToast(`Saved: ${data.filename}`);
+      }
+    } catch (e) {
+      console.error(`[snap] failed:`, e);
+      showToast(`Failed: ${e.message}`);
+    }
+  }
+
+  // Refresh gallery
+  await fetchInfo();
+}
+
+async function recordWebm(deviceType, screenOverride) {
+  const screenFilter = screenOverride || document.getElementById('filter-screen').value;
+  const screenName = screenFilter !== 'all' ? screenFilter : 'current';
+  const devices = deviceType === 'both' ? ['phone', 'tablet'] : [deviceType];
+
+  for (const dev of devices) {
+    showToast(`Recording ${dev} (5s)...`);
+    try {
+      const url = `/api/record-webm?device=${encodeURIComponent(dev)}&screen=${encodeURIComponent(screenName)}&duration=5`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error) {
+        showToast(`Error: ${data.error}`);
+      } else {
+        showToast(`Recorded: ${data.filename} (${Math.round(data.size/1024)}KB)`);
+      }
+    } catch (e) {
+      showToast(`Failed: ${e.message}`);
+    }
+  }
+  await fetchInfo();
+}
+
+function openLightbox(src) {
+  event.stopPropagation();
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function refreshAll() {
+  document.getElementById('last-refresh').textContent = new Date().toLocaleTimeString();
+  fetchInfo();
+  fetchPlayConsole();
+}
+
+document.getElementById('filter-device').addEventListener('change', renderGallery);
+document.getElementById('filter-screen').addEventListener('change', renderGallery);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Init
+refreshAll();
+</script>
+</body>
+</html>

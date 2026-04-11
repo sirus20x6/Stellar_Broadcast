@@ -99,6 +99,13 @@ class VoyageState {
   /// Chained events waiting to fire at future encounters.
   final List<PendingChain> pendingChains;
 
+  /// Governance ideology axes — each ranges from -1.0 to +1.0.
+  final double authorityAxis;    // -1 = anarchist, +1 = authoritarian
+  final double cultureAxis;      // -1 = traditionalist, +1 = progressive
+  final double economyAxis;      // -1 = collectivist, +1 = corporatist
+  final double faithAxis;        // -1 = secular, +1 = theocratic
+  final double militaryAxis;     // -1 = pacifist, +1 = militarist
+
   const VoyageState({
     this.ship = const ShipSystems(),
     this.currentPlanet,
@@ -133,6 +140,11 @@ class VoyageState {
     this.landedOnMoon = false,
     this.solarRechargeAmount = 0,
     this.pendingChains = const [],
+    this.authorityAxis = 0.0,
+    this.cultureAxis = 0.0,
+    this.economyAxis = 0.0,
+    this.faithAxis = 0.0,
+    this.militaryAxis = 0.0,
   });
 
   VoyageState copyWith({
@@ -172,6 +184,11 @@ class VoyageState {
     bool? landedOnMoon,
     int? solarRechargeAmount,
     List<PendingChain>? pendingChains,
+    double? authorityAxis,
+    double? cultureAxis,
+    double? economyAxis,
+    double? faithAxis,
+    double? militaryAxis,
   }) {
     return VoyageState(
       ship: ship ?? this.ship,
@@ -207,6 +224,11 @@ class VoyageState {
       landedOnMoon: landedOnMoon ?? this.landedOnMoon,
       solarRechargeAmount: solarRechargeAmount ?? this.solarRechargeAmount,
       pendingChains: pendingChains ?? this.pendingChains,
+      authorityAxis: authorityAxis ?? this.authorityAxis,
+      cultureAxis: cultureAxis ?? this.cultureAxis,
+      economyAxis: economyAxis ?? this.economyAxis,
+      faithAxis: faithAxis ?? this.faithAxis,
+      militaryAxis: militaryAxis ?? this.militaryAxis,
     );
   }
 
@@ -245,6 +267,11 @@ class VoyageState {
         'landedOnMoon': landedOnMoon,
         'solarRechargeAmount': solarRechargeAmount,
         'pendingChains': pendingChains.map((c) => c.toJson()).toList(),
+        'authorityAxis': authorityAxis,
+        'cultureAxis': cultureAxis,
+        'economyAxis': economyAxis,
+        'faithAxis': faithAxis,
+        'militaryAxis': militaryAxis,
       };
 
   factory VoyageState.fromJson(Map<String, dynamic> json) => VoyageState(
@@ -298,6 +325,21 @@ class VoyageState {
                     PendingChain.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             const [],
+        authorityAxis: (json['authorityAxis'] as num?)?.toDouble() ?? 0.0,
+        cultureAxis: (json['cultureAxis'] as num?)?.toDouble() ?? 0.0,
+        economyAxis: (json['economyAxis'] as num?)?.toDouble() ?? 0.0,
+        faithAxis: (json['faithAxis'] as num?)?.toDouble() ?? 0.0,
+        militaryAxis: (json['militaryAxis'] as num?)?.toDouble() ?? 0.0,
+      );
+
+  /// Efficiently append a single log message (avoids O(n) spread copy).
+  VoyageState appendLog(String message) => copyWith(
+        log: List<String>.of(log)..add(message),
+      );
+
+  /// Efficiently append multiple log messages at once.
+  VoyageState appendLogs(List<String> messages) => copyWith(
+        log: List<String>.of(log)..addAll(messages),
       );
 
   @override

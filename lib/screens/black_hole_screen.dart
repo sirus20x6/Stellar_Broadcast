@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
@@ -84,6 +85,7 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
     } else {
       _startTypewriter();
     }
+    if (PlatformConfig.skipAnimations) _skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
   }
 
@@ -157,13 +159,14 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
   // ── Shared widget builders ──────────────────────────────────────────
 
   Widget _buildTitle() {
+    final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
       builder: (_, __) => Text(
         'GRAVITATIONAL LENS',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 24,
+          fontSize: screen.scaledFontSize(24),
           fontWeight: FontWeight.bold,
           color: _kAccent,
           letterSpacing: 2,
@@ -322,6 +325,7 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _typewriterDone ? null : _skipTypewriter,
@@ -334,9 +338,12 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
   }
 
   Widget _buildPortrait() {
-    return ResponsiveContent(
-      child: Column(
-        children: [
+    return Column(
+      children: [
+        Expanded(
+          child: ResponsiveContent(
+            child: Column(
+              children: [
           const SizedBox(height: 32),
           _buildTitle(),
           const SizedBox(height: 20),
@@ -353,15 +360,12 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             _buildHintOrContinue(),
           ],
           const SizedBox(height: 12),
-          const SizedBox(
-            height: 58,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: PremiumAdGate(child: AdaptiveBannerAd()),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        PremiumAdGate(child: AdaptiveBannerAd()),
+      ],
     );
   }
 
@@ -408,13 +412,7 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             ],
           ),
         ),
-        SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: PremiumAdGate(child: AdaptiveBannerAd()),
-          ),
-        ),
+                    PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -884,5 +882,9 @@ class _BlackHolePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _BlackHolePainter oldDelegate) => true;
+  bool shouldRepaint(covariant _BlackHolePainter oldDelegate) =>
+      animationValue != oldDelegate.animationValue ||
+      pulseValue != oldDelegate.pulseValue ||
+      selectedWindow != oldDelegate.selectedWindow ||
+      isResolved != oldDelegate.isResolved;
 }

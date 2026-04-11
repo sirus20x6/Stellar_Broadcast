@@ -48,8 +48,26 @@
 - [ ] **Twitter/X** — post with gameplay clips, tag indie game hashtags
 - [ ] **Mastodon/Fediverse** — indie game community
 
+### Blog / Press Outreach (Seedship coverage)
+- [ ] **The Nerdish One** — reviewed Seedship positively → [outreach draft](marketing/outreach_the_nerdish_one.md)
+- [ ] **Bag of Stolen Loot (Substack)** — deep Seedship analysis → [outreach draft](marketing/outreach_bag_of_stolen_loot.md)
+- [ ] **Daniel Andrlik (Ministry of Intrigue)** — Seedship dispatch → [outreach draft](marketing/outreach_daniel_andrlik.md)
+- [ ] **Boing Boing (follow-up)** — two Seedship articles, prior pitch unanswered → [outreach draft](marketing/outreach_boingboing_followup.md)
+- [ ] **lib.reviews** — Seedship review on platform → [outreach draft](marketing/outreach_lib_reviews.md)
+
+### Creator
+- [ ] **John Ayliff** (Seedship creator) — fan letter + tribute → [outreach draft](marketing/outreach_john_ayliff.md)
+
+### Directory / Listing Submissions
+- [ ] **appfelstrudel.com** — "Top 10 Apps like Seedship" list → [outreach draft](marketing/outreach_appfelstrudel.md)
+- [ ] **IFDB** — Interactive Fiction Database (Seedship listed) → [outreach draft](marketing/outreach_ifdb.md)
+- [ ] **TapTap** — mobile game platform (Seedship listed) → [outreach draft](marketing/outreach_taptap.md)
+- [ ] **textadventures.co.uk** — text adventure portal (Seedship hosted) → [outreach draft](marketing/outreach_textadventures.md)
+- [ ] **MiniReview** — 60+ "games like Seedship" listed → submit game
+- [ ] **IGDB** — similar games page for Seedship → submit entry
+- [ ] **Giant Bomb** — similar games page for Seedship → submit entry
+
 ### Other
-- [ ] **John Ayliff** (Seedship creator) — reach out, let him know about the tribute
 - [ ] **TV Tropes** — create a game page (Seedship has one, drives organic traffic)
 - [ ] **Hacker News comments** — monitor Seedship mentions and comment with link
 - [ ] **App Store (iOS)** — pending Apple Developer account approval + Hackintosh build

@@ -66,7 +66,7 @@ class PlanetGenerator {
 
   /// Generates a random [Planet] using the supplied [random] source.
   /// If [scannerLevels] is provided, stat floors are applied based on levels.
-  static Planet generate(Random random, {Map<String, int>? scannerLevels, PlanetNameService? nameService}) {
+  static Future<Planet> generate(Random random, {Map<String, int>? scannerLevels, PlanetNameService? nameService}) async {
     double stat() => _betaApprox(random);
 
     var atmosphere = stat();
@@ -105,6 +105,7 @@ class PlanetGenerator {
       'biodiversity': biodiversity,
       'anomaly': anomaly,
       'radiation': radiation,
+      'nativePresence': nativePresence,
     });
 
     // Roll moons and rings (separate from surface features).
@@ -115,7 +116,7 @@ class PlanetGenerator {
 
     var name = '';
     if (nameService != null && nameService.isReady) {
-      name = nameService.generateName(
+      name = await nameService.generateName(
         atmosphere: atmosphere,
         gravity: gravity,
         resources: resources,
@@ -124,6 +125,7 @@ class PlanetGenerator {
         water: water,
         // Name model was trained with inverted semantics (high = safe).
         radiation: 1.0 - radiation,
+        random: random,
       );
     }
     if (name.isEmpty) name = _generateName(random);
@@ -181,6 +183,7 @@ class PlanetGenerator {
     final res = stats['resources'] ?? 0.5;
     final anom = stats['anomaly'] ?? 0.5;
     final rad = stats['radiation'] ?? 0.5;
+    final nativePres = stats['nativePresence'] ?? 0.0;
 
     // Corrosive/extreme conditions slash plant/animal probabilities.
     // High radiation (> 0.8) or thin atmosphere slashes life probabilities.
@@ -200,7 +203,7 @@ class PlanetGenerator {
       'insulated_caves': 0.3 * (temp < 0.4 ? 1.5 : 0.5) * (grav * 1.2),
       // Aesthetics: beauty needs water + low radiation, ugliness from high radiation.
       'outstanding_beauty': 0.3 * (water * 1.5) * (bio * 1.3) * (rad < 0.5 ? 1.0 : 0.3),
-      'outstanding_ugliness': 0.3 * (rad > 0.7 ? 1.5 : 0.3) * (bio < 0.3 ? 1.5 : 0.5),
+      'outstanding_ugliness': (rad > 0.5 || bio < 0.2) ? 0.3 * (rad > 0.7 ? 1.5 : 0.8) * (bio < 0.3 ? 1.5 : 0.5) : 0.0,
       // Monuments: anomaly-driven.
       'ancient_ruins': 0.3 * (anom * 1.8),
       'monuments': 0.3 * (anom * 1.5) * (bio * 1.2),
@@ -209,16 +212,16 @@ class PlanetGenerator {
       'tectonic_instability': 0.15 * (grav < 0.5 ? 1.4 : 0.6) * (anom * 1.3),
       // Atmospheric: storms and spores.
       'electrical_storms': 0.2 * (atmo * 1.4) * (anom > 0.3 ? 1.2 : 0.5),
-      'toxic_spores': 0.15 * (bio > 0.4 ? bio * 1.5 : 0.1) * (rad > 0.6 ? 1.4 : 1.0) * extremePenalty,
+      'toxic_spores': bio > 0.3 ? 0.15 * bio * 1.5 * (rad > 0.6 ? 1.4 : 1.0) * extremePenalty : 0.0,
       // Hydrological: oceans and vents.
-      'deep_oceans': 0.2 * (water > 0.6 ? water * 1.8 : 0.1),
+      'deep_oceans': water > 0.6 ? 0.2 * water * 1.8 : 0.0,
       'geothermal_vents': 0.12 * (temp < 0.5 ? 1.4 : 0.6) * (water * 1.3) * (res * 1.2),
       // Life: megafauna and symbiotes.
       'megafauna': 0.12 * (bio >= 0.6 ? bio * 1.6 : 0.0) * (grav * 1.3) * extremePenalty,
-      'symbiotic_organisms': 0.15 * (bio > 0.5 ? bio * 1.4 : 0.1) * (water * 1.3) * extremePenalty,
+      'symbiotic_organisms': bio > 0.4 ? 0.15 * bio * 1.4 * (water * 1.3) * extremePenalty : 0.0,
       // Anomaly: gravity wells and subspace.
-      'gravity_wells': 0.1 * (grav > 0.6 ? grav * 1.5 : 0.2) * (anom * 1.5),
-      'subspace_echoes': 0.1 * (anom > 0.5 ? anom * 2.0 : 0.1),
+      'gravity_wells': grav > 0.5 ? 0.1 * grav * 1.5 * (anom * 1.5) : 0.0,
+      'subspace_echoes': anom > 0.4 ? 0.1 * anom * 2.0 : 0.0,
     };
 
     final result = <String>[];
@@ -275,6 +278,47 @@ class PlanetGenerator {
       if (random.nextDouble() < 0.10) {
         result.add('extreme_seasons');
       }
+    }
+
+    // Perpetual aurora — atmospheric light shows from magnetic/anomaly interaction.
+    if (atmo > 0.5 && anom > 0.3 && random.nextDouble() < 0.12) {
+      result.add('perpetual_aurora');
+    }
+    // Petrified megaflora — ancient fossilized forests on dead worlds.
+    if (bio < 0.3 && water < 0.3 && res > 0.2 && random.nextDouble() < 0.10) {
+      result.add('petrified_megaflora');
+    }
+    // Underground rivers — hidden water networks beneath the surface.
+    if (water > 0.3 && grav > 0.3 && random.nextDouble() < 0.12) {
+      result.add('underground_rivers');
+    }
+    // Obsidian plains — vast glass-like volcanic surfaces.
+    if (result.contains('volcanic_activity') && water < 0.4 && random.nextDouble() < 0.15) {
+      result.add('obsidian_plains');
+    }
+    // Salt flats — evaporated ancient seas.
+    if (water < 0.3 && temp > 0.5 && random.nextDouble() < 0.12) {
+      result.add('salt_flats');
+    }
+    // Carnivorous flora — plants that hunt.
+    if (bio > 0.6 && water > 0.4 && random.nextDouble() < 0.10) {
+      result.add('carnivorous_flora');
+    }
+    // Ghost cities — empty alien metropolis.
+    if (anom > 0.5 && nativePres < 0.2 && random.nextDouble() < 0.06) {
+      result.add('ghost_cities');
+    }
+    // Archive vaults — sealed alien knowledge banks.
+    if (anom > 0.3 && random.nextDouble() < 0.07) {
+      result.add('archive_vaults');
+    }
+    // Sinkhole fields — ground collapses from subsurface erosion.
+    if (water > 0.3 && grav > 0.5 && random.nextDouble() < 0.10) {
+      result.add('sinkhole_fields');
+    }
+    // Apex predator — one dominant super-predator species.
+    if (bio > 0.7 && grav > 0.4 && random.nextDouble() < 0.08) {
+      result.add('apex_predator');
     }
 
     // Cap at 7 BEFORE rolling dependent features, so prerequisites aren't orphaned.

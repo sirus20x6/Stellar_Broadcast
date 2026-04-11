@@ -17,10 +17,19 @@ import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 
 const _kBgColor = Color(0xFF0B1426);
 const _kAccent = Color(0xFF00E5FF);
+
+/// Format an integer with comma separators (e.g. 85200 -> "85,200").
+String _formatScore(int score) {
+  return score.toString().replaceAllMapped(
+    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+    (m) => '${m[1]},',
+  );
+}
 
 Map<String, String> _achievementNames(BuildContext context) => {
   'first_landing': context.l10n.ui_ending_achievementFirstLanding,
@@ -119,16 +128,17 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       colonyName: voyage.colonyName,
       fuel: voyage.fuel,
       landedOnMoon: voyage.landedOnMoon,
+      voyage: voyage,
     );
     _finalScore = result.score;
     _tier = result.tier;
     _epilogue = result.epilogue;
-    _legacyPoints = (result.score / 10).ceil();
+    _legacyPoints = (result.score / 8000).ceil();
     _governmentType = result.governmentType;
     _cultureLevel = result.cultureLevel;
     _technologyLevel = result.technologyLevel;
     _constructionLevel = result.constructionLevel;
-    _nativeRelations = result.nativeRelations;
+    _nativeRelations = result.nativeRelationsLabel;
     _colonyDescription = result.colonyDescription;
     _landscapeDescription = result.landscapeDescription;
     _planetName = result.colonyName;
@@ -173,8 +183,13 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     final resultGovernment = result.governmentType;
     final resultCulture = result.cultureLevel;
     final resultTech = result.technologyLevel;
-    final resultNativeRelations = result.nativeRelations;
+    final resultNativeRelations = result.nativeRelationsLabel;
     final resultLandscape = result.landscapeDescription;
+    final voyageAuthorityAxis = voyage.authorityAxis;
+    final voyageCultureAxis = voyage.cultureAxis;
+    final voyageEconomyAxis = voyage.economyAxis;
+    final voyageFaithAxis = voyage.faithAxis;
+    final voyageMilitaryAxis = voyage.militaryAxis;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final legacyNotifier = ref.read(legacyProvider.notifier);
@@ -274,6 +289,17 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
           parameters: {'achievement_id': ach},
         );
       }
+      AnalyticsService().logEvent(
+        name: 'governance_result',
+        parameters: {
+          'government_type': resultGovernment,
+          'authority_axis': voyageAuthorityAxis,
+          'culture_axis': voyageCultureAxis,
+          'economy_axis': voyageEconomyAxis,
+          'faith_axis': voyageFaithAxis,
+          'military_axis': voyageMilitaryAxis,
+        },
+      );
     });
 
     // Phase 1: Colony established text + expanding glow.
@@ -292,9 +318,12 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     );
 
     // Phase 2: Score counting.
+    // Use longer duration for 100K-scale scores so the count-up feels dramatic
+    // but doesn't try to render every integer. At 60fps over 2.5s, Flutter
+    // naturally skips values (showing ~150 distinct numbers).
     _phase2Controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 2500),
     );
     _scoreCount = IntTween(begin: 0, end: _finalScore).animate(
       CurvedAnimation(parent: _phase2Controller, curve: Curves.easeOutCubic),
@@ -325,9 +354,9 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     GameMusic().returnToBgMusic();
 
     // Play success SFX based on score tier.
-    if (_finalScore >= 70) {
+    if (_finalScore >= 70000) {
       GameSfx().play(GameSfx.success2);
-    } else if (_finalScore >= 30) {
+    } else if (_finalScore >= 30000) {
       GameSfx().play(GameSfx.success1, volume: 0.8);
     }
   }
@@ -360,6 +389,14 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   }
 
   Future<void> _startPhaseSequence() async {
+    if (PlatformConfig.skipAnimations) {
+      _phase1Controller.value = 1.0;
+      _phase2Controller.value = 1.0;
+      _phase3Controller.value = 1.0;
+      _phase4Controller.value = 1.0;
+      _phase5Controller.value = 1.0;
+      return;
+    }
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
     HapticService().success();
@@ -468,6 +505,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
 
           // Content.
           SafeArea(
+            bottom: false,
             child: SingleChildScrollView(
               child: ResponsiveContent(
                 child: _buildContent(context, screen, tierColor),
@@ -562,7 +600,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${_scoreCount.value}',
+                    _formatScore(_scoreCount.value),
                     style: TextStyle(
                       fontSize: screen.scaledFontSize(64),
                       fontWeight: FontWeight.bold,
@@ -696,7 +734,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                       const SizedBox(width: 12),
                       Flexible(
                         child: Text(
-                          'LEGACY POINTS EARNED: +$_legacyPoints',
+                          'LEGACY POINTS EARNED: +${_formatScore(_legacyPoints)}',
                           style: const TextStyle(
                             color: _kAccent,
                             fontSize: 16,
@@ -1067,7 +1105,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   final text =
                       '🚀 STELLAR BROADCAST\n'
                       '\n'
-                      'I scored $_finalScore on $_planetName!\n'
+                      'I scored ${_formatScore(_finalScore)} on $_planetName!\n'
                       '🏆 $_tier • $_governmentType\n'
                       '\n'
                       'Think you can beat me? Tap to play the same voyage:\n'
@@ -1229,10 +1267,10 @@ class _ScoreRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Allow scores up to 15 for over-repaired culture/tech.
-    final clamped = score.clamp(0.0, 15.0);
-    final fraction = (clamped / 15.0).clamp(0.0, 1.0);
-    final isOverflow = score > 10.0;
+    // Max sub-score in the 100k system is 25000 (planet quality).
+    final clamped = score.clamp(0.0, 25000.0);
+    final fraction = (clamped / 25000.0).clamp(0.0, 1.0);
+    final isOverflow = score > 20000.0;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -1290,9 +1328,9 @@ class _ScoreRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           SizedBox(
-            width: 30,
+            width: 50,
             child: Text(
-              clamped.toStringAsFixed(1),
+              clamped.round().toString(),
               textAlign: TextAlign.right,
               style: TextStyle(
                 fontFamily: 'monospace',

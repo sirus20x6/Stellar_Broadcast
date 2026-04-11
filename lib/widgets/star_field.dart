@@ -22,60 +22,95 @@ class StarFieldPainter extends CustomPainter {
   final int midStarCount;
   final int nearStarCount;
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    _drawAtmosphere(canvas, size);
-    _drawLayer(
-      canvas,
-      size,
-      count: farStarCount,
-      seedOffset: 0,
-      speed: 0.15,
-      minRadius: 0.3,
-      maxRadius: 0.8,
-      opacity: 0.4,
-    );
-    _drawLayer(
-      canvas,
-      size,
-      count: midStarCount,
-      seedOffset: 1000,
-      speed: 0.4,
-      minRadius: 0.6,
-      maxRadius: 1.4,
-      opacity: 0.7,
-    );
-    _drawLayer(
-      canvas,
-      size,
-      count: nearStarCount,
-      seedOffset: 2000,
-      speed: 0.8,
-      minRadius: 1.0,
-      maxRadius: 2.2,
-      opacity: 1.0,
-    );
-    _drawDust(canvas, size);
-    _drawStreaks(canvas, size);
-    _drawVignette(canvas, size);
+  // ---------------------------------------------------------------------------
+  // Reusable Paint instances — mutated in place each frame to avoid per-draw
+  // allocations. Never used concurrently because CustomPainter.paint() is
+  // called on a single thread.
+  // ---------------------------------------------------------------------------
+
+  /// Used for each star's base fill in [_drawLayer].
+  final _starPaint = Paint();
+
+  /// Used for the soft glow bloom on larger near-layer stars.
+  final _glowPaint = Paint()
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+
+  /// Used for the cross-hair lens sparkle on the brightest near stars.
+  final _sparklePaint = Paint()..strokeWidth = 0.8;
+
+  /// Used for each nebula atmosphere cloud in [_drawAtmosphere].
+  final _atmospherePaint = Paint()..blendMode = BlendMode.plus;
+
+  /// Used for the dust-lane path in [_drawDust].
+  final _dustPaint = Paint();
+
+  /// Used for each motion-streak line in [_drawStreaks].
+  final _streakPaint = Paint()
+    ..strokeWidth = 0.9
+    ..strokeCap = StrokeCap.round;
+
+  // ---------------------------------------------------------------------------
+  // Pre-computed star data — positions, radii, and color flags are deterministic
+  // from the seed, so we compute them once and cache.
+  // ---------------------------------------------------------------------------
+
+  /// Key used to detect when star data needs recomputation.
+  int _cachedSeed = -1;
+  int _cachedFar = -1;
+  int _cachedMid = -1;
+  int _cachedNear = -1;
+
+  late List<_StarData> _farStars;
+  late List<_StarData> _midStars;
+  late List<_StarData> _nearStars;
+
+  /// Pre-computed atmosphere cloud data (centres, radii, color sets).
+  late List<_AtmosphereData> _atmosphereClouds;
+
+  /// Pre-computed streak base data.
+  late List<_StreakData> _streakStars;
+
+  void _ensureStarData() {
+    if (_cachedSeed == seed &&
+        _cachedFar == farStarCount &&
+        _cachedMid == midStarCount &&
+        _cachedNear == nearStarCount) {
+      return;
+    }
+    _cachedSeed = seed;
+    _cachedFar = farStarCount;
+    _cachedMid = midStarCount;
+    _cachedNear = nearStarCount;
+
+    _farStars = _precomputeLayer(farStarCount, 0, 0.3, 0.8);
+    _midStars = _precomputeLayer(midStarCount, 1000, 0.6, 1.4);
+    _nearStars = _precomputeLayer(nearStarCount, 2000, 1.0, 2.2);
+    _precomputeAtmosphere();
+    _precomputeStreaks();
   }
 
-  void _drawAtmosphere(Canvas canvas, Size size) {
+  List<_StarData> _precomputeLayer(
+      int count, int seedOffset, double minR, double maxR) {
+    final rng = Random(seed + seedOffset);
+    final result = <_StarData>[];
+    for (int i = 0; i < count; i++) {
+      result.add(_StarData(
+        baseX: rng.nextDouble(),
+        baseY: rng.nextDouble(),
+        radius: lerpDouble(minR, maxR, rng.nextDouble())!,
+        isBlueWhite: rng.nextDouble() > 0.6,
+      ));
+    }
+    return result;
+  }
+
+  void _precomputeAtmosphere() {
     final rng = Random(seed + 5000);
-
+    _atmosphereClouds = [];
     for (int i = 0; i < 3; i++) {
-      final center = Offset(
-        size.width * (0.15 + rng.nextDouble() * 0.7),
-        size.height * (0.12 + rng.nextDouble() * 0.55),
-      );
-      final radius = size.shortestSide * (0.28 + rng.nextDouble() * 0.24);
-      final driftX = sin(animationValue * 2 * pi + i) * 18;
-      final driftY = cos(animationValue * 2 * pi * 0.7 + i) * 12;
-      final rect = Rect.fromCircle(
-        center: center.translate(driftX, driftY),
-        radius: radius,
-      );
-
+      final cx = 0.15 + rng.nextDouble() * 0.7;
+      final cy = 0.12 + rng.nextDouble() * 0.55;
+      final rf = 0.28 + rng.nextDouble() * 0.24;
       final colors = switch (i) {
         0 => [
           const Color(0x2200E5FF),
@@ -93,36 +128,107 @@ class StarFieldPainter extends CustomPainter {
           Colors.transparent,
         ],
       };
-
-      final paint = Paint()
-        ..shader = RadialGradient(
-          colors: colors,
-          stops: const [0.0, 0.45, 1.0],
-        ).createShader(rect)
-        ..blendMode = BlendMode.plus;
-
-      canvas.drawCircle(rect.center, radius, paint);
+      _atmosphereClouds.add(_AtmosphereData(cx, cy, rf, colors, i));
     }
   }
 
-  void _drawLayer(
+  void _precomputeStreaks() {
+    final rng = Random(seed + 9000);
+    final count = max(1, nearStarCount ~/ 10);
+    _streakStars = [];
+    for (int i = 0; i < count; i++) {
+      _streakStars.add(_StreakData(
+        baseX: rng.nextDouble(),
+        baseY: rng.nextDouble(),
+        length: 10 + rng.nextDouble() * 22,
+        angle: 0.35 + rng.nextDouble() * 0.35,
+      ));
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Cached shaders — recreated only when canvas size changes.
+  // ---------------------------------------------------------------------------
+  Size _cachedSize = Size.zero;
+  Shader? _dustShader;
+  final List<RadialGradient> _atmosphereGradients = [
+    const RadialGradient(
+      colors: [Color(0x2200E5FF), Color(0x1100B8D4), Colors.transparent],
+      stops: [0.0, 0.45, 1.0],
+    ),
+    const RadialGradient(
+      colors: [Color(0x18A5D6FF), Color(0x101B6B9B), Colors.transparent],
+      stops: [0.0, 0.45, 1.0],
+    ),
+    const RadialGradient(
+      colors: [Color(0x14FFF3C4), Color(0x0D7FDBFF), Colors.transparent],
+      stops: [0.0, 0.45, 1.0],
+    ),
+  ];
+
+  void _ensureSizeShaders(Size size) {
+    if (size == _cachedSize) return;
+    _cachedSize = size;
+    _dustShader = const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0x0008141F),
+        Color(0x1108141F),
+        Color(0x33040A14),
+      ],
+      stops: [0.0, 0.45, 1.0],
+    ).createShader(Offset.zero & size);
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _ensureStarData();
+    _ensureSizeShaders(size);
+    _drawAtmosphere(canvas, size);
+    _drawLayerCached(canvas, size, _farStars, 0.15, 0.4);
+    _drawLayerCached(canvas, size, _midStars, 0.4, 0.7);
+    _drawLayerCached(canvas, size, _nearStars, 0.8, 1.0);
+    _drawDust(canvas, size);
+    _drawStreaks(canvas, size);
+    _drawVignette(canvas, size);
+  }
+
+  void _drawAtmosphere(Canvas canvas, Size size) {
+    for (final cloud in _atmosphereClouds) {
+      final center = Offset(
+        size.width * cloud.cx,
+        size.height * cloud.cy,
+      );
+      final radius = size.shortestSide * cloud.radiusFactor;
+      final driftX = sin(animationValue * 2 * pi + cloud.index) * 18;
+      final driftY = cos(animationValue * 2 * pi * 0.7 + cloud.index) * 12;
+      final rect = Rect.fromCircle(
+        center: center.translate(driftX, driftY),
+        radius: radius,
+      );
+
+      _atmospherePaint.shader =
+          _atmosphereGradients[cloud.index].createShader(rect);
+
+      canvas.drawCircle(rect.center, radius, _atmospherePaint);
+    }
+  }
+
+  void _drawLayerCached(
     Canvas canvas,
-    Size size, {
-    required int count,
-    required int seedOffset,
-    required double speed,
-    required double minRadius,
-    required double maxRadius,
-    required double opacity,
-  }) {
-    final rng = Random(seed + seedOffset);
+    Size size,
+    List<_StarData> stars,
+    double speed,
+    double opacity,
+  ) {
     final offset = animationValue * speed * size.height;
 
-    for (int i = 0; i < count; i++) {
-      final baseX = rng.nextDouble() * size.width;
-      final baseY = rng.nextDouble() * size.height;
-      final radius = lerpDouble(minRadius, maxRadius, rng.nextDouble())!;
-      final isBlueWhite = rng.nextDouble() > 0.6;
+    for (int i = 0; i < stars.length; i++) {
+      final star = stars[i];
+      final baseX = star.baseX * size.width;
+      final baseY = star.baseY * size.height;
+      final radius = star.radius;
 
       // Scroll vertically and wrap around.
       final y = (baseY + offset) % size.height;
@@ -133,37 +239,32 @@ class StarFieldPainter extends CustomPainter {
       // Subtle twinkle via sine wave keyed to star index.
       final twinkle = 0.7 + 0.3 * sin(animationValue * 2 * pi * 3 + i * 0.7);
 
-      final color = isBlueWhite
+      final color = star.isBlueWhite
           ? Color.fromRGBO(180, 220, 255, opacity * twinkle)
           : Color.fromRGBO(255, 255, 255, opacity * twinkle);
 
-      final paint = Paint()..color = color;
-
-      canvas.drawCircle(Offset(x, y), radius, paint);
+      _starPaint.color = color;
+      canvas.drawCircle(Offset(x, y), radius, _starPaint);
 
       // Add a soft glow to the larger near-layer stars.
       if (radius > 1.5) {
-        final glowPaint = Paint()
-          ..color = color.withValues(alpha: 0.15 * twinkle)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
-        canvas.drawCircle(Offset(x, y), radius * 2.5, glowPaint);
+        _glowPaint.color = color.withValues(alpha: 0.15 * twinkle);
+        canvas.drawCircle(Offset(x, y), radius * 2.5, _glowPaint);
       }
 
       // Give the brightest near stars a tiny lens sparkle so the field feels
       // less like uniformly plotted dots.
       if (radius > 1.7 && opacity > 0.9 && i % 3 == 0) {
-        final sparklePaint = Paint()
-          ..color = color.withValues(alpha: 0.18 * twinkle)
-          ..strokeWidth = 0.8;
+        _sparklePaint.color = color.withValues(alpha: 0.18 * twinkle);
         canvas.drawLine(
           Offset(x - radius * 2.8, y),
           Offset(x + radius * 2.8, y),
-          sparklePaint,
+          _sparklePaint,
         );
         canvas.drawLine(
           Offset(x, y - radius * 2.8),
           Offset(x, y + radius * 2.8),
-          sparklePaint,
+          _sparklePaint,
         );
       }
     }
@@ -185,68 +286,60 @@ class StarFieldPainter extends CustomPainter {
     dustPath.lineTo(size.width, size.height);
     dustPath.close();
 
-    final paint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          const Color(0x0008141F),
-          const Color(0x1108141F),
-          const Color(0x33040A14),
-        ],
-        stops: const [0.0, 0.45, 1.0],
-      ).createShader(Offset.zero & size);
+    _dustPaint.shader = _dustShader;
 
-    canvas.drawPath(dustPath, paint);
+    canvas.drawPath(dustPath, _dustPaint);
   }
 
-  void _drawStreaks(Canvas canvas, Size size) {
-    final rng = Random(seed + 9000);
-    final streakCount = max(1, nearStarCount ~/ 10);
+  static const _streakGradient = LinearGradient(
+    colors: [
+      Colors.transparent,
+      Color(0x66D7F5FF),
+      Colors.transparent,
+    ],
+  );
 
-    for (int i = 0; i < streakCount; i++) {
+  void _drawStreaks(Canvas canvas, Size size) {
+    for (int i = 0; i < _streakStars.length; i++) {
+      final streak = _streakStars[i];
       final progress = (animationValue + i * 0.23) % 1.0;
-      final startX = rng.nextDouble() * size.width;
+      final startX = streak.baseX * size.width;
       final startY =
-          ((rng.nextDouble() * size.height) + progress * size.height) %
+          ((streak.baseY * size.height) + progress * size.height) %
           size.height;
-      final length = 10 + rng.nextDouble() * 22;
-      final angle = 0.35 + rng.nextDouble() * 0.35;
       final end = Offset(
-        startX - cos(angle) * length,
-        startY - sin(angle) * length,
+        startX - cos(streak.angle) * streak.length,
+        startY - sin(streak.angle) * streak.length,
       );
 
-      final paint = Paint()
-        ..shader = LinearGradient(
-          colors: [
-            Colors.transparent,
-            const Color(0x66D7F5FF),
-            Colors.transparent,
-          ],
-        ).createShader(Rect.fromPoints(Offset(startX, startY), end))
-        ..strokeWidth = 0.9
-        ..strokeCap = StrokeCap.round;
+      _streakPaint.shader = _streakGradient
+          .createShader(Rect.fromPoints(Offset(startX, startY), end));
 
-      canvas.drawLine(Offset(startX, startY), end, paint);
+      canvas.drawLine(Offset(startX, startY), end, _streakPaint);
     }
   }
 
+  // Cached vignette state — shader is recreated only when size changes.
+  Size _vignetteCachedSize = Size.zero;
+  final _vignettePaint = Paint();
+
   void _drawVignette(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    final paint = Paint()
-      ..shader = RadialGradient(
-        center: const Alignment(0, -0.1),
+    if (size != _vignetteCachedSize) {
+      _vignettePaint.shader = const RadialGradient(
+        center: Alignment(0, -0.1),
         radius: 1.1,
         colors: [
           Colors.transparent,
-          const Color(0x14000000),
-          const Color(0x3A000000),
+          Color(0x14000000),
+          Color(0x3A000000),
         ],
-        stops: const [0.55, 0.82, 1.0],
+        stops: [0.55, 0.82, 1.0],
       ).createShader(rect);
+      _vignetteCachedSize = size;
+    }
 
-    canvas.drawRect(rect, paint);
+    canvas.drawRect(rect, _vignettePaint);
   }
 
   @override
@@ -256,4 +349,43 @@ class StarFieldPainter extends CustomPainter {
       oldDelegate.farStarCount != farStarCount ||
       oldDelegate.midStarCount != midStarCount ||
       oldDelegate.nearStarCount != nearStarCount;
+}
+
+/// Pre-computed per-star data (normalized 0..1 positions).
+class _StarData {
+  const _StarData({
+    required this.baseX,
+    required this.baseY,
+    required this.radius,
+    required this.isBlueWhite,
+  });
+  final double baseX;
+  final double baseY;
+  final double radius;
+  final bool isBlueWhite;
+}
+
+/// Pre-computed atmosphere cloud data.
+class _AtmosphereData {
+  const _AtmosphereData(
+      this.cx, this.cy, this.radiusFactor, this.colors, this.index);
+  final double cx;
+  final double cy;
+  final double radiusFactor;
+  final List<Color> colors;
+  final int index;
+}
+
+/// Pre-computed streak data (normalized positions).
+class _StreakData {
+  const _StreakData({
+    required this.baseX,
+    required this.baseY,
+    required this.length,
+    required this.angle,
+  });
+  final double baseX;
+  final double baseY;
+  final double length;
+  final double angle;
 }

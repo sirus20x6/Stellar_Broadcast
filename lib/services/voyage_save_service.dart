@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 
@@ -8,8 +10,12 @@ class VoyageSaveService {
   static const _key = 'active_voyage';
   static final _settings = SettingsRepository();
 
+  static String _encodeJson(Map<String, dynamic> json) => jsonEncode(json);
+
   static Future<void> save(VoyageState state) async {
-    await _settings.setString(_key, jsonEncode(state.toJson()));
+    final json = state.toJson();
+    final encoded = await compute(_encodeJson, json);
+    await _settings.setString(_key, encoded);
   }
 
   static Future<VoyageState?> load() async {
@@ -19,7 +25,8 @@ class VoyageSaveService {
       return VoyageState.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
       );
-    } catch (_) {
+    } catch (e) {
+      QaLogger.app.severe('Save data corrupted, clearing: $e');
       await clear();
       return null;
     }

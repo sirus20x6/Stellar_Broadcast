@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -25,6 +26,8 @@ class PlanetNameService {
   /// Load model and vocab from assets. Safe to call multiple times.
   Future<void> init() async {
     if (_session != null) return;
+    // ONNX Runtime not available on macOS; caller falls back to procedural names.
+    if (Platform.isMacOS) return;
 
     // Load vocab.
     final vocabStr =
@@ -55,7 +58,10 @@ class PlanetNameService {
   ///
   /// Falls back to empty string if model is not loaded (caller should
   /// use procedural fallback in that case).
-  String generateName({
+  ///
+  /// Async to yield to the event loop every 3 inference steps, preventing
+  /// UI jank from the 200-400ms synchronous ONNX run.
+  Future<String> generateName({
     required double atmosphere,
     required double gravity,
     required double resources,
@@ -64,7 +70,8 @@ class PlanetNameService {
     required double water,
     required double radiation,
     double samplingTemperature = 0.8,
-  }) {
+    Random? random,
+  }) async {
     if (_session == null) return '';
 
     // Stat order matches vocab.json: [atmo, grav, res, lifesigns, temp, water, rad]
@@ -77,11 +84,13 @@ class PlanetNameService {
     var cIn = Float32List(_hiddenSize);
 
     final nameChars = <String>[];
-    final random = Random();
+    final rng = random ?? Random();
     final runOptions = OrtRunOptions();
 
     try {
       for (var step = 0; step < _maxLen; step++) {
+        // Yield to event loop every 3 steps to prevent UI freeze.
+        if (step % 3 == 0) await Future.delayed(Duration.zero);
         final statsInitTensor = OrtValueTensor.createTensorWithDataList(
           step == 0 ? stats : zeroStats,
           [1, 7],
@@ -131,7 +140,7 @@ class PlanetNameService {
         }
 
         // Sample next character.
-        final charIdx = _sampleFromLogits(logits, samplingTemperature, random);
+        final charIdx = _sampleFromLogits(logits, samplingTemperature, rng);
 
         if (charIdx == _eosIdx || charIdx == _padIdx) break;
 
