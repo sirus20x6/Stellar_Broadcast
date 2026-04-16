@@ -78,12 +78,14 @@ ssh "$SERVER" bash -s "$TMPDIR" "$REMOTE_DIR" "$WEB_USER" "$WEB_GROUP" << 'REMOT
 
   sudo install -d -m 755 -o "$WEB_USER" -g "$WEB_GROUP" "$REMOTE_DIR"
 
-  # press.html goes to press/index.html; everything else lands at REMOTE_DIR root
-  if [ -f press.html ]; then
-    sudo install -d -m 755 -o "$WEB_USER" -g "$WEB_GROUP" "$REMOTE_DIR/press"
-    sudo install -m 644 -o "$WEB_USER" -g "$WEB_GROUP" press.html "$REMOTE_DIR/press/index.html"
-    rm press.html
-  fi
+  # Subpages go to <name>/index.html so clean URLs work (e.g. /press, /privacy)
+  for subpage in press privacy; do
+    if [ -f "${subpage}.html" ]; then
+      sudo install -d -m 755 -o "$WEB_USER" -g "$WEB_GROUP" "$REMOTE_DIR/$subpage"
+      sudo install -m 644 -o "$WEB_USER" -g "$WEB_GROUP" "${subpage}.html" "$REMOTE_DIR/$subpage/index.html"
+      rm "${subpage}.html"
+    fi
+  done
 
   for f in *; do
     sudo install -m 644 -o "$WEB_USER" -g "$WEB_GROUP" "$f" "$REMOTE_DIR/$f"
