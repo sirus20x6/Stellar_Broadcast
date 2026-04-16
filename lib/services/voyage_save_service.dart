@@ -5,6 +5,39 @@ import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 
+/// Minimal key/value adapter used by [VoyageSaveService] for persistence.
+///
+/// Exists so the save/load/clear/hasSave logic can be unit-tested with an
+/// in-memory implementation, without initializing Hive or SharedPreferences.
+///
+/// Semantics mirror the original [SettingsRepository] contract:
+///   * [getString] returns `''` (empty string) for a missing key.
+///   * [setString] overwrites any existing value.
+///   * [remove] is a no-op if the key is absent.
+@visibleForTesting
+abstract class VoyageStorageAdapter {
+  Future<String> getString(String key);
+  Future<void> setString(String key, String value);
+  Future<void> remove(String key);
+}
+
+/// Default adapter backed by the real Hive-based [SettingsRepository].
+class _SettingsRepositoryAdapter implements VoyageStorageAdapter {
+  _SettingsRepositoryAdapter();
+
+  final SettingsRepository _settings = SettingsRepository();
+
+  @override
+  Future<String> getString(String key) => _settings.getString(key);
+
+  @override
+  Future<void> setString(String key, String value) =>
+      _settings.setString(key, value);
+
+  @override
+  Future<void> remove(String key) => _settings.remove(key);
+}
+
 /// Persists and restores mid-run voyage state.
 ///
 /// Writes are atomic: the JSON blob is staged under a pending key and the
@@ -14,7 +47,19 @@ import 'package:stellar_broadcast/models/voyage_state.dart';
 class VoyageSaveService {
   static const _key = 'active_voyage';
   static const _stagingKey = 'active_voyage_pending';
-  static final _settings = SettingsRepository();
+
+  // Non-final so tests can swap in an in-memory adapter. Production code
+  // never reassigns this — the default adapter is constructed once per
+  // process and wraps the shared SettingsRepository.
+  static VoyageStorageAdapter _adapter = _SettingsRepositoryAdapter();
+
+  /// Injects a custom storage adapter. Test-only.
+  @visibleForTesting
+  static set adapter(VoyageStorageAdapter value) => _adapter = value;
+
+  /// Restores the default [SettingsRepository]-backed adapter. Test-only.
+  @visibleForTesting
+  static void resetAdapter() => _adapter = _SettingsRepositoryAdapter();
 
   static String _encodeJson(Map<String, dynamic> json) => jsonEncode(json);
 
@@ -23,19 +68,19 @@ class VoyageSaveService {
     final encoded = await compute(_encodeJson, json);
     // Stage first, then swap. If the app force-closes between these two
     // writes, the previous _key value is still the source of truth.
-    await _settings.setString(_stagingKey, encoded);
-    await _settings.setString(_key, encoded);
+    await _adapter.setString(_stagingKey, encoded);
+    await _adapter.setString(_key, encoded);
     // Best-effort cleanup; a leftover stage entry is harmless.
-    await _settings.remove(_stagingKey);
+    await _adapter.remove(_stagingKey);
   }
 
   static Future<VoyageState?> load() async {
-    final raw = await _settings.getString(_key);
+    final raw = await _adapter.getString(_key);
     if (raw.isEmpty) {
       // Recover from a crash during a save: if the primary key is empty
       // but there's a staged blob, it's the most recent complete write
       // we have. Promote it.
-      final staged = await _settings.getString(_stagingKey);
+      final staged = await _adapter.getString(_stagingKey);
       if (staged.isEmpty) return null;
       QaLogger.app.warning(
         'Primary save missing; recovering from staged write',
@@ -44,8 +89,8 @@ class VoyageSaveService {
         final recovered = VoyageState.fromJson(
           jsonDecode(staged) as Map<String, dynamic>,
         );
-        await _settings.setString(_key, staged);
-        await _settings.remove(_stagingKey);
+        await _adapter.setString(_key, staged);
+        await _adapter.remove(_stagingKey);
         return recovered;
       } on FormatException catch (e, st) {
         // Forward-version save: keep the staged blob intact so the next
@@ -76,15 +121,15 @@ class VoyageSaveService {
       return null;
     } catch (e, st) {
       QaLogger.app.severe('Primary save corrupted, trying staged fallback', e, st);
-      final staged = await _settings.getString(_stagingKey);
+      final staged = await _adapter.getString(_stagingKey);
       if (staged.isNotEmpty) {
         try {
           final recovered = VoyageState.fromJson(
             jsonDecode(staged) as Map<String, dynamic>,
           );
           QaLogger.app.warning('Recovered from staged write after primary corruption');
-          await _settings.setString(_key, staged);
-          await _settings.remove(_stagingKey);
+          await _adapter.setString(_key, staged);
+          await _adapter.remove(_stagingKey);
           return recovered;
         } on FormatException {
           // Staged is forward-version too. Preserve and bail.
@@ -103,14 +148,14 @@ class VoyageSaveService {
   }
 
   static Future<void> clear() async {
-    await _settings.remove(_key);
-    await _settings.remove(_stagingKey);
+    await _adapter.remove(_key);
+    await _adapter.remove(_stagingKey);
   }
 
   static Future<bool> hasSave() async {
-    final raw = await _settings.getString(_key);
+    final raw = await _adapter.getString(_key);
     if (raw.isNotEmpty) return true;
-    final staged = await _settings.getString(_stagingKey);
+    final staged = await _adapter.getString(_stagingKey);
     return staged.isNotEmpty;
   }
 }

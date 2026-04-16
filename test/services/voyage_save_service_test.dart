@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
+import 'package:stellar_broadcast/services/voyage_save_service.dart';
 
 /// Save-file corruption resilience tests.
 ///
@@ -187,4 +188,206 @@ void main() {
       );
     });
   });
+
+  group('VoyageSaveService end-to-end', () {
+    // Same baseline state used by the corruption-resilience group, duplicated
+    // here so the groups stay independently readable.
+    VoyageState e2eBaseline() => const VoyageState().copyWith(
+          ship: const ShipSystems(hull: 0.8, nav: 0.7),
+          encounterCount: 8,
+          fuel: 120,
+          energy: 25,
+          colonists: 850,
+          seed: 42,
+          isDaily: true,
+          log: const ['Left Earth.', 'Scanned Alpha.'],
+          authorityAxis: 0.3,
+          militaryAxis: -0.2,
+        );
+
+    const primaryKey = 'active_voyage';
+    const stagingKey = 'active_voyage_pending';
+
+    late _MapAdapter adapter;
+
+    setUp(() {
+      adapter = _MapAdapter();
+      VoyageSaveService.adapter = adapter;
+    });
+
+    tearDown(() {
+      VoyageSaveService.resetAdapter();
+    });
+
+    test('save() then load() returns an equivalent VoyageState', () async {
+      final state = e2eBaseline();
+      await VoyageSaveService.save(state);
+      final loaded = await VoyageSaveService.load();
+
+      expect(loaded, isNotNull);
+      expect(loaded!.encounterCount, state.encounterCount);
+      expect(loaded.fuel, state.fuel);
+      expect(loaded.energy, state.energy);
+      expect(loaded.colonists, state.colonists);
+      expect(loaded.seed, state.seed);
+      expect(loaded.isDaily, state.isDaily);
+      expect(loaded.log, state.log);
+      expect(loaded.ship.hull, closeTo(state.ship.hull, 1e-9));
+      expect(loaded.ship.nav, closeTo(state.ship.nav, 1e-9));
+      expect(loaded.authorityAxis, closeTo(state.authorityAxis, 1e-9));
+      expect(loaded.militaryAxis, closeTo(state.militaryAxis, 1e-9));
+    });
+
+    test('hasSave() is false initially, true after save, false after clear',
+        () async {
+      expect(await VoyageSaveService.hasSave(), isFalse);
+      await VoyageSaveService.save(e2eBaseline());
+      expect(await VoyageSaveService.hasSave(), isTrue);
+      await VoyageSaveService.clear();
+      expect(await VoyageSaveService.hasSave(), isFalse);
+    });
+
+    test('clear() removes both primary and staged keys', () async {
+      // Seed both keys directly so we can prove clear() hits both.
+      await adapter.setString(primaryKey, '{"schemaVersion":2}');
+      await adapter.setString(stagingKey, '{"schemaVersion":2}');
+      expect(adapter.store.containsKey(primaryKey), isTrue);
+      expect(adapter.store.containsKey(stagingKey), isTrue);
+
+      await VoyageSaveService.clear();
+
+      expect(adapter.store.containsKey(primaryKey), isFalse);
+      expect(adapter.store.containsKey(stagingKey), isFalse);
+    });
+
+    test('atomic write: crash between stage and primary recovers from staged',
+        () async {
+      final state = e2eBaseline();
+
+      // Fault adapter throws on the SECOND setString call — i.e. the swap
+      // into the primary key. The staged write (call #1) has already
+      // committed, simulating a force-close between the two writes.
+      final fault = _FaultAdapter(throwOnSetStringCallNumber: 2);
+      VoyageSaveService.adapter = fault;
+
+      await expectLater(VoyageSaveService.save(state), throwsException);
+
+      // Primary never got written, but staged did.
+      expect(fault.store.containsKey(primaryKey), isFalse);
+      expect(fault.store.containsKey(stagingKey), isTrue);
+
+      // Disarm the fault and retry load() — service should promote staged.
+      fault.disarm();
+      final loaded = await VoyageSaveService.load();
+
+      expect(loaded, isNotNull);
+      expect(loaded!.encounterCount, state.encounterCount);
+      expect(loaded.colonists, state.colonists);
+      // After recovery the primary key is populated and staged is gone.
+      expect(fault.store.containsKey(primaryKey), isTrue);
+      expect(fault.store.containsKey(stagingKey), isFalse);
+    });
+
+    test(
+        'forward-version guard: load() returns null and primary blob is preserved',
+        () async {
+      final state = e2eBaseline();
+      final json = state.toJson();
+      json['schemaVersion'] = VoyageState.currentSchemaVersion + 10;
+      final forwardBlob = jsonEncode(json);
+
+      await adapter.setString(primaryKey, forwardBlob);
+
+      final loaded = await VoyageSaveService.load();
+      expect(loaded, isNull);
+
+      // Crucial: the forward-version blob must survive — a future app
+      // version needs to be able to read it.
+      final stillThere = await adapter.getString(primaryKey);
+      expect(stillThere, isNotEmpty);
+      expect(stillThere, forwardBlob);
+    });
+
+    test(
+        'corruption fallback: junk primary + valid staged → load() returns '
+        'staged state and primary is healed', () async {
+      final state = e2eBaseline();
+      final validBlob = jsonEncode(state.toJson());
+
+      // Valid JSON whose top-level type is wrong (a JSON array instead of
+      // an object). jsonDecode succeeds, but the `as Map<String, dynamic>`
+      // cast throws a TypeError, which lands in the generic catch branch —
+      // the one that triggers the staged-fallback recovery. A pure parse
+      // failure would throw FormatException and return null without
+      // consulting staged (that's the forward-version preservation path).
+      await adapter.setString(primaryKey, '[1,2,3]');
+      await adapter.setString(stagingKey, validBlob);
+
+      final loaded = await VoyageSaveService.load();
+      expect(loaded, isNotNull);
+      expect(loaded!.encounterCount, state.encounterCount);
+      expect(loaded.colonists, state.colonists);
+
+      // Primary has been healed with the staged contents; staged is cleared.
+      expect(adapter.store[primaryKey], validBlob);
+      expect(adapter.store.containsKey(stagingKey), isFalse);
+    });
+  });
+}
+
+/// In-memory [VoyageStorageAdapter] backed by a plain [Map].
+///
+/// Mirrors the real [SettingsRepository] semantics: missing keys return the
+/// empty string from [getString]; [remove] is a no-op if the key is absent.
+class _MapAdapter implements VoyageStorageAdapter {
+  final Map<String, String> store = <String, String>{};
+
+  @override
+  Future<String> getString(String key) async => store[key] ?? '';
+
+  @override
+  Future<void> setString(String key, String value) async {
+    store[key] = value;
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    store.remove(key);
+  }
+}
+
+/// Test adapter that throws on a specific [setString] call number to simulate
+/// a crash/interruption between the stage and swap writes.
+///
+/// `throwOnSetStringCallNumber` is 1-indexed: pass 2 to allow the first
+/// setString to succeed and fail the second. Call [disarm] to return to
+/// normal behaviour for subsequent calls.
+class _FaultAdapter implements VoyageStorageAdapter {
+  _FaultAdapter({required this.throwOnSetStringCallNumber});
+
+  final Map<String, String> store = <String, String>{};
+  int? throwOnSetStringCallNumber;
+  int _setStringCalls = 0;
+
+  void disarm() {
+    throwOnSetStringCallNumber = null;
+  }
+
+  @override
+  Future<String> getString(String key) async => store[key] ?? '';
+
+  @override
+  Future<void> setString(String key, String value) async {
+    _setStringCalls++;
+    if (throwOnSetStringCallNumber != null &&
+        _setStringCalls == throwOnSetStringCallNumber) {
+      throw Exception('simulated crash between stage and primary');
+    }
+    store[key] = value;
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    store.remove(key);
+  }
 }
