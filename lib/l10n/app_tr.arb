@@ -168,7 +168,6 @@
   "ui_scannerUpgrade_max": "MAKS",
   "ui_scannerUpgrade_atmospheric": "Atmosferik",
   "ui_scannerUpgrade_gravimetric": "Gravimetrik",
-  "ui_scannerUpgrade_mineral": "Mineral",
   "ui_scannerUpgrade_lifeSigns": "Yaşam Belirtileri",
   "ui_scannerUpgrade_temperature": "Sıcaklık",
   "ui_scannerUpgrade_water": "Su",
@@ -221,15 +220,12 @@
   "planet_featureGeothermalVents": "Jeotermal Bacalar",
   "planet_featureStrongMagnetosphere": "Güçlü Manyetosfer",
   "planet_featureWeakMagnetosphere": "Zayıf Manyetosfer",
-  "planet_featureMegafauna": "Megafauna",
   "planet_featureSymbioticOrganisms": "Simbiyotik Organizmalar",
   "planet_featureGravityWells": "Kütle Çekim Kuyuları",
   "planet_featureSubspaceEchoes": "Alt-uzay Yankıları",
   "ui_monthJan": "OCA",
   "ui_monthFeb": "ŞUB",
-  "ui_monthMar": "MAR",
   "ui_monthApr": "NİS",
-  "ui_monthMay": "MAY",
   "ui_monthJun": "HAZ",
   "ui_monthJul": "TEM",
   "ui_monthAug": "AĞU",
@@ -1236,7 +1232,6 @@
   "ending_techPhrase_preIndustrial": "ancak teknoloji el aletleri ve hayvan emeğinin günlük yaşamın temelini oluşturduğu sanayi öncesi bir düzeye geriledi.",
   "ending_techPhrase_stoneAge": "ve yeniden inşa edecek araçlar olmadan koloni kaya ve kemikten aletler yontarak taş devri varlığına düştü.",
   "ending_techPhrase_default": "ve teknoloji kolonistlerin sürdürebileceği bir düzeye yerleşti.",
-  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
   "ending_populationHigh": "{colonists} kolonistin neredeyse tamamı yolculuktan sağ çıkarak {colonyName}'a güçlü bir insan sermayesi temeli verdi.",
   "ending_populationMedium": "Orijinal binden {colonists} kolonist {colonyName}'a ulaştı — yaşayabilir bir nüfusu sürdürmeye yetecek kadar.",
   "ending_populationLow": "Yalnızca {colonists} kolonist {colonyName}'a ulaşmak için hayatta kaldı; yeni bir medeniyet için tehlikeli ölçüde küçük bir gen havuzu.",
@@ -1302,7 +1297,6 @@
   "ui_trader_shipSystems": "GEMİ SİSTEMLERİ",
   "ui_trader_payWith": "ÖDEME YÖNTEMİ",
   "ui_trader_leaveTrader": "TÜCCARI TERK ET",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "Cömert ruh hali",
   "ui_trader_moodFair": "Dürüst alışveriş",
   "ui_trader_moodHard": "Sert pazarlık eder",
@@ -1320,7 +1314,6 @@
   "ui_codex_ringTypes": "HALKA TÜRLERİ",
   "ui_codex_locked": "Etkilerini görmek için bu özelliğe sahip bir gezegene in.",
   "ui_codex_synergy": "Sinerji: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "YZ'nin İç Sesi",
   "event_aiSoliloquy_narrative": "Geminin Özerk Yönetim YZ'si SAM, tüm iç frekanslarda kadim Dünya şiirlerini sonsuz döngüde yayınlamaya başladı. Yayın önemli miktarda işlemci gücü tüketiyor; ancak mürettebat, derin karanlıkta bunu tuhaf biçimde teselli edici buluyor.",
   "event_aiSoliloquy_choice0_text": "SAM'e devam etmesine izin ver — moral işlemciden önemlidir",
@@ -1437,39 +1430,524 @@
   "event_subspaceReef_choice1_outcome": "Tarayıcılar sınırlarına dayanıyor. Hızla geçiyoruz; ama sensör dizileri altuzay dalgalarının yoğunluğuyla yanıyor.",
   "event_alienTrader_title": "Gezgin Tüccar",
   "event_alienTrader_narrative": "Tanıdık olmayan tasarıma sahip bir araç, tüm frekanslarda yayın yaparak yanımızda süzülüyor. Bu bir tüccar — medeniyetler arasındaki uzayı arşınlayan gezgin tüccarlarardan biri. Kaynaklar karşılığında tamir ve malzeme teklif ediyor. Kargo bölmesi egzotik teknolojilerin uğultusuyla titriyor.",
-
   "event_pulsarLighthouse_title": "Pulsar Deniz Feneri",
   "event_pulsarLighthouse_narrative": "Dönen bir nötron yıldızı, kozmik bir deniz feneri gibi ışınını boşlukta gezdiriyor. Pulsarın ritmik atımı, tarayıcılarımızı olağanüstü doğruluğa yeniden kalibre edebilecek hassas zamanlama verileri taşıyor — ancak ışınla hizalanmak, gemiyi yoğun radyasyona maruz bırakmak demek.",
   "event_pulsarLighthouse_choice0": "Tarayıcıları atıma göre kalibre et",
   "event_pulsarLighthouse_outcome0": "Tarayıcı dizileri pulsar sinyalini emiyor, asla hayal edemeyeceğimiz hassasiyetlere yeniden kalibre oluyor. Ama radyasyonun bedeli gerçek — açıktaki bölümdeki birkaç kriyopod hasar görüyor ve bir avuç kolonist maruziyetten kurtulamıyor.",
   "event_pulsarLighthouse_choice1": "Kalkan aç ve güvenli mesafeden geç",
   "event_pulsarLighthouse_outcome1": "Pulsardan geniş bir mesafe bırakıyoruz, güvenli bir yörünge için fazladan yakıt yakıyoruz. Mürettebat, süzülen ışını filtrelenmiş gözlem pencerelerinden izliyor — güzel ama uzak.",
-
   "event_alienNursery_title": "Uzaylı Kuluçka Yuvası",
   "event_alienNursery_narrative": "Devasa bir organik yapı boşlukta süzülüyor — uzaylı yavrularını kuluçkaya yatıran biyolojik bir yuva. Yaşam destek sistemleri çöküyor, iç sıcaklıklar düşüyor. İçerideki canlılar ölüyor. Biyo-tarayıcılarımız bu yapıdan muazzam şeyler öğrenebilir, ancak müdahale etmek bilinmeyen patojenlere hava kilitlerimizi açmak demek.",
   "event_alienNursery_choice0": "Yaşam desteklerini stabilize etmeye yardım et",
   "event_alienNursery_outcome0": "Mühendislerimiz yuvaya geçici bir ısı bağlantısı kuruyor, kuluçka odalarını stabilize ediyor. Biyo-tarayıcı verileri olağanüstü — tamamen yeni bir yaşam taksonomisi. Ama korkulduğu gibi, uzaylı mikroorganizmalar gemiye yol buluyor. Tıbbi ekipler salgını kontrol altına alıyor, ancak birkaç kolonist hastalandıktan sonra.",
   "event_alienNursery_choice1": "Dokunmadan bırak",
   "event_alienNursery_outcome1": "Saygılı bir mesafeden gözlem yapıyoruz, pasif taramalarla belgeleyebildiğimizi belgeliyoruz. Yuva sürüklenmeye devam ediyor, kaderi belirsiz. Mürettebat yaşamın kırılganlığı üzerine — uzaylı yaşamın bile — ve taşıdığımız seçimlerin ağırlığı üzerine düşünüyor.",
-
   "event_derelictArmada_title": "Terk Edilmiş Donanma",
   "event_derelictArmada_narrative": "Yüzlerce kadim savaş gemisi boşlukta hareketsiz asılı duruyor — unutulmuş bir çatışmanın mezarlığı. Gövdeleri tanımlayamadığımız silahların izlerini taşıyor, ancak yapısal malzemeleri ve yerleşik veritabanları paha biçilemez olabilir. Soru neye öncelik verileceği: fiziksel kurtarma mı yoksa bilgi mi.",
   "event_derelictArmada_choice0": "Silah teknolojisi ve gövde kaplamasını kurtar",
   "event_derelictArmada_outcome0": "Kurtarma ekipleri uzaylı savaş gemilerini kesiyor, bizimkinden yüzyıllar ilerideki egzotik alaşımları ve inşaat tekniklerini çıkarıyor. Yapıcılar yeni malzemeleri hevesle entegre ediyor. Ama bir gemi göründüğü kadar ölü değilmiş — çıkarma sırasında bir bubi tuzağı patlıyor ve bir kurtarma ekibini öldürüyor.",
   "event_derelictArmada_choice1": "Tarihsel arşivlerini indir",
   "event_derelictArmada_outcome1": "Veri çekirdeklerine odaklanıyoruz, yüzyıllar boyunca uzaylı tarihini, sanatını, bilimini ve felsefesini dikkatle çıkarıyoruz. Kültürel arşiv tek başına bilim insanlarını nesiller boyu meşgul edebilir. Teknolojik kavrayışlar, hemen pratik olmasa da, kendi anlayışımızı ileriye taşıyan mühendislik ilkelerini ortaya koyuyor.",
-
   "event_alienQuarantineZone_title": "Uzaylı Karantina Bölgesi",
   "event_alienQuarantineZone_narrative": "Düzinelerce uzaylı dilinde uyarı işaretleri, mühürlenmiş bir uzay bölgesinin sınırını belirliyor. İçeride ne tutuluyorsa, birden fazla medeniyetin onu izole etmek için iş birliği yapacağı kadar tehlikeliydi. Uzun menzilli taramalarımız içeride devasa teknolojik izler tespit ediyor — ve canlı olabilecek bir şey.",
   "event_alienQuarantineZone_choice0": "Karantinayı ihlal et ve araştır",
   "event_alienQuarantineZone_outcome0": "Uyarı şamandıralarını geçerek karantina bölgesine giriyoruz. İçeride, şaşırtıcı karmaşıklıkta bir araştırma istasyonu buluyoruz — ve onun incelediği şeyin kalıntılarını. Kurtardığımız teknoloji devrimci, ancak biyolojik kontaminasyon ciddi. Bölgeyi terk etmeden önce düzinelerce kolonist hastalanıyor.",
   "event_alienQuarantineZone_choice1": "Karantinaya saygı göster",
   "event_alienQuarantineZone_outcome1": "Uyarı işaretlerinin kendilerini inceliyoruz; bunlar, onları yerleştiren medeniyetlerin navigasyon verilerini ve atmosfer ölçümlerini içeriyor. İçerideki hazine değil, ama bir şey — ve kilitledikleri şeyi serbest bırakmadık.",
-
   "event_hydroponicsBlight_title": "Hidroponik Veba",
   "event_hydroponicsBlight_narrative": "Hızla yayılan bir mantar vebası geminin hidroponik bölmelerini ele geçirdi. Tüm hasat döngüleri gözlerimizin önünde soluyor. Veba henüz tohum rezervlerine ulaşmadı ama bu sadece birkaç saat meselesi. Bölmeleri temizleyip sıfırdan ekebilir ya da mevcut hasadı kurtarabilecek — veya kontaminasyonu daha da yayabilecek — deneysel bir antifungal tedavi deneyebiliriz.",
   "event_hydroponicsBlight_choice0": "Temizle ve tohum rezervlerinden yeniden ek",
   "event_hydroponicsBlight_outcome0": "Hidroponik bölmeleri vakuma boşaltıyoruz, vebayı her canlı bitkiyle birlikte öldürüyoruz. Tohum rezervlerinden yeniden ekmek haftalarca sürecek ve taze gıdaya ve bahçe alanlarına bağımlı kültürel programlar askıya alınıyor. Ama enfeksiyon kontrol altında.",
   "event_hydroponicsBlight_choice1": "Deneysel tedaviyi dene",
-  "event_hydroponicsBlight_outcome1": "Deneysel antifungal başlangıçta umut vaat ediyor, ancak dirençli bir suş aşıyor. Tam temizliğe başvurduğumuzda veba kriyopod besin hatlarına yayılmış durumda. Hasar, en başından kararlı davransaydık olacağından daha kötü."
+  "event_hydroponicsBlight_outcome1": "Deneysel antifungal başlangıçta umut vaat ediyor, ancak dirençli bir suş aşıyor. Tam temizliğe başvurduğumuzda veba kriyopod besin hatlarına yayılmış durumda. Hasar, en başından kararlı davransaydık olacağından daha kötü.",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_ending_shareCardShare": "PAYLAŞMAK",
+  "ui_ending_shareCardCancel": "İPTAL ETMEK",
+  "ui_title_seedInvalid": "Geçersiz tohum kodu. Yalnızca A–Z ve 0–9'u kullanın.",
+  "ui_settings_statsLeft": "SOL",
+  "ui_settings_statsRight": "SAĞ",
+  "ui_scannerUpgrade_mineral": "Mineral",
+  "ui_ending_shareCardDialogTitle": "Yolculuğunuzu Paylaşın",
+  "ui_scan_uncertaintyPct": "BELİRSİZLİK: ±{percent}%",
+  "ui_settings_statsPosition": "İstatistikler ve düğmelerin konumu",
+  "ui_scan_probesCount": "PROBLAR: {count}",
+  "ui_ending_shareCard": "PAYLAŞ KARTI",
+  "planet_featureObsidianPlains": "Obsidyen Ovaları",
+  "planet_featureMegafauna": "Megafauna",
+  "planet_featureUndergroundRivers": "Yeraltı Nehirleri",
+  "planet_featureCarnivorousFlora": "Etobur Flora",
+  "planet_featurePerpetualAurora": "Sürekli Aurora",
+  "planet_featurePetrifiedMegaflora": "Taşlaşmış Megaflora",
+  "planet_featureGhostCities": "Hayalet Şehirler",
+  "planet_featureSaltFlats": "Tuz Daireleri",
+  "ui_monthMar": "MAR",
+  "ui_monthMay": "MAYIS",
+  "ending_governmentTheocracy": "Teokrasi",
+  "ending_governmentCommune": "Komün",
+  "ending_nativesAlliance": "İttifak",
+  "ending_govSentenceTheocracy": "Teokratik bir konsey, sömürgecileri boşlukta ayakta tutan inançtan bilgelik alarak {planetName}'a rehberlik ediyor.",
+  "ending_govSentenceMilitaryJunta": "{planetName} askeri bir komuta yapısı tarafından yönetiliyor; onları uzayda kurtaran disiplin artık medeniyetlerini tanımlıyor.",
+  "planet_featureArchiveVaults": "Arşiv Kasaları",
+  "planet_featureSinkholeFields": "Düden Alanları",
+  "ending_governmentFascistState": "Faşist Devlet",
+  "ending_governmentMilitaryJunta": "Askeri Cunta",
+  "ending_governmentCorporateOligarchy": "Kurumsal Oligarşi",
+  "ending_nativesSubjugation": "boyun eğdirme",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ui_codex_noSynergy": "—",
+  "planet_featureApexPredator": "Apex Yırtıcısı",
+  "ending_govSentenceCorporateOligarchy": "Kaynak yöneticilerinden oluşan bir konsorsiyum {planetName}'a liderlik ediyor; ekonomik zekalarının hayatta kalmak için gerekli olduğu kanıtlandı.",
+  "ending_nativeSentenceSubjugation": "{planetName}'ın yerli nüfusu sömürge yönetimi altında yaşıyor; sömürgeciler kendi düzenlerini empoze ederken kültürleri bastırılıyor.",
+  "ending_govSentenceFascistState": "Otoriter bir rejim {planetName}'ı demir yumrukla kontrol ediyor, yeni dünyada düzen uğruna sivil özgürlükler feda ediliyor.",
+  "ending_govSentenceCommune": "{planetName} halkı, kaynakları ve kararları tüm sömürgeciler arasında eşit olarak paylaşarak kendilerini kolektif olarak yönetir.",
+  "ui_tooltip_back": "Geri",
+  "ui_tooltip_settings": "Ayarlar",
+  "ending_nativeSentenceAlliance": "Resmi bir ittifak, sömürgecileri ve {planetName} yerli uygarlığını birbirine bağlıyor; onların birleşik bilgileri, her ikisinin de tek başına yapabileceğinden daha büyük bir şey inşa ediyor.",
+  "event_pulsarLighthouse_choice2": "Tarama bize ulaşmadan geri çekilin",
+  "ui_tooltip_bugReport": "Hata bildir",
+  "ui_common_tapRingToChoose": "SEÇMEK İÇİN BİR YÜZÜĞE DOKUNUN",
+  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
+  "ui_tooltip_codex": "Kodeks",
+  "ui_common_tapToContinue": "DEVAM ETMEK İÇİN DOKUNUN",
+  "ui_tooltip_leaderboards": "Skor tabloları",
+  "ui_common_tapToSkip": "ATLAMAK İÇİN DOKUNUN",
+  "event_constitutionalConvention_title": "Anayasa Konvansiyonu",
+  "event_constitutionalConvention_choice2": "Teknokratik bir uzman konseyi oluşturun",
+  "event_constitutionalConvention_choice1": "Acil durum yetkilerine sahip güçlü bir yönetici oluşturun",
+  "event_constitutionalConvention_narrative": "Koloni gemisinin nüfusu, resmi yönetim olmadan huzursuz bir şekilde büyüdü. Her güverteden delegeler, gelecekteki koloninin nasıl yönetileceğini tanımlayacak bir sözleşme taslağı hazırlamak için kargo ambarında toplanır. Üç grup yeni hükümet için birbiriyle yarışan vizyonlar sunuyor.",
+  "event_constitutionalConvention_outcome1": "Geniş yetkiye sahip tek bir lider atanır. Kararlar çabuk alınıyor ama muhalifler alt güvertelerde tiranlığın fısıldıyor.",
+  "event_constitutionalConvention_choice0": "Genel oy hakkına sahip bir demokratik anayasa taslağı hazırlayın",
+  "event_constitutionalConvention_outcome0": "Sömürgeciler eşit temsili garanti eden bir anayasayı onayladılar. Karar verme süreci yavaşlıyor ancak herkesin sesi duyuldukça moral artıyor.",
+  "event_pulsarLighthouse_outcome2": "Bir sonraki ışın geçişinden önce acil durum yanmasında savruluruz. Pulsarın sinyali arkamızda zayıflıyor; hiçbir veri elde edilmiyor, hiçbir hasar alınmıyor, kaçma itişi için biraz yakıt harcanıyor.",
+  "event_militaryCoupThreat_title": "Askeri Darbe Tehdidi",
+  "event_militaryCoupThreat_choice1": "Komutanın taleplerini yerine getirin",
+  "event_militaryCoupThreat_choice0": "Sadık mürettebat üyeleriyle darbeye direnin",
+  "event_constitutionalConvention_outcome2": "Mühendisler, bilim adamları ve doktorlar uzmanlığa dayalı bir yönetim konseyi oluştururlar. Verimlilik artıyor, ancak bazıları güçten dışlanmış hissediyor.",
+  "event_militaryCoupThreat_outcome1": "Vasquez gemi operasyonlarının kontrolünü devraldı. Düzen hızla yeniden sağlanır, ancak bu, sivil özgürlüklerin pahasına olur. Silahlı devriyeler artık her koridorda yürüyor.",
+  "event_militaryCoupThreat_outcome0": "Sadık mürettebat Vasquez'e karşı çıkmak için toplanır. Çatışma minimum düzeyde kan dökülmesiyle sona eriyor, ancak güvenlik ayrıntıları zayıflıyor ve bazı sömürgeciler çapraz ateşin ortasında kalıyor.",
+  "event_militaryCoupThreat_choice2": "Sınırlı acil durum yetkilerini sona erdirme maddesiyle müzakere edin",
+  "event_militaryCoupThreat_outcome2": "Gergin müzakerelerin ardından Vasquez, gözetimli geçici yetkiyi kabul eder. Kimseyi tam olarak tatmin etmeyen ama şiddeti önleyen kırılgan bir uzlaşma.",
+  "event_religiousAwakening_choice1": "Gemide katı laikliği uygulayın",
+  "event_religiousAwakening_narrative": "Karizmatik bir vaiz, yüzlerce sömürgeciyi yeni bir inanç hareketine çekti. Her döngüde gözlem kubbesinde toplanırlar, ilahileri havalandırma bacalarında yankılanır. Bazı mürettebat üyeleri fanatizm konusunda endişeleniyor; diğerleri öğretilerde gerçek teselli buluyor.",
+  "event_religiousAwakening_choice0": "İnanç hareketini benimseyin ve kaynak sağlayın",
+  "event_religiousAwakening_outcome0": "Hareket resmi destekle gelişiyor. İnananlar arasında moral gelişiyor ve onların ortak ruhu, gemideki sosyal bağları güçlendiriyor.",
+  "event_religiousAwakening_outcome1": "Dini toplantılar özel alanlarla sınırlıdır. Hareket yer altına inerek kırgınlıkları besliyor, ancak bilimsel rasyonalizm resmi doktrin olmaya devam ediyor.",
+  "event_corporateTakeover_narrative": "Geminin kaynak yöneticileri gıda dağıtımı, su geri dönüşümü ve enerji tahsisi üzerindeki kontrolü sessizce sağlamlaştırıyor. Şimdi yetkilerini gelecekteki koloninin ekonomisini yönetecek kurumsal bir yapıya dönüştürmeyi öneriyorlar.",
+  "event_militaryCoupThreat_narrative": "Geminin güvenlik ekibinden Komutan Vasquez cephaneliğe el koydu ve bir ültimatom yayınladı: Acil askeri yetkiler verin veya tüm güvertelerin kapatılmasıyla karşı karşıya kalın. Durum değişken ve sömürgeciler bir yanıt için sizden bekliyor.",
+  "event_religiousAwakening_title": "Dini Uyanış",
+  "event_corporateTakeover_title": "Kurumsal Devralma",
+  "event_corporateTakeover_choice1": "Tüm kaynakların kolektif mülkiyet altında millileştirilmesi",
+  "event_corporateTakeover_outcome0": "Kurumsal grup kaynak yönetimini devralır. Verimlilik önemli ölçüde artıyor, ancak fiyatlar artıyor ve en yoksul sömürgeciler temel ihtiyaçları karşılamakta zorlanıyor.",
+  "event_corporateTakeover_outcome1": "Kaynaklara el konuluyor ve toplumsal kontrol altına alınıyor. Kurumsal hizip dağıldı, ancak kâr teşvikleri olmadan inovasyon duraklıyor.",
+  "event_corporateTakeover_outcome2": "Fiyat kontrolleri ve refah programlarıyla karma bir ekonomi kuruluyor. Her iki taraf da tam olarak memnun değil, ancak bazı girişimlere izin verilirken temel ihtiyaçlar karşılanıyor.",
+  "event_religiousAwakening_choice2": "İbadete izin verin ancak etkisini düzenleyin",
+  "event_religiousAwakening_outcome2": "İnanca izin verilir ancak yönetimden ayrı tutulur. Komutayla irtibat kurmak üzere bir papaz atanır. Huzursuz bir denge korunur.",
+  "event_corporateTakeover_choice0": "Serbest piyasa ilkelerinin kaynakları yönetmesine izin verin",
+  "event_corporateTakeover_choice2": "Düzenlenmiş piyasaları güvenlik ağlarıyla hayata geçirin",
+  "event_successionCrisis_outcome0": "Kaotik ama heyecanlı bir seçim, halk oylamasıyla seçilen yeni bir kaptanın ortaya çıkmasını sağlar. Süreç karmaşık ama sömürgeciler kendi liderliklerinin sahibi olduklarını hissediyorlar.",
+  "event_successionCrisis_choice1": "Ordunun komutayı devralmasına izin verin",
+  "event_successionCrisis_choice0": "Acil seçim yapılması",
+  "event_successionCrisis_choice2": "Yaşlılar konseyini toplayın",
+  "event_successionCrisis_outcome2": "En yaşlı ve en deneyimli sömürgeciler bir yönetim konseyi oluşturur. Onların bilgeliği gemiye rehberlik ediyor, ancak bazı genç mürettebat gerontokrasi tarafından dışlanmış hissediyor.",
+  "event_successionCrisis_outcome1": "Güvenlik şefi kaptan koltuğuna oturuyor. Disiplin derhal yeniden sağlanıyor, ancak sivil mürettebat silahlı muhafızlara giderek artan bir rahatsızlıkla bakıyor.",
+  "event_nativeSovereignty_choice0": "Yerel egemenliği tanıyın ve yerleşmek için izin isteyin",
+  "event_nativeSovereignty_outcome0": "Yerli hakların resmi olarak tanınmasını iletiyorsunuz. Yanıt temkinli ama olumlu. İniş alanları sınırlı olsa da gelecekteki ilişkiler karşılıklı saygı temelinde başlayacak.",
+  "event_nativeSovereignty_choice1": "Sömürge üstünlüğünü iddia edin ve direnişe hazırlanın",
+  "event_nativeSovereignty_narrative": "Uzun menzilli taramalar hedef gezegende akıllı yaşamın olduğunu doğruluyor. Ele geçirilen iletişimler, yaklaşımınızı tespit eden gelişmiş bir medeniyeti ortaya çıkarıyor. Resmi bir talepte bulunuyorlar: Ya bölgesel egemenliklerini tanıyacaklar ya da vardıklarında direnişle karşılaşacaklar.",
+  "event_nativeSovereignty_outcome1": "Ne olursa olsun uzlaşma niyetinizi yayınlıyorsunuz. Mürettebat silah tatbikatlarına ve tahkimat planlamasına başlar. Yerliler sessizleşiyor ve bu bir şekilde tehditlerden daha korkutucu.",
+  "event_successionCrisis_title": "Veraset Krizi",
+  "event_nativeSovereignty_title": "Yerli Egemenlik",
+  "event_nativeSovereignty_outcome2": "Birlikte yaşama ve kaynak paylaşımı için bir çerçeve sunuyorsunuz. Yerliler meraklı ama ihtiyatlı. Müzakereler karmaşık olacak ancak barış olasılığı mevcut.",
+  "event_laborStrike_choice0": "İşçilerin taleplerini tam olarak karşılayın",
+  "event_nativeSovereignty_choice2": "Gezegenin ortak yönetimini önerin",
+  "event_laborStrike_narrative": "Mühendislik ekibi, daha kısa vardiyalar, daha iyi yiyecek tayınları ve navigasyon kararlarında söz hakkı talep ederek işten ayrıldı. Kritik sistemler otomatik yedeklemelerle çalışıyor ancak uzun ömürlü olmayacaklar. Kolonistlerin geri kalanı endişeyle izliyor.",
+  "event_successionCrisis_narrative": "Geminin kaptanı uykusunda öldü ve geride belirlenmiş bir halef kalmadı. Üç grup kontrol için hemen yarışıyor: Sivil konsey seçim talep ediyor, güvenlik şefi askeri otorite talep ediyor ve yaşlı sömürgeciler geleneksel liderlik törenlerine başvuruyor.",
+  "event_laborStrike_outcome2": "Maraton niteliğindeki müzakerelerin ardından bir anlaşmaya varıldı: Daha iyi tayınlar ve tavsiye niteliğinde girdiler, ancak vardiya süresinde herhangi bir azalma yok. Her iki taraf da heyecanlanmıyor ama motorlar çalışmaya devam ediyor.",
+  "event_censorshipDebate_title": "Sansür Tartışması",
+  "event_laborStrike_title": "İşçi Grevi",
+  "event_laborStrike_choice1": "Grevi bastırın ve zorunlu çalışmayı zorunlu kılın",
+  "event_laborStrike_choice2": "Temel talepler konusunda kısmi bir uzlaşma önerin",
+  "event_laborStrike_outcome0": "Grev hemen sona erer. İşçiler iyileştirilmiş koşullarla görevlerine dönüyor. Vardiyalar kısaldıkça üretkenlik biraz düşer, ancak sadakat sarsılmazdır.",
+  "event_censorshipDebate_narrative": "Sızan bir belge, geminin arızalı sistemlerinin gerçek durumunu ortaya koyuyor. Panik alt güvertelere yayılıyor. İletişim görevlisi daha fazla huzursuzluğu önlemek için bilgiye erişimin kısıtlanmasını öneriyor. Sivil özgürlükler savunucuları öfkeli.",
+  "event_laborStrike_outcome1": "Güvenlik güçleri işçilere silah zoruyla istasyonlarına kadar eşlik ediyor. Motorlar yeniden uğultu yapıyor ama alt güvertelerde nefret kaynıyor. Birçok işçi kamaralara hapsedildi.",
+  "event_censorshipDebate_choice0": "Tüm bilgilere ücretsiz erişim garantisi",
+  "event_censorshipDebate_choice2": "Yalnızca güvenlik açısından hassas bilgileri filtreleyin",
+  "event_censorshipDebate_choice1": "Tam bilgi kontrolünü uygulayın",
+  "event_censorshipDebate_outcome2": "Bir sınıflandırma sistemi oluşturulmuştur. Bilgilerin çoğu serbestçe akıyor ancak askeri ve kritik sistem verilerinin açıklanması gerekiyor. Çoğunlukla tatmin edici, uygulanabilir bir orta yol.",
+  "event_censorshipDebate_outcome0": "Tam şeffaflık sağlanmıştır. Sömürgeciler artık anladıkları sorunların çözümüne yardımcı olmak için harekete geçtikçe ilk panik azalır. Bazı bilgiler sıkıntı yaratmasına rağmen liderliğe olan güven artıyor.",
+  "event_censorshipDebate_outcome1": "Artık tüm iletişimler komut yoluyla filtreleniyor. Panik sona eriyor, yerini ürkütücü bir sakinlik alıyor. Ancak sansürlenmiş gerçeğin bıraktığı boşluğu söylentiler dolduruyor ve çoğu zaman gerçeklikten daha kötüler.",
+  "event_colonialCharter_narrative": "Gezegenin çöküşü yaklaşırken koloniciler, yeni toplumları için temel yasaları hazırlamak zorundadır. Her biri koloninin ne olması gerektiğine dair farklı bir vizyonu savunan üç felsefi kamp ortaya çıktı. Tartışma hararetli ve son derece kişisel.",
+  "event_colonialCharter_outcome2": "Şart kaynak yönetimine, teknik eğitime ve ekonomik kalkınmaya öncelik veriyor. Şiirsellikten yoksundur ancak koloninin verimli ve iyi organize olmasını sağlar.",
+  "event_colonialCharter_choice1": "Dünyanın geleneklerini koruyan muhafazakar bir sözleşme",
+  "event_colonialCharter_choice0": "Bireysel hakları vurgulayan ilerici bir sözleşme",
+  "event_colonialCharter_choice2": "Hayatta kalma ve büyümeye odaklanan pragmatik bir sözleşme",
+  "event_separatistMovement_narrative": "Bir grup sömürgeci gemi yönetiminden bağımsızlığını ilan etti. Karaya çıktıktan sonra kendi yerleşim yerlerini kurma hakkını talep ederek kıç tarafta barikat kurdular. Geminin yiyecek rezervlerinin %15'ini ve yedek navigasyon dizisini kontrol ediyorlar.",
+  "event_separatistMovement_outcome0": "Ayrılıkçılar bir anlaşmayı kabul ediyorlar: gevşek bir federal şemsiye altında yerel yönetime sahip kendi bölgeleri. Parçalanma örneği bazılarını endişelendiriyor ama barış korunuyor.",
+  "event_separatistMovement_choice0": "Federal bir çerçeve içerisinde bölgesel özerklik verilmesi",
+  "event_colonialCharter_outcome0": "Şart kişisel özgürlükleri, eşitliği ve sosyal hareketliliği koruma altına alıyor. Sanatçılar ve düşünürler kutlama yapıyor; Gelenekçiler kontrolsüz özgürlüğün kaosa yol açacağı konusunda uyarıyorlar.",
+  "event_colonialCharter_outcome1": "Şart, geleneksel değerleri, aile yapılarını ve dini ibadetleri düzenliyor. Birçoğu tanıdık geleneklerde teselli buluyor; diğerleri eski dünya düşüncesinin ağırlığı altında boğulmuş hissediyorlar.",
+  "event_separatistMovement_choice1": "Barikatları yıkın ve yeniden birleşmeyi zorlayın",
+  "event_colonialCharter_title": "Sömürge Şartı",
+  "event_separatistMovement_title": "Ayrılıkçı Hareket",
+  "event_warCouncil_narrative": "Yakındaki sistemlerde potansiyel tehditlerin tespit edilmesi üzerine geminin liderliği bir savaş konseyi toplar. Soru şu: Koloninin sınırlı kaynaklarının ne kadarı sivil altyapıya karşı askeri hazırlığa ayrılmalı?",
+  "event_warCouncil_outcome0": "Atölyeler silah üretimi için yeniden donatıldı. Bedeni sağlam olan her sömürgeci savaş eğitimi alır. Gemi silahla dolu ama tarım ekipmanlarına ayrılan bütçe azalıyor.",
+  "event_warCouncil_choice1": "Silahsızlanma: Silahları aletlere dönüştürün",
+  "event_separatistMovement_choice2": "Hareketi yönlendiren temel şikayetleri ele alın",
+  "event_warCouncil_choice0": "Tam silahlanma: silahlar üretin ve askerleri eğitin",
+  "event_separatistMovement_outcome1": "Güvenlik ekipleri arka bölüme giriyor. Ayrılıkçılar şiddetle direniyor. Düzen yeniden sağlandı, ancak maliyeti çok yüksek oldu. Gemi ruhen olmasa bile bedenen birleşmiştir.",
+  "event_warCouncil_choice2": "Yalnızca savunma duruşu: kalkanlar ve duvarlar, kılıçlar değil",
+  "event_tradeFederation_choice0": "Minimum düzenlemeyle serbest ticaret bölgeleri kurun",
+  "event_tradeFederation_narrative": "Koloni varlığını sürdürebilmeye yaklaşırken gruplar ekonomisini nasıl yapılandıracaklarını tartışıyor. Sorun hayatta kalmanın ötesine geçiyor; yabancı topraklarda kök salan toplum türünü tanımlayacak. Tüccarlar, toplumcular ve bürokratların hepsi kendi davasını ortaya koyuyor.",
+  "event_warCouncil_outcome2": "Kaynaklar tahkimatlara, kalkanlara ve erken uyarı sistemlerine gidiyor. Hiçbir saldırı silahı üretilmiyor. Potansiyel komşuları kışkırtmadan seçenekleri açık tutan dengeli bir yaklaşım.",
+  "event_tradeFederation_title": "Ticaret Federasyonu",
+  "event_warCouncil_outcome1": "Cephanelik boşaltılıyor ve içindekiler inşaat malzemelerine dönüştürülüyor. Koloni kılıçlarla değil saban demirleriyle inşa edilecek. Pasifistler seviniyor; Realistler karanlıkta neyin gizlendiği konusunda endişelenirler.",
+  "event_warCouncil_title": "Savaş Konseyi",
+  "event_separatistMovement_outcome2": "Arabulucular, grubu uzaklaştıran şeyin ne olduğunu anlamaya çalışırlar. Kaynak dağıtımı ve temsilindeki reformlar, ayrılıkçıları yavaş yavaş yeniden saflara katıyor. İyileşme zaman alır.",
+  "event_tradeFederation_choice1": "Tüm kaynakların ortak paylaşımını uygulayın",
+  "event_tradeFederation_choice2": "Devlet tarafından yönetilen bir ticaret sistemi oluşturun",
+  "event_tradeFederation_outcome0": "Her habitat modülünde pazarlar ortaya çıkar. Tüccarlar rekabet ettikçe inovasyon gelişir. Zenginlik eşitsizliği artıyor ancak koloninin kullanabileceği toplam kaynak havuzu da artıyor.",
+  "event_tradeFederation_outcome1": "Özel mülkiyet kaldırılmıştır. Her şey herkese aittir. Kimse aç kalmıyor ama kimsenin asgari miktardan fazlasını üretme dürtüsü de yok. Sıradanlık rahattır.",
+  "event_faithVsScience_narrative": "Geminin teleskopu, baskın inanç hareketinin temel ilkesiyle doğrudan çelişen kozmik bir olgunun görüntülerini yakaladı. Baş bilim insanı bulguları yayınlamak istiyor; dini lider toplumu parçalayacakları konusunda ısrar ediyor.",
+  "event_faithVsScience_choice2": "Her iki görüş arasındaki uyumu bulmak için ortak bir panel düzenleyin",
+  "event_faithVsScience_outcome2": "Bilim adamları ve ilahiyatçılar bulguları yeniden yorumlamak için birlikte çalışıyorlar. Hem anlayışı hem de inancı genişleten yeni bir sentez ortaya çıkıyor. Herkes ikna olmuş değil ama diyalog sağlıklı.",
+  "event_tradeFederation_outcome2": "Hükümet tüm ticareti kontrol eder, fiyatları belirler ve kaynakları tahsis eder. Sistem adil ama esnek değil. Bakım koridorlarında karaborsalar ortaya çıkıyor.",
+  "event_faithVsScience_choice1": "Sosyal uyumu korumak için bulguları bastırın",
+  "event_faithVsScience_choice0": "Bilimsel bulguların tamamını yayınlayın",
+  "event_faithVsScience_title": "İnanç ve Bilim",
+  "event_faithVsScience_outcome1": "Veriler sınıflandırılır. Dini topluluk istikrarlı olmaya devam ediyor ancak bilim ekibinin morali bozuldu. Ertelenen gerçek, inkar edilen gerçek değildir, ancak öyle hissedilir.",
+  "event_faithVsScience_outcome0": "Gerçek, rahatlığa üstün gelir. Veriler açıklandı ve dini hareket parçalandı. Bazı müminler imanlarını uyarlarlar; diğerleri onu tamamen kaybeder. Bilgi ilerler.",
+  "event_surveillanceState_title": "Gözetim Durumu",
+  "event_surveillanceState_narrative": "Bir dizi sabotaj olayının ardından güvenlik şefi, geminin her bölmesine izleme sistemleri kurmayı önerir. Kameralar, mikrofonlar ve biyometrik tarayıcılar her sömürgecinin hareketlerini takip edecek. Gizlilik savunucuları dehşete düşmüş durumda.",
+  "event_surveillanceState_choice2": "Yalnızca kritik alanlarda sınırlı izleme kurun",
+  "event_nativeAlliance_narrative": "Yerli uygarlık resmi bir anlaşma önerdi. Büyükelçileri, şaşırtıcı derecede gelişmiş bir tercüman cihazı aracılığıyla konuşan zarif bir varlık olan mekik ile gelir. Her biri koloninin geleceği açısından farklı anlamlara sahip üç ilişki biçimi sunuyorlar.",
+  "event_nativeAlliance_choice0": "Eşit ittifak anlaşması imzalayın",
+  "event_surveillanceState_choice1": "Gemi genelinde tam gözetim uygulayın",
+  "event_surveillanceState_choice0": "Gözetim teklifini tamamen reddet",
+  "event_surveillanceState_outcome1": "Geminin her köşesi izleniyor. Sabotajcı birkaç gün içinde yakalanır. Ancak kameralar duruyor ve güvenlik şefi onları kapatmakla ilgilenmiyor. Durmadan.",
+  "event_nativeAlliance_choice2": "Karşılıklı fayda odaklı bir ticaret ortaklığı kurmak",
+  "event_nativeAlliance_outcome0": "Anlaşma karşılıklı savunmayı, ortak araştırmayı ve eşit toprak haklarını tesis ediyor. Her iki medeniyet birlikte büyüyecek. Yerliler, koloni beklentilerinizi dönüştüren tarımsal bilgileri paylaşıyor.",
+  "event_nativeAlliance_choice1": "Sömürge hakimiyeti konumundan müzakere yapın",
+  "event_nativeAlliance_outcome2": "Ticaret türler arasındaki boşluğu doldurur. Yerel malzemeler atölyelerinize akıyor; teknolojiniz onların ilaçlarını geliştiriyor. Dostluk karşılıklı kazançtan doğar.",
+  "event_nativeAlliance_title": "Yerli İttifak",
+  "event_surveillanceState_outcome0": "Gizlilik korunur. Sabotajcı hâlâ serbest ama sömürgeciler izlenilmediklerini bildikleri için daha rahat uyuyorlar. Soruşturma geleneksel yöntemlerle devam ediyor.",
+  "event_surveillanceState_outcome2": "Kameralar makine dairesini, cephaneliği ve köprüyü izliyor. Yaşam alanları özel kalır. Sabotajcı en sonunda model analizi yoluyla tanımlanır. Ölçülü bir yanıt.",
+  "event_nativeAlliance_outcome1": "Uygun koşulları güvence altına almak için ileri teknolojinizden yararlanırsınız. Yerliler topraklarını ve kaynaklarını bırakıyor. Titreyen ellerle imza atıyorlar. Tarih bunu daha önce de görmüştü ve sonu nadiren iyi bitmişti."
 }

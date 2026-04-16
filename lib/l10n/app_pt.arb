@@ -1,9 +1,6 @@
 {
   "@@locale": "pt",
-
   "appTitle": "Stellar Broadcast",
-  "ui_title_stellar": "STELLAR",
-  "ui_title_broadcast": "BROADCAST",
   "ui_title_beginVoyage": "INICIAR VIAGEM",
   "ui_title_dailyVoyage": "VIAGEM DIÁRIA",
   "ui_title_dailyCompleted": "DIÁRIA COMPLETA",
@@ -13,12 +10,10 @@
   "ui_title_startVoyage": "INICIAR VIAGEM",
   "ui_voyage_sector": "SET {count}",
   "ui_voyage_seed": "SEMENTE: {code}",
-  "ui_voyage_scanners": "SCANNERS",
   "ui_voyage_scanPlanet": "ESCANEAR PLANETA",
   "ui_voyage_noEnergy": "SEM ENERGIA",
   "ui_voyage_pressOn": "AVANÇAR",
   "ui_voyage_systemHull": "Casco",
-  "ui_voyage_systemNav": "Nav",
   "ui_voyage_systemCryopods": "Criopods",
   "ui_voyage_systemCulture": "Cultura",
   "ui_voyage_systemTech": "Tecnologia",
@@ -50,12 +45,9 @@
   "ui_scan_allStatsVerified": "TODOS OS DADOS VERIFICADOS",
   "ui_scan_launchProbe": "LANÇAR SONDA",
   "ui_scan_habitability": "HABITABILIDADE",
-  "ui_scan_statAtmos": "ATMOS",
-  "ui_scan_statTemp": "TEMP",
   "ui_scan_statWater": "ÁGUA",
   "ui_scan_statResource": "RECURSO",
   "ui_scan_statGravity": "GRAVIDADE",
-  "ui_scan_statBio": "BIO",
   "ui_scan_statAnomaly": "ANOMALIA",
   "ui_scan_statRadiation": "RADIAÇÃO",
   "ui_landing_planetAnalysis": "ANÁLISE PLANETÁRIA",
@@ -99,7 +91,6 @@
   "ui_ending_landscape": "PAISAGEM",
   "ui_ending_voyageRecord": "REGISTRO DA VIAGEM",
   "ui_ending_scoreBreakdown": "DETALHAMENTO DA PONTUAÇÃO",
-  "ui_ending_total": "TOTAL",
   "ui_ending_achievementsUnlocked": "CONQUISTAS DESBLOQUEADAS",
   "ui_ending_challengeFriend": "DESAFIAR AMIGO",
   "ui_ending_copySeed": "COPIAR SEMENTE",
@@ -128,7 +119,7 @@
   "ui_gameOver_challengeFriend": "DESAFIAR AMIGO",
   "ui_gameOver_viewLegacy": "VER LEGADO",
   "ui_gameOver_newVoyage": "NOVA VIAGEM",
-  "ui_gameOver_shareText": "\ud83d\ude80 STELLAR BROADCAST\n\nEu não sobrevivi... {reason}.\nAcha que consegue fazer melhor na mesma viagem?\nstellarbroadcast://play?seed={seedCode}\n\nNão tem o app?\nhttps://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast",
+  "ui_gameOver_shareText": "🚀 STELLAR BROADCAST\n\nEu não sobrevivi... {reason}.\nAcha que consegue fazer melhor na mesma viagem?\nstellarbroadcast://play?seed={seedCode}\n\nNão tem o app?\nhttps://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast",
   "ui_gameOver_epilogueColonists": "O último colono morreu em criosono — uma falha em cascata que nenhum protocolo de emergência pôde prevenir. O Êxodo navegou adiante, uma nave fantasma carregando apenas sistemas automatizados e silêncio congelado. Sua missão havia falhado não em um momento de catástrofe, mas no lento desgaste de vidas humanas, uma por uma, até que nenhuma restasse.",
   "ui_gameOver_epilogueHull": "O casco cedeu em silêncio — fadiga metálica agravada por incontáveis micro-impactos até que a nave não pudesse mais se manter unida. A atmosfera sangrou para o vazio. A nave colonial Êxodo se despedaçou, seus destroços juntando-se aos antigos campos de detritos entre as estrelas. Nenhum sinal de socorro foi jamais recebido.",
   "ui_gameOver_epilogueNav": "Sem navegação, o Êxodo vagou pelo espaço inexplorado — cartas estelares inúteis, correções de curso impossíveis. A nave navegou pela escuridão, seus passageiros adormecidos sem saber que seu destino havia sido substituído pela eternidade. Alguns dizem que a nave ainda vaga, um navio fantasma na noite infinita.",
@@ -138,10 +129,8 @@
   "ui_settings_music": "MÚSICA",
   "ui_settings_soundEffects": "EFEITOS SONOROS",
   "ui_settings_haptics": "VIBRAÇÃO",
-  "ui_settings_premium": "PREMIUM",
   "ui_settings_goPremium": "Seja Premium",
   "ui_settings_enabled": "Ativado",
-  "ui_settings_volume": "Volume",
   "ui_settings_language": "Idioma",
   "ui_settings_systemDefault": "Padrão do sistema",
   "ui_legacy_title": "CENTRAL DE LEGADO",
@@ -169,7 +158,6 @@
   "ui_scannerUpgrade_max": "MÁX",
   "ui_scannerUpgrade_atmospheric": "Atmosférico",
   "ui_scannerUpgrade_gravimetric": "Gravimétrico",
-  "ui_scannerUpgrade_mineral": "Mineral",
   "ui_scannerUpgrade_lifeSigns": "Sinais Vitais",
   "ui_scannerUpgrade_temperature": "Temperatura",
   "ui_scannerUpgrade_water": "Água",
@@ -191,7 +179,6 @@
   "onboarding_page2_description": "Cada viagem ensina algo novo à humanidade. Ganhe Pontos de Legado para desbloquear melhorias permanentes e grave seu nome nas estrelas.",
   "onboarding_page3_title": "Sua Privacidade, Sua Escolha",
   "onboarding_page3_description": "Escolha como deseja vivenciar Stellar Broadcast.",
-  "planet_tierUtopia": "Utopia",
   "planet_tierParadise": "Paraíso",
   "planet_tierHabitable": "Habitável",
   "planet_tierHarsh": "Hostil",
@@ -222,23 +209,16 @@
   "planet_featureGeothermalVents": "Fontes Geotermais",
   "planet_featureStrongMagnetosphere": "Magnetosfera Forte",
   "planet_featureWeakMagnetosphere": "Magnetosfera Fraca",
-  "planet_featureMegafauna": "Megafauna",
   "planet_featureSymbioticOrganisms": "Organismos Simbióticos",
   "planet_featureGravityWells": "Poços Gravitacionais",
   "planet_featureSubspaceEchoes": "Ecos Subespaciais",
-  "ui_monthJan": "JAN",
   "ui_monthFeb": "FEV",
-  "ui_monthMar": "MAR",
   "ui_monthApr": "ABR",
   "ui_monthMay": "MAI",
-  "ui_monthJun": "JUN",
-  "ui_monthJul": "JUL",
   "ui_monthAug": "AGO",
   "ui_monthSep": "SET",
   "ui_monthOct": "OUT",
-  "ui_monthNov": "NOV",
   "ui_monthDec": "DEZ",
-
   "event_asteroidField_title": "Campo de Asteroides",
   "event_asteroidField_narrative": "Scanners de longo alcance detectam um denso campo de asteroides diretamente em nossa rota de voo. Navegação calcula duas opções: uma travessia arriscada pelo corredor mais estreito, ou um longo desvio que esgotará nossas reservas de combustível e estressará o conjunto de navegação.",
   "event_asteroidField_choice0_text": "Atravessar o corredor",
@@ -444,7 +424,7 @@
   "event_geneticModification_title": "Proposta de Adaptação Genética",
   "event_geneticModification_narrative": "A equipe científica propõe modificar o DNA dos colonos para sobreviver melhor em mundos alienígenas — ossos mais fortes, resistência a UV, pulmões aprimorados. As modificações são irreversíveis e mudariam a humanidade para sempre.",
   "event_geneticModification_choice0_text": "Aprovar — a sobrevivência exige evolução",
-  "event_geneticModification_choice0_outcome": "As modificações começam com voluntários. Dez colonos sofrem reações fatais de rejeição \u2014 um sombrio lembrete de que a evolução tem um preço. Os sobreviventes são mais resistentes, mas ainda são completamente humanos?",
+  "event_geneticModification_choice0_outcome": "As modificações começam com voluntários. Dez colonos sofrem reações fatais de rejeição — um sombrio lembrete de que a evolução tem um preço. Os sobreviventes são mais resistentes, mas ainda são completamente humanos?",
   "event_geneticModification_choice1_text": "Tornar voluntário apenas",
   "event_geneticModification_choice1_outcome": "Alguns se voluntariam, outros recusam. A colônia será dividida entre os modificados e os naturais.",
   "event_geneticModification_choice2_text": "Rejeitar — a humanidade deve permanecer humana",
@@ -454,9 +434,9 @@
   "event_triageDecision_choice0_text": "Priorizar o pessoal essencial",
   "event_triageDecision_choice0_outcome": "Engenheiros e pilotos se recuperam rapidamente. Oito tripulantes não essenciais sucumbem antes que o tratamento os alcance.",
   "event_triageDecision_choice1_text": "Tratar os mais doentes primeiro — triagem por necessidade",
-  "event_triageDecision_choice1_outcome": "Os mais vulneráveis são salvos. Três perdem a batalha apesar do tratamento precoce \u2014 o vírus estava avançado demais.",
+  "event_triageDecision_choice1_outcome": "Os mais vulneráveis são salvos. Três perdem a batalha apesar do tratamento precoce — o vírus estava avançado demais.",
   "event_triageDecision_choice2_text": "Loteria — o destino decide",
-  "event_triageDecision_choice2_outcome": "Um sorteio aleatório. Dez são duplamente azarados \u2014 tratamento negado e fracos demais para lutar. A nave segue adiante.",
+  "event_triageDecision_choice2_outcome": "Um sorteio aleatório. Dez são duplamente azarados — tratamento negado e fracos demais para lutar. A nave segue adiante.",
   "event_earthSignal_title": "Sinal da Terra",
   "event_earthSignal_narrative": "Impossivelmente, uma transmissão chega da Terra — atrasada por décadas. Contém uma mensagem: \"Não pousem em nenhum mundo com leituras de anomalia acima de 0.5. Aprendemos tarde demais.\" A mensagem termina com estática.",
   "event_earthSignal_choice0_text": "Acatar o aviso — recalibrar nossos critérios",
@@ -596,7 +576,7 @@
   "event_memoryPlague_choice2_text": "Recuperação coletiva — acordar colonos para reescrever de memória",
   "event_memoryPlague_choice2_outcome": "Milhares contribuem com memórias: canções, histórias, receitas, poemas. Três colonos idosos, enfraquecidos pelo descongelamento, não sobrevivem ao processo. O arquivo é reconstruído, imperfeito mas profundamente humano.",
   "event_gravityLensPlanet_title": "Mundo Espelho",
-  "event_gravityLensPlanet_narrative": "Lentes gravitacionais revelam um planeta que parece ser uma duplicata exata da Terra \u2014 oceanos azuis, continentes verdes, nuvens brancas. Mas os cálculos da lente mostram que está a centenas de anos-luz do nosso rumo \u2014 impossivelmente longe. Ainda assim, seus dados espectrais poderiam refinar nossos critérios de busca.",
+  "event_gravityLensPlanet_narrative": "Lentes gravitacionais revelam um planeta que parece ser uma duplicata exata da Terra — oceanos azuis, continentes verdes, nuvens brancas. Mas os cálculos da lente mostram que está a centenas de anos-luz do nosso rumo — impossivelmente longe. Ainda assim, seus dados espectrais poderiam refinar nossos critérios de busca.",
   "event_gravityLensPlanet_choice0_text": "Estudar sua assinatura espectral para refinar nossa busca",
   "event_gravityLensPlanet_choice0_outcome": "Os dados espectrais revelam biomarcadores e assinaturas atmosféricas que agora podemos buscar. A esperança se foca.",
   "event_gravityLensPlanet_choice1_text": "Registrar as coordenadas mas manter o curso",
@@ -1010,7 +990,7 @@
   "event_lifeSupportGlitch_title": "Falha em Cascata do Suporte Vital",
   "event_lifeSupportGlitch_narrative": "A IA de gerenciamento de suporte vital entrou em um loop de erro, ciclando os intervalos de depuração de CO2 de forma imprevisível. Os níveis de CO₂ nos conveses ocupados estão flutuando. Tripulantes desenvolvem dores de cabeça; alguns já estão incapacitados.",
   "event_lifeSupportGlitch_choice0_text": "Forçar um reset rígido da IA de suporte vital",
-  "event_lifeSupportGlitch_choice0_outcome": "O reset limpa o loop mas deixa controles manuais funcionando por dez horas. Três tripulantes sucumbem ao acúmulo de CO\u2082 antes dos níveis normalizarem.",
+  "event_lifeSupportGlitch_choice0_outcome": "O reset limpa o loop mas deixa controles manuais funcionando por dez horas. Três tripulantes sucumbem ao acúmulo de CO₂ antes dos níveis normalizarem.",
   "event_lifeSupportGlitch_choice1_text": "Corrigir o loop de software — mais lento mas mais seguro",
   "event_lifeSupportGlitch_choice1_outcome": "A equipe de software isola e corrige a falha em seis horas tensas. Os níveis de CO₂ normalizam lentamente. Nenhum reset rígido necessário.",
   "event_lifeSupportGlitch_choice2_text": "Evacuar os conveses afetados e funcionar com suporte vital mínimo",
@@ -1131,7 +1111,6 @@
   "event_repairStation_choice2_outcome": "A IA da estação é voraz por dados. Copia toda nossa biblioteca técnica — manuais de engenharia, bancos de dados científicos, plantas de fabricação — e em troca fabrica sondas frescas e células de energia a partir de matérias-primas. O arquivo técnico se diminui, mas os suprimentos são inestimáveis.",
   "event_repairStation_choice3_text": "Oferecer o arquivo cultural por uma revisão abrangente",
   "event_repairStation_choice3_outcome": "A estação transmite as obras de Shakespeare, Bach e mil outras vozes humanas para seus bancos de memória. Em troca, realiza uma revisão completa e carrega as baías de sondas com unidades recém-fabricadas. O arquivo cultural é desmantelado, mas a nave pode realmente alcançar seu destino agora.",
-
   "ending_scoreLabel_landing": "Pouso",
   "ending_scoreLabel_construction": "Construção",
   "ending_scoreLabel_technology": "Tecnologia",
@@ -1143,14 +1122,12 @@
   "ending_scoreLabel_resources": "Recursos",
   "ending_scoreLabel_nativeRelations": "Relações Nativas",
   "ending_scoreLabel_population": "População",
-
   "ending_tierGoldenAge": "Era de Ouro",
   "ending_tierThrivingColony": "Colônia Próspera",
   "ending_tierSurvival": "Sobrevivência",
   "ending_tierStruggling": "Em Dificuldades",
   "ending_tierDire": "Desesperada",
   "ending_tierExtinction": "Extinção",
-
   "ending_titleGoldenAge": "O Primeiro Florescimento de {planetName}",
   "ending_titleThrivingColony": "Raízes Profundas em {planetName}",
   "ending_titleSurvival": "Um Bastião Conquistado em {planetName}",
@@ -1158,7 +1135,6 @@
   "ending_titleDire": "A Colônia Naufragada de {planetName}",
   "ending_titleExtinction": "A Última Transmissão de {planetName}",
   "ending_titleDefault": "Pouso em {planetName}",
-
   "ending_epilogueGoldenAge": "Contra todas as probabilidades, a transmissão criou raízes. {planetName} recebeu a humanidade não como naufrágio mas como semente viva: solo fértil, sistemas funcionais e força suficiente para construir além da mera sobrevivência. Em uma geração, arte, ciência e cultura floresceram. As crianças nascidas em {planetName} olharam para estrelas desconhecidas e as chamaram de lar. A viagem se tornou o mito fundador de uma nova civilização pronta para projetar seu próprio futuro rumo às estrelas.",
   "ending_epilogueThrivingColony": "O pouso foi difícil, mas a semente aguentou. {planetName} se mostrou generoso o suficiente para a água fluir, cultivos enraizarem, e os sistemas sobreviventes da nave serem desmontados no primeiro assentamento real. Ao final da primeira década, uma cidade próspera se erguia onde o Êxodo pousara. A humanidade não apenas sobrevivera à travessia. Havia começado de novo.",
   "ending_epilogueSurvival": "A sobrevivência nunca foi garantida, e em {planetName} cada dia teve que ser conquistado. A nave danificada forneceu apenas o mínimo essencial, mas a semente não morreu em trânsito. Os colonos se adaptaram por teimosia e engenhosidade, talhando um futuro em um mundo que oferecia pouco de graça. Gerações posteriores lembrariam as dificuldades dos anos fundadores e a determinação que manteve a transmissão viva.",
@@ -1166,34 +1142,27 @@
   "ending_epilogueDire": "O pouso em {planetName} foi um desastre. Sistemas críticos da nave falharam durante a descida, e o que deveria ser uma semeadura se tornou uma queda. Em meses, a colônia se reduziu a um punhado de sobreviventes desesperados abrigando-se nos destroços da nave. Se durariam mais um ano era incerto. O registro final se encerrou com uma única linha: \"Ainda estamos aqui. Por enquanto.\"",
   "ending_epilogueExtinction": "A transmissão terminou em {planetName}. A baliza de socorro continuou pulsando muito após o último colono respirar, mas a semente nunca enraizou. A caixa preta da nave registrou tudo: os sistemas falhando, os desesperados dias finais, e o silêncio que se seguiu. Se outra nave encontrar este mundo, saberá que a humanidade tentou espalhar vida entre as estrelas, e fracassou aqui.",
   "ending_epilogueDefault": "A viagem acabou. O que vem a seguir depende dos sobreviventes.",
-
   "ending_governmentDemocracy": "Democracia",
   "ending_governmentTechnocracy": "Tecnocracia",
   "ending_governmentRepublic": "República",
   "ending_governmentAutocracy": "Autocracia",
   "ending_governmentTribalCouncil": "Conselho Tribal",
-
   "ending_cultureRenaissance": "Renascimento",
   "ending_culturePreserved": "Preservada",
   "ending_cultureFragmented": "Fragmentada",
   "ending_cultureLost": "Perdida",
-
   "ending_techAdvanced": "Avançada",
-  "ending_techIndustrial": "Industrial",
   "ending_techPreIndustrial": "Pré-Industrial",
   "ending_techStoneAge": "Idade da Pedra",
-
   "ending_constructionAdvanced": "Avançada",
   "ending_constructionFunctional": "Funcional",
   "ending_constructionPrimitive": "Primitiva",
   "ending_constructionNone": "Nenhuma",
-
   "ending_nativesNone": "Nenhum",
   "ending_nativesIntegrated": "Integrados",
   "ending_nativesCoexistence": "Coexistência",
   "ending_nativesTension": "Tensão",
   "ending_nativesConflict": "Conflito",
-
   "ending_landscapeGravityHigh": "A gravidade pesada pressiona tudo para baixo. ",
   "ending_landscapeGravityLow": "Na baixa gravidade, cada passo lança os colonos pelos ares. ",
   "ending_landscapeGravityNormal": "A gravidade parece quase como a da Terra. ",
@@ -1223,25 +1192,21 @@
   "ending_landscapeSubspaceEchoes": "Algo ressoa sob a superfície — um zumbido baixo sentido nos ossos mais que ouvido, como se o planeta lembrasse de algo antigo e vasto. ",
   "ending_landscapeNotableFeature": "Característica notável: {feature}.",
   "ending_landscapeNotableFeatures": "Características notáveis: {features}.",
-
   "ending_govSentenceDemocracy": "Os colonos de {planetName} estabeleceram um governo democrático, com representantes eleitos guiando a nova civilização por seus anos formativos.",
   "ending_govSentenceTechnocracy": "O poder em {planetName} recaiu sobre os engenheiros e cientistas que mantiveram a colônia viva, formando um conselho tecnocrático que governou através de expertise e pragmatismo.",
   "ending_govSentenceRepublic": "Uma carta republicana foi redigida no primeiro ano em {planetName}, equilibrando as vozes dos colonos com um senado de líderes designados.",
   "ending_govSentenceAutocracy": "Com as instituições culturais em ruínas, a autoridade em {planetName} se consolidou sob um único líder forte que impôs ordem por necessidade e força de vontade.",
   "ending_govSentenceTribalCouncil": "Os poucos sobreviventes em {planetName} se organizaram em pequenos clãs, governados por um conselho de anciãos que tomava decisões ao redor de fogueiras compartilhadas.",
   "ending_govSentenceDefault": "Os colonos de {planetName} se organizaram da melhor forma possível.",
-
   "ending_constructionSentenceAdvanced": "Sistemas de construção avançados permitiram aos colonos de {colonyName} erguer estruturas permanentes em semanas após o pouso, com habitats pressurizados e infraestrutura completa.",
   "ending_constructionSentenceFunctional": "O equipamento de construção da colônia, maltratado mas funcional, produziu abrigos robustos e estradas básicas pelo assentamento.",
   "ending_constructionSentencePrimitive": "Com sistemas de construção mal funcionando, colonos construíram abrigos rudimentares com casco de nave resgatado e materiais locais.",
   "ending_constructionSentenceNone": "Sem equipamento de construção funcional, os colonos se amontoaram nos destroços da nave, incapazes de construir nada novo.",
   "ending_constructionSentenceDefault": "Os colonos construíram o que puderam com o que tinham.",
-
   "ending_moonMetalRichLowRes": "Uma lua rica em metais orbitando acima se tornou a salvação da colônia — expedições de mineração à sua superfície forneceram as matérias-primas que o próprio planeta não podia.",
   "ending_moonMetalRichHighRes": "A lua rica em metais do planeta forneceu um suplemento bem-vindo aos já adequados recursos minerais, impulsionando rápido avanço tecnológico.",
   "ending_moonUnstable": "Uma lua instável em órbita decadente choveu detritos sobre a colônia, devastando infraestrutura e destruindo tecnologia insubstituível em bombardeios periódicos de meteoros.",
   "ending_moonBarren": "Uma lua estéril pairava no céu alienígena, uma companheira desolada que não oferecia aos colonos nada além de uma vista familiar para contemplar nas longas noites.",
-
   "ending_culturePhrase_renaissance": "As tradições artísticas e literárias da Terra não apenas sobreviveram mas desabrocharam em um renascimento",
   "ending_culturePhrase_preserved": "Os colonos preservaram muito do patrimônio cultural da Terra, mantendo bibliotecas e tradições",
   "ending_culturePhrase_fragmented": "Apenas fragmentos da cultura terrestre perduraram — canções e histórias meio lembradas transmitidas de boca em boca",
@@ -1252,18 +1217,14 @@
   "ending_techPhrase_preIndustrial": "embora a tecnologia tenha regredido a um estado pré-industrial, com ferramentas manuais e trabalho animal formando a espinha dorsal da vida diária.",
   "ending_techPhrase_stoneAge": "e sem meios para reconstruir, a colônia caiu em uma existência da idade da pedra, fabricando ferramentas de rocha e osso.",
   "ending_techPhrase_default": "e a tecnologia se estabeleceu em um nível que os colonos podiam sustentar.",
-  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
-
   "ending_populationHigh": "Quase todos os {colonists} colonos sobreviveram à viagem, dando a {colonyName} uma forte base de capital humano.",
   "ending_populationMedium": "Dos mil originais, {colonists} colonos chegaram a {colonyName} — suficientes para sustentar uma população viável.",
   "ending_populationLow": "Apenas {colonists} colonos sobreviveram para chegar a {colonyName}, um reservatório genético perigosamente pequeno para uma nova civilização.",
   "ending_populationCritical": "Meras {colonists} almas chegaram a {colonyName} — mal suficientes para chamar de colônia, mais uma desesperada última resistência.",
-
   "ending_nativeSentenceIntegrated": "Os habitantes nativos de {planetName} deram as boas-vindas aos colonos, e em uma geração os dois povos se fundiram em uma sociedade compartilhada, mais rica pela mistura de tradições.",
   "ending_nativeSentenceCoexistence": "Os colonos e os habitantes nativos de {planetName} mantiveram uma coexistência cautelosa mas pacífica, trocando conhecimento e recursos através de fronteiras culturais.",
   "ending_nativeSentenceTension": "As relações com os habitantes nativos de {planetName} permaneceram tensas, marcadas por mal-entendidos e disputas territoriais que lançaram sombra sobre o futuro da colônia.",
   "ending_nativeSentenceConflict": "Conflito aberto com a civilização nativa de {planetName} definiu a história inicial da colônia, drenando recursos e vidas de ambos os lados em uma luta que nenhum poderia realmente vencer.",
-
   "ending_outlookGoldenAge": "Sozinha em {planetName} e livre de conflitos, a colônia traçou seu próprio rumo para um futuro brilhante entre as estrelas.",
   "ending_outlookThrivingColony": "Sem competição nativa, os colonos se espalharam pela superfície de {planetName}, construindo vilas e estradas que conectavam uma rede crescente de assentamentos.",
   "ending_outlookSurvival": "O mundo vazio não ofereceu aliados mas também nenhum inimigo, e os colonos talharam seu nicho no silêncio da vasta paisagem de {planetName}.",
@@ -1271,25 +1232,21 @@
   "ending_outlookDire": "Em um mundo desprovido de outra vida inteligente, os últimos sobreviventes só tinham uns aos outros e a esperança desvanecendo de que amanhã seria mais gentil que hoje.",
   "ending_outlookExtinction": "Ninguém lamentou a morte da colônia em {planetName}. O planeta simplesmente continuou sua lenta rotação, indiferente à breve faísca de vida que cintilou e se extinguiu em sua superfície.",
   "ending_outlookDefault": "A história da colônia em {planetName} estava apenas começando.",
-
   "ui_moons": "LUAS",
   "ui_rings": "ANÉIS",
   "ui_landing_landOnMoon": "POUSAR NA LUA",
   "ui_landing_moonComparison": "Lua: {moonPercent}% vs Planeta: {planetPercent}%",
   "ui_landing_lowerGravity": "Gravidade menor — pouso mais fácil",
   "ui_landing_ringSystem": "Sistema de Anéis {type}",
-
   "moon_barren": "Estéril",
   "moon_metalRich": "Rica em Metais",
   "moon_unstable": "Instável",
   "moon_habitable": "Habitável",
   "moon_ice": "Gelo",
-
   "ring_dust": "Poeira",
   "ring_ice": "Gelo",
   "ring_rocky": "Rochoso",
   "ring_metallic": "Metálico",
-
   "ending_landscapeMoonSingle": "Uma lua solitária paira no céu acima da colônia.",
   "ending_landscapeMoonMultiple": "{count} luas orbitam no alto, lançando sombras mutáveis sobre a paisagem.",
   "ending_landscapeMoonHabitable": "Entre elas, um mundo habitável acena — uma joia verde oferecendo uma segunda fronteira.",
@@ -1300,11 +1257,9 @@
   "ending_landscapeRingIce": "Um anel brilhante de gelo captura a luz estelar, pintando o céu com fogo prismático.",
   "ending_landscapeRingRocky": "Um denso anel rochoso cinge o planeta, fonte de materiais de construção que chovem lentamente para dentro.",
   "ending_landscapeRingMetallic": "Um anel metálico cintila no alto, rico em minério que alimenta a indústria da colônia.",
-
   "ending_moonHabitableNote": "Uma lua habitável oferece uma segunda chance de colonização.",
   "ending_moonIceHarvestNote": "O gelo colhido da lua congelada abastece o suprimento de água da colônia.",
   "ending_moonCountSentence": "A colônia orbita sob {count} lua(s).",
-
   "planet_featureBioluminescentLife": "Vida Bioluminescente",
   "planet_featureAquaticMegafauna": "Megafauna Aquática",
   "planet_featureFloatingIslands": "Ilhas Flutuantes",
@@ -1327,7 +1282,6 @@
   "ui_trader_shipSystems": "SISTEMAS DA NAVE",
   "ui_trader_payWith": "PAGAR COM",
   "ui_trader_leaveTrader": "DEIXAR COMERCIANTE",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "Humor generoso",
   "ui_trader_moodFair": "Negócio justo",
   "ui_trader_moodHard": "Negocia duramente",
@@ -1345,7 +1299,6 @@
   "ui_codex_ringTypes": "TIPOS DE ANEL",
   "ui_codex_locked": "Aterrisse num planeta com esta característica para revelar os seus efeitos.",
   "ui_codex_synergy": "Sinergia: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "O Solilóquio da IA",
   "event_aiSoliloquy_narrative": "SAM, a IA de Gestão Autónoma da Nave, começou a transmitir em loop poesia antiga da Terra em todas as frequências internas. A transmissão consome ciclos de CPU significativos, mas a tripulação acha-a estranhamente reconfortante na escuridão profunda.",
   "event_aiSoliloquy_choice0_text": "Deixar SAM continuar — o moral é mais importante que a CPU",
@@ -1462,39 +1415,539 @@
   "event_subspaceReef_choice1_outcome": "Os scanners são levados ao limite. Cruzamo-lo rapidamente, mas as matrizes de sensores ficam queimadas pela intensidade das ondas do subespaço.",
   "event_alienTrader_title": "O Mercador Errante",
   "event_alienTrader_narrative": "Uma nave de design desconhecido deriva junto a nós, transmitindo em todas as frequências. É um comerciante — um dos mercadores errantes que percorrem os espaços entre civilizações. Oferecem reparações e suprimentos em troca de recursos. O seu porão de carga vibra com tecnologia exótica.",
-
   "event_pulsarLighthouse_title": "Farol Pulsar",
   "event_pulsarLighthouse_narrative": "Uma estrela de neutrões em rotação varre o vazio com o seu feixe como um farol cósmico. A pulsação rítmica do pulsar carrega dados de temporização precisos que poderiam recalibrar os nossos scanners para uma exactidão extraordinária — mas alinhar com o feixe significa expor a nave a radiação intensa.",
   "event_pulsarLighthouse_choice0": "Calibrar scanners com a pulsação",
   "event_pulsarLighthouse_outcome0": "As matrizes de scanners absorvem o sinal do pulsar, recalibrando-se para precisões que nunca julgámos possíveis. Mas o custo da radiação é real — várias cápsulas criogénicas na secção exposta sofrem danos, e um punhado de colonos não sobrevive à exposição.",
   "event_pulsarLighthouse_choice1": "Proteger e passar a distância segura",
   "event_pulsarLighthouse_outcome1": "Mantemos grande distância do pulsar, queimando combustível extra para uma trajectória segura. A tripulação observa o feixe varrente através de visores filtrados — belo, mas distante.",
-
   "event_alienNursery_title": "Berçário alienígena",
   "event_alienNursery_narrative": "Uma vasta estrutura orgânica flutua no vazio — um berçário biológico incubando crias alienígenas. Os seus sistemas de suporte de vida estão a falhar, as temperaturas internas a descer. As criaturas lá dentro estão a morrer. Os nossos bio-scanners poderiam aprender enormemente com esta estrutura, mas intervir significa abrir as nossas comportas a patógenos desconhecidos.",
   "event_alienNursery_choice0": "Ajudar a estabilizar o suporte vital",
   "event_alienNursery_outcome0": "Os nossos engenheiros improvisam uma ligação térmica ao berçário, estabilizando as câmaras de incubação. Os dados do bio-scanner são extraordinários — uma taxonomia inteiramente nova da vida. Mas como se temia, microrganismos alienígenas encontram caminho para bordo. As equipas médicas contêm o surto, embora não antes de vários colonos adoecerem.",
   "event_alienNursery_choice1": "Deixar sem perturbar",
   "event_alienNursery_outcome1": "Observamos a uma distância respeitosa, documentando o que podemos através de scans passivos. O berçário continua à deriva, o seu destino incerto. A tripulação reflecte sobre a fragilidade da vida — mesmo a vida alienígena — e o peso das escolhas que carregamos.",
-
   "event_derelictArmada_title": "Armada abandonada",
   "event_derelictArmada_narrative": "Centenas de antigos navios de guerra pairam imóveis no vazio — o cemitério de um conflito esquecido. Os seus cascos estão marcados por armas que não conseguimos identificar, mas os seus materiais estruturais e bases de dados de bordo podem ser inestimáveis. A questão é o que priorizar: a recuperação física ou o conhecimento.",
   "event_derelictArmada_choice0": "Recuperar tecnologia bélica e blindagem",
   "event_derelictArmada_outcome0": "Equipas de recuperação abrem caminho nos navios de guerra alienígenas, extraindo ligas exóticas e técnicas de construção séculos à frente das nossas. Os construtores integram os novos materiais com entusiasmo. Mas uma nave não estava tão morta quanto parecia — uma armadilha detona durante a extracção, matando uma equipa de recuperação.",
   "event_derelictArmada_choice1": "Descarregar os seus arquivos históricos",
   "event_derelictArmada_outcome1": "Concentramo-nos nos núcleos de dados, extraindo cuidadosamente séculos de história, arte, ciência e filosofia alienígena. O arquivo cultural por si só poderia manter estudiosos ocupados por gerações. As perspectivas tecnológicas, embora menos imediatamente práticas, revelam princípios de engenharia que avançam a nossa própria compreensão.",
-
   "event_alienQuarantineZone_title": "Zona de quarentena alienígena",
   "event_alienQuarantineZone_narrative": "Balizas de aviso numa dúzia de línguas alienígenas marcam a fronteira de uma região selada do espaço. O que quer que esteja contido lá dentro era perigoso o suficiente para que múltiplas civilizações cooperassem para o isolar. Os nossos scans de longo alcance detectam assinaturas tecnológicas massivas no interior — e algo que pode estar vivo.",
   "event_alienQuarantineZone_choice0": "Violar a quarentena e investigar",
   "event_alienQuarantineZone_outcome0": "Ultrapassamos as bóias de aviso para a zona de quarentena. Lá dentro, encontramos uma estação de investigação de complexidade espantosa — e os restos do que estava a estudar. A tecnologia que recuperamos é revolucionária, mas a contaminação biológica é severa. Dezenas de colonos adoecem antes de abandonarmos a zona.",
   "event_alienQuarantineZone_choice1": "Respeitar a quarentena",
   "event_alienQuarantineZone_outcome1": "Estudamos as próprias balizas de aviso, que contêm dados de navegação e leituras atmosféricas das civilizações que as colocaram. Não é o tesouro lá dentro, mas é algo — e não libertámos o que elas trancaram.",
-
   "event_hydroponicsBlight_title": "Praga hidropónica",
   "event_hydroponicsBlight_narrative": "Uma praga fúngica de propagação rápida infectou os módulos hidropónicos da nave. Ciclos inteiros de colheitas murcham perante os nossos olhos. A praga ainda não atingiu as reservas de sementes, mas é questão de horas. Podemos purgar os módulos e replantar do zero, ou tentar um tratamento antifúngico experimental que poderia salvar a colheita actual — ou espalhar a contaminação ainda mais.",
   "event_hydroponicsBlight_choice0": "Purgar e replantar com reservas de sementes",
   "event_hydroponicsBlight_outcome0": "Ventilamos os módulos hidropónicos para o vácuo, matando a praga juntamente com cada planta viva. Replantar a partir das reservas de sementes levará semanas, e os programas culturais que dependiam de comida fresca e espaços de jardim ficam suspensos. Mas a infecção está contida.",
   "event_hydroponicsBlight_choice1": "Tentar tratamento experimental",
-  "event_hydroponicsBlight_outcome1": "O antifúngico experimental mostra-se promissor inicialmente, mas uma estirpe resistente rompe. Quando recorremos a uma purga completa, a praga já se espalhou para as linhas de nutrientes das cápsulas criogénicas. O dano é pior do que se tivéssemos agido com decisão desde o início."
+  "event_hydroponicsBlight_outcome1": "O antifúngico experimental mostra-se promissor inicialmente, mas uma estirpe resistente rompe. Quando recorremos a uma purga completa, a praga já se espalhou para as linhas de nutrientes das cápsulas criogénicas. O dano é pior do que se tivéssemos agido com decisão desde o início.",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_title_stellar": "STELLAR",
+  "ui_title_broadcast": "BROADCAST",
+  "ui_voyage_scanners": "SCANNER",
+  "ui_voyage_systemNav": "Navegação",
+  "ui_scan_statAtmos": "ATMOS",
+  "ui_title_seedInvalid": "Código inicial inválido. Use apenas A–Z e 0–9.",
+  "ui_ending_total": "TOTAL",
+  "ui_ending_shareCardShare": "COMPARTILHAR",
+  "ui_ending_shareCardCancel": "CANCELAR",
+  "ui_settings_volume": "Volume",
+  "ui_settings_premium": "PREMIUM",
+  "ui_settings_statsLeft": "ESQUERDA",
+  "ui_settings_statsRight": "CERTO",
+  "ui_scannerUpgrade_mineral": "Mineral",
+  "planet_tierUtopia": "utopia",
+  "ui_ending_shareCard": "COMPARTILHE CARTÃO",
+  "ui_scan_statBio": "BIO",
+  "ui_scan_probesCount": "SONDAS: {count}",
+  "ui_settings_statsPosition": "Posição de estatísticas e botões",
+  "planet_featureMegafauna": "Megafauna",
+  "ui_ending_shareCardDialogTitle": "Compartilhe sua viagem",
+  "ui_scan_uncertaintyPct": "INCERTEZA: ±{percent}%",
+  "ui_scan_statTemp": "TEMPERATURA",
+  "planet_featurePerpetualAurora": "Aurora Perpétua",
+  "planet_featurePetrifiedMegaflora": "Megaflora petrificada",
+  "planet_featureUndergroundRivers": "Rios subterrâneos",
+  "planet_featureCarnivorousFlora": "Flora Carnívora",
+  "planet_featureGhostCities": "Cidades Fantasma",
+  "planet_featureArchiveVaults": "Arquivar cofres",
+  "planet_featureSaltFlats": "Salinas",
+  "planet_featureObsidianPlains": "Planícies Obsidianas",
+  "ui_monthJun": "JUNHO",
+  "ui_monthMar": "MAR",
+  "ending_governmentTheocracy": "Teocracia",
+  "ui_monthJan": "JANEIRO",
+  "ending_governmentCommune": "Comuna",
+  "ending_techIndustrial": "Industrial",
+  "ending_nativesAlliance": "Aliança",
+  "ending_nativesSubjugation": "Subjugação",
+  "ending_govSentenceTheocracy": "Um conselho teocrático orienta {planetName}, extraindo sabedoria da fé que sustentou os colonos durante o vazio.",
+  "ending_governmentMilitaryJunta": "Junta Militar",
+  "ending_governmentFascistState": "Estado fascista",
+  "planet_featureApexPredator": "Predador Ápice",
+  "planet_featureSinkholeFields": "Campos de sumidouros",
+  "ending_governmentCorporateOligarchy": "Oligarquia Corporativa",
+  "ui_monthNov": "NOVEMBRO",
+  "ui_monthJul": "JULHO",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceMilitaryJunta": "Uma estrutura de comando militar governa {planetName}, a disciplina que os salvou no espaço e que agora define a sua civilização.",
+  "ending_govSentenceCorporateOligarchy": "Um consórcio de gestores de recursos lidera {planetName}, tendo a sua perspicácia económica provado ser essencial para a sobrevivência.",
+  "ending_govSentenceCommune": "O povo de {planetName} governa-se coletivamente, partilhando recursos e decisões igualmente entre todos os colonos.",
+  "ending_govSentenceFascistState": "Um regime autoritário controla {planetName} com mão de ferro, as liberdades civis sacrificadas pela ordem no novo mundo.",
+  "ending_nativeSentenceSubjugation": "A população nativa de {planetName} vive sob o domínio colonial, a sua cultura suprimida à medida que os colonos impõem a sua própria ordem.",
+  "ui_tooltip_codex": "Códice",
+  "ui_tooltip_back": "Voltar",
+  "ui_tooltip_settings": "Configurações",
+  "ui_common_tapToContinue": "TOQUE PARA CONTINUAR",
+  "event_pulsarLighthouse_choice2": "Retire-se antes que a varredura chegue até nós",
+  "event_pulsarLighthouse_outcome2": "Nós nos afastamos na queima de emergência antes da próxima passagem do feixe. O sinal do pulsar desaparece atrás de nós – nenhum dado obtido, nenhum dano sofrido, um pouco de combustível gasto em impulso evasivo.",
+  "event_constitutionalConvention_title": "Convenção Constitucional",
+  "event_constitutionalConvention_narrative": "A população do navio-colónia ficou inquieta sem uma governação formal. Delegados de cada convés se reúnem no porão de carga para redigir um regulamento que definirá como a futura colônia será governada. Três facções apresentam visões concorrentes para o novo governo.",
+  "ending_nativeSentenceAlliance": "Uma aliança formal une os colonos e a civilização nativa de {planetName}, e o seu conhecimento combinado constrói algo maior do que qualquer um deles poderia sozinho.",
+  "ui_common_tapToSkip": "TOQUE PARA PULAR",
+  "ui_common_tapRingToChoose": "TOQUE EM UM ANEL PARA ESCOLHER",
+  "ui_tooltip_bugReport": "Reportar um bug",
+  "ui_tooltip_leaderboards": "Tabelas de classificação",
+  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
+  "event_constitutionalConvention_choice0": "Elaborar uma carta democrática com sufrágio universal",
+  "event_constitutionalConvention_outcome0": "Os colonos ratificam uma constituição que garante representação igualitária. A tomada de decisões fica mais lenta, mas o moral aumenta à medida que todas as vozes são ouvidas.",
+  "event_constitutionalConvention_choice1": "Estabelecer um executivo forte com poderes de emergência",
+  "event_constitutionalConvention_choice2": "Forme um conselho tecnocrático de especialistas",
+  "event_militaryCoupThreat_choice0": "Resista ao golpe com tripulantes leais",
+  "event_militaryCoupThreat_choice1": "Submeta-se às exigências do comandante",
+  "event_militaryCoupThreat_outcome0": "Tripulação leal se reúne para se opor a Vasquez. O impasse termina com um derramamento de sangue mínimo, mas a segurança está enfraquecida e alguns colonos são apanhados no fogo cruzado.",
+  "event_constitutionalConvention_outcome2": "Engenheiros, cientistas e médicos formam um conselho governante baseado em conhecimentos especializados. A eficiência melhora, embora alguns se sintam excluídos do poder.",
+  "event_constitutionalConvention_outcome1": "Um único líder é nomeado com autoridade abrangente. As decisões são rápidas, mas os dissidentes sussurram sobre tirania nos conveses inferiores.",
+  "event_militaryCoupThreat_title": "Ameaça de golpe militar",
+  "event_militaryCoupThreat_outcome2": "Após negociações tensas, Vasquez aceita autoridade temporária com supervisão. Um compromisso frágil que não satisfaz ninguém completamente, mas que evita a violência.",
+  "event_militaryCoupThreat_choice2": "Negociar poderes de emergência limitados com uma cláusula de caducidade",
+  "event_religiousAwakening_choice0": "Abrace o movimento religioso e forneça recursos",
+  "event_militaryCoupThreat_outcome1": "Vasquez assume o controle das operações do navio. A ordem é restaurada rapidamente, mas à custa das liberdades civis. Patrulhas armadas agora percorrem todos os corredores.",
+  "event_religiousAwakening_narrative": "Um pregador carismático atraiu centenas de colonos para um novo movimento religioso. Eles se reúnem na cúpula de observação a cada ciclo, seus hinos ecoando pelos dutos de ventilação. Alguns membros da tripulação se preocupam com o fanatismo; outros encontram conforto genuíno nos ensinamentos.",
+  "event_religiousAwakening_title": "Despertar Religioso",
+  "event_militaryCoupThreat_narrative": "O comandante Vasquez, da equipe de segurança do navio, confiscou o arsenal e emitiu um ultimato: conceder poderes militares de emergência ou enfrentar o bloqueio de todos os conveses. A situação é volátil e os colonos esperam de você uma resposta.",
+  "event_religiousAwakening_outcome1": "As reuniões religiosas são restritas a aposentos privados. O movimento passa à clandestinidade, gerando ressentimento, mas o racionalismo científico continua a ser a doutrina oficial.",
+  "event_corporateTakeover_narrative": "Os gestores de recursos do navio têm consolidado discretamente o controlo sobre a distribuição de alimentos, a reciclagem de água e a atribuição de energia. Propõem agora formalizar a sua autoridade numa estrutura corporativa que geriria a economia da futura colónia.",
+  "event_religiousAwakening_choice2": "Permitir a adoração, mas regular sua influência",
+  "event_religiousAwakening_choice1": "Aplicar o secularismo estrito a bordo do navio",
+  "event_religiousAwakening_outcome2": "A fé é permitida, mas mantida separada do governo. Um capelão é nomeado para fazer a ligação com o comando. Um equilíbrio desconfortável é mantido.",
+  "event_religiousAwakening_outcome0": "O movimento floresce com apoio oficial. O moral melhora entre os crentes e o seu espírito comunitário fortalece os laços sociais em todo o navio.",
+  "event_corporateTakeover_choice1": "Nacionalizar todos os recursos sob propriedade coletiva",
+  "event_corporateTakeover_outcome0": "A facção corporativa assume o gerenciamento de recursos. A eficiência melhora dramaticamente, mas os preços sobem e os colonos mais pobres lutam para pagar as necessidades básicas.",
+  "event_corporateTakeover_choice2": "Implementar mercados regulamentados com redes de segurança",
+  "event_corporateTakeover_choice0": "Permitir que os princípios do mercado livre governem os recursos",
+  "event_corporateTakeover_outcome1": "Os recursos são confiscados e colocados sob controle comunitário. A facção corporativa é desmantelada, mas a inovação estagna sem incentivos ao lucro.",
+  "event_corporateTakeover_outcome2": "Uma economia mista é estabelecida com controles de preços e programas de bem-estar. Nenhuma das facções está totalmente satisfeita, mas as necessidades básicas são atendidas, permitindo ao mesmo tempo algum empreendimento.",
+  "event_successionCrisis_choice0": "Faça uma eleição de emergência",
+  "event_successionCrisis_outcome0": "Uma eleição caótica mas animada produz um novo capitão escolhido pelo voto popular. O processo é complicado, mas os colonos sentem-se donos da sua liderança.",
+  "event_successionCrisis_outcome1": "O chefe de segurança senta-se na cadeira do capitão. A disciplina é restaurada imediatamente, mas a tripulação civil olha para os guardas armados com crescente desconforto.",
+  "event_successionCrisis_outcome2": "Os colonos mais velhos e experientes formam um conselho governante. A sua sabedoria guia o navio, embora alguns tripulantes mais jovens se sintam marginalizados pela gerontocracia.",
+  "event_corporateTakeover_title": "Aquisição Corporativa",
+  "event_successionCrisis_title": "Crise de sucessão",
+  "event_nativeSovereignty_narrative": "Varreduras de longo alcance confirmam vida inteligente no planeta alvo. As comunicações interceptadas revelam uma civilização sofisticada que detectou a sua aproximação. Transmitem uma exigência formal: reconhecer a sua soberania territorial ou enfrentar resistência à chegada.",
+  "event_successionCrisis_narrative": "O capitão do navio morreu durante o sono, sem deixar sucessor designado. Três facções disputam imediatamente o controlo: o conselho civil exige eleições, o chefe de segurança reivindica autoridade marcial e os colonos mais velhos invocam ritos de liderança tradicionais.",
+  "event_successionCrisis_choice2": "Convocar um conselho de anciãos",
+  "event_successionCrisis_choice1": "Deixe os militares assumirem o comando",
+  "event_nativeSovereignty_choice0": "Reconhecer a soberania nativa e solicitar permissão para se estabelecer",
+  "event_nativeSovereignty_outcome0": "Você transmite um reconhecimento formal dos direitos dos nativos. A resposta é cautelosa, mas positiva. As futuras relações começarão com base no respeito mútuo, embora os locais de desembarque possam ser limitados.",
+  "event_nativeSovereignty_choice1": "Afirmar a supremacia colonial e preparar-se para a resistência",
+  "event_nativeSovereignty_outcome1": "Você transmite sua intenção de fazer um acordo de qualquer maneira. A tripulação inicia exercícios com armas e planejamento de fortificação. Os nativos ficam em silêncio, o que é de alguma forma mais assustador do que ameaças.",
+  "event_nativeSovereignty_outcome2": "Você oferece uma estrutura para coexistência e compartilhamento de recursos. Os nativos estão intrigados, mas cautelosos. As negociações serão complexas, mas existe a possibilidade de paz.",
+  "event_nativeSovereignty_choice2": "Propor uma governança compartilhada do planeta",
+  "event_laborStrike_narrative": "A equipe de engenharia abandonou o trabalho, exigindo turnos mais curtos, melhores rações alimentares e voz nas decisões de navegação. Sistemas críticos funcionam com backups automatizados, mas não durarão muito. O resto dos colonos observa nervosamente.",
+  "event_nativeSovereignty_title": "Soberania Nativa",
+  "event_laborStrike_title": "Greve Trabalhista",
+  "event_laborStrike_outcome2": "Após uma maratona de negociações, chega-se a um acordo: melhores rações e aconselhamento, mas nenhuma redução na duração dos turnos. Nenhum dos lados está entusiasmado, mas os motores continuam funcionando.",
+  "event_laborStrike_choice1": "Suprimir a greve e impor trabalho obrigatório",
+  "event_laborStrike_choice0": "Atender integralmente às demandas dos trabalhadores",
+  "event_laborStrike_choice2": "Oferecer um compromisso parcial nas principais demandas",
+  "event_laborStrike_outcome0": "A greve termina imediatamente. Os trabalhadores regressam aos seus postos com melhores condições. A produtividade cai ligeiramente à medida que turnos mais curtos entram em vigor, mas a lealdade é inabalável.",
+  "event_laborStrike_outcome1": "As forças de segurança escoltam os trabalhadores de volta aos seus postos sob a mira de armas. Os motores zumbem novamente, mas o ódio ferve nos conveses inferiores. Vários trabalhadores estão confinados em alojamentos.",
+  "event_censorshipDebate_narrative": "Um documento vazado revela a verdadeira condição dos sistemas defeituosos da nave. O pânico se espalha pelos conveses inferiores. O oficial de comunicações propõe restringir o acesso à informação para evitar mais distúrbios. Os defensores das liberdades civis estão indignados.",
+  "event_censorshipDebate_choice0": "Garantir o acesso gratuito a todas as informações",
+  "event_censorshipDebate_choice1": "Implementar controle total de informações",
+  "event_censorshipDebate_choice2": "Filtre apenas informações confidenciais de segurança",
+  "event_censorshipDebate_outcome0": "A transparência total é estabelecida. O pânico inicial diminui à medida que os colonos se reúnem para ajudar a resolver os problemas que agora compreendem. A confiança na liderança aumenta, embora algumas informações causem angústia.",
+  "event_censorshipDebate_outcome1": "Todas as comunicações agora são filtradas por comando. O pânico cessa, substituído por uma calma misteriosa. Mas os rumores preenchem o vazio deixado pela verdade censurada e muitas vezes são piores que a realidade.",
+  "event_censorshipDebate_outcome2": "Um sistema de classificação é estabelecido. A maior parte da informação flui livremente, mas os dados militares e críticos do sistema requerem autorização. Um meio-termo viável que satisfaz principalmente.",
+  "event_colonialCharter_narrative": "Com a aproximação da queda do planeta, os colonos devem elaborar leis fundamentais para a sua nova sociedade. Surgiram três campos filosóficos, cada um defendendo uma visão diferente sobre o que a colónia deveria tornar-se. O debate é acalorado e profundamente pessoal.",
+  "event_colonialCharter_outcome0": "A carta consagra as liberdades pessoais, a igualdade e a mobilidade social. Artistas e pensadores comemoram; os tradicionalistas alertam que a liberdade desenfreada leva ao caos.",
+  "event_colonialCharter_choice0": "Uma carta progressista que enfatiza os direitos individuais",
+  "event_colonialCharter_title": "Carta Colonial",
+  "event_censorshipDebate_title": "Debate sobre censura",
+  "event_colonialCharter_outcome2": "A carta prioriza a gestão de recursos, a educação técnica e o desenvolvimento econômico. Falta poesia, mas garante que a colônia será eficiente e bem organizada.",
+  "event_colonialCharter_choice1": "Uma carta conservadora que preserva as tradições da Terra",
+  "event_colonialCharter_outcome1": "A carta codifica valores tradicionais, estruturas familiares e observância religiosa. Muitos encontram conforto em costumes familiares; outros sentem-se sufocados pelo peso do pensamento do velho mundo.",
+  "event_colonialCharter_choice2": "Uma carta pragmática focada na sobrevivência e no crescimento",
+  "event_separatistMovement_narrative": "Uma facção de colonos declarou independência da governança naval. Eles se barricaram na seção de popa, exigindo o direito de estabelecer seu próprio assentamento após o desembarque. Eles controlam 15% das reservas alimentares do navio e uma rede de navegação reserva.",
+  "event_separatistMovement_choice0": "Conceder autonomia regional dentro de uma estrutura federal",
+  "event_separatistMovement_outcome0": "Os separatistas aceitam um acordo: o seu próprio distrito com governação local, sob um guarda-chuva federal flexível. O precedente da fragmentação preocupa alguns, mas a paz é mantida.",
+  "event_separatistMovement_choice2": "Abordar as principais queixas que impulsionam o movimento",
+  "event_warCouncil_choice0": "Armamento completo: forjar armas e treinar soldados",
+  "event_separatistMovement_choice1": "Ataque as barricadas e force a reunificação",
+  "event_separatistMovement_outcome1": "As equipes de segurança violam a seção traseira. Os separatistas resistem ferozmente. A ordem é restaurada, mas a um custo terrível. O navio está unido em corpo, senão em espírito.",
+  "event_separatistMovement_outcome2": "Os mediadores trabalham para entender o que afastou a facção. As reformas na distribuição e representação de recursos trazem lentamente os separatistas de volta ao rebanho. A cura leva tempo.",
+  "event_warCouncil_narrative": "Com ameaças potenciais detectadas em sistemas próximos, a liderança da nave convoca um conselho de guerra. A questão: quanto dos recursos limitados da colónia deveria ser dedicado à preparação militar versus infra-estrutura civil?",
+  "event_warCouncil_choice2": "Apenas postura defensiva: escudos e paredes, não espadas",
+  "event_warCouncil_title": "Conselho de Guerra",
+  "event_separatistMovement_title": "Movimento Separatista",
+  "event_warCouncil_outcome2": "Os recursos vão para fortificações, escudos e sistemas de alerta precoce. Nenhuma arma ofensiva é produzida. Uma abordagem equilibrada que mantém as opções abertas sem provocar potenciais vizinhos.",
+  "event_warCouncil_choice1": "Desarmamento: transformar armas em ferramentas",
+  "event_warCouncil_outcome0": "As oficinas são reequipadas para a produção de armas. Todo colono fisicamente apto recebe treinamento de combate. O navio está cheio de armas, mas o orçamento para equipamentos agrícolas diminui.",
+  "event_warCouncil_outcome1": "O arsenal é esvaziado e seu conteúdo reciclado em materiais de construção. A colônia será construída com relhas de arado e não com espadas. Os pacifistas se alegram; os realistas se preocupam com o que se esconde no escuro.",
+  "event_tradeFederation_narrative": "À medida que a colónia se aproxima da viabilidade, as facções debatem como estruturar a sua economia. A questão vai além da mera sobrevivência – definirá o tipo de sociedade que criará raízes em solo estranho. Comerciantes, comunalistas e burocratas defendem a sua posição.",
+  "event_tradeFederation_choice0": "Estabelecer zonas de livre comércio com regulamentação mínima",
+  "event_tradeFederation_outcome0": "Os mercados surgem em cada módulo de habitat. A inovação floresce à medida que os comerciantes competem. A desigualdade de riqueza aumenta, mas também aumenta o conjunto total de recursos disponíveis para a colónia.",
+  "event_tradeFederation_choice1": "Implementar o compartilhamento comunitário de todos os recursos",
+  "event_faithVsScience_narrative": "O telescópio da nave capturou imagens de um fenómeno cósmico que contradiz directamente o princípio central do movimento religioso dominante. O cientista-chefe deseja publicar as descobertas; o líder religioso insiste que eles destruirão a comunidade.",
+  "event_faithVsScience_choice1": "Suprimir as descobertas para preservar a harmonia social",
+  "event_tradeFederation_choice2": "Criar um sistema comercial gerido pelo Estado",
+  "event_tradeFederation_outcome1": "A propriedade privada é abolida. Tudo pertence a todos. Ninguém passa fome, mas ninguém tem incentivo para produzir mais do que o mínimo. A mediocridade é confortável.",
+  "event_tradeFederation_outcome2": "O governo controla todo o comércio, definindo preços e alocando recursos. O sistema é justo, mas inflexível. Os mercados negros emergem nos corredores de manutenção.",
+  "event_faithVsScience_choice0": "Publique as descobertas científicas na íntegra",
+  "event_surveillanceState_title": "Estado de Vigilância",
+  "event_faithVsScience_title": "Fé versus Ciência",
+  "event_tradeFederation_title": "Federação Comercial",
+  "event_faithVsScience_outcome0": "A verdade prevalece sobre o conforto. Os dados são divulgados e o movimento religioso se fragmenta. Alguns crentes adaptam a sua fé; outros o perdem completamente. O conhecimento avança.",
+  "event_faithVsScience_outcome1": "Os dados são classificados. A comunidade religiosa permanece estável, mas a equipa científica está desmoralizada. A verdade adiada não é a verdade negada, mas parece que sim.",
+  "event_faithVsScience_choice2": "Convoque um painel conjunto para encontrar harmonia entre ambas as visões",
+  "event_faithVsScience_outcome2": "Cientistas e teólogos trabalham juntos para reinterpretar as descobertas. Surge uma nova síntese que expande tanto a compreensão como a fé. Nem todos estão convencidos, mas o diálogo é saudável.",
+  "event_surveillanceState_choice1": "Implementar vigilância completa em todo o navio",
+  "event_surveillanceState_narrative": "Após uma série de incidentes de sabotagem, o chefe de segurança propõe a instalação de sistemas de monitoramento em todos os compartimentos do navio. Câmeras, microfones e scanners biométricos rastreariam os movimentos de cada colono. Os defensores da privacidade estão horrorizados.",
+  "event_surveillanceState_choice0": "Rejeite totalmente a proposta de vigilância",
+  "event_surveillanceState_choice2": "Instale monitoramento limitado apenas em áreas críticas",
+  "event_surveillanceState_outcome1": "Cada canto do navio é monitorado. O sabotador é pego em poucos dias. Mas as câmeras permanecem e o chefe da segurança não demonstra interesse em desligá-las. Sempre.",
+  "event_nativeAlliance_choice0": "Assine um tratado de aliança igualitária",
+  "event_nativeAlliance_outcome0": "O tratado estabelece defesa mútua, investigação partilhada e direitos territoriais iguais. Ambas as civilizações crescerão juntas. Os nativos compartilham conhecimentos agrícolas que transformam as perspectivas de sua colônia.",
+  "event_nativeAlliance_narrative": "A civilização nativa propôs um tratado formal. Seu embaixador chega através de uma nave auxiliar, um ser elegante que fala através de um dispositivo tradutor de surpreendente sofisticação. Oferecem três formas de relacionamento, cada uma com implicações diferentes para o futuro da colónia.",
+  "event_nativeAlliance_choice1": "Negociar a partir de uma posição de domínio colonial",
+  "event_nativeAlliance_choice2": "Estabelecer uma parceria comercial focada no benefício mútuo",
+  "event_nativeAlliance_outcome1": "Você aproveita sua tecnologia avançada para garantir condições favoráveis. Os nativos cedem território e recursos. Eles assinam com mãos trêmulas. A história já viu isso antes e raramente termina bem.",
+  "event_nativeAlliance_title": "Aliança Nativa",
+  "event_surveillanceState_outcome2": "Câmeras cobrem a sala de máquinas, o arsenal e a ponte. Os alojamentos permanecem privados. O sabotador é eventualmente identificado através da análise de padrões. Uma resposta medida.",
+  "event_surveillanceState_outcome0": "A privacidade é preservada. O sabotador continua foragido, mas os colonos dormem mais tranquilos sabendo que não são vigiados. A investigação continua através dos meios tradicionais.",
+  "event_nativeAlliance_outcome2": "O comércio preenche a lacuna entre as espécies. Os materiais nativos fluem para suas oficinas; sua tecnologia melhora a medicina deles. A amizade cresce a partir do lucro mútuo."
 }

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:onnxruntime_v2/onnxruntime_v2.dart';
 
@@ -29,29 +29,56 @@ class PlanetNameService {
     // ONNX Runtime not available on macOS; caller falls back to procedural names.
     if (Platform.isMacOS) return;
 
-    // Load vocab.
-    final vocabStr =
-        await rootBundle.loadString('assets/models/vocab.json');
-    final vocabMap = jsonDecode(vocabStr) as Map<String, dynamic>;
+    OrtSessionOptions? sessionOptions;
+    try {
+      // Load vocab (wrapped separately for clearer error messages).
+      final vocabStr =
+          await rootBundle.loadString('assets/models/vocab.json');
+      final Map<String, dynamic> vocabMap;
+      try {
+        vocabMap = jsonDecode(vocabStr) as Map<String, dynamic>;
+      } catch (e) {
+        throw FormatException(
+            'PlanetNameService: failed to parse vocab.json: $e');
+      }
 
-    final rawIdx = vocabMap['idx_to_char'] as Map<String, dynamic>;
-    _idxToChar = rawIdx.map((k, v) => MapEntry(int.parse(k), v as String));
+      try {
+        final rawIdx = vocabMap['idx_to_char'] as Map<String, dynamic>;
+        _idxToChar = rawIdx.map((k, v) => MapEntry(int.parse(k), v as String));
 
-    _hiddenSize = vocabMap['hidden_size'] as int? ?? 192;
-    _maxLen = vocabMap['max_len'] as int? ?? 20;
-    _sosIdx = vocabMap['sos_idx'] as int? ?? 1;
-    _eosIdx = vocabMap['eos_idx'] as int? ?? 2;
-    _padIdx = vocabMap['pad_idx'] as int? ?? 0;
+        _hiddenSize = vocabMap['hidden_size'] as int? ?? 192;
+        _maxLen = vocabMap['max_len'] as int? ?? 20;
+        _sosIdx = vocabMap['sos_idx'] as int? ?? 1;
+        _eosIdx = vocabMap['eos_idx'] as int? ?? 2;
+        _padIdx = vocabMap['pad_idx'] as int? ?? 0;
+      } catch (e) {
+        throw FormatException(
+            'PlanetNameService: vocab.json has unexpected shape: $e');
+      }
 
-    // Load ONNX model.
-    final modelBytes =
-        await rootBundle.load('assets/models/planet_namer_fp16.onnx');
-    final sessionOptions = OrtSessionOptions();
-    _session = OrtSession.fromBuffer(
-      modelBytes.buffer.asUint8List(),
-      sessionOptions,
-    );
-    sessionOptions.release();
+      // Load ONNX model.
+      final modelBytes =
+          await rootBundle.load('assets/models/planet_namer_fp16.onnx');
+      sessionOptions = OrtSessionOptions();
+      _session = OrtSession.fromBuffer(
+        modelBytes.buffer.asUint8List(),
+        sessionOptions,
+      );
+    } catch (e, s) {
+      debugPrint('PlanetNameService.init failed: $e\n$s');
+      // Clean up any partially-initialized session so dispose() isn't relied on.
+      try {
+        _session?.release();
+      } catch (_) {}
+      _session = null;
+      rethrow;
+    } finally {
+      // Always release sessionOptions — whether init succeeded or failed
+      // mid-way, it's no longer needed after this point.
+      try {
+        sessionOptions?.release();
+      } catch (_) {}
+    }
   }
 
   /// Generate a planet name from 7 stats using ONNX inference.

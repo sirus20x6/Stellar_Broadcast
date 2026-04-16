@@ -6,11 +6,13 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
 
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
-import 'package:stellar_broadcast/providers/game_providers.dart' show localeProvider, statsOnLeftProvider;
+import 'package:stellar_broadcast/providers/game_providers.dart'
+    show localeProvider, statsOnLeftProvider;
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 const _localeNames = <String, String>{
   'ar': 'العربية',
@@ -35,8 +37,8 @@ const _localeNames = <String, String>{
   'zh_TW': '繁體中文',
 };
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 
 /// Settings screen with music, SFX, and haptics controls.
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -46,25 +48,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _starController;
-
-  @override
-  void initState() {
-    super.initState();
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _starController.dispose();
-    super.dispose();
-  }
-
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,159 +56,158 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       body: Stack(
         children: [
           // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => Semantics(
-                  label: 'Animated star field background',
-                  excludeSemantics: true,
-                  child: CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 60,
-                      midStarCount: 20,
-                      nearStarCount: 8,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          const EventStarField(
+            farStarCount: 60,
+            midStarCount: 20,
+            nearStarCount: 8,
           ),
 
           // Content.
           SafeArea(
             bottom: false,
             child: ResponsiveContent(
-            child: Column(
-              children: [
-                // Header.
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        tooltip: 'Back',
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: _kAccent, size: 22),
-                      ),
-                      Expanded(
-                        child: Text(
-                          context.l10n.ui_settings_title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: ScreenInfo.of(context).scaledFontSize(24),
-                            fontWeight: FontWeight.bold,
+              child: Column(
+                children: [
+                  // Header.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: context.l10n.ui_tooltip_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
                             color: _kAccent,
-                            letterSpacing: 4,
+                            size: 22,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 48),
-                    ],
+                        Expanded(
+                          child: Text(
+                            context.l10n.ui_settings_title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: ScreenInfo.of(
+                                context,
+                              ).scaledFontSize(24),
+                              fontWeight: FontWeight.bold,
+                              color: _kAccent,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Decorative line.
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          _kAccent.withValues(alpha: 0.5),
-                          Colors.transparent,
-                        ],
+                  // Decorative line.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 8,
+                    ),
+                    child: Container(
+                      height: 1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            _kAccent.withValues(alpha: 0.5),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Settings sections.
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    children: [
-                      const SizedBox(height: 16),
-                      _buildSectionTitle(context.l10n.ui_settings_music),
-                      const SizedBox(height: 12),
-                      _MusicSection(),
-                      const SizedBox(height: 28),
-                      _buildSectionTitle(context.l10n.ui_settings_soundEffects),
-                      const SizedBox(height: 12),
-                      _SfxSection(),
-                      const SizedBox(height: 28),
-                      _buildSectionTitle(context.l10n.ui_settings_haptics),
-                      const SizedBox(height: 12),
-                      _HapticsSection(),
-                      const SizedBox(height: 28),
-                      _buildSectionTitle(context.l10n.ui_settings_language),
-                      const SizedBox(height: 12),
-                      _LanguageSection(),
-                      // Layout preference (only on widescreen).
-                      if (ScreenInfo.of(context).screenClass != ScreenClass.compact) ...[
-                        const SizedBox(height: 28),
-                        _buildSectionTitle('LAYOUT'),
+                  // Settings sections.
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      children: [
+                        const SizedBox(height: 16),
+                        _buildSectionTitle(context.l10n.ui_settings_music),
                         const SizedBox(height: 12),
-                        _SettingsCard(
-                          children: [
-                            _StatsPositionToggle(),
-                          ],
-                        ),
-                      ],
-                      // Native ad (hidden for premium).
-                      const SizedBox(height: 28),
-                      PremiumAdGate(child: AdaptiveNativeAd(
-                        fallback: AdaptiveBannerAd(
-                          size: QaBannerSize.mrec,
-                          fallback: AdFallbackBanner(
-                            height: 250,
-                            onRemoveAds: () => showPremiumPaywall(context),
-                          ),
-                        ),
-                      )),
-
-                      if (!ref.watch(isPremiumProvider)) ...[
+                        _MusicSection(),
                         const SizedBox(height: 28),
-                        _buildSectionTitle(context.l10n.ui_settings_premium),
+                        _buildSectionTitle(
+                          context.l10n.ui_settings_soundEffects,
+                        ),
                         const SizedBox(height: 12),
-                        _SettingsCard(
-                          children: [
-                            GestureDetector(
-                              onTap: () => showPremiumPaywall(context),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.star,
-                                      color: const Color(0xFFFFD740), size: 20),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      context.l10n.ui_settings_goPremium,
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(Icons.chevron_right,
-                                      color: _kAccent.withValues(alpha: 0.5)),
-                                ],
+                        _SfxSection(),
+                        const SizedBox(height: 28),
+                        _buildSectionTitle(context.l10n.ui_settings_haptics),
+                        const SizedBox(height: 12),
+                        _HapticsSection(),
+                        const SizedBox(height: 28),
+                        _buildSectionTitle(context.l10n.ui_settings_language),
+                        const SizedBox(height: 12),
+                        _LanguageSection(),
+                        // Layout preference (only on widescreen).
+                        if (ScreenInfo.of(context).screenClass !=
+                            ScreenClass.compact) ...[
+                          const SizedBox(height: 28),
+                          _buildSectionTitle('LAYOUT'),
+                          const SizedBox(height: 12),
+                          _SettingsCard(children: [_StatsPositionToggle()]),
+                        ],
+                        // Native ad (hidden for premium).
+                        const SizedBox(height: 28),
+                        PremiumAdGate(
+                          child: AdaptiveNativeAd(
+                            fallback: AdaptiveBannerAd(
+                              size: QaBannerSize.mrec,
+                              fallback: AdFallbackBanner(
+                                height: 250,
+                                onRemoveAds: () => showPremiumPaywall(context),
                               ),
                             ),
-                          ],
+                          ),
                         ),
+
+                        if (!ref.watch(isPremiumProvider)) ...[
+                          const SizedBox(height: 28),
+                          _buildSectionTitle(context.l10n.ui_settings_premium),
+                          const SizedBox(height: 12),
+                          _SettingsCard(
+                            children: [
+                              GestureDetector(
+                                onTap: () => showPremiumPaywall(context),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: const Color(0xFFFFD740),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        context.l10n.ui_settings_goPremium,
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: _kAccent.withValues(alpha: 0.5),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                        const SizedBox(height: 40),
                       ],
-                      const SizedBox(height: 40),
-                    ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
           ),
         ],
@@ -242,10 +225,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
             color: _kAccent,
             borderRadius: BorderRadius.circular(2),
             boxShadow: [
-              BoxShadow(
-                color: _kAccent.withValues(alpha: 0.5),
-                blurRadius: 6,
-              ),
+              BoxShadow(color: _kAccent.withValues(alpha: 0.5), blurRadius: 6),
             ],
           ),
         ),
@@ -390,8 +370,9 @@ class _HapticsSectionState extends State<_HapticsSection> {
                       _labels[i],
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight:
-                            selected ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         color: selected
                             ? _kAccent
                             : Colors.white.withValues(alpha: 0.4),
@@ -418,8 +399,8 @@ class _LanguageSection extends ConsumerWidget {
     final label = current == null
         ? context.l10n.ui_settings_systemDefault
         : _localeNames[current.toLanguageTag().replaceAll('-', '_')] ??
-            _localeNames[current.languageCode] ??
-            current.toLanguageTag();
+              _localeNames[current.languageCode] ??
+              current.toLanguageTag();
 
     return _SettingsCard(
       children: [
@@ -440,8 +421,7 @@ class _LanguageSection extends ConsumerWidget {
                   ),
                 ),
               ),
-              Icon(Icons.chevron_right,
-                  color: _kAccent.withValues(alpha: 0.5)),
+              Icon(Icons.chevron_right, color: _kAccent.withValues(alpha: 0.5)),
             ],
           ),
         ),
@@ -450,12 +430,15 @@ class _LanguageSection extends ConsumerWidget {
   }
 
   void _showLanguagePicker(
-      BuildContext context, WidgetRef ref, Locale? current) {
+    BuildContext context,
+    WidgetRef ref,
+    Locale? current,
+  ) {
     final locales = AppLocalizations.supportedLocales;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF0B1426),
+      backgroundColor: SpaceColors.deepSpace,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -486,27 +469,42 @@ class _LanguageSection extends ConsumerWidget {
                         ref.read(localeProvider.notifier).set(null);
                         AnalyticsService().logEvent(
                           name: QaEvents.settingsChanged,
-                          parameters: {'setting': 'language', 'value': 'system'},
+                          parameters: {
+                            'setting': 'language',
+                            'value': 'system',
+                          },
                         );
                         Navigator.pop(ctx);
                       },
                     ),
                     const Divider(
-                        color: Colors.white12, height: 1, indent: 16, endIndent: 16),
+                      color: Colors.white12,
+                      height: 1,
+                      indent: 16,
+                      endIndent: 16,
+                    ),
                     // All supported locales.
                     for (final locale in locales)
                       _LanguageTile(
-                        label: _localeNames[locale.toLanguageTag().replaceAll('-', '_')] ??
+                        label:
+                            _localeNames[locale.toLanguageTag().replaceAll(
+                              '-',
+                              '_',
+                            )] ??
                             _localeNames[locale.languageCode] ??
                             locale.toLanguageTag(),
-                        selected: current != null &&
+                        selected:
+                            current != null &&
                             locale.languageCode == current.languageCode &&
                             locale.countryCode == current.countryCode,
                         onTap: () {
                           ref.read(localeProvider.notifier).set(locale);
                           AnalyticsService().logEvent(
                             name: QaEvents.settingsChanged,
-                            parameters: {'setting': 'language', 'value': locale.languageCode},
+                            parameters: {
+                              'setting': 'language',
+                              'value': locale.languageCode,
+                            },
                           );
                           Navigator.pop(ctx);
                         },
@@ -558,13 +556,14 @@ class _StatsPositionToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final statsOnLeft = ref.watch(statsOnLeftProvider);
+    final l10n = context.l10n;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Expanded(
+        Expanded(
           child: Text(
-            'Stats & buttons position',
-            style: TextStyle(
+            l10n.ui_settings_statsPosition,
+            style: const TextStyle(
               color: Colors.white70,
               fontSize: 15,
               fontWeight: FontWeight.w500,
@@ -572,12 +571,14 @@ class _StatsPositionToggle extends ConsumerWidget {
           ),
         ),
         SegmentedButton<bool>(
-          segments: const [
-            ButtonSegment(value: true, label: Text('LEFT')),
-            ButtonSegment(value: false, label: Text('RIGHT')),
+          segments: [
+            ButtonSegment(value: true, label: Text(l10n.ui_settings_statsLeft)),
+            ButtonSegment(
+                value: false, label: Text(l10n.ui_settings_statsRight)),
           ],
           selected: {statsOnLeft},
-          onSelectionChanged: (v) => ref.read(statsOnLeftProvider.notifier).toggle(),
+          onSelectionChanged: (v) =>
+              ref.read(statsOnLeftProvider.notifier).toggle(),
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
@@ -589,12 +590,16 @@ class _StatsPositionToggle extends ConsumerWidget {
               if (states.contains(WidgetState.selected)) return _kAccent;
               return Colors.white38;
             }),
-            side: WidgetStateProperty.all(BorderSide(color: _kAccent.withValues(alpha: 0.3))),
-            textStyle: WidgetStateProperty.all(const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 2,
-            )),
+            side: WidgetStateProperty.all(
+              BorderSide(color: _kAccent.withValues(alpha: 0.3)),
+            ),
+            textStyle: WidgetStateProperty.all(
+              const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
+              ),
+            ),
           ),
         ),
       ],
@@ -713,10 +718,7 @@ class _SettingsSlider extends StatelessWidget {
             trackHeight: 4,
             thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
           ),
-          child: Slider(
-            value: value,
-            onChanged: enabled ? onChanged : null,
-          ),
+          child: Slider(value: value, onChanged: enabled ? onChanged : null),
         ),
       ],
     );

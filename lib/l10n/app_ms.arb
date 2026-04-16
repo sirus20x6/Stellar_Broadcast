@@ -54,7 +54,6 @@
   "ui_scan_statWater": "AIR",
   "ui_scan_statResource": "SUMBER",
   "ui_scan_statGravity": "GRAVITI",
-  "ui_scan_statBio": "BIO",
   "ui_scan_statAnomaly": "ANOMALI",
   "ui_scan_statRadiation": "RADIASI",
   "ui_landing_planetAnalysis": "ANALISIS PLANET",
@@ -137,7 +136,6 @@
   "ui_settings_music": "MUZIK",
   "ui_settings_soundEffects": "KESAN BUNYI",
   "ui_settings_haptics": "HAPTIK",
-  "ui_settings_premium": "PREMIUM",
   "ui_settings_goPremium": "Jadi Premium",
   "ui_settings_enabled": "Diaktifkan",
   "ui_settings_volume": "Kelantangan",
@@ -168,7 +166,6 @@
   "ui_scannerUpgrade_max": "MAKS",
   "ui_scannerUpgrade_atmospheric": "Atmosfera",
   "ui_scannerUpgrade_gravimetric": "Gravimetrik",
-  "ui_scannerUpgrade_mineral": "Mineral",
   "ui_scannerUpgrade_lifeSigns": "Tanda Hayat",
   "ui_scannerUpgrade_temperature": "Suhu",
   "ui_scannerUpgrade_water": "Air",
@@ -190,7 +187,6 @@
   "onboarding_page2_description": "Setiap pelayaran mengajar manusia sesuatu yang baharu. Kumpulkan Mata Warisan untuk membuka naik taraf kekal, dan ukir nama anda di bintang-bintang.",
   "onboarding_page3_title": "Privasi Anda, Pilihan Anda",
   "onboarding_page3_description": "Pilih bagaimana anda ingin mengalami Siaran Bintang.",
-  "planet_tierUtopia": "Utopia",
   "planet_tierParadise": "Syurga",
   "planet_tierHabitable": "Boleh Didiami",
   "planet_tierHarsh": "Keras",
@@ -221,21 +217,13 @@
   "planet_featureGeothermalVents": "Lubang Geoterma",
   "planet_featureStrongMagnetosphere": "Magnetosfera Kuat",
   "planet_featureWeakMagnetosphere": "Magnetosfera Lemah",
-  "planet_featureMegafauna": "Megafauna",
   "planet_featureSymbioticOrganisms": "Organisma Simbiotik",
   "planet_featureGravityWells": "Telaga Graviti",
   "planet_featureSubspaceEchoes": "Gema Subruang",
-  "ui_monthJan": "JAN",
-  "ui_monthFeb": "FEB",
   "ui_monthMar": "MAC",
-  "ui_monthApr": "APR",
   "ui_monthMay": "MEI",
-  "ui_monthJun": "JUN",
-  "ui_monthJul": "JUL",
   "ui_monthAug": "OGO",
-  "ui_monthSep": "SEP",
   "ui_monthOct": "OKT",
-  "ui_monthNov": "NOV",
   "ui_monthDec": "DIS",
   "event_asteroidField_title": "Medan Asteroid",
   "event_asteroidField_narrative": "Pengimbas jarak jauh mengesan medan asteroid yang padat tepat di laluan penerbangan kita. Navigasi mengira dua pilihan: larian berisiko melalui koridor yang paling nipis, atau lencongan panjang yang akan membebankan simpanan bahan api dan menekan susunan navigasi.",
@@ -1236,7 +1224,6 @@
   "ending_techPhrase_preIndustrial": "walaupun teknologi mundur ke keadaan pra-perindustrian, dengan alat tangan dan tenaga haiwan membentuk tulang belakang kehidupan harian.",
   "ending_techPhrase_stoneAge": "dan tanpa cara untuk membina semula, koloni tergelincir ke kewujudan zaman batu, membuat alat dari batu dan tulang.",
   "ending_techPhrase_default": "dan teknologi menetap pada tahap yang mampu dikekalkan oleh kolonis.",
-  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
   "ending_populationHigh": "Hampir semua {colonists} kolonis terselamat dalam pelayaran, memberikan {colonyName} asas modal insan yang kukuh.",
   "ending_populationMedium": "Daripada seribu yang asal, {colonists} kolonis sampai ke {colonyName} — cukup untuk mengekalkan populasi yang berdaya maju.",
   "ending_populationLow": "Hanya {colonists} kolonis yang terselamat untuk sampai ke {colonyName}, kumpulan gen yang amat kecil untuk tamadun baharu.",
@@ -1302,7 +1289,6 @@
   "ui_trader_shipSystems": "SISTEM KAPAL",
   "ui_trader_payWith": "BAYAR DENGAN",
   "ui_trader_leaveTrader": "TINGGALKAN PEDAGANG",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "Suasana hati murah hati",
   "ui_trader_moodFair": "Urusan yang adil",
   "ui_trader_moodHard": "Tawar-menawar dengan keras",
@@ -1320,7 +1306,6 @@
   "ui_codex_ringTypes": "JENIS CINCIN",
   "ui_codex_locked": "Mendarat di planet dengan ciri ini untuk mendedahkan kesannya.",
   "ui_codex_synergy": "Sinergi: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "Monolog AI",
   "event_aiSoliloquy_narrative": "SAM — AI Pengurusan Autonomi kapal — telah mula menyiarkan puisi bumi purba dalam gelung tanpa henti pada semua frekuensi dalaman. Siaran itu memakan kitaran CPU yang ketara, namun anak kapal mendapatinya pelik menenangkan di tengah kegelapan ruang yang dalam.",
   "event_aiSoliloquy_choice0_text": "Biarkan SAM terus — moral lebih penting daripada CPU",
@@ -1437,39 +1422,532 @@
   "event_subspaceReef_choice1_outcome": "Pengimbas ditolak ke had mereka. Kita melaluinya dengan cepat, tetapi susunan sensor terbakar akibat keamatan riak subangkasa.",
   "event_alienTrader_title": "Pedagang Pengembara",
   "event_alienTrader_narrative": "Sebuah kapal berdesain asing hanyut di sisi kita, menyiar pada semua frekuensi. Ia adalah pedagang — salah seorang daripada pedagang pengembara yang melayari ruang antara tamadun. Mereka menawarkan pembaikan dan bekalan sebagai pertukaran dengan sumber. Ruang kargo mereka berdengung dengan teknologi eksotik.",
-
   "event_pulsarLighthouse_title": "Rumah Api Pulsar",
   "event_pulsarLighthouse_narrative": "Sebuah bintang neutron berputar menyapu kekosongan dengan pancaran cahayanya bagai rumah api kosmik. Denyutan berirama pulsar membawa data masa yang tepat yang boleh menentukur semula pengimbas kita ke ketepatan luar biasa — tetapi menjajarkan diri dengan pancaran bermakna mendedahkan kapal kepada sinaran kuat.",
   "event_pulsarLighthouse_choice0": "Tentukur pengimbas kepada denyutan",
   "event_pulsarLighthouse_outcome0": "Susunan pengimbas menyerap isyarat pulsar, menentukur semula kepada ketepatan yang tidak pernah kita bayangkan. Tetapi kos sinaran itu nyata — beberapa kriopod di bahagian yang terdedah rosak, dan segelintir kolonis tidak terselamat daripada pendedahan.",
   "event_pulsarLighthouse_choice1": "Berlindung dan lalu di jarak selamat",
   "event_pulsarLighthouse_outcome1": "Kita memberi jarak yang luas kepada pulsar, membakar bahan api tambahan untuk mengekalkan trajektori selamat. Kru memerhati pancaran yang menyapu melalui tingkap bertapis — indah, tetapi jauh.",
-
   "event_alienNursery_title": "Nurseri Alien",
   "event_alienNursery_narrative": "Struktur organik yang besar terapung di kekosongan — sebuah nurseri biologi yang mengerami anak-anak alien. Sistem sokongan hayatnya gagal, suhu dalaman menurun. Makhluk di dalamnya sedang mati. Pengimbas bio kita boleh belajar banyak daripada struktur ini, tetapi campur tangan bermakna membuka kunci udara kita kepada patogen yang tidak dikenali.",
   "event_alienNursery_choice0": "Bantu menstabilkan sokongan hayat mereka",
   "event_alienNursery_outcome0": "Jurutera kita mereka cipta sambungan haba ke nurseri, menstabilkan ruang pengeraman. Data pengimbas bio luar biasa — taksonomi kehidupan yang sepenuhnya baharu. Tetapi seperti yang ditakuti, mikroorganisma alien menemui jalan masuk ke kapal. Pasukan perubatan mengekang wabak itu, walaupun beberapa kolonis sudah jatuh sakit.",
   "event_alienNursery_choice1": "Biarkan tanpa gangguan",
   "event_alienNursery_outcome1": "Kita memerhati dari jarak yang hormat, mendokumenkan apa yang boleh melalui imbasan pasif. Nurseri terus hanyut, nasibnya tidak pasti. Kru merenungkan kerapuhan kehidupan — termasuk kehidupan alien — dan berat pilihan yang kita tanggung.",
-
   "event_derelictArmada_title": "Armada Terbiar",
   "event_derelictArmada_narrative": "Beratus kapal perang purba tergantung tidak bergerak di kekosongan — tanah perkuburan konflik yang dilupakan. Badan kapal mereka berparut oleh senjata yang tidak dapat kita kenal pasti, tetapi bahan struktur dan pangkalan data mereka mungkin tidak ternilai. Persoalannya ialah apa yang perlu diutamakan: penyelamatan fizikal atau ilmu pengetahuan.",
   "event_derelictArmada_choice0": "Selamatkan teknologi senjata dan pelat badan kapal",
   "event_derelictArmada_outcome0": "Pasukan penyelamat memotong masuk ke kapal perang alien, mengekstrak aloi eksotik dan teknik pembinaan berabad-abad di hadapan kita. Para pembina mengintegrasikan bahan baharu dengan penuh semangat. Tetapi satu kapal tidak semati seperti yang kelihatan — perangkap meletup semasa pengekstrakan, membunuh satu pasukan penyelamat.",
   "event_derelictArmada_choice1": "Muat turun arkib sejarah mereka",
   "event_derelictArmada_outcome1": "Kita memberi tumpuan kepada teras data, dengan berhati-hati mengekstrak berabad-abad sejarah, seni, sains, dan falsafah alien. Arkib budaya sahaja boleh membuatkan para sarjana sibuk selama beberapa generasi. Pandangan teknologi, walaupun kurang praktikal secara langsung, mendedahkan prinsip kejuruteraan yang memajukan pemahaman kita sendiri.",
-
   "event_alienQuarantineZone_title": "Zon Kuarantin Alien",
   "event_alienQuarantineZone_narrative": "Suar amaran dalam sedozen bahasa alien menandakan sempadan kawasan angkasa yang dimeterai. Apa sahaja yang terkurung di dalamnya cukup berbahaya sehingga pelbagai tamadun bekerjasama untuk mengasingkannya. Imbasan jarak jauh kita mengesan tanda teknologi besar-besaran di dalam — dan sesuatu yang mungkin hidup.",
   "event_alienQuarantineZone_choice0": "Terobos kuarantin dan siasat",
   "event_alienQuarantineZone_outcome0": "Kita melepasi pelampung amaran ke zon kuarantin. Di dalam, kita menemui stesen penyelidikan dengan kerumitan yang mengagumkan — dan sisa-sisa apa sahaja yang sedang dikaji. Teknologi yang kita perolehi revolusioner, tetapi pencemaran biologi teruk. Berpuluh kolonis jatuh sakit sebelum kita meninggalkan zon.",
   "event_alienQuarantineZone_choice1": "Hormati kuarantin",
   "event_alienQuarantineZone_outcome1": "Kita mengkaji suar amaran itu sendiri, yang mengandungi data navigasi dan bacaan atmosfera daripada tamadun yang meletakkannya. Bukan khazanah di dalam, tetapi ia adalah sesuatu — dan kita tidak melepaskan apa sahaja yang mereka kunci.",
-
   "event_hydroponicsBlight_title": "Wabak Hidroponik",
   "event_hydroponicsBlight_narrative": "Wabak kulat yang merebak pantas telah menjangkiti teluk hidroponik kapal. Keseluruhan kitaran tanaman layu di depan mata kita. Wabak belum sampai ke simpanan benih, tetapi hanya soal jam. Kita boleh membersihkan teluk dan menanam semula dari awal, atau mencuba rawatan antikulat eksperimen yang mungkin menyelamatkan tuaian semasa — atau merebakkan pencemaran lebih jauh.",
   "event_hydroponicsBlight_choice0": "Bersihkan dan tanam semula dari simpanan benih",
   "event_hydroponicsBlight_outcome0": "Kita membuang atmosfera teluk hidroponik ke vakum, membunuh wabak bersama setiap tumbuhan hidup. Penanaman semula dari simpanan benih akan mengambil masa berminggu-minggu, dan program budaya yang bergantung kepada makanan segar dan ruang taman digantung. Tetapi jangkitan terkawal.",
   "event_hydroponicsBlight_choice1": "Cuba rawatan eksperimen",
-  "event_hydroponicsBlight_outcome1": "Antikulat eksperimen menunjukkan harapan pada mulanya, tetapi strain yang tahan berjaya menembusi. Menjelang kita memilih pembersihan penuh, wabak telah merebak ke talian nutrien kriopod. Kerosakan lebih teruk berbanding sekiranya kita bertindak tegas dari awal."
+  "event_hydroponicsBlight_outcome1": "Antikulat eksperimen menunjukkan harapan pada mulanya, tetapi strain yang tahan berjaya menembusi. Menjelang kita memilih pembersihan penuh, wabak telah merebak ke talian nutrien kriopod. Kerosakan lebih teruk berbanding sekiranya kita bertindak tegas dari awal.",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_ending_shareCard": "KONGSI KAD",
+  "ui_ending_shareCardCancel": "BATALKAN",
+  "ui_scan_uncertaintyPct": "KETIDAKTENTIAN: ±{percent}%",
+  "ui_scan_statBio": "BIO",
+  "ui_ending_shareCardShare": "KONGSI",
+  "ui_scan_probesCount": "PROB: {count}",
+  "ui_ending_shareCardDialogTitle": "Kongsi Pelayaran Anda",
+  "ui_title_seedInvalid": "Kod benih tidak sah. Gunakan hanya A–Z dan 0–9.",
+  "planet_tierUtopia": "Utopia",
+  "ui_settings_premium": "PREMIUM",
+  "ui_settings_statsLeft": "KIRI",
+  "ui_settings_statsRight": "BETUL",
+  "ui_scannerUpgrade_mineral": "Mineral",
+  "planet_featurePerpetualAurora": "Aurora kekal",
+  "planet_featureMegafauna": "Megafauna",
+  "ui_settings_statsPosition": "Kedudukan statistik & butang",
+  "planet_featureCarnivorousFlora": "Flora Karnivor",
+  "planet_featureSaltFlats": "Rumah Pangsa Garam",
+  "planet_featureGhostCities": "Bandar Hantu",
+  "planet_featureArchiveVaults": "Arkib Bilik Kebal",
+  "planet_featureUndergroundRivers": "Sungai Bawah Tanah",
+  "planet_featureObsidianPlains": "Dataran Obsidian",
+  "planet_featurePetrifiedMegaflora": "Megaflora yang membatu",
+  "planet_featureSinkholeFields": "Padang Lubang Tenggelam",
+  "ui_monthSep": "SEP",
+  "ui_monthApr": "APR",
+  "ui_monthJul": "JUL",
+  "planet_featureApexPredator": "Pemangsa Apex",
+  "ui_monthNov": "NOV",
+  "ui_monthJan": "JAN",
+  "ui_monthJun": "JUN",
+  "ui_monthFeb": "FEB",
+  "ending_nativesSubjugation": "Penaklukan",
+  "ending_governmentTheocracy": "Teokrasi",
+  "ending_nativesAlliance": "Perikatan",
+  "ending_governmentFascistState": "Negara Fasis",
+  "ending_governmentCommune": "Komune",
+  "ending_governmentMilitaryJunta": "Junta Tentera",
+  "ending_governmentCorporateOligarchy": "Oligarki Korporat",
+  "ending_govSentenceCommune": "Penduduk {planetName} mentadbir diri mereka secara kolektif, berkongsi sumber dan keputusan secara sama rata di kalangan semua penjajah.",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceFascistState": "Rejim autoritarian mengawal {planetName} dengan kuku besi, kebebasan awam yang dikorbankan untuk ketertiban di dunia baharu.",
+  "ending_nativeSentenceSubjugation": "Penduduk asli {planetName} hidup di bawah pemerintahan kolonial, budaya mereka ditindas kerana penjajah memaksakan perintah mereka sendiri.",
+  "ending_govSentenceMilitaryJunta": "Struktur perintah tentera mengawal {planetName}, disiplin yang menyelamatkan mereka di angkasa lepas kini mentakrifkan tamadun mereka.",
+  "ending_govSentenceTheocracy": "Sebuah majlis teokratik membimbing {planetName}, menarik kebijaksanaan daripada iman yang mengekalkan penjajah melalui kekosongan.",
+  "ending_govSentenceCorporateOligarchy": "Konsortium pengurus sumber mengetuai {planetName}, kepintaran ekonomi mereka telah terbukti penting untuk terus hidup.",
+  "ui_tooltip_back": "belakang",
+  "ui_tooltip_settings": "tetapan",
+  "ui_common_tapToContinue": "KETIK UNTUK MENERUSKAN",
+  "ui_common_tapRingToChoose": "KETIK CINCIN UNTUK MEMILIH",
+  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
+  "ui_tooltip_leaderboards": "Papan pendahulu",
+  "ui_tooltip_codex": "Codex",
+  "ui_common_tapToSkip": "KETIK UNTUK MELANGKAH",
+  "ending_nativeSentenceAlliance": "Perikatan rasmi mengikat penjajah dan tamadun asli {planetName}, gabungan pengetahuan mereka membina sesuatu yang lebih hebat daripada yang boleh dilakukan sendirian.",
+  "event_pulsarLighthouse_choice2": "Berundur sebelum sapuan sampai kepada kita",
+  "event_pulsarLighthouse_outcome2": "Kami menghayunkan diri pada kebakaran kecemasan sebelum pancaran seterusnya. Isyarat pulsar memudar di belakang kami — tiada data diperoleh, tiada bahaya yang diambil, sedikit bahan api dibelanjakan untuk tujahan mengelak.",
+  "event_constitutionalConvention_narrative": "Penduduk kapal jajahan semakin resah tanpa tadbir urus rasmi. Perwakilan dari setiap geladak berkumpul di tempat simpanan kargo untuk merangka piagam yang akan menentukan bagaimana koloni masa depan diperintah. Tiga puak membentangkan visi bersaing untuk kerajaan baharu.",
+  "event_constitutionalConvention_choice0": "Draf piagam demokrasi dengan hak mengundi sejagat",
+  "event_constitutionalConvention_choice1": "Menubuhkan eksekutif yang kuat dengan kuasa kecemasan",
+  "event_constitutionalConvention_outcome1": "Seorang pemimpin tunggal dilantik dengan kuasa yang menyeluruh. Keputusan datang pantas tetapi pencacai membisikkan kezaliman di dek bawah.",
+  "event_constitutionalConvention_outcome0": "Penjajah meratifikasi perlembagaan yang menjamin perwakilan yang sama. Membuat keputusan perlahan tetapi semangat melonjak apabila setiap suara didengari.",
+  "ui_tooltip_bugReport": "Laporkan pepijat",
+  "event_militaryCoupThreat_choice0": "Lawan rampasan kuasa dengan anak kapal yang setia",
+  "event_constitutionalConvention_choice2": "Membentuk majlis pakar teknokratik",
+  "event_militaryCoupThreat_choice1": "Tunduk kepada tuntutan komander",
+  "event_constitutionalConvention_title": "Konvensyen Perlembagaan",
+  "event_militaryCoupThreat_outcome0": "Anak kapal yang setia berhimpun untuk menentang Vasquez. Kebuntuan berakhir dengan pertumpahan darah yang minimum, tetapi perincian keselamatan menjadi lemah dan beberapa penjajah terperangkap dalam pertempuran silang.",
+  "event_constitutionalConvention_outcome2": "Jurutera, saintis dan doktor membentuk majlis pemerintah berdasarkan kepakaran. Kecekapan bertambah baik, walaupun ada yang merasa dikecualikan daripada kuasa.",
+  "event_militaryCoupThreat_narrative": "Komander Vasquez dari perincian keselamatan kapal telah merampas gudang senjata dan mengeluarkan kata dua: berikan kuasa tentera kecemasan atau hadapi penutupan semua dek. Keadaan tidak menentu dan penjajah mencari jawapan kepada anda.",
+  "event_militaryCoupThreat_choice2": "Rundingkan kuasa kecemasan terhad dengan klausa matahari terbenam",
+  "event_militaryCoupThreat_outcome2": "Selepas rundingan tegang, Vasquez menerima kuasa sementara dengan pengawasan. Kompromi rapuh yang tidak memuaskan hati sesiapa pun sepenuhnya, tetapi menghalang keganasan.",
+  "event_militaryCoupThreat_title": "Ancaman Rampasan kuasa Tentera",
+  "event_religiousAwakening_title": "Kebangkitan Agama",
+  "event_religiousAwakening_choice0": "Merangkul gerakan iman dan menyediakan sumber",
+  "event_religiousAwakening_choice1": "Menguatkuasakan sekularisme yang ketat di atas kapal",
+  "event_militaryCoupThreat_outcome1": "Vasquez mengambil alih kawalan operasi kapal. Ketenteraman dipulihkan dengan pantas, tetapi dengan mengorbankan kebebasan awam. Peronda bersenjata kini berjalan di setiap koridor.",
+  "event_religiousAwakening_outcome1": "Perhimpunan agama dihadkan kepada tempat persendirian. Pergerakan ini berjalan di bawah tanah, menimbulkan kebencian, tetapi rasionalisme saintifik kekal sebagai doktrin rasmi.",
+  "event_corporateTakeover_narrative": "Pengurus sumber kapal telah secara senyap-senyap menyatukan kawalan ke atas pengedaran makanan, kitar semula air, dan peruntukan kuasa. Mereka kini mencadangkan untuk memformalkan kuasa mereka ke dalam struktur korporat yang akan menguruskan ekonomi koloni masa depan.",
+  "event_religiousAwakening_narrative": "Seorang pendakwah yang berkarisma telah menarik ratusan penjajah ke dalam gerakan agama baru. Mereka berkumpul di kubah pemerhatian setiap kitaran, lagu pujian mereka bergema melalui aci pengudaraan. Sesetengah anak kapal bimbang tentang fanatik; yang lain mendapat keselesaan yang tulen dalam ajaran.",
+  "event_religiousAwakening_outcome0": "Pergerakan berkembang dengan sokongan rasmi. Moral bertambah baik di kalangan orang yang beriman, dan semangat perkauman mereka mengukuhkan ikatan sosial di seluruh kapal.",
+  "event_corporateTakeover_choice0": "Membenarkan prinsip pasaran bebas untuk mengawal sumber",
+  "event_religiousAwakening_choice2": "Benarkan ibadah tetapi kawal pengaruhnya",
+  "event_religiousAwakening_outcome2": "Iman itu dibenarkan tetapi dipisahkan daripada pemerintahan. Seorang pendeta dilantik untuk berhubung dengan perintah. Keseimbangan yang tidak selesa dikekalkan.",
+  "event_corporateTakeover_choice2": "Melaksanakan pasaran terkawal dengan jaring keselamatan",
+  "event_corporateTakeover_outcome1": "Sumber dirampas dan diletakkan di bawah kawalan komunal. Puak korporat dibongkar, tetapi inovasi terhenti tanpa insentif keuntungan.",
+  "event_corporateTakeover_choice1": "Nasionalkan semua sumber di bawah pemilikan kolektif",
+  "event_corporateTakeover_outcome0": "Puak korporat mengambil alih pengurusan sumber. Kecekapan meningkat secara mendadak, tetapi harga meningkat dan penjajah termiskin berjuang untuk membeli keperluan asas.",
+  "event_corporateTakeover_title": "Pengambilalihan Korporat",
+  "event_successionCrisis_choice0": "Mengadakan pilihan raya tergempar",
+  "event_successionCrisis_choice2": "Mengadakan majlis orang-orang tua",
+  "event_successionCrisis_choice1": "Biarkan tentera mengambil alih perintah",
+  "event_corporateTakeover_outcome2": "Ekonomi campuran diwujudkan dengan kawalan harga dan program kebajikan. Kedua-dua puak tidak berpuas hati sepenuhnya, tetapi keperluan asas dipenuhi sambil membenarkan beberapa perusahaan.",
+  "event_successionCrisis_outcome0": "Pilihan raya yang huru-hara tetapi bersemangat menghasilkan kapten baharu yang dipilih melalui undi popular. Prosesnya tidak kemas, tetapi penjajah merasakan pemilikan kepimpinan mereka.",
+  "event_successionCrisis_outcome1": "Ketua keselamatan melangkah ke kerusi kapten. Disiplin dipulihkan serta-merta, tetapi kru awam memandang pengawal bersenjata dengan rasa tidak senang.",
+  "event_successionCrisis_narrative": "Kapten kapal telah meninggal dunia dalam tidur mereka, tanpa meninggalkan pengganti yang ditetapkan. Tiga puak segera bersaing untuk mendapatkan kawalan: majlis awam menuntut pilihan raya, ketua keselamatan menuntut pihak berkuasa tentera, dan penjajah yang lebih tua menggunakan upacara kepimpinan tradisional.",
+  "event_successionCrisis_title": "Krisis Penggantian",
+  "event_nativeSovereignty_title": "Kedaulatan Anak Negeri",
+  "event_nativeSovereignty_choice1": "Tegaskan ketuanan kolonial dan bersedia untuk penentangan",
+  "event_nativeSovereignty_choice0": "Mengiktiraf kedaulatan anak negeri dan meminta kebenaran untuk menyelesaikannya",
+  "event_nativeSovereignty_narrative": "Imbasan jarak jauh mengesahkan kehidupan pintar di planet sasaran. Komunikasi yang dipintas mendedahkan tamadun canggih yang telah mengesan pendekatan anda. Mereka menghantar permintaan rasmi: mengiktiraf kedaulatan wilayah mereka atau menghadapi tentangan semasa ketibaan.",
+  "event_successionCrisis_outcome2": "Penjajah tertua dan paling berpengalaman membentuk majlis pemerintahan. Kebijaksanaan mereka membimbing kapal, walaupun beberapa anak kapal yang lebih muda merasa terpinggir oleh gerontokrasi.",
+  "event_nativeSovereignty_outcome1": "Anda menyiarkan niat anda untuk menyelesaikan tanpa mengira. Krew memulakan latihan senjata dan perancangan benteng. Orang asli menjadi senyap, yang entah bagaimana lebih menakutkan daripada ancaman.",
+  "event_nativeSovereignty_choice2": "Cadangkan tadbir urus bersama planet ini",
+  "event_laborStrike_choice1": "Hentikan mogok dan kuatkuasakan buruh wajib",
+  "event_laborStrike_choice0": "Memenuhi permintaan pekerja sepenuhnya",
+  "event_nativeSovereignty_outcome0": "Anda menghantar pengiktirafan rasmi hak orang asli. Responsnya berhati-hati tetapi positif. Hubungan masa depan akan bermula atas dasar saling menghormati, walaupun tapak pendaratan mungkin terhad.",
+  "event_laborStrike_narrative": "Krew kejuruteraan telah meninggalkan kerja, menuntut syif yang lebih pendek, catuan makanan yang lebih baik dan suara dalam keputusan navigasi. Sistem kritikal berjalan pada sandaran automatik, tetapi ia tidak akan bertahan lama. Penjajah yang lain menonton dengan gugup.",
+  "event_laborStrike_outcome0": "Mogok tamat serta-merta. Pekerja kembali ke jawatan mereka dengan keadaan yang lebih baik. Produktiviti menurun sedikit apabila anjakan yang lebih pendek berkuat kuasa, tetapi kesetiaan tidak boleh digoyahkan.",
+  "event_laborStrike_outcome2": "Selepas rundingan maraton, kesepakatan dicapai: catuan dan input nasihat yang lebih baik, tetapi tiada pengurangan dalam tempoh syif. Kedua-dua pihak tidak teruja, tetapi enjin terus berjalan.",
+  "event_nativeSovereignty_outcome2": "Anda menawarkan rangka kerja untuk kewujudan bersama dan perkongsian sumber. Orang asli tertarik tetapi berhati-hati. Rundingan akan menjadi rumit, tetapi kemungkinan keamanan wujud.",
+  "event_censorshipDebate_title": "Perbahasan Penapisan",
+  "event_laborStrike_title": "Mogok Buruh",
+  "event_laborStrike_outcome1": "Pasukan keselamatan mengiringi pekerja kembali ke balai mereka dengan todongan senjata. Enjin berdengung lagi, tetapi kebencian memuncak di geladak bawah. Beberapa pekerja terkurung di kuarters.",
+  "event_censorshipDebate_choice2": "Tapis hanya maklumat sensitif keselamatan",
+  "event_censorshipDebate_outcome0": "Ketelusan penuh diwujudkan. Kepanikan awal reda apabila penjajah berhimpun untuk membantu menyelesaikan masalah yang mereka fahami. Kepercayaan terhadap kepimpinan bertambah, walaupun sesetengah maklumat menyebabkan kesusahan.",
+  "event_censorshipDebate_narrative": "Dokumen yang bocor mendedahkan keadaan sebenar sistem kapal yang gagal. Panik merebak melalui dek bawah. Pegawai komunikasi mencadangkan menyekat akses maklumat untuk mengelakkan kekacauan selanjutnya. Penyokong kebebasan awam marah.",
+  "event_censorshipDebate_choice1": "Melaksanakan kawalan maklumat penuh",
+  "event_laborStrike_choice2": "Tawarkan kompromi separa pada tuntutan utama",
+  "event_censorshipDebate_choice0": "Menjamin akses percuma kepada semua maklumat",
+  "event_colonialCharter_choice0": "Piagam progresif yang menekankan hak individu",
+  "event_censorshipDebate_outcome1": "Semua komunikasi kini ditapis melalui arahan. Panik berhenti, digantikan dengan ketenangan yang ngeri. Tetapi khabar angin mengisi kekosongan yang ditinggalkan oleh kebenaran yang ditapis, dan ia selalunya lebih buruk daripada realiti.",
+  "event_colonialCharter_choice1": "Piagam konservatif yang memelihara tradisi Bumi",
+  "event_separatistMovement_title": "Gerakan Pemisah",
+  "event_colonialCharter_title": "Piagam Kolonial",
+  "event_colonialCharter_choice2": "Piagam pragmatik memberi tumpuan kepada kelangsungan hidup dan pertumbuhan",
+  "event_colonialCharter_outcome2": "Piagam ini mengutamakan pengurusan sumber, pendidikan teknikal, dan pembangunan ekonomi. Ia tidak mempunyai puisi tetapi memastikan jajahan akan cekap dan teratur.",
+  "event_separatistMovement_narrative": "Satu puak penjajah telah mengisytiharkan kemerdekaan daripada tadbir urus kapal. Mereka telah menghalang diri mereka di bahagian belakang, menuntut hak untuk menubuhkan penempatan mereka sendiri apabila mendarat. Mereka mengawal 15% daripada rizab makanan kapal dan susunan navigasi sandaran.",
+  "event_separatistMovement_choice0": "Berikan autonomi wilayah dalam rangka kerja persekutuan",
+  "event_censorshipDebate_outcome2": "Sistem klasifikasi diwujudkan. Kebanyakan maklumat mengalir dengan bebas, tetapi data sistem ketenteraan dan kritikal memerlukan penjelasan. Jalan tengah yang boleh dilaksanakan yang kebanyakannya memuaskan.",
+  "event_colonialCharter_outcome0": "Piagam itu mengabadikan kebebasan peribadi, kesaksamaan, dan mobiliti sosial. Seniman dan pemikir meraikan; tradisionalis memberi amaran bahawa kebebasan yang tidak dikawal membawa kepada huru-hara.",
+  "event_colonialCharter_narrative": "Dengan kejatuhan planet semakin hampir, penjajah mesti merangka undang-undang asas untuk masyarakat baharu mereka. Tiga kem falsafah telah muncul, masing-masing memperjuangkan visi yang berbeza untuk apa yang sepatutnya menjadi tanah jajahan. Perdebatan hangat dan sangat peribadi.",
+  "event_colonialCharter_outcome1": "Piagam itu mengkodifikasikan nilai tradisional, struktur keluarga, dan pematuhan agama. Ramai mendapat keselesaan dalam adat biasa; yang lain berasa terbantut oleh berat pemikiran dunia lama.",
+  "event_separatistMovement_choice2": "Tangani akar rungutan yang mendorong pergerakan itu",
+  "event_separatistMovement_choice1": "Serbu sekatan dan paksa penyatuan semula",
+  "event_separatistMovement_outcome1": "Pasukan keselamatan melanggar bahagian belakang. Pemisah menentang keras. Pesanan dipulihkan, tetapi pada kos yang teruk. Kapal itu bersatu dalam tubuh, jika tidak dalam roh.",
+  "event_warCouncil_choice0": "Persenjataan penuh: memalsukan senjata dan melatih askar",
+  "event_separatistMovement_outcome0": "Pemisah menerima perjanjian: daerah mereka sendiri dengan tadbir urus tempatan, di bawah payung persekutuan yang longgar. Preseden perpecahan membimbangkan sesetengah pihak, tetapi keamanan dikekalkan.",
+  "event_warCouncil_narrative": "Dengan potensi ancaman dikesan dalam sistem berdekatan, kepimpinan kapal mengadakan majlis perang. Persoalannya: berapa banyak sumber terhad tanah jajahan harus ditumpukan kepada persediaan ketenteraan berbanding infrastruktur awam?",
+  "event_tradeFederation_title": "Persekutuan Perdagangan",
+  "event_separatistMovement_outcome2": "Pengantara berusaha untuk memahami apa yang menolak puak itu. Pembaharuan dalam pengagihan dan perwakilan sumber perlahan-lahan membawa pemisah kembali ke dalam kumpulan. Penyembuhan memerlukan masa.",
+  "event_warCouncil_title": "Majlis Perang",
+  "event_warCouncil_choice2": "Postur pertahanan sahaja: perisai dan dinding, bukan pedang",
+  "event_warCouncil_outcome1": "Gudang senjata itu dikosongkan dan kandungannya dikitar semula menjadi bahan binaan. Tanah jajahan akan membina dengan mata bajak, bukan pedang. Pacifis bergembira; realis bimbang tentang apa yang bersembunyi dalam kegelapan.",
+  "event_warCouncil_outcome2": "Sumber pergi ke kubu, perisai dan sistem amaran awal. Tiada senjata penyerang dihasilkan. Pendekatan seimbang yang memastikan pilihan terbuka tanpa menimbulkan potensi jiran.",
+  "event_warCouncil_choice1": "Perlucutan senjata: mencairkan senjata menjadi alat",
+  "event_warCouncil_outcome0": "Bengkel dilengkapkan semula untuk pengeluaran senjata. Setiap penjajah yang berkemampuan menerima latihan tempur. Kapal itu berbulu dengan senjata, tetapi bajet untuk peralatan pertanian menyusut.",
+  "event_tradeFederation_outcome0": "Pasaran muncul dalam setiap modul habitat. Inovasi berkembang apabila peniaga bersaing. Ketidaksamaan kekayaan bertambah, tetapi begitu juga jumlah sumber yang tersedia untuk tanah jajahan.",
+  "event_tradeFederation_narrative": "Apabila koloni menghampiri daya maju, puak membahaskan cara menstrukturkan ekonominya. Persoalannya menjangkaui kelangsungan hidup semata-mata - ia akan menentukan jenis masyarakat yang berakar di tanah asing. Pedagang, komunalis dan birokrat semuanya membuat kes mereka.",
+  "event_tradeFederation_choice0": "Wujudkan zon perdagangan bebas dengan peraturan minimum",
+  "event_tradeFederation_outcome2": "Kerajaan mengawal semua perdagangan, menetapkan harga dan memperuntukkan sumber. Sistem ini adil tetapi tidak fleksibel. Pasaran gelap muncul di koridor penyelenggaraan.",
+  "event_tradeFederation_choice1": "Melaksanakan perkongsian komunal semua sumber",
+  "event_tradeFederation_outcome1": "Harta persendirian dimansuhkan. Semuanya milik semua orang. Tiada siapa yang kelaparan, tetapi tiada siapa yang mempunyai insentif untuk menghasilkan lebih daripada minimum. Kebiasaan itu selesa.",
+  "event_tradeFederation_choice2": "Wujudkan sistem perdagangan yang diuruskan oleh negara",
+  "event_faithVsScience_title": "Iman vs Sains",
+  "event_faithVsScience_narrative": "Teleskop kapal telah menangkap imej fenomena kosmik yang secara langsung bercanggah dengan prinsip utama pergerakan iman yang dominan. Ketua saintis mahu menerbitkan penemuan; ketua agama menegaskan mereka akan memecahbelahkan masyarakat.",
+  "event_faithVsScience_choice2": "Mengadakan panel bersama untuk mencari keharmonian antara kedua-dua pandangan",
+  "event_faithVsScience_outcome2": "Para saintis dan ahli teologi bekerjasama untuk mentafsir semula penemuan. Sintesis baru muncul yang meluaskan pemahaman dan iman. Tidak semua orang yakin, tetapi dialog itu sihat.",
+  "event_faithVsScience_choice0": "Terbitkan penemuan saintifik sepenuhnya",
+  "event_faithVsScience_choice1": "Menindas penemuan untuk mengekalkan keharmonian sosial",
+  "event_surveillanceState_choice0": "Tolak cadangan pengawasan sepenuhnya",
+  "event_surveillanceState_title": "Negeri Pengawasan",
+  "event_faithVsScience_outcome0": "Kebenaran mengatasi keselesaan. Data dikeluarkan dan pergerakan agama pecah. Sesetengah orang beriman menyesuaikan iman mereka; yang lain kehilangannya sepenuhnya. Kemajuan ilmu.",
+  "event_surveillanceState_choice2": "Pasang pemantauan terhad di kawasan kritikal sahaja",
+  "event_surveillanceState_narrative": "Selepas beberapa siri insiden sabotaj, ketua keselamatan mencadangkan pemasangan sistem pemantauan di setiap petak kapal. Kamera, mikrofon dan pengimbas biometrik akan menjejaki setiap pergerakan penjajah. Penyokong privasi berasa ngeri.",
+  "event_surveillanceState_outcome0": "Privasi terpelihara. Pensabotur masih bebas, tetapi penjajah lebih mudah tidur kerana mengetahui mereka tidak diperhatikan. Siasatan diteruskan melalui kaedah tradisional.",
+  "event_faithVsScience_outcome1": "Data dikelaskan. Masyarakat agama tetap stabil, tetapi pasukan sains lemah semangat. Kebenaran yang ditangguhkan bukanlah kebenaran yang dinafikan, tetapi rasanya seperti itu.",
+  "event_nativeAlliance_narrative": "Tamadun asli telah mencadangkan satu perjanjian rasmi. Duta mereka tiba melalui pengangkutan ulang-alik, makhluk elegan yang bercakap melalui peranti penterjemah dengan kecanggihan yang menakjubkan. Mereka menawarkan tiga bentuk hubungan, masing-masing dengan implikasi yang berbeza untuk masa depan tanah jajahan.",
+  "event_nativeAlliance_choice1": "Berunding daripada kedudukan penguasaan penjajah",
+  "event_surveillanceState_outcome1": "Setiap sudut kapal dipantau. Pensabotaj ditangkap dalam beberapa hari. Tetapi kamera kekal, dan ketua keselamatan tidak menunjukkan minat untuk mematikannya. Pernah.",
+  "event_nativeAlliance_choice0": "Menandatangani perjanjian perikatan sama rata",
+  "event_surveillanceState_choice1": "Laksanakan pengawasan penuh di seluruh kapal",
+  "event_nativeAlliance_outcome0": "Perjanjian itu menetapkan pertahanan bersama, penyelidikan bersama, dan hak wilayah yang sama. Kedua-dua tamadun akan berkembang bersama. Orang asli berkongsi pengetahuan pertanian yang mengubah prospek tanah jajahan anda.",
+  "event_surveillanceState_outcome2": "Kamera menutupi bilik enjin, gudang senjata dan jambatan. Tempat tinggal kekal peribadi. Pensabotaj akhirnya dikenal pasti melalui analisis corak. Satu tindak balas yang diukur.",
+  "event_nativeAlliance_title": "Perikatan Asli",
+  "event_nativeAlliance_choice2": "Wujudkan perkongsian perdagangan yang tertumpu pada manfaat bersama",
+  "event_nativeAlliance_outcome1": "Anda memanfaatkan teknologi canggih anda untuk mendapatkan syarat yang menguntungkan. Orang asli menyerahkan wilayah dan sumber. Mereka menandatangani dengan tangan yang menggeletar. Sejarah telah melihat perkara ini sebelum ini, dan ia jarang berakhir dengan baik.",
+  "event_nativeAlliance_outcome2": "Perdagangan merapatkan jurang antara spesies. Bahan asli mengalir ke bengkel anda; teknologi anda menambah baik perubatan mereka. Persahabatan tumbuh dari keuntungan bersama."
 }

@@ -9,9 +9,6 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'Звёздный Сигнал';
-
-  @override
   String get ui_title_stellar => 'ЗВЁЗДНЫЙ';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'НАЧАТЬ ПЛАВАНИЕ';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'Неверный исходный код. Используйте только A–Z и 0–9.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -197,6 +198,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ui_scan_statRadiation => 'РАДИАЦИЯ';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'ЗОНДЫ: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'НЕОПРЕДЕЛЕННОСТЬ: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'АНАЛИЗ ПЛАНЕТЫ';
 
   @override
@@ -294,22 +305,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ui_landing_statLandingSys => 'Посадка';
 
   @override
-  String get ui_landingSequence_phase1 => 'ФАЗА 1: ВЫХОД НА ОРБИТУ';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Окно снижения открыто. Подтверждаем вход.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'ФАЗА 2: АТМОСФЕРНЫЙ ОГОНЬ';
-
-  @override
-  String get ui_landingSequence_title => 'ПОСАДОЧНАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'ОТЧЁТ О КОЛОНИИ';
-
-  @override
   String get ui_ending_colonyEstablished => 'КОЛОНИЯ ОСНОВАНА';
 
   @override
@@ -335,6 +330,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'ВЫЗВАТЬ ДРУГА';
+
+  @override
+  String get ui_ending_shareCard => 'ПОДЕЛИТЬСЯ КАРТОЙ';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Поделитесь своим путешествием';
+
+  @override
+  String get ui_ending_shareCardShare => 'ДЕЛИТЬСЯ';
+
+  @override
+  String get ui_ending_shareCardCancel => 'ОТМЕНА';
 
   @override
   String get ui_ending_copySeed => 'КОПИРОВАТЬ СЕИД';
@@ -469,6 +476,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Системный по умолчанию';
+
+  @override
+  String get ui_settings_statsPosition => 'Статистика и расположение кнопок';
+
+  @override
+  String get ui_settings_statsLeft => 'ЛЕВЫЙ';
+
+  @override
+  String get ui_settings_statsRight => 'ВЕРНО';
 
   @override
   String get ui_legacy_title => 'ЦЕНТР НАСЛЕДИЯ';
@@ -771,6 +787,36 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'Лечебная флора';
+
+  @override
+  String get planet_featurePerpetualAurora => 'Вечная Аврора';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Окаменевшая Мегафлора';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Подземные реки';
+
+  @override
+  String get planet_featureObsidianPlains => 'Обсидиановые равнины';
+
+  @override
+  String get planet_featureSaltFlats => 'Солончаки';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Плотоядная Флора';
+
+  @override
+  String get planet_featureGhostCities => 'Города-призраки';
+
+  @override
+  String get planet_featureArchiveVaults => 'Архивные хранилища';
+
+  @override
+  String get planet_featureSinkholeFields => 'Воронковые поля';
+
+  @override
+  String get planet_featureApexPredator => 'Высший Хищник';
 
   @override
   String get ui_monthJan => 'ЯНВ';
@@ -4254,18 +4300,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Атмосфера';
 
   @override
-  String get ending_scoreLabel_gravity => 'Гравитация';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Температура';
-
-  @override
-  String get ending_scoreLabel_water => 'Вода';
-
-  @override
-  String get ending_scoreLabel_resources => 'Ресурсы';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Связи с аборигенами';
 
   @override
@@ -4374,19 +4408,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Совет старейшин';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Теократия';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'Военная хунта';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Корпоративная олигархия';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Фашистское государство';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Коммуна';
 
   @override
   String get ending_cultureRenaissance => 'Ренессанс';
@@ -4440,10 +4474,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ending_nativesConflict => 'Конфликт';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'Альянс';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'Подчинение';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4484,66 +4518,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'Атмосферное давление опасно низкое — герметичные жилища необходимы. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Сверкающая, испещрённая минералами луна царит в ночном небе, её металлическая поверхность отражает свет звёзд по всему ландшафту. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Разрушающаяся луна нависает над головой, её крошащаяся поверхность тянет за собой тусклое кольцо обломков — постоянное напоминание о бомбардировке, угрожающей внизу. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Бледная, безжизненная луна поднимается над горизонтом, её изрытая кратерами поверхность — молчаливый страж над колонией. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'Планета вращается стремительно — дни длятся считаные часы, а кориолисовы ветры сметают всё, что стоит высоко. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'Планета вращается с мучительной медлительностью. Освещённое полушарие печётся, а тёмная сторона промерзает, и лишь сумеречная полоса между ними даёт передышку. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Вулканические хребты рассекают горизонт, их склоны прочерчены реками расплавленной породы. Воздух пахнет серой, земля дрожит под ногами. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'Кора расколота и неспокойна — новые трещины открываются без предупреждения, обнажая сверкающие минеральные жилы в облаках пыли. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Молнии хлещут по небу сплошными полотнами, превращая ночь в день и наполняя воздух привкусом озона. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Облака светящихся спор плывут на каждом ветерке, прекрасные и смертоносные — колонистам потребуются герметичные жилища или фильтрующие маски для выживания на открытом воздухе. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'Планета почти целиком — океан: бескрайние тёмные воды до каждого горизонта, лишь разрозненные архипелаги прорывают поверхность. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Геотермальные жерла пронзают кору, извергая плюмажи минерально насыщенного пара, что согревают окружающий ландшафт и питают оазисы жизни. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Мощное магнитное поле окутывает планету, отклоняя звёздную радиацию, но создавая хаос для незащищённой электроники. Компасы вращаются бесполезно. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Без сильного магнитного поля звёздный ветер сдирает верхнюю атмосферу. Зрелищные полярные сияния каскадами сходят по небу на всех широтах. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Колоссальные существа бродят по ландшафту — некоторые размером со здания, их шаги ощущаются за километры. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'Биосфера функционирует как сцепленная сеть симбиоза: каждый организм зависит от соседей и поддерживает их в изящном хрупком равновесии. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4590,27 +4564,27 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Теократический совет руководит $planetName, черпая мудрость из веры, которая поддерживала колонистов в пустоте.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'Военная командная структура управляет $planetName, дисциплиной, которая спасла их в космосе, а теперь определяет их цивилизацию.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Консорциум управляющих ресурсами возглавляет $planetName, их экономическая хватка оказалась необходимой для выживания.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Авторитарный режим контролирует $planetName железной рукой, гражданские свободы приносятся в жертву ради порядка в новом мире.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'Жители $planetName управляют собой коллективно, поровну распределяя ресурсы и решения между всеми колонистами.';
   }
 
   @override
@@ -4650,10 +4624,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Нестабильная луна на затухающей орбите обрушивала обломки на колонию, опустошая инфраструктуру и уничтожая незаменимые технологии в периодических метеорных бомбардировках.';
-
-  @override
-  String get ending_moonBarren =>
-      'Безжизненная луна висела в чужом небе — пустынная спутница, не предлагавшая колонистам ничего, кроме знакомого зрелища для долгих ночей.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4742,12 +4712,12 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Формальный союз связывает колонистов и коренную цивилизацию $planetName, их совместные знания создают нечто большее, чем каждый из них мог бы создать по отдельности.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'Коренное население $planetName живет под колониальным правлением, их культура подавляется, поскольку колонисты навязывают свой собственный порядок.';
   }
 
   @override
@@ -4785,26 +4755,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'ЛУНЫ';
-
-  @override
-  String get ui_rings => 'КОЛЬЦА';
-
-  @override
   String get ui_landing_landOnMoon => 'ВЫСАДКА НА ЛУНУ';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Луна: $moonPercent% vs Планета: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'Пониженная гравитация — посадка проще';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'Кольцевая система: $type';
-  }
 
   @override
   String get moon_barren => 'Безжизненная';
@@ -4832,60 +4783,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Металлическое';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Одинокая луна застыла в небе над колонией.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count лун кружат над головой, бросая блуждающие тени на ландшафт.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Среди них манит обитаемый мир — зелёная жемчужина, сулящая второй рубеж.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Замёрзшая луна сияет бескрайними залежами льда — резервуар, ожидающий своего часа.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'Лёд, добытый с замёрзшей луны, пополняет запасы воды колонии, превращая бесплодный мир в нечто пригодное для жизни.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'Колония была основана не на самой планете, а на её самой перспективной луне — меньшем мире с мягкой гравитацией и большими надеждами.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Призрачное пылевое кольцо дугой пересекает небо, придавая каждому рассвету неземную красоту.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Сверкающее ледяное кольцо ловит свет звёзд, расписывая небо призматическим пламенем.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Плотное каменистое кольцо опоясывает планету — источник строительных материалов, медленно падающих к поверхности.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Металлическое кольцо мерцает над головой, богатое рудой, питающей промышленность колонии.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Обитаемая луна открывает второй шанс на колонизацию.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'Лёд, добытый с замёрзшей луны, пополняет запасы воды колонии.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'Колония существует под сенью $count лун(ы).';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'Монолог ИИ';
@@ -5411,6 +5308,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'НАЖМИТЕ, ЧТОБЫ ПРОПУСТИТЬ';
+
+  @override
+  String get ui_common_tapRingToChoose => 'НАЖМИТЕ КОЛЬЦО, ЧТОБЫ ВЫБРАТЬ';
+
+  @override
+  String get ui_common_tapToContinue => 'НАЖМИТЕ, ЧТОБЫ ПРОДОЛЖИТЬ';
+
+  @override
+  String get ui_tooltip_back => 'Назад';
+
+  @override
+  String get ui_tooltip_codex => 'Кодекс';
+
+  @override
+  String get ui_tooltip_settings => 'Настройки';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Таблицы лидеров';
+
+  @override
+  String get ui_tooltip_bugReport => 'Сообщить об ошибке';
+
+  @override
   String get event_pulsarLighthouse_title => 'Пульсарный маяк';
 
   @override
@@ -5432,6 +5353,14 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'Мы обходим пульсар по широкой дуге, сжигая дополнительное топливо ради безопасной траектории. Экипаж наблюдает за мечущимся лучом через фильтрованные иллюминаторы — красиво, но далеко.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Отступайте, прежде чем нас достигнет зачистка';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'Мы отклоняемся в аварийном режиме до того, как пройдет следующий луч. Сигнал пульсара позади нас затухает — данных не получено, вреда не получено, немного топлива потрачено на уклонение.';
 
   @override
   String get event_alienNursery_title => 'Инопланетный инкубатор';
@@ -5521,4 +5450,467 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'Экспериментальный противогрибковый препарат поначалу подаёт надежды, но устойчивый штамм прорывается. К тому времени, когда мы прибегаем к полной очистке, мор распространился на питательные линии криокапсул. Ущерб хуже, чем если бы мы действовали решительно с самого начала.';
+
+  @override
+  String get event_constitutionalConvention_title => 'Конституционное собрание';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'Население колониального корабля стало беспокойным без формального управления. Делегаты с каждой палубы собираются в грузовом отсеке, чтобы составить устав, определяющий порядок управления будущей колонией. Три фракции представляют конкурирующие взгляды на новое правительство.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Разработать демократическую хартию с всеобщим избирательным правом';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'Колонисты ратифицируют конституцию, гарантирующую равное представительство. Принятие решений замедляется, но моральный дух растет, поскольку каждый голос слышен.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Создать сильную исполнительную власть с чрезвычайными полномочиями';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Один лидер назначается с широкими полномочиями. Решения принимаются быстро, но несогласные шепчут о тирании на нижних палубах.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Сформировать технократический совет специалистов';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Инженеры, ученые и врачи образуют правящий совет, основанный на экспертных знаниях. Эффективность повышается, хотя некоторые чувствуют себя отстраненными от власти.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'Угроза военного переворота';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'Командир службы безопасности корабля Васкес захватил арсенал и выдвинул ультиматум: предоставить чрезвычайные военные полномочия или закрыть все палубы. Ситуация нестабильна, и колонисты ждут от вас ответа.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Сопротивляйтесь перевороту вместе с верными членами экипажа';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'Лояльная команда сплачивается, чтобы выступить против Васкеса. Противостояние заканчивается минимальным кровопролитием, но силы безопасности ослаблены, и некоторые колонисты попали под перекрестный огонь.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Подчиняться требованиям командира';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Васкес берет на себя управление судном. Порядок восстанавливается быстро, но за счет гражданских свобод. Вооруженные патрули теперь ходят по каждому коридору.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Согласовать ограниченные чрезвычайные полномочия с оговоркой об истечении срока действия';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'После напряженных переговоров Васкес принимает временные полномочия под надзором. Хрупкий компромисс, который никого не удовлетворяет полностью, но предотвращает насилие.';
+
+  @override
+  String get event_religiousAwakening_title => 'Религиозное пробуждение';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Харизматичный проповедник вовлек сотни колонистов в новое религиозное движение. Каждый цикл они собираются в смотровом куполе, их гимны эхом разносятся по вентиляционным шахтам. Некоторые члены экипажа обеспокоены фанатизмом; другие находят в учениях подлинное утешение.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'Примите участие в религиозном движении и предоставьте ресурсы';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'Движение процветает при официальной поддержке. Моральный дух верующих улучшается, а их общинный дух укрепляет социальные связи по всему кораблю.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Обеспечьте строгий атеизм на борту корабля.';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Религиозные собрания проводятся только в частных помещениях. Движение уходит в подполье, порождая негодование, но научный рационализм остается официальной доктриной.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'Разрешить поклонение, но регулировать его влияние';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'Вера разрешена, но отделена от управления. Для связи с командованием назначается капеллан. Непростое равновесие сохраняется.';
+
+  @override
+  String get event_corporateTakeover_title => 'Корпоративное поглощение';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'Управляющие ресурсами корабля незаметно консолидировали контроль над распределением еды, переработкой воды и распределением электроэнергии. Теперь они предлагают оформить свою власть в корпоративную структуру, которая будет управлять экономикой будущей колонии.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Разрешить принципам свободного рынка управлять ресурсами';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'Корпоративная фракция берет на себя управление ресурсами. Эффективность резко возрастает, но цены растут, и беднейшие колонисты с трудом могут позволить себе предметы первой необходимости.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Национализировать все ресурсы, находящиеся в коллективной собственности.';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Ресурсы конфискуются и передаются под общественный контроль. Корпоративная фракция расформирована, но инновации останавливаются без стимулов к получению прибыли.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Внедрить регулируемые рынки с помощью систем безопасности';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Создается смешанная экономика с контролем цен и программами социального обеспечения. Ни одна из фракций не удовлетворена полностью, но основные потребности удовлетворяются, позволяя при этом проявить некоторую предприимчивость.';
+
+  @override
+  String get event_successionCrisis_title => 'Кризис преемственности';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'Капитан корабля умер во сне, не оставив назначенного преемника. Три фракции сразу же соперничают за контроль: гражданский совет требует выборов, начальник службы безопасности претендует на военную власть, а старейшие колонисты призывают традиционные обряды лидерства.';
+
+  @override
+  String get event_successionCrisis_choice0 => 'Провести внеочередные выборы';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'В результате хаотичных, но энергичных выборов всенародным голосованием будет выбран новый капитан. Процесс запутанный, но колонисты чувствуют ответственность за свое руководство.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Пусть военные возьмут на себя командование';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'Начальник службы безопасности занимает капитанское кресло. Дисциплина немедленно восстанавливается, но гражданский экипаж с растущим беспокойством смотрит на вооруженную охрану.';
+
+  @override
+  String get event_successionCrisis_choice2 => 'Созвать совет старейшин';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'Старшие и наиболее опытные колонисты образуют управляющий совет. Их мудрость управляет кораблем, хотя некоторые молодые члены команды чувствуют себя маргинализированными геронтократией.';
+
+  @override
+  String get event_nativeSovereignty_title => 'Родной суверенитет';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Сканирование на большом расстоянии подтверждает наличие разумной жизни на целевой планете. Перехваченные сообщения свидетельствуют о том, что сложная цивилизация обнаружила ваше приближение. Они передают формальное требование: признать их территориальный суверенитет или столкнуться с сопротивлением по прибытии.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Признать суверенитет коренных народов и попросить разрешения на поселение';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'Вы передаете формальное признание прав коренных народов. Ответ осторожный, но положительный. Будущие отношения начнутся на основе взаимного уважения, хотя места высадки могут быть ограничены.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Утверждайте колониальное превосходство и готовьтесь к сопротивлению';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'Вы все равно транслируете свое намерение договориться. Экипаж приступает к учениям по вооружению и планированию укреплений. Туземцы замолкают, что как-то страшнее угроз.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Предложить совместное управление планетой';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'Вы предлагаете основу для сосуществования и совместного использования ресурсов. Туземцы заинтригованы, но насторожены. Переговоры будут сложными, но возможность мира существует.';
+
+  @override
+  String get event_laborStrike_title => 'Забастовка рабочих';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'Инженерная бригада уволилась с работы, требуя сокращения смен, улучшения рациона питания и права голоса при принятии навигационных решений. Критически важные системы работают с автоматическим резервным копированием, но оно не прослужит долго. Остальные колонисты нервно наблюдают.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'Полное удовлетворение требований рабочих.';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'Забастовка прекращается немедленно. Рабочие возвращаются на свои рабочие места в улучшенных условиях. Производительность немного падает, когда вступают в силу более короткие смены, но лояльность непоколебима.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Подавить забастовку и ввести обязательный труд';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Силы безопасности под дулом пистолета сопровождают рабочих обратно на их рабочие места. Двигатели снова гудят, но на нижних палубах кипит ненависть. Несколько рабочих заключены в помещения.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Предложите частичный компромисс по ключевым требованиям';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'После марафонских переговоров было заключено соглашение: улучшение рационов и консультативная помощь, но без сокращения продолжительности смены. Ни одна из сторон не в восторге, но двигатели продолжают работать.';
+
+  @override
+  String get event_censorshipDebate_title => 'Дебаты о цензуре';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Утечка документа раскрывает истинное состояние неисправных систем корабля. Паника распространяется по нижним палубам. Офицер связи предлагает ограничить доступ к информации, чтобы предотвратить дальнейшие волнения. Защитники гражданских свобод возмущены.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Гарантия свободного доступа ко всей информации';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Установлена ​​полная прозрачность. Первоначальная паника утихает по мере того, как колонисты объединяются, чтобы помочь решить проблемы, которые они теперь понимают. Доверие к лидерству растет, хотя некоторая информация вызывает беспокойство.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'Осуществить полный информационный контроль';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Все сообщения теперь фильтруются через команду. Паника прекращается, ее сменяет жуткое спокойствие. Но слухи заполняют пустоту, оставленную подвергнутой цензуре правдой, и зачастую они хуже реальности.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Фильтруйте только конфиденциальную информацию';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Создана система классификации. Большая часть информации передается свободно, но данные военных и критически важных систем требуют проверки. Работоспособная золотая середина, которая в основном удовлетворяет.';
+
+  @override
+  String get event_colonialCharter_title => 'Колониальная хартия';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'С приближением высадки на планету колонистам предстоит разработать фундаментальные законы для своего нового общества. Возникло три философских лагеря, каждый из которых отстаивает свое видение того, какой должна стать колония. Дискуссия горячая и глубоко личная.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Прогрессивная хартия, подчеркивающая права личности';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'Хартия закрепляет личные свободы, равенство и социальную мобильность. Художники и мыслители празднуют; традиционалисты предупреждают, что неконтролируемая свобода ведет к хаосу.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Консервативная хартия, сохраняющая традиции Земли';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'Хартия кодифицирует традиционные ценности, семейные структуры и религиозные обряды. Многие находят утешение в знакомых обычаях; другие чувствуют себя подавленными под тяжестью мышления старого мира.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Прагматичная хартия, ориентированная на выживание и рост';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'Хартия отдает приоритет управлению ресурсами, техническому образованию и экономическому развитию. Ему не хватает поэзии, но он гарантирует, что колония будет эффективной и хорошо организованной.';
+
+  @override
+  String get event_separatistMovement_title => 'Сепаратистское движение';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Фракция колонистов провозгласила независимость от управления кораблями. Они забаррикадировались в кормовой части, требуя права основать собственное поселение после приземления. Они контролируют 15% запасов продовольствия корабля и резервную навигационную систему.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Предоставить региональную автономию в рамках федерации';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'Сепаратисты соглашаются на сделку: собственный округ с местным самоуправлением под свободной федеральной защитой. Прецедент фрагментации беспокоит некоторых, но мир сохраняется.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Штурмуйте баррикады и обеспечьте воссоединение сил';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Группы безопасности проникают в кормовую часть. Сепаратисты оказывают яростное сопротивление. Порядок восстановлен, но ужасной ценой. Корабль един телом, если не духом.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Устраните коренные обиды, движущие движением';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Посредники работают над тем, чтобы понять, что оттолкнуло фракцию. Реформы в распределении и представительстве ресурсов постепенно возвращают сепаратистов в свои ряды. Исцеление требует времени.';
+
+  @override
+  String get event_warCouncil_title => 'Военный совет';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'При обнаружении потенциальных угроз в близлежащих системах руководство корабля созывает военный совет. Вопрос: какую часть ограниченных ресурсов колонии следует направить на военную подготовку, а какую на гражданскую инфраструктуру?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Полное вооружение: куйте оружие и обучайте солдат';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Цеха переоборудованы под производство оружия. Каждый трудоспособный колонист проходит боевую подготовку. Корабль изобилует вооружением, но бюджет на сельхозтехнику сокращается.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Разоружение: превратить оружие в инструменты';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'Арсенал опустошается, а его содержимое перерабатывается в строительные материалы. Колония будет строиться оралами, а не мечами. Пацифисты ликуют; Реалистов беспокоит то, что скрывается в темноте.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Только защитная поза: щиты и стены, а не мечи.';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'Ресурсы идут на укрепления, щиты и системы раннего предупреждения. Никакого наступательного оружия не производится. Сбалансированный подход, который оставляет варианты открытыми, не провоцируя потенциальных соседей.';
+
+  @override
+  String get event_tradeFederation_title => 'Торговая Федерация';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'По мере того как колония приближается к жизнеспособности, фракции обсуждают, как структурировать ее экономику. Вопрос выходит за рамки простого выживания — он определит тип общества, которое укоренится на чужой почве. Купцы, коммунисты и бюрократы – все отстаивают свои интересы.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Создать зоны свободной торговли с минимальным регулированием';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'Рынки возникают в каждом модуле среды обитания. Инновации процветают по мере конкуренции торговцев. Неравенство в богатстве растет, но вместе с ним растет и общий объем ресурсов, доступных колонии.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Внедрить совместное использование всех ресурсов.';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Частная собственность отменена. Все принадлежит всем. Никто не голодает, но ни у кого нет стимула производить больше минимума. Посредственность — это удобно.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Создать управляемую государством торговую систему';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'Правительство контролирует всю торговлю, устанавливая цены и распределяя ресурсы. Система справедливая, но негибкая. В коридорах технического обслуживания возникают черные рынки.';
+
+  @override
+  String get event_faithVsScience_title => 'Вера против науки';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'Корабельный телескоп запечатлел изображения космического явления, которое прямо противоречит центральному принципу доминирующего религиозного движения. Главный учёный хочет опубликовать результаты; Религиозный лидер настаивает, что они разорвут общину на части.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Опубликовать научные результаты полностью';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'Правда преобладает над комфортом. Данные публикуются, и религиозное движение распадается. Некоторые верующие адаптируют свою веру; другие полностью теряют его. Знания продвигаются.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Подавить выводы, чтобы сохранить социальную гармонию';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'Данные засекречены. Религиозное сообщество остается стабильным, но научная группа деморализована. Отложенная истина не является отрицанием истины, но такое ощущение, что это так.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Созвать совместную комиссию, чтобы найти гармонию между обеими точками зрения.';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Ученые и теологи работают вместе, чтобы по-новому интерпретировать результаты. Возникает новый синтез, расширяющий и понимание, и веру. Не все в этом убеждены, но диалог здоровый.';
+
+  @override
+  String get event_surveillanceState_title => 'Состояние наблюдения';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'После серии диверсий начальник службы безопасности предлагает установить системы мониторинга в каждом отсеке корабля. Камеры, микрофоны и биометрические сканеры будут отслеживать перемещения каждого колониста. Защитники конфиденциальности в ужасе.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Полностью отклонить предложение о слежке';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'Конфиденциальность сохраняется. Диверсант остается на свободе, но колонисты спят легче, зная, что за ними не следят. Расследование продолжается традиционными методами.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Осуществить полное наблюдение по всему кораблю';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Каждый уголок корабля находится под наблюдением. Диверсанта поймали в считанные дни. Но камеры остались, и начальник службы безопасности не проявляет никакого интереса к их отключению. Всегда.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Установите ограниченный мониторинг только в критических зонах.';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Камеры охватывают машинное отделение, арсенал и мостик. Жилые помещения остаются частными. Диверсант в конечном итоге выявляется посредством анализа закономерностей. Взвешенный ответ.';
+
+  @override
+  String get event_nativeAlliance_title => 'Родной Альянс';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'Местная цивилизация предложила официальный договор. Их посол прибывает на шаттле, элегантное существо, говорящее с помощью удивительно сложного устройства-переводчика. Они предлагают три формы отношений, каждая из которых имеет разные последствия для будущего колонии.';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'Подпишите договор о равноправном союзе';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'Договор устанавливает взаимную оборону, совместные исследования и равные территориальные права. Обе цивилизации будут расти вместе. Туземцы делятся сельскохозяйственными знаниями, которые меняют перспективы вашей колонии.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Ведите переговоры с позиции колониального доминирования';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'Вы используете свои передовые технологии для обеспечения выгодных условий. Туземцы уступают территории и ресурсы. Они подписывают трясущимися руками. История уже сталкивалась с подобным, и это редко заканчивается хорошо.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Установить торговое партнерство, ориентированное на взаимную выгоду';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'Коммерция устраняет разрыв между видами. Родные материалы поступают в ваши мастерские; ваша технология улучшает их медицину. Дружба растет из взаимной выгоды.';
 }

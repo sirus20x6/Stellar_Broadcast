@@ -72,6 +72,16 @@ const codexEntries = <String, CodexEntry>{
     effects: {'resources': 2.0, 'population': 1.0},
   ),
 
+  'carnivorous_flora': CodexEntry(
+    key: 'carnivorous_flora',
+    category: 'surface',
+    effects: {'population': -1.5, 'technology': 0.5},
+    synergies: ['medicinal_flora', 'apex_predator'],
+    // medicinal_flora → +1.5 technology (dangerous pharma potential).
+    // apex_predator → -1.0 population (stacking lethality).
+    // extreme_seasons → -0.5 population (hunger cycles drive aggression).
+  ),
+
   // ═══════════════════════════════════════════════════════════════════════
   // Surface features — Fauna
   // ═══════════════════════════════════════════════════════════════════════
@@ -136,6 +146,16 @@ const codexEntries = <String, CodexEntry>{
     key: 'floating_kelp_forests',
     category: 'surface',
     effects: {'resources': 1.5, 'water': 0.5},
+  ),
+
+  'apex_predator': CodexEntry(
+    key: 'apex_predator',
+    category: 'surface',
+    effects: {'population': -2.0, 'construction': -0.5, 'culture': 1.5},
+    synergies: ['dangerous_fauna', 'megafauna', 'carnivorous_flora'],
+    // dangerous_fauna → -1.0 population (stacks).
+    // megafauna → -2.0 population, -1.0 construction (terrifying apex chain).
+    // carnivorous_flora → -1.0 population (stacking lethality).
   ),
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -238,6 +258,34 @@ const codexEntries = <String, CodexEntry>{
     effects: {'technology': 2.0, 'culture': 1.0, 'landing': 0.5},
   ),
 
+  'petrified_megaflora': CodexEntry(
+    key: 'petrified_megaflora',
+    category: 'surface',
+    effects: {'resources': 1.0, 'culture': 0.5},
+    synergies: ['ancient_ruins'],
+    // ancient_ruins → +1.5 culture, +1.0 technology (forensic mystery).
+  ),
+
+  'ghost_cities': CodexEntry(
+    key: 'ghost_cities',
+    category: 'surface',
+    effects: {'technology': 3.0, 'construction': 2.0, 'culture': 1.0},
+    synergies: ['ancient_ruins', 'archive_vaults', 'subspace_echoes'],
+    // ancient_ruins → +1.5 culture.
+    // archive_vaults → +2.0 technology, +1.0 culture (knowledge within).
+    // subspace_echoes → +2.0 culture, +1.5 technology (alien ghosts).
+    // tectonic_instability → -1.0 construction (quakes crumble the city).
+  ),
+
+  'archive_vaults': CodexEntry(
+    key: 'archive_vaults',
+    category: 'surface',
+    effects: {'technology': 2.5, 'culture': 1.0},
+    synergies: ['ancient_ruins', 'ghost_cities'],
+    // ship.tech > 0.7 → +1.5 technology (high-tech unlocks more).
+    // ancient_ruins → +1.5 culture.
+  ),
+
   // ═══════════════════════════════════════════════════════════════════════
   // Surface features — Geological
   // ═══════════════════════════════════════════════════════════════════════
@@ -262,6 +310,33 @@ const codexEntries = <String, CodexEntry>{
     key: 'cryovolcanism',
     category: 'surface',
     effects: {'resources': 1.0, 'construction': -0.5, 'water': 0.5},
+  ),
+
+  'sinkhole_fields': CodexEntry(
+    key: 'sinkhole_fields',
+    category: 'surface',
+    effects: {'construction': -1.5, 'population': -1.0},
+    synergies: ['underground_rivers'],
+    // underground_rivers → construction penalty softens to -0.75, population to -0.5 (navigable sinkholes).
+    // tectonic_instability → -1.5 construction, -0.5 population (cascading collapses).
+    // deep_oceans → -1.5 (coastal flooding).
+    // obsidian_plains → -1.0 construction, -0.5 population (hidden glass traps).
+  ),
+
+  'obsidian_plains': CodexEntry(
+    key: 'obsidian_plains',
+    category: 'surface',
+    effects: {'resources': 0.5, 'population': -0.5},
+    synergies: ['crystal_caverns'],
+    // crystal_caverns → +1.0 resources (geological treasure).
+  ),
+
+  'salt_flats': CodexEntry(
+    key: 'salt_flats',
+    category: 'surface',
+    effects: {'resources': 1.0},
+    synergies: ['underground_rivers'],
+    // underground_rivers → +1.0 water (hidden oasis beneath the salt).
   ),
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -307,6 +382,16 @@ const codexEntries = <String, CodexEntry>{
     // deep_oceans → +0.5 resources, +0.5 technology.
   ),
 
+  'underground_rivers': CodexEntry(
+    key: 'underground_rivers',
+    category: 'surface',
+    effects: {'water': 1.0, 'construction': 0.5},
+    synergies: ['airtight_caves', 'sinkhole_fields', 'salt_flats'],
+    // airtight_caves → +1.0 water, +0.5 construction (underground civilization).
+    // sinkhole_fields → partially cancels the sinkhole penalty (navigable sinkholes).
+    // salt_flats → +1.0 water (hidden oasis).
+  ),
+
   // ═══════════════════════════════════════════════════════════════════════
   // Surface features — Magnetosphere
   // ═══════════════════════════════════════════════════════════════════════
@@ -324,6 +409,15 @@ const codexEntries = <String, CodexEntry>{
     effects: {'population': -1.0, 'atmosphere': -0.5, 'culture': 0.5},
     synergies: ['outstanding_beauty'],
     // outstanding_beauty → +1.5 culture (aurora world).
+  ),
+
+  'perpetual_aurora': CodexEntry(
+    key: 'perpetual_aurora',
+    category: 'surface',
+    effects: {'culture': 2.0},
+    synergies: ['outstanding_beauty', 'weak_magnetosphere'],
+    // outstanding_beauty → +2.0 culture (iconic world).
+    // weak_magnetosphere → +1.0 culture (the aurora IS from the weak field).
   ),
 
   // ═══════════════════════════════════════════════════════════════════════

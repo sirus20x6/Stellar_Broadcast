@@ -80,6 +80,19 @@ restart_waydroid() {
       echo " ready! (${i}s)"
       # Give the UI a moment to finish launching
       sleep 3
+      # Defensive: enforce size/density via wm override. start-waydroid.sh
+      # also does this, but it races with this poll — enforcing here means
+      # captures always match the requested mode, even if that race loses.
+      case "$mode" in
+        phone)
+          adb -s "$WAYDROID_ADB" shell "wm size 540x960" 2>/dev/null || true
+          adb -s "$WAYDROID_ADB" shell "wm density 240" 2>/dev/null || true
+          ;;
+        tablet)
+          adb -s "$WAYDROID_ADB" shell "wm size 1280x800" 2>/dev/null || true
+          adb -s "$WAYDROID_ADB" shell "wm density 160" 2>/dev/null || true
+          ;;
+      esac
       return 0
     fi
     echo -n "."

@@ -111,9 +111,9 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
     Locale('ar'),
     Locale('de'),
-    Locale('en'),
     Locale('es'),
     Locale('fr'),
     Locale('hi'),
@@ -132,12 +132,6 @@ abstract class AppLocalizations {
     Locale('zh'),
     Locale('zh', 'TW'),
   ];
-
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Stellar Broadcast'**
-  String get appTitle;
 
   /// No description provided for @ui_title_stellar.
   ///
@@ -192,6 +186,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'START VOYAGE'**
   String get ui_title_startVoyage;
+
+  /// No description provided for @ui_title_seedInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid seed code. Use only A–Z and 0–9.'**
+  String get ui_title_seedInvalid;
 
   /// No description provided for @ui_voyage_sector.
   ///
@@ -280,37 +280,37 @@ abstract class AppLocalizations {
   /// No description provided for @ui_voyage_scannerAtmo.
   ///
   /// In en, this message translates to:
-  /// **'Atmo Scan'**
+  /// **'Atmosphere'**
   String get ui_voyage_scannerAtmo;
 
   /// No description provided for @ui_voyage_scannerGrav.
   ///
   /// In en, this message translates to:
-  /// **'Grav Scan'**
+  /// **'Gravity'**
   String get ui_voyage_scannerGrav;
 
   /// No description provided for @ui_voyage_scannerMineral.
   ///
   /// In en, this message translates to:
-  /// **'Mineral Scan'**
+  /// **'Minerals'**
   String get ui_voyage_scannerMineral;
 
   /// No description provided for @ui_voyage_scannerLife.
   ///
   /// In en, this message translates to:
-  /// **'Life Scan'**
+  /// **'Life Signs'**
   String get ui_voyage_scannerLife;
 
   /// No description provided for @ui_voyage_scannerTemp.
   ///
   /// In en, this message translates to:
-  /// **'Temp Scan'**
+  /// **'Temperature'**
   String get ui_voyage_scannerTemp;
 
   /// No description provided for @ui_voyage_scannerWater.
   ///
   /// In en, this message translates to:
-  /// **'Water Scan'**
+  /// **'Water'**
   String get ui_voyage_scannerWater;
 
   /// No description provided for @ui_voyage_narrative0.
@@ -474,6 +474,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RADIATION'**
   String get ui_scan_statRadiation;
+
+  /// No description provided for @ui_scan_probesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'PROBES: {count}'**
+  String ui_scan_probesCount(int count);
+
+  /// No description provided for @ui_scan_uncertaintyPct.
+  ///
+  /// In en, this message translates to:
+  /// **'UNCERTAINTY: ±{percent}%'**
+  String ui_scan_uncertaintyPct(int percent);
 
   /// No description provided for @ui_landing_planetAnalysis.
   ///
@@ -655,36 +667,6 @@ abstract class AppLocalizations {
   /// **'Landing Sys'**
   String get ui_landing_statLandingSys;
 
-  /// No description provided for @ui_landingSequence_phase1.
-  ///
-  /// In en, this message translates to:
-  /// **'PHASE 1: ORBITAL COMMIT'**
-  String get ui_landingSequence_phase1;
-
-  /// No description provided for @ui_landingSequence_phase1Desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Descent window open. Committing to entry.'**
-  String get ui_landingSequence_phase1Desc;
-
-  /// No description provided for @ui_landingSequence_phase2.
-  ///
-  /// In en, this message translates to:
-  /// **'PHASE 2: ATMOSPHERIC FIRE'**
-  String get ui_landingSequence_phase2;
-
-  /// No description provided for @ui_landingSequence_title.
-  ///
-  /// In en, this message translates to:
-  /// **'LANDING SEQUENCE'**
-  String get ui_landingSequence_title;
-
-  /// No description provided for @ui_landingSequence_viewColonyReport.
-  ///
-  /// In en, this message translates to:
-  /// **'VIEW COLONY REPORT'**
-  String get ui_landingSequence_viewColonyReport;
-
   /// No description provided for @ui_ending_colonyEstablished.
   ///
   /// In en, this message translates to:
@@ -738,6 +720,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CHALLENGE FRIEND'**
   String get ui_ending_challengeFriend;
+
+  /// No description provided for @ui_ending_shareCard.
+  ///
+  /// In en, this message translates to:
+  /// **'SHARE CARD'**
+  String get ui_ending_shareCard;
+
+  /// No description provided for @ui_ending_shareCardDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Your Voyage'**
+  String get ui_ending_shareCardDialogTitle;
+
+  /// No description provided for @ui_ending_shareCardShare.
+  ///
+  /// In en, this message translates to:
+  /// **'SHARE'**
+  String get ui_ending_shareCardShare;
+
+  /// No description provided for @ui_ending_shareCardCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'CANCEL'**
+  String get ui_ending_shareCardCancel;
 
   /// No description provided for @ui_ending_copySeed.
   ///
@@ -990,6 +996,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System default'**
   String get ui_settings_systemDefault;
+
+  /// No description provided for @ui_settings_statsPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats & buttons position'**
+  String get ui_settings_statsPosition;
+
+  /// No description provided for @ui_settings_statsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'LEFT'**
+  String get ui_settings_statsLeft;
+
+  /// No description provided for @ui_settings_statsRight.
+  ///
+  /// In en, this message translates to:
+  /// **'RIGHT'**
+  String get ui_settings_statsRight;
 
   /// No description provided for @ui_legacy_title.
   ///
@@ -1584,6 +1608,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Medicinal Flora'**
   String get planet_featureMedicinalFlora;
+
+  /// No description provided for @planet_featurePerpetualAurora.
+  ///
+  /// In en, this message translates to:
+  /// **'Perpetual Aurora'**
+  String get planet_featurePerpetualAurora;
+
+  /// No description provided for @planet_featurePetrifiedMegaflora.
+  ///
+  /// In en, this message translates to:
+  /// **'Petrified Megaflora'**
+  String get planet_featurePetrifiedMegaflora;
+
+  /// No description provided for @planet_featureUndergroundRivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Underground Rivers'**
+  String get planet_featureUndergroundRivers;
+
+  /// No description provided for @planet_featureObsidianPlains.
+  ///
+  /// In en, this message translates to:
+  /// **'Obsidian Plains'**
+  String get planet_featureObsidianPlains;
+
+  /// No description provided for @planet_featureSaltFlats.
+  ///
+  /// In en, this message translates to:
+  /// **'Salt Flats'**
+  String get planet_featureSaltFlats;
+
+  /// No description provided for @planet_featureCarnivorousFlora.
+  ///
+  /// In en, this message translates to:
+  /// **'Carnivorous Flora'**
+  String get planet_featureCarnivorousFlora;
+
+  /// No description provided for @planet_featureGhostCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Ghost Cities'**
+  String get planet_featureGhostCities;
+
+  /// No description provided for @planet_featureArchiveVaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive Vaults'**
+  String get planet_featureArchiveVaults;
+
+  /// No description provided for @planet_featureSinkholeFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Sinkhole Fields'**
+  String get planet_featureSinkholeFields;
+
+  /// No description provided for @planet_featureApexPredator.
+  ///
+  /// In en, this message translates to:
+  /// **'Apex Predator'**
+  String get planet_featureApexPredator;
 
   /// No description provided for @ui_monthJan.
   ///
@@ -7039,30 +7123,6 @@ abstract class AppLocalizations {
   /// **'Atmosphere'**
   String get ending_scoreLabel_atmosphere;
 
-  /// No description provided for @ending_scoreLabel_gravity.
-  ///
-  /// In en, this message translates to:
-  /// **'Gravity'**
-  String get ending_scoreLabel_gravity;
-
-  /// No description provided for @ending_scoreLabel_temperature.
-  ///
-  /// In en, this message translates to:
-  /// **'Temperature'**
-  String get ending_scoreLabel_temperature;
-
-  /// No description provided for @ending_scoreLabel_water.
-  ///
-  /// In en, this message translates to:
-  /// **'Water'**
-  String get ending_scoreLabel_water;
-
-  /// No description provided for @ending_scoreLabel_resources.
-  ///
-  /// In en, this message translates to:
-  /// **'Resources'**
-  String get ending_scoreLabel_resources;
-
   /// No description provided for @ending_scoreLabel_nativeRelations.
   ///
   /// In en, this message translates to:
@@ -7429,96 +7489,6 @@ abstract class AppLocalizations {
   /// **'Atmospheric pressure is dangerously low — sealed habitats are essential. '**
   String get ending_landscapeAtmoLow;
 
-  /// No description provided for @ending_landscapeMoonMetalRich.
-  ///
-  /// In en, this message translates to:
-  /// **'A gleaming, mineral-streaked moon dominates the night sky, its metallic surface reflecting starlight across the landscape. '**
-  String get ending_landscapeMoonMetalRich;
-
-  /// No description provided for @ending_landscapeMoonUnstable.
-  ///
-  /// In en, this message translates to:
-  /// **'A fractured moon looms overhead, its crumbling surface trailing a faint ring of debris — a constant reminder of the bombardment that threatens below. '**
-  String get ending_landscapeMoonUnstable;
-
-  /// No description provided for @ending_landscapeMoonBarren.
-  ///
-  /// In en, this message translates to:
-  /// **'A pale, barren moon rises above the horizon, its cratered surface a silent sentinel over the colony. '**
-  String get ending_landscapeMoonBarren;
-
-  /// No description provided for @ending_landscapeHighRotation.
-  ///
-  /// In en, this message translates to:
-  /// **'The planet spins rapidly — days last only hours, and Coriolis winds batter anything standing tall. '**
-  String get ending_landscapeHighRotation;
-
-  /// No description provided for @ending_landscapeLowRotation.
-  ///
-  /// In en, this message translates to:
-  /// **'The planet turns with agonising slowness. The sun-facing hemisphere bakes while the dark side freezes, and only the twilight band between offers respite. '**
-  String get ending_landscapeLowRotation;
-
-  /// No description provided for @ending_landscapeVolcanic.
-  ///
-  /// In en, this message translates to:
-  /// **'Volcanic ranges split the horizon, their slopes streaked with rivers of molten rock. The air tastes of sulphur and the ground trembles underfoot. '**
-  String get ending_landscapeVolcanic;
-
-  /// No description provided for @ending_landscapeTectonic.
-  ///
-  /// In en, this message translates to:
-  /// **'The crust is fractured and restless — fresh fissures open without warning, exposing glittering mineral veins amid clouds of dust. '**
-  String get ending_landscapeTectonic;
-
-  /// No description provided for @ending_landscapeElectricalStorms.
-  ///
-  /// In en, this message translates to:
-  /// **'Lightning arcs across the sky in continuous sheets, turning night to day and filling the air with the tang of ozone. '**
-  String get ending_landscapeElectricalStorms;
-
-  /// No description provided for @ending_landscapeToxicSpores.
-  ///
-  /// In en, this message translates to:
-  /// **'Clouds of luminous spores drift on every breeze, beautiful and lethal — colonists will need sealed habitats or filtration masks to survive outdoors. '**
-  String get ending_landscapeToxicSpores;
-
-  /// No description provided for @ending_landscapeDeepOceans.
-  ///
-  /// In en, this message translates to:
-  /// **'The planet is mostly ocean — vast, dark waters stretching to every horizon, with only scattered archipelagos breaking the surface. '**
-  String get ending_landscapeDeepOceans;
-
-  /// No description provided for @ending_landscapeGeothermalVents.
-  ///
-  /// In en, this message translates to:
-  /// **'Geothermal vents punch through the crust, venting plumes of mineral-rich steam that warm the surrounding landscape and sustain oases of life. '**
-  String get ending_landscapeGeothermalVents;
-
-  /// No description provided for @ending_landscapeStrongMagnetosphere.
-  ///
-  /// In en, this message translates to:
-  /// **'A powerful magnetic field wraps the planet, deflecting stellar radiation but playing havoc with unshielded electronics. Compasses spin uselessly. '**
-  String get ending_landscapeStrongMagnetosphere;
-
-  /// No description provided for @ending_landscapeWeakMagnetosphere.
-  ///
-  /// In en, this message translates to:
-  /// **'Without a strong magnetic field, the stellar wind strips at the upper atmosphere. Spectacular auroras cascade across the sky at all latitudes. '**
-  String get ending_landscapeWeakMagnetosphere;
-
-  /// No description provided for @ending_landscapeMegafauna.
-  ///
-  /// In en, this message translates to:
-  /// **'Colossal creatures move across the landscape — some as large as buildings, their footfalls felt kilometres away. '**
-  String get ending_landscapeMegafauna;
-
-  /// No description provided for @ending_landscapeSymbioticOrganisms.
-  ///
-  /// In en, this message translates to:
-  /// **'The biosphere operates as an interlocking web of symbiosis: every organism depends on and sustains its neighbours in an elegant, fragile balance. '**
-  String get ending_landscapeSymbioticOrganisms;
-
   /// No description provided for @ending_landscapeGravityWells.
   ///
   /// In en, this message translates to:
@@ -7656,12 +7626,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unstable moon in a decaying orbit rained debris upon the colony, devastating infrastructure and destroying irreplaceable technology in periodic meteor bombardments.'**
   String get ending_moonUnstable;
-
-  /// No description provided for @ending_moonBarren.
-  ///
-  /// In en, this message translates to:
-  /// **'A barren moon hung in the alien sky, a desolate companion that offered the colonists nothing but a familiar sight to gaze upon in the long nights.'**
-  String get ending_moonBarren;
 
   /// No description provided for @ending_culturePhrase_renaissance.
   ///
@@ -7831,41 +7795,11 @@ abstract class AppLocalizations {
   /// **'The colony\'s story on {planetName} was just beginning.'**
   String ending_outlookDefault(String planetName);
 
-  /// No description provided for @ui_moons.
-  ///
-  /// In en, this message translates to:
-  /// **'MOONS'**
-  String get ui_moons;
-
-  /// No description provided for @ui_rings.
-  ///
-  /// In en, this message translates to:
-  /// **'RINGS'**
-  String get ui_rings;
-
   /// No description provided for @ui_landing_landOnMoon.
   ///
   /// In en, this message translates to:
   /// **'LAND ON MOON'**
   String get ui_landing_landOnMoon;
-
-  /// No description provided for @ui_landing_moonComparison.
-  ///
-  /// In en, this message translates to:
-  /// **'Moon: {moonPercent}% vs Planet: {planetPercent}%'**
-  String ui_landing_moonComparison(String moonPercent, String planetPercent);
-
-  /// No description provided for @ui_landing_lowerGravity.
-  ///
-  /// In en, this message translates to:
-  /// **'Lower gravity — easier landing'**
-  String get ui_landing_lowerGravity;
-
-  /// No description provided for @ui_landing_ringSystem.
-  ///
-  /// In en, this message translates to:
-  /// **'{type} Ring System'**
-  String ui_landing_ringSystem(String type);
 
   /// No description provided for @moon_barren.
   ///
@@ -7920,84 +7854,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Metallic'**
   String get ring_metallic;
-
-  /// No description provided for @ending_landscapeMoonSingle.
-  ///
-  /// In en, this message translates to:
-  /// **'A single moon hangs in the sky above the colony.'**
-  String get ending_landscapeMoonSingle;
-
-  /// No description provided for @ending_landscapeMoonMultiple.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} moons orbit overhead, casting shifting shadows across the landscape.'**
-  String ending_landscapeMoonMultiple(int count);
-
-  /// No description provided for @ending_landscapeMoonHabitable.
-  ///
-  /// In en, this message translates to:
-  /// **'Among them, a habitable world beckons — a green jewel offering a second frontier.'**
-  String get ending_landscapeMoonHabitable;
-
-  /// No description provided for @ending_landscapeMoonIce.
-  ///
-  /// In en, this message translates to:
-  /// **'A frozen moon gleams with vast ice deposits, a reservoir waiting to be tapped.'**
-  String get ending_landscapeMoonIce;
-
-  /// No description provided for @ending_landscapeIceHarvest.
-  ///
-  /// In en, this message translates to:
-  /// **'Ice harvested from the frozen moon supplements the colony\'s water supply, turning a barren world into something liveable.'**
-  String get ending_landscapeIceHarvest;
-
-  /// No description provided for @ending_landscapeMoonLanding.
-  ///
-  /// In en, this message translates to:
-  /// **'The colony was established not on the planet itself, but on its most promising moon — a smaller world with gentler gravity and greater promise.'**
-  String get ending_landscapeMoonLanding;
-
-  /// No description provided for @ending_landscapeRingDust.
-  ///
-  /// In en, this message translates to:
-  /// **'A faint dust ring arcs across the sky, adding an ethereal beauty to every sunrise.'**
-  String get ending_landscapeRingDust;
-
-  /// No description provided for @ending_landscapeRingIce.
-  ///
-  /// In en, this message translates to:
-  /// **'A brilliant ring of ice catches the starlight, painting the sky with prismatic fire.'**
-  String get ending_landscapeRingIce;
-
-  /// No description provided for @ending_landscapeRingRocky.
-  ///
-  /// In en, this message translates to:
-  /// **'A dense rocky ring girdles the planet, a source of building materials raining slowly inward.'**
-  String get ending_landscapeRingRocky;
-
-  /// No description provided for @ending_landscapeRingMetallic.
-  ///
-  /// In en, this message translates to:
-  /// **'A metallic ring glitters overhead, rich with ore that fuels the colony\'s industry.'**
-  String get ending_landscapeRingMetallic;
-
-  /// No description provided for @ending_moonHabitableNote.
-  ///
-  /// In en, this message translates to:
-  /// **'A habitable moon offers a second chance at colonisation.'**
-  String get ending_moonHabitableNote;
-
-  /// No description provided for @ending_moonIceHarvestNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Ice harvested from the frozen moon supplements the colony\'s water supply.'**
-  String get ending_moonIceHarvestNote;
-
-  /// No description provided for @ending_moonCountSentence.
-  ///
-  /// In en, this message translates to:
-  /// **'The colony orbits beneath {count} moon(s).'**
-  String ending_moonCountSentence(int count);
 
   /// No description provided for @event_aiSoliloquy_title.
   ///
@@ -8839,6 +8695,54 @@ abstract class AppLocalizations {
   /// **'—'**
   String get ui_codex_noSynergy;
 
+  /// No description provided for @ui_common_tapToSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'TAP TO SKIP'**
+  String get ui_common_tapToSkip;
+
+  /// No description provided for @ui_common_tapRingToChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'TAP A RING TO CHOOSE'**
+  String get ui_common_tapRingToChoose;
+
+  /// No description provided for @ui_common_tapToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'TAP TO CONTINUE'**
+  String get ui_common_tapToContinue;
+
+  /// No description provided for @ui_tooltip_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get ui_tooltip_back;
+
+  /// No description provided for @ui_tooltip_codex.
+  ///
+  /// In en, this message translates to:
+  /// **'Codex'**
+  String get ui_tooltip_codex;
+
+  /// No description provided for @ui_tooltip_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get ui_tooltip_settings;
+
+  /// No description provided for @ui_tooltip_leaderboards.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboards'**
+  String get ui_tooltip_leaderboards;
+
+  /// No description provided for @ui_tooltip_bugReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a bug'**
+  String get ui_tooltip_bugReport;
+
   /// No description provided for @event_pulsarLighthouse_title.
   ///
   /// In en, this message translates to:
@@ -8874,6 +8778,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We give the pulsar a wide berth, burning extra fuel to maintain a safe trajectory. The crew watches the sweeping beam through filtered viewports — beautiful, but distant.'**
   String get event_pulsarLighthouse_outcome1;
+
+  /// No description provided for @event_pulsarLighthouse_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Retreat before the sweep reaches us'**
+  String get event_pulsarLighthouse_choice2;
+
+  /// No description provided for @event_pulsarLighthouse_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'We swing away at emergency burn before the next beam pass. The pulsar\'s signal fades behind us — no data gained, no harm taken, a little fuel spent on evasive thrust.'**
+  String get event_pulsarLighthouse_outcome2;
 
   /// No description provided for @event_alienNursery_title.
   ///
@@ -9018,6 +8934,726 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The experimental antifungal shows promise at first, but a resistant strain breaks through. By the time we resort to a full purge, the blight has spread to the cryopod nutrient lines. The damage is worse than if we\'d acted decisively from the start.'**
   String get event_hydroponicsBlight_outcome1;
+
+  /// No description provided for @event_constitutionalConvention_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Constitutional Convention'**
+  String get event_constitutionalConvention_title;
+
+  /// No description provided for @event_constitutionalConvention_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The colony ship\'s population has grown restless without formal governance. Delegates from every deck gather in the cargo hold to draft a charter that will define how the future colony is ruled. Three factions present competing visions for the new government.'**
+  String get event_constitutionalConvention_narrative;
+
+  /// No description provided for @event_constitutionalConvention_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft a democratic charter with universal suffrage'**
+  String get event_constitutionalConvention_choice0;
+
+  /// No description provided for @event_constitutionalConvention_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The colonists ratify a constitution guaranteeing equal representation. Decision-making slows but morale soars as every voice is heard.'**
+  String get event_constitutionalConvention_outcome0;
+
+  /// No description provided for @event_constitutionalConvention_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Establish a strong executive with emergency powers'**
+  String get event_constitutionalConvention_choice1;
+
+  /// No description provided for @event_constitutionalConvention_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'A single leader is appointed with sweeping authority. Decisions come fast but dissenters whisper of tyranny in the lower decks.'**
+  String get event_constitutionalConvention_outcome1;
+
+  /// No description provided for @event_constitutionalConvention_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Form a technocratic council of specialists'**
+  String get event_constitutionalConvention_choice2;
+
+  /// No description provided for @event_constitutionalConvention_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Engineers, scientists, and doctors form a ruling council based on expertise. Efficiency improves, though some feel excluded from power.'**
+  String get event_constitutionalConvention_outcome2;
+
+  /// No description provided for @event_militaryCoupThreat_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Military Coup Threat'**
+  String get event_militaryCoupThreat_title;
+
+  /// No description provided for @event_militaryCoupThreat_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'Commander Vasquez of the ship\'s security detail has seized the armory and issued an ultimatum: grant emergency military powers or face a lockdown of all decks. The situation is volatile and the colonists look to you for a response.'**
+  String get event_militaryCoupThreat_narrative;
+
+  /// No description provided for @event_militaryCoupThreat_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Resist the coup with loyal crew members'**
+  String get event_militaryCoupThreat_choice0;
+
+  /// No description provided for @event_militaryCoupThreat_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyal crew rally to oppose Vasquez. The standoff ends with minimal bloodshed, but the security detail is weakened and some colonists are caught in the crossfire.'**
+  String get event_militaryCoupThreat_outcome0;
+
+  /// No description provided for @event_militaryCoupThreat_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit to the commander\'s demands'**
+  String get event_militaryCoupThreat_choice1;
+
+  /// No description provided for @event_militaryCoupThreat_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Vasquez assumes control of ship operations. Order is restored swiftly, but at the cost of civil liberties. Armed patrols now walk every corridor.'**
+  String get event_militaryCoupThreat_outcome1;
+
+  /// No description provided for @event_militaryCoupThreat_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiate limited emergency powers with a sunset clause'**
+  String get event_militaryCoupThreat_choice2;
+
+  /// No description provided for @event_militaryCoupThreat_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'After tense negotiations, Vasquez accepts temporary authority with oversight. A fragile compromise that satisfies no one completely, but prevents violence.'**
+  String get event_militaryCoupThreat_outcome2;
+
+  /// No description provided for @event_religiousAwakening_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Religious Awakening'**
+  String get event_religiousAwakening_title;
+
+  /// No description provided for @event_religiousAwakening_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'A charismatic preacher has drawn hundreds of colonists into a new faith movement. They gather in the observation dome each cycle, their hymns echoing through the ventilation shafts. Some crew members worry about fanaticism; others find genuine comfort in the teachings.'**
+  String get event_religiousAwakening_narrative;
+
+  /// No description provided for @event_religiousAwakening_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Embrace the faith movement and provide resources'**
+  String get event_religiousAwakening_choice0;
+
+  /// No description provided for @event_religiousAwakening_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The movement flourishes with official support. Morale improves among believers, and their communal spirit strengthens social bonds across the ship.'**
+  String get event_religiousAwakening_outcome0;
+
+  /// No description provided for @event_religiousAwakening_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Enforce strict secularism aboard the ship'**
+  String get event_religiousAwakening_choice1;
+
+  /// No description provided for @event_religiousAwakening_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Religious gatherings are restricted to private quarters. The movement goes underground, breeding resentment, but scientific rationalism remains the official doctrine.'**
+  String get event_religiousAwakening_outcome1;
+
+  /// No description provided for @event_religiousAwakening_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow worship but regulate its influence'**
+  String get event_religiousAwakening_choice2;
+
+  /// No description provided for @event_religiousAwakening_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'The faith is permitted but kept separate from governance. A chaplain is appointed to liaise with command. An uneasy balance is maintained.'**
+  String get event_religiousAwakening_outcome2;
+
+  /// No description provided for @event_corporateTakeover_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Corporate Takeover'**
+  String get event_corporateTakeover_title;
+
+  /// No description provided for @event_corporateTakeover_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The ship\'s resource managers have been quietly consolidating control over food distribution, water recycling, and power allocation. They now propose formalizing their authority into a corporate structure that would manage the future colony\'s economy.'**
+  String get event_corporateTakeover_narrative;
+
+  /// No description provided for @event_corporateTakeover_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow free market principles to govern resources'**
+  String get event_corporateTakeover_choice0;
+
+  /// No description provided for @event_corporateTakeover_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The corporate faction takes over resource management. Efficiency improves dramatically, but prices rise and the poorest colonists struggle to afford basic necessities.'**
+  String get event_corporateTakeover_outcome0;
+
+  /// No description provided for @event_corporateTakeover_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationalize all resources under collective ownership'**
+  String get event_corporateTakeover_choice1;
+
+  /// No description provided for @event_corporateTakeover_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources are seized and placed under communal control. The corporate faction is dismantled, but innovation stalls without profit incentives.'**
+  String get event_corporateTakeover_outcome1;
+
+  /// No description provided for @event_corporateTakeover_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Implement regulated markets with safety nets'**
+  String get event_corporateTakeover_choice2;
+
+  /// No description provided for @event_corporateTakeover_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'A mixed economy is established with price controls and welfare programs. Neither faction is fully satisfied, but basic needs are met while allowing some enterprise.'**
+  String get event_corporateTakeover_outcome2;
+
+  /// No description provided for @event_successionCrisis_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Succession Crisis'**
+  String get event_successionCrisis_title;
+
+  /// No description provided for @event_successionCrisis_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The ship\'s captain has died in their sleep, leaving no designated successor. Three factions immediately vie for control: the civilian council demands elections, the security chief claims martial authority, and the elder colonists invoke traditional leadership rites.'**
+  String get event_successionCrisis_narrative;
+
+  /// No description provided for @event_successionCrisis_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold an emergency election'**
+  String get event_successionCrisis_choice0;
+
+  /// No description provided for @event_successionCrisis_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'A chaotic but spirited election produces a new captain chosen by popular vote. The process is messy, but the colonists feel ownership of their leadership.'**
+  String get event_successionCrisis_outcome0;
+
+  /// No description provided for @event_successionCrisis_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Let the military assume command'**
+  String get event_successionCrisis_choice1;
+
+  /// No description provided for @event_successionCrisis_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'The security chief steps into the captain\'s chair. Discipline is restored immediately, but civilian crew eye the armed guards with growing unease.'**
+  String get event_successionCrisis_outcome1;
+
+  /// No description provided for @event_successionCrisis_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Convene a council of elders'**
+  String get event_successionCrisis_choice2;
+
+  /// No description provided for @event_successionCrisis_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'The eldest and most experienced colonists form a governing council. Their wisdom guides the ship, though some younger crew feel marginalized by the gerontocracy.'**
+  String get event_successionCrisis_outcome2;
+
+  /// No description provided for @event_nativeSovereignty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Native Sovereignty'**
+  String get event_nativeSovereignty_title;
+
+  /// No description provided for @event_nativeSovereignty_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-range scans confirm intelligent life on the target planet. Intercepted communications reveal a sophisticated civilization that has detected your approach. They transmit a formal demand: recognize their territorial sovereignty or face resistance upon arrival.'**
+  String get event_nativeSovereignty_narrative;
+
+  /// No description provided for @event_nativeSovereignty_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Recognize native sovereignty and request permission to settle'**
+  String get event_nativeSovereignty_choice0;
+
+  /// No description provided for @event_nativeSovereignty_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'You transmit a formal recognition of native rights. The response is cautious but positive. Future relations will begin on a foundation of mutual respect, though landing sites may be limited.'**
+  String get event_nativeSovereignty_outcome0;
+
+  /// No description provided for @event_nativeSovereignty_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Assert colonial supremacy and prepare for resistance'**
+  String get event_nativeSovereignty_choice1;
+
+  /// No description provided for @event_nativeSovereignty_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'You broadcast your intention to settle regardless. The crew begins weapons drills and fortification planning. The natives go silent, which is somehow more terrifying than threats.'**
+  String get event_nativeSovereignty_outcome1;
+
+  /// No description provided for @event_nativeSovereignty_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose shared governance of the planet'**
+  String get event_nativeSovereignty_choice2;
+
+  /// No description provided for @event_nativeSovereignty_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'You offer a framework for coexistence and resource sharing. The natives are intrigued but wary. Negotiations will be complex, but the possibility of peace exists.'**
+  String get event_nativeSovereignty_outcome2;
+
+  /// No description provided for @event_laborStrike_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Labor Strike'**
+  String get event_laborStrike_title;
+
+  /// No description provided for @event_laborStrike_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The engineering crew has walked off the job, demanding shorter shifts, better food rations, and a voice in navigation decisions. Critical systems are running on automated backups, but they won\'t last long. The rest of the colonists watch nervously.'**
+  String get event_laborStrike_narrative;
+
+  /// No description provided for @event_laborStrike_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the workers\' demands in full'**
+  String get event_laborStrike_choice0;
+
+  /// No description provided for @event_laborStrike_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The strike ends immediately. Workers return to their posts with improved conditions. Productivity drops slightly as shorter shifts take effect, but loyalty is unshakeable.'**
+  String get event_laborStrike_outcome0;
+
+  /// No description provided for @event_laborStrike_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppress the strike and enforce mandatory labor'**
+  String get event_laborStrike_choice1;
+
+  /// No description provided for @event_laborStrike_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Security forces escort the workers back to their stations at gunpoint. The engines hum again, but hatred simmers in the lower decks. Several workers are confined to quarters.'**
+  String get event_laborStrike_outcome1;
+
+  /// No description provided for @event_laborStrike_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer a partial compromise on key demands'**
+  String get event_laborStrike_choice2;
+
+  /// No description provided for @event_laborStrike_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'After marathon negotiations, a deal is struck: better rations and advisory input, but no reduction in shift length. Neither side is thrilled, but the engines keep running.'**
+  String get event_laborStrike_outcome2;
+
+  /// No description provided for @event_censorshipDebate_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Censorship Debate'**
+  String get event_censorshipDebate_title;
+
+  /// No description provided for @event_censorshipDebate_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'A leaked document reveals the true condition of the ship\'s failing systems. Panic spreads through the lower decks. The communications officer proposes restricting information access to prevent further unrest. Civil liberties advocates are outraged.'**
+  String get event_censorshipDebate_narrative;
+
+  /// No description provided for @event_censorshipDebate_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Guarantee free access to all information'**
+  String get event_censorshipDebate_choice0;
+
+  /// No description provided for @event_censorshipDebate_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Full transparency is established. The initial panic subsides as colonists rally to help fix the problems they now understand. Trust in leadership grows, though some information causes distress.'**
+  String get event_censorshipDebate_outcome0;
+
+  /// No description provided for @event_censorshipDebate_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Implement full information control'**
+  String get event_censorshipDebate_choice1;
+
+  /// No description provided for @event_censorshipDebate_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'All communications are now filtered through command. The panic stops, replaced by an eerie calm. But rumors fill the void left by censored truth, and they are often worse than reality.'**
+  String get event_censorshipDebate_outcome1;
+
+  /// No description provided for @event_censorshipDebate_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter only security-sensitive information'**
+  String get event_censorshipDebate_choice2;
+
+  /// No description provided for @event_censorshipDebate_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'A classification system is established. Most information flows freely, but military and critical system data requires clearance. A workable middle ground that mostly satisfies.'**
+  String get event_censorshipDebate_outcome2;
+
+  /// No description provided for @event_colonialCharter_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Colonial Charter'**
+  String get event_colonialCharter_title;
+
+  /// No description provided for @event_colonialCharter_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'With planetfall approaching, the colonists must draft fundamental laws for their new society. Three philosophical camps have emerged, each championing a different vision for what the colony should become. The debate is heated and deeply personal.'**
+  String get event_colonialCharter_narrative;
+
+  /// No description provided for @event_colonialCharter_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'A progressive charter emphasizing individual rights'**
+  String get event_colonialCharter_choice0;
+
+  /// No description provided for @event_colonialCharter_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The charter enshrines personal freedoms, equality, and social mobility. Artists and thinkers celebrate; traditionalists warn that unchecked freedom leads to chaos.'**
+  String get event_colonialCharter_outcome0;
+
+  /// No description provided for @event_colonialCharter_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'A conservative charter preserving Earth\'s traditions'**
+  String get event_colonialCharter_choice1;
+
+  /// No description provided for @event_colonialCharter_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'The charter codifies traditional values, family structures, and religious observance. Many find comfort in familiar customs; others feel stifled by the weight of old-world thinking.'**
+  String get event_colonialCharter_outcome1;
+
+  /// No description provided for @event_colonialCharter_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'A pragmatic charter focused on survival and growth'**
+  String get event_colonialCharter_choice2;
+
+  /// No description provided for @event_colonialCharter_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'The charter prioritizes resource management, technical education, and economic development. It lacks poetry but ensures the colony will be efficient and well-organized.'**
+  String get event_colonialCharter_outcome2;
+
+  /// No description provided for @event_separatistMovement_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Separatist Movement'**
+  String get event_separatistMovement_title;
+
+  /// No description provided for @event_separatistMovement_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'A faction of colonists has declared independence from ship governance. They\'ve barricaded themselves in the aft section, demanding the right to establish their own settlement upon landing. They control 15% of the ship\'s food reserves and a backup navigation array.'**
+  String get event_separatistMovement_narrative;
+
+  /// No description provided for @event_separatistMovement_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant regional autonomy within a federal framework'**
+  String get event_separatistMovement_choice0;
+
+  /// No description provided for @event_separatistMovement_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The separatists accept a deal: their own district with local governance, under a loose federal umbrella. The precedent of fragmentation worries some, but peace is maintained.'**
+  String get event_separatistMovement_outcome0;
+
+  /// No description provided for @event_separatistMovement_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Storm the barricades and force reunification'**
+  String get event_separatistMovement_choice1;
+
+  /// No description provided for @event_separatistMovement_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Security teams breach the aft section. The separatists resist fiercely. Order is restored, but at terrible cost. The ship is united in body, if not in spirit.'**
+  String get event_separatistMovement_outcome1;
+
+  /// No description provided for @event_separatistMovement_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Address the root grievances driving the movement'**
+  String get event_separatistMovement_choice2;
+
+  /// No description provided for @event_separatistMovement_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Mediators work to understand what pushed the faction away. Reforms in resource distribution and representation slowly bring the separatists back into the fold. Healing takes time.'**
+  String get event_separatistMovement_outcome2;
+
+  /// No description provided for @event_warCouncil_title.
+  ///
+  /// In en, this message translates to:
+  /// **'War Council'**
+  String get event_warCouncil_title;
+
+  /// No description provided for @event_warCouncil_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'With potential threats detected in nearby systems, the ship\'s leadership convenes a war council. The question: how much of the colony\'s limited resources should be devoted to military preparedness versus civilian infrastructure?'**
+  String get event_warCouncil_narrative;
+
+  /// No description provided for @event_warCouncil_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Full armament: forge weapons and train soldiers'**
+  String get event_warCouncil_choice0;
+
+  /// No description provided for @event_warCouncil_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshops are retooled for weapons production. Every able-bodied colonist receives combat training. The ship bristles with arms, but the budget for farming equipment shrinks.'**
+  String get event_warCouncil_outcome0;
+
+  /// No description provided for @event_warCouncil_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Disarmament: melt weapons into tools'**
+  String get event_warCouncil_choice1;
+
+  /// No description provided for @event_warCouncil_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'The armory is emptied and its contents recycled into construction materials. The colony will build with plowshares, not swords. Pacifists rejoice; realists worry about what lurks in the dark.'**
+  String get event_warCouncil_outcome1;
+
+  /// No description provided for @event_warCouncil_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Defensive posture only: shields and walls, not swords'**
+  String get event_warCouncil_choice2;
+
+  /// No description provided for @event_warCouncil_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Resources go to fortifications, shields, and early warning systems. No offensive weapons are produced. A balanced approach that keeps options open without provoking potential neighbors.'**
+  String get event_warCouncil_outcome2;
+
+  /// No description provided for @event_tradeFederation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade Federation'**
+  String get event_tradeFederation_title;
+
+  /// No description provided for @event_tradeFederation_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'As the colony approaches viability, factions debate how to structure its economy. The question goes beyond mere survival — it will define the kind of society that takes root on alien soil. Merchants, communalists, and bureaucrats all make their case.'**
+  String get event_tradeFederation_narrative;
+
+  /// No description provided for @event_tradeFederation_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Establish free trade zones with minimal regulation'**
+  String get event_tradeFederation_choice0;
+
+  /// No description provided for @event_tradeFederation_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Markets spring up in every habitat module. Innovation flourishes as traders compete. Wealth inequality grows, but so does the total pool of resources available to the colony.'**
+  String get event_tradeFederation_outcome0;
+
+  /// No description provided for @event_tradeFederation_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Implement communal sharing of all resources'**
+  String get event_tradeFederation_choice1;
+
+  /// No description provided for @event_tradeFederation_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Private property is abolished. Everything belongs to everyone. No one goes hungry, but no one has incentive to produce more than the minimum. Mediocrity is comfortable.'**
+  String get event_tradeFederation_outcome1;
+
+  /// No description provided for @event_tradeFederation_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a state-managed trade system'**
+  String get event_tradeFederation_choice2;
+
+  /// No description provided for @event_tradeFederation_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'The government controls all trade, setting prices and allocating resources. The system is fair but inflexible. Black markets emerge in the maintenance corridors.'**
+  String get event_tradeFederation_outcome2;
+
+  /// No description provided for @event_faithVsScience_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Faith vs. Science'**
+  String get event_faithVsScience_title;
+
+  /// No description provided for @event_faithVsScience_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The ship\'s telescope has captured images of a cosmic phenomenon that directly contradicts the central tenet of the dominant faith movement. The head scientist wants to publish the findings; the religious leader insists they will tear the community apart.'**
+  String get event_faithVsScience_narrative;
+
+  /// No description provided for @event_faithVsScience_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish the scientific findings in full'**
+  String get event_faithVsScience_choice0;
+
+  /// No description provided for @event_faithVsScience_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Truth prevails over comfort. The data is released and the religious movement fractures. Some believers adapt their faith; others lose it entirely. Knowledge advances.'**
+  String get event_faithVsScience_outcome0;
+
+  /// No description provided for @event_faithVsScience_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppress the findings to preserve social harmony'**
+  String get event_faithVsScience_choice1;
+
+  /// No description provided for @event_faithVsScience_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'The data is classified. The religious community remains stable, but the science team is demoralized. Truth deferred is not truth denied, but it feels like it.'**
+  String get event_faithVsScience_outcome1;
+
+  /// No description provided for @event_faithVsScience_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Convene a joint panel to find harmony between both views'**
+  String get event_faithVsScience_choice2;
+
+  /// No description provided for @event_faithVsScience_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Scientists and theologians work together to reinterpret the findings. A new synthesis emerges that expands both understanding and faith. Not everyone is convinced, but the dialogue is healthy.'**
+  String get event_faithVsScience_outcome2;
+
+  /// No description provided for @event_surveillanceState_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Surveillance State'**
+  String get event_surveillanceState_title;
+
+  /// No description provided for @event_surveillanceState_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'After a series of sabotage incidents, the security chief proposes installing monitoring systems in every compartment of the ship. Cameras, microphones, and biometric scanners would track every colonist\'s movements. Privacy advocates are horrified.'**
+  String get event_surveillanceState_narrative;
+
+  /// No description provided for @event_surveillanceState_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject the surveillance proposal entirely'**
+  String get event_surveillanceState_choice0;
+
+  /// No description provided for @event_surveillanceState_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy is preserved. The saboteur remains at large, but the colonists sleep easier knowing they aren\'t watched. Investigation continues through traditional means.'**
+  String get event_surveillanceState_outcome0;
+
+  /// No description provided for @event_surveillanceState_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Implement full surveillance across the ship'**
+  String get event_surveillanceState_choice1;
+
+  /// No description provided for @event_surveillanceState_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'Every corner of the ship is monitored. The saboteur is caught within days. But the cameras remain, and the security chief shows no interest in turning them off. Ever.'**
+  String get event_surveillanceState_outcome1;
+
+  /// No description provided for @event_surveillanceState_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Install limited monitoring in critical areas only'**
+  String get event_surveillanceState_choice2;
+
+  /// No description provided for @event_surveillanceState_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Cameras cover the engine room, armory, and bridge. Living quarters remain private. The saboteur is eventually identified through pattern analysis. A measured response.'**
+  String get event_surveillanceState_outcome2;
+
+  /// No description provided for @event_nativeAlliance_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Native Alliance'**
+  String get event_nativeAlliance_title;
+
+  /// No description provided for @event_nativeAlliance_narrative.
+  ///
+  /// In en, this message translates to:
+  /// **'The native civilization has proposed a formal treaty. Their ambassador arrives via shuttle, an elegant being who speaks through a translator device of astonishing sophistication. They offer three forms of relationship, each with different implications for the colony\'s future.'**
+  String get event_nativeAlliance_narrative;
+
+  /// No description provided for @event_nativeAlliance_choice0.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign an equal alliance treaty'**
+  String get event_nativeAlliance_choice0;
+
+  /// No description provided for @event_nativeAlliance_outcome0.
+  ///
+  /// In en, this message translates to:
+  /// **'The treaty establishes mutual defense, shared research, and equal territorial rights. Both civilizations will grow together. The natives share agricultural knowledge that transforms your colony prospects.'**
+  String get event_nativeAlliance_outcome0;
+
+  /// No description provided for @event_nativeAlliance_choice1.
+  ///
+  /// In en, this message translates to:
+  /// **'Negotiate from a position of colonial dominance'**
+  String get event_nativeAlliance_choice1;
+
+  /// No description provided for @event_nativeAlliance_outcome1.
+  ///
+  /// In en, this message translates to:
+  /// **'You leverage your advanced technology to secure favorable terms. The natives cede territory and resources. They sign with trembling hands. History has seen this before, and it rarely ends well.'**
+  String get event_nativeAlliance_outcome1;
+
+  /// No description provided for @event_nativeAlliance_choice2.
+  ///
+  /// In en, this message translates to:
+  /// **'Establish a trade partnership focused on mutual benefit'**
+  String get event_nativeAlliance_choice2;
+
+  /// No description provided for @event_nativeAlliance_outcome2.
+  ///
+  /// In en, this message translates to:
+  /// **'Commerce bridges the gap between species. Native materials flow to your workshops; your technology improves their medicine. Friendship grows from mutual profit.'**
+  String get event_nativeAlliance_outcome2;
 }
 
 class _AppLocalizationsDelegate

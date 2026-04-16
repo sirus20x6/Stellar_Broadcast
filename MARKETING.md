@@ -13,6 +13,8 @@
 - [x] **Reddit — r/AndroidGaming** — posted
 - [x] **Reddit — r/seedship** — posted
 - [x] **Reddit — r/stellarbroadcast** — own subreddit
+- [x] **Reddit — r/roguelikes** — posted
+- [x] **Reddit — r/roguelites** — posted
 - [x] **SpaceBattles Forums** — posted
 - [x] **Sufficient Velocity** — posted
 - [x] **YouTube creators** — emailing Seedship let's play creators
@@ -23,7 +25,7 @@
 ## Outreach — To Do
 
 ### Forums & Communities
-- [ ] **Hacker News** — "Show HN" post (huge tech/sci-fi reach). Post: "Show HN: Stellar Broadcast — a colony ship roguelike with an on-device neural net for planet naming"
+- [x] **Hacker News** — "Show HN" post (huge tech/sci-fi reach). Post: "Show HN: Stellar Broadcast — a colony ship roguelike with an on-device neural net for planet naming"
 - [ ] **Quarter To Three** — gaming forum (had a Seedship thread)
 - [ ] **Choice of Games Forum** — interactive fiction community (Seedship was featured there)
 - [ ] **GOG.com Forum** — PC gaming community (had a Seedship thread)
@@ -37,9 +39,15 @@
 - [ ] **RAWG** — https://rawg.io/ (submit game)
 
 ### Mobile Gaming Press
+- [ ] **TouchArcade** — `press@toucharcade.com` (press releases) + `tips@toucharcade.com` (promo codes); also post a dev thread in the [TA forums](https://toucharcade.com/community/threads/how-to-post-ios-games-on-the-toucharcade-forums-please-read.303736/)
+- [ ] **Pocket Gamer** — `news@pocketgamer.co.uk` — send promo codes *before* launch, reviews held until UK store live date; front-load hook, include trailers/GIFs. [Submission guide](https://www.pocketgamer.com/features/developers-how-to-tell-pocket-gamer-and-appspy-about-your-game/)
+- [ ] **Droid Gamers** — `news@droidgamers.com` or [contact form](https://www.droidgamers.com/contact-us/); ⚠️ has offered paid reviews in the past ([TechRaptor](https://techraptor.net/gaming/news/android-gaming-site-droid-gamers-offers-paid-reviews-and-advertorials))
+- [ ] **AppUnwrapper** — `AppUnwrapper@gmail.com` (solo operator); heavy adventure/puzzle preference — frame as "choice-based survival puzzle" not roguelike
+- [ ] **Indie Game Plus** — `editors@indiegamesplus.com` (small Patreon-funded AU outlet, friendly to unusual indies)
+- [ ] **Hardcore Droid** — `aljackson@hardcoredroid.com` — primarily *You Review It* suggestion flow; cold emails tolerated
+- [ ] **MacStories** — [Notion tips form](https://www.macstories.net/contact/) (routes to Federico Viticci); iOS-only, needs an Apple-angle hook
+- [ ] **Rock Paper Shotgun** — `tips@rockpapershotgun.com` — PC-focused, long shot. Pitch as a *feature* ("Seedship's legacy in indie roguelikes"), not a review request
 - [ ] **Pocket Tactics** — https://www.pockettactics.com/ (email pitch)
-- [ ] **Pocket Gamer** — https://www.pocketgamer.com/ (submit via their form)
-- [ ] **Touch Arcade** — https://toucharcade.com/ (forum post + email editors)
 - [ ] **Gamezebo** — https://www.gamezebo.com/ (email pitch)
 
 ### Social

@@ -9,9 +9,6 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Stellar Broadcast';
-
-  @override
   String get ui_title_stellar => 'STELLAR';
 
   @override
@@ -39,6 +36,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_title_startVoyage => 'INICIAR VIAJE';
 
   @override
+  String get ui_title_seedInvalid =>
+      'Código de semilla no válido. Utilice sólo A–Z y 0–9.';
+
+  @override
   String ui_voyage_sector(int count) {
     return 'SEC $count';
   }
@@ -64,7 +65,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_voyage_systemHull => 'Casco';
 
   @override
-  String get ui_voyage_systemNav => 'Nav';
+  String get ui_voyage_systemNav => 'Navegación';
 
   @override
   String get ui_voyage_systemCryopods => 'Criopods';
@@ -174,10 +175,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_scan_habitability => 'HABITABILIDAD';
 
   @override
-  String get ui_scan_statAtmos => 'ATMOS';
+  String get ui_scan_statAtmos => 'CAJEROS AUTOMÁTICOS';
 
   @override
-  String get ui_scan_statTemp => 'TEMP';
+  String get ui_scan_statTemp => 'TEMPERATURA';
 
   @override
   String get ui_scan_statWater => 'AGUA';
@@ -196,6 +197,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ui_scan_statRadiation => 'RADIACIÓN';
+
+  @override
+  String ui_scan_probesCount(int count) {
+    return 'SONDAS: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'INCERTIDUMBRE: ±$percent%';
+  }
 
   @override
   String get ui_landing_planetAnalysis => 'ANÁLISIS PLANETARIO';
@@ -295,22 +306,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_landing_statLandingSys => 'Sist. Aterr.';
 
   @override
-  String get ui_landingSequence_phase1 => 'FASE 1: COMPROMISO ORBITAL';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Ventana de descenso abierta. Comprometiendo entrada.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'FASE 2: FUEGO ATMOSFÉRICO';
-
-  @override
-  String get ui_landingSequence_title => 'SECUENCIA DE ATERRIZAJE';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'VER INFORME DE COLONIA';
-
-  @override
   String get ui_ending_colonyEstablished => 'COLONIA ESTABLECIDA';
 
   @override
@@ -336,6 +331,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'RETAR A UN AMIGO';
+
+  @override
+  String get ui_ending_shareCard => 'COMPARTIR TARJETA';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Comparte tu viaje';
+
+  @override
+  String get ui_ending_shareCardShare => 'COMPARTIR';
+
+  @override
+  String get ui_ending_shareCardCancel => 'CANCELAR';
 
   @override
   String get ui_ending_copySeed => 'COPIAR SEMILLA';
@@ -454,7 +461,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_settings_haptics => 'VIBRACIÓN';
 
   @override
-  String get ui_settings_premium => 'PREMIUM';
+  String get ui_settings_premium => 'DE PRIMERA CALIDAD';
 
   @override
   String get ui_settings_goPremium => 'Hazte Premium';
@@ -470,6 +477,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Predeterminado del sistema';
+
+  @override
+  String get ui_settings_statsPosition => 'Posición de estadísticas y botones';
+
+  @override
+  String get ui_settings_statsLeft => 'IZQUIERDA';
+
+  @override
+  String get ui_settings_statsRight => 'BIEN';
 
   @override
   String get ui_legacy_title => 'CENTRO DE LEGADO';
@@ -775,6 +791,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get planet_featureMedicinalFlora => 'Flora Medicinal';
 
   @override
+  String get planet_featurePerpetualAurora => 'Aurora perpetua';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Megaflora petrificada';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Ríos subterráneos';
+
+  @override
+  String get planet_featureObsidianPlains => 'Llanuras de obsidiana';
+
+  @override
+  String get planet_featureSaltFlats => 'Salinas';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Flora carnívora';
+
+  @override
+  String get planet_featureGhostCities => 'Ciudades fantasma';
+
+  @override
+  String get planet_featureArchiveVaults => 'Bóvedas de archivo';
+
+  @override
+  String get planet_featureSinkholeFields => 'Campos de sumideros';
+
+  @override
+  String get planet_featureApexPredator => 'Depredador ápice';
+
+  @override
   String get ui_monthJan => 'ENE';
 
   @override
@@ -787,7 +833,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_monthApr => 'ABR';
 
   @override
-  String get ui_monthMay => 'MAY';
+  String get ui_monthMay => 'PUEDE';
 
   @override
   String get ui_monthJun => 'JUN';
@@ -4293,18 +4339,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Atmósfera';
 
   @override
-  String get ending_scoreLabel_gravity => 'Gravedad';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Temperatura';
-
-  @override
-  String get ending_scoreLabel_water => 'Agua';
-
-  @override
-  String get ending_scoreLabel_resources => 'Recursos';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Relaciones Nativas';
 
   @override
@@ -4413,19 +4447,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Consejo Tribal';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Teocracia';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'junta militar';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Oligarquía corporativa';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Estado fascista';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Comuna';
 
   @override
   String get ending_cultureRenaissance => 'Renacimiento';
@@ -4446,7 +4480,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ending_techIndustrial => 'Industrial';
 
   @override
-  String get ending_techPreIndustrial => 'Pre-Industrial';
+  String get ending_techPreIndustrial => 'Preindustrial';
 
   @override
   String get ending_techStoneAge => 'Edad de Piedra';
@@ -4479,10 +4513,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ending_nativesConflict => 'Conflicto';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'Alianza';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'Subyugación';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4523,66 +4557,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'La presión atmosférica es peligrosamente baja — los hábitats sellados son esenciales. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Una luna reluciente, veteada de minerales, domina el cielo nocturno, su superficie metálica reflejando la luz estelar sobre el paisaje. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Una luna fracturada se cierne arriba, su superficie desmoronándose dejando un tenue anillo de escombros — un recordatorio constante del bombardeo que amenaza abajo. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Una luna pálida y estéril se eleva sobre el horizonte, su superficie craterizada un centinela silencioso sobre la colonia. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'El planeta gira rápidamente — los días duran solo horas, y los vientos de Coriolis azotan todo lo que se eleva. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'El planeta gira con lentitud agónica. El hemisferio que mira al sol se cuece mientras el lado oscuro se congela, y solo la franja crepuscular entre ambos ofrece respiro. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Las cadenas volcánicas parten el horizonte, sus laderas surcadas por ríos de roca fundida. El aire sabe a azufre y el suelo tiembla bajo los pies. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'La corteza está fracturada e inquieta — nuevas fisuras se abren sin aviso, exponiendo vetas minerales relucientes entre nubes de polvo. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Los relámpagos cruzan el cielo en láminas continuas, convirtiendo la noche en día y llenando el aire con el sabor del ozono. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Nubes de esporas luminosas flotan en cada brisa, hermosas y letales — los colonos necesitarán hábitats sellados o máscaras de filtración para sobrevivir al aire libre. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'El planeta es mayormente océano — aguas vastas y oscuras que se extienden hasta cada horizonte, con solo archipiélagos dispersos rompiendo la superficie. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Fuentes geotermales atraviesan la corteza, ventilando columnas de vapor rico en minerales que calientan el paisaje circundante y sustentan oasis de vida. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Un poderoso campo magnético envuelve el planeta, desviando la radiación estelar pero causando estragos en la electrónica sin blindaje. Las brújulas giran inútilmente. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Sin un campo magnético fuerte, el viento estelar arranca la atmósfera superior. Auroras espectaculares se derraman por el cielo en todas las latitudes. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Criaturas colosales se mueven por el paisaje — algunas tan grandes como edificios, sus pisadas se sienten a kilómetros de distancia. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'La biosfera opera como una red entrelazada de simbiosis: cada organismo depende de y sustenta a sus vecinos en un equilibrio elegante y frágil. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4629,27 +4603,27 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Un consejo teocrático guía a $planetName, extrayendo sabiduría de la fe que sostuvo a los colonos en el vacío.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'Una estructura de mando militar gobierna $planetName, la disciplina que los salvó en el espacio y que ahora define su civilización.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Un consorcio de administradores de recursos lidera $planetName; su perspicacia económica ha demostrado ser esencial para la supervivencia.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Un régimen autoritario controla $planetName con mano de hierro y sacrifica las libertades civiles por el orden en el nuevo mundo.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'La gente de $planetName se gobierna a sí misma colectivamente, compartiendo recursos y decisiones por igual entre todos los colonos.';
   }
 
   @override
@@ -4689,10 +4663,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Una luna inestable en órbita decadente llovió escombros sobre la colonia, devastando infraestructura y destruyendo tecnología irremplazable en bombardeos periódicos de meteoros.';
-
-  @override
-  String get ending_moonBarren =>
-      'Una luna estéril colgaba en el cielo alienígena, una compañera desolada que no ofrecía a los colonos más que una vista familiar para contemplar en las largas noches.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4781,12 +4751,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Una alianza formal une a los colonos y la civilización nativa de $planetName, y su conocimiento combinado construye algo mayor de lo que cualquiera de ellos podría lograr por sí solo.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'La población nativa de $planetName vive bajo el dominio colonial, su cultura suprimida mientras los colonos imponen su propio orden.';
   }
 
   @override
@@ -4824,26 +4794,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'LUNAS';
-
-  @override
-  String get ui_rings => 'ANILLOS';
-
-  @override
   String get ui_landing_landOnMoon => 'ATERRIZAR EN LUNA';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Luna: $moonPercent% vs Planeta: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'Menor gravedad — aterrizaje más fácil';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'Sistema de Anillos $type';
-  }
 
   @override
   String get moon_barren => 'Estéril';
@@ -4871,60 +4822,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Metálico';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Una luna solitaria pende en el cielo sobre la colonia.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count lunas orbitan en lo alto, proyectando sombras cambiantes sobre el paisaje.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Entre ellas, un mundo habitable llama desde la distancia — una joya verde que ofrece una segunda frontera.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Una luna congelada resplandece con vastos depósitos de hielo, un reservorio esperando ser aprovechado.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'El hielo cosechado de la luna congelada complementa el suministro de agua de la colonia, transformando un mundo estéril en algo habitable.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'La colonia no se estableció en el planeta mismo, sino en su luna más prometedora — un mundo menor con gravedad más suave y mayor promesa.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Un tenue anillo de polvo se arquea por el cielo, añadiendo una belleza etérea a cada amanecer.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Un brillante anillo de hielo atrapa la luz estelar, pintando el cielo con fuego prismático.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Un denso anillo rocoso ciñe el planeta, una fuente de materiales de construcción que llueve lentamente hacia el interior.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Un anillo metálico destella en lo alto, rico en mineral que alimenta la industria de la colonia.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Una luna habitable ofrece una segunda oportunidad de colonización.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'El hielo cosechado de la luna congelada complementa el suministro de agua de la colonia.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'La colonia orbita bajo $count luna(s).';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'El Soliloquio de la IA';
@@ -5449,6 +5346,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'TOCA PARA SALTAR';
+
+  @override
+  String get ui_common_tapRingToChoose => 'TOCA UN ANILLO PARA ELEGIR';
+
+  @override
+  String get ui_common_tapToContinue => 'TOCA PARA CONTINUAR';
+
+  @override
+  String get ui_tooltip_back => 'Atrás';
+
+  @override
+  String get ui_tooltip_codex => 'Códice';
+
+  @override
+  String get ui_tooltip_settings => 'Ajustes';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Tablas de clasificación';
+
+  @override
+  String get ui_tooltip_bugReport => 'Informar un error';
+
+  @override
   String get event_pulsarLighthouse_title => 'Faro Púlsar';
 
   @override
@@ -5470,6 +5391,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'Nos alejamos ampliamente del púlsar, quemando combustible extra para mantener una trayectoria segura. La tripulación observa el haz giratorio a través de mirillas filtradas — hermoso, pero distante.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Retírese antes de que nos alcance el barrido.';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'Nos alejamos en caso de emergencia antes de que pase el siguiente rayo. La señal del púlsar se desvanece detrás de nosotros: no se obtienen datos, no se sufre daño, se gasta un poco de combustible en empuje evasivo.';
 
   @override
   String get event_alienNursery_title => 'Criadero alienígena';
@@ -5560,4 +5489,470 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'El antifúngico experimental muestra prometedor al principio, pero una cepa resistente se abre paso. Para cuando recurrimos a una purga completa, la plaga se ha extendido a las líneas de nutrientes de las cápsulas criogénicas. El daño es peor que si hubiéramos actuado con decisión desde el principio.';
+
+  @override
+  String get event_constitutionalConvention_title =>
+      'Convención Constitucional';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'La población del barco colonia se ha vuelto inquieta sin un gobierno formal. Los delegados de cada cubierta se reúnen en la bodega de carga para redactar un estatuto que definirá cómo se gobernará la futura colonia. Tres facciones presentan visiones opuestas para el nuevo gobierno.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Redactar una carta democrática con sufragio universal';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'Los colonos ratifican una constitución que garantiza la igualdad de representación. La toma de decisiones se ralentiza, pero la moral se eleva a medida que se escuchan todas las voces.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Establecer un ejecutivo fuerte con poderes de emergencia';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Se nombra a un único líder con amplia autoridad. Las decisiones se toman rápidamente, pero los disidentes susurran sobre tiranía en los niveles inferiores.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Formar un consejo tecnocrático de especialistas.';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Ingenieros, científicos y médicos forman un consejo gobernante basado en la experiencia. La eficiencia mejora, aunque algunos se sienten excluidos del poder.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'Amenaza de golpe militar';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'El comandante Vásquez, del equipo de seguridad del barco, se apoderó de la armería y emitió un ultimátum: otorga poderes militares de emergencia o enfrentará el cierre de todas las cubiertas. La situación es volátil y los colonos esperan de ti una respuesta.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Resiste el golpe con miembros leales de la tripulación.';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'El equipo leal se une para oponerse a Vásquez. El enfrentamiento termina con un mínimo derramamiento de sangre, pero los elementos de seguridad se debilitan y algunos colonos quedan atrapados en el fuego cruzado.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Someterse a las demandas del comandante.';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vásquez asume el control de las operaciones del barco. El orden se restablece rápidamente, pero a costa de las libertades civiles. Patrullas armadas recorren ahora todos los pasillos.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Negociar poderes de emergencia limitados con una cláusula de extinción';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'Después de tensas negociaciones, Vásquez acepta autoridad temporal con supervisión. Un compromiso frágil que no satisface completamente a nadie, pero que previene la violencia.';
+
+  @override
+  String get event_religiousAwakening_title => 'Despertar religioso';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Un predicador carismático ha atraído a cientos de colonos a un nuevo movimiento religioso. Se reúnen en la cúpula de observación en cada ciclo y sus himnos resuenan a través de los conductos de ventilación. Algunos miembros de la tripulación se preocupan por el fanatismo; otros encuentran un consuelo genuino en las enseñanzas.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'Abrazar el movimiento de fe y proporcionar recursos';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'El movimiento florece con el apoyo oficial. La moral mejora entre los creyentes y su espíritu comunitario fortalece los vínculos sociales en todo el barco.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Imponer un estricto secularismo a bordo del barco.';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Las reuniones religiosas están restringidas a recintos privados. El movimiento pasa a la clandestinidad, generando resentimiento, pero el racionalismo científico sigue siendo la doctrina oficial.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'Permitir el culto pero regular su influencia.';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'La fe está permitida pero se mantiene separada del gobierno. Se nombra un capellán para que sirva de enlace con el mando. Se mantiene un equilibrio incómodo.';
+
+  @override
+  String get event_corporateTakeover_title => 'Adquisición corporativa';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'Los administradores de recursos del barco han estado consolidando silenciosamente el control sobre la distribución de alimentos, el reciclaje de agua y la asignación de energía. Ahora proponen formalizar su autoridad en una estructura corporativa que gestionaría la economía de la futura colonia.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Permitir que los principios del libre mercado gobiernen los recursos.';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'La facción corporativa se hace cargo de la gestión de recursos. La eficiencia mejora dramáticamente, pero los precios aumentan y los colonos más pobres luchan por cubrir las necesidades básicas.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Nacionalizar todos los recursos bajo propiedad colectiva.';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Los recursos son confiscados y puestos bajo control comunal. La facción corporativa está desmantelada, pero la innovación se estanca sin incentivos para obtener ganancias.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Implementar mercados regulados con redes de seguridad.';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Se establece una economía mixta con controles de precios y programas de bienestar. Ninguna de las facciones está completamente satisfecha, pero las necesidades básicas se satisfacen y al mismo tiempo se permite algo de iniciativa.';
+
+  @override
+  String get event_successionCrisis_title => 'Crisis de sucesión';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'El capitán del barco murió mientras dormía, sin dejar un sucesor designado. Tres facciones compiten inmediatamente por el control: el consejo civil exige elecciones, el jefe de seguridad reclama autoridad marcial y los colonos más antiguos invocan ritos de liderazgo tradicionales.';
+
+  @override
+  String get event_successionCrisis_choice0 =>
+      'Celebrar elecciones de emergencia';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'Una elección caótica pero animada produce un nuevo capitán elegido por voto popular. El proceso es complicado, pero los colonos se sienten dueños de su liderazgo.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Que los militares asuman el mando';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'El jefe de seguridad ocupa el asiento del capitán. La disciplina se restablece inmediatamente, pero la tripulación civil observa a los guardias armados con creciente inquietud.';
+
+  @override
+  String get event_successionCrisis_choice2 =>
+      'Convocar un consejo de ancianos';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'Los colonos de mayor edad y experiencia forman un consejo de gobierno. Su sabiduría guía el barco, aunque algunos tripulantes más jóvenes se sienten marginados por la gerontocracia.';
+
+  @override
+  String get event_nativeSovereignty_title => 'Soberanía Nativa';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Los escaneos de largo alcance confirman que hay vida inteligente en el planeta objetivo. Las comunicaciones interceptadas revelan una civilización sofisticada que ha detectado su aproximación. Transmiten una demanda formal: reconocer su soberanía territorial o enfrentar resistencia a su llegada.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Reconocer la soberanía nativa y solicitar permiso para establecerse';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'Transmites un reconocimiento formal de los derechos nativos. La respuesta es cautelosa pero positiva. Las relaciones futuras comenzarán sobre una base de respeto mutuo, aunque los lugares de aterrizaje pueden ser limitados.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Afirmar la supremacía colonial y prepararse para la resistencia.';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'Transmites tu intención de llegar a un acuerdo de todos modos. La tripulación comienza ejercicios de armas y planificación de fortificaciones. Los nativos guardan silencio, lo que de alguna manera es más aterrador que las amenazas.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Proponer una gobernanza compartida del planeta';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'Ofreces un marco para la convivencia y el intercambio de recursos. Los nativos están intrigados pero cautelosos. Las negociaciones serán complejas, pero la posibilidad de la paz existe.';
+
+  @override
+  String get event_laborStrike_title => 'Huelga Laboral';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'El equipo de ingenieros abandonó el trabajo, exigiendo turnos más cortos, mejores raciones de alimentos y voz en las decisiones de navegación. Los sistemas críticos funcionan con copias de seguridad automatizadas, pero no durarán mucho. El resto de los colonos miran nerviosos.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'Satisfacer plenamente las demandas de los trabajadores';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'La huelga termina inmediatamente. Los trabajadores regresan a sus puestos con mejores condiciones. La productividad cae ligeramente a medida que entran en vigor turnos más cortos, pero la lealtad es inquebrantable.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Reprimir la huelga y hacer cumplir el trabajo obligatorio.';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Las fuerzas de seguridad escoltan a los trabajadores a sus puestos a punta de pistola. Los motores vuelven a zumbar, pero el odio hierve en las cubiertas inferiores. Varios trabajadores están confinados en alojamientos.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Ofrecer un compromiso parcial sobre demandas clave';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'Después de negociaciones maratónicas, se llega a un acuerdo: mejores raciones y asesoramiento, pero ninguna reducción en la duración de los turnos. Ninguna de las partes está entusiasmada, pero los motores siguen funcionando.';
+
+  @override
+  String get event_censorshipDebate_title => 'Debate sobre censura';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Un documento filtrado revela el verdadero estado de los sistemas defectuosos del barco. El pánico se extiende por las cubiertas inferiores. El responsable de comunicaciones propone restringir el acceso a la información para evitar más disturbios. Los defensores de las libertades civiles están indignados.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Garantizar el libre acceso a toda la información';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Se establece total transparencia. El pánico inicial disminuye a medida que los colonos se unen para ayudar a solucionar los problemas que ahora comprenden. La confianza en el liderazgo crece, aunque cierta información causa angustia.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'Implementar un control total de la información';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Todas las comunicaciones ahora se filtran mediante comando. El pánico cesa y es reemplazado por una calma inquietante. Pero los rumores llenan el vacío que deja la verdad censurada y, a menudo, son peores que la realidad.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Filtrar solo información sensible a la seguridad';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Se establece un sistema de clasificación. La mayor parte de la información fluye libremente, pero los datos militares y críticos del sistema requieren autorización. Un término medio viable que en su mayoría satisface.';
+
+  @override
+  String get event_colonialCharter_title => 'Carta Colonial';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'Con la caída del planeta acercándose, los colonos deben redactar leyes fundamentales para su nueva sociedad. Han surgido tres campos filosóficos, cada uno de los cuales defiende una visión diferente de lo que debería ser la colonia. El debate es acalorado y profundamente personal.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Una carta progresista que enfatiza los derechos individuales';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'La carta consagra las libertades personales, la igualdad y la movilidad social. Artistas y pensadores celebran; Los tradicionalistas advierten que la libertad sin control conduce al caos.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Una carta conservadora que preserva las tradiciones de la Tierra';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'La carta codifica los valores tradicionales, las estructuras familiares y la observancia religiosa. Muchos encuentran consuelo en costumbres familiares; otros se sienten sofocados por el peso del pensamiento del viejo mundo.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Una carta pragmática centrada en la supervivencia y el crecimiento';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'La carta prioriza la gestión de recursos, la educación técnica y el desarrollo económico. Carece de poesía, pero garantiza que la colonia sea eficiente y esté bien organizada.';
+
+  @override
+  String get event_separatistMovement_title => 'Movimiento separatista';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Una facción de colonos ha declarado su independencia del gobierno de los barcos. Se han atrincherado en la sección de popa, exigiendo el derecho a establecer su propio asentamiento al aterrizar. Controlan el 15% de las reservas de alimentos del barco y un sistema de navegación de respaldo.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Otorgar autonomía regional dentro de un marco federal';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'Los separatistas aceptan un trato: su propio distrito con gobierno local, bajo un amplio paraguas federal. El precedente de la fragmentación preocupa a algunos, pero la paz se mantiene.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Asalta las barricadas y fuerza la reunificación.';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Los equipos de seguridad irrumpen en la sección de popa. Los separatistas resisten ferozmente. Se restablece el orden, pero a un precio terrible. El barco está unido en cuerpo, si no en espíritu.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Abordar las quejas fundamentales que impulsan el movimiento';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Los mediadores trabajan para comprender qué alejó a la facción. Las reformas en la distribución y representación de los recursos hacen que los separatistas vuelvan lentamente al redil. La curación lleva tiempo.';
+
+  @override
+  String get event_warCouncil_title => 'consejo de guerra';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'Con amenazas potenciales detectadas en sistemas cercanos, el liderazgo de la nave convoca un consejo de guerra. La pregunta: ¿cuánto de los recursos limitados de la colonia deberían dedicarse a la preparación militar versus la infraestructura civil?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Armamento completo: forja armas y entrena soldados.';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Los talleres se reequipan para la producción de armas. Todo colono sano recibe entrenamiento de combate. El barco está repleto de armas, pero el presupuesto para equipos agrícolas se reduce.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Desarme: fundir armas para convertirlas en herramientas';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'La armería se vacía y su contenido se recicla para convertirlo en materiales de construcción. La colonia se construirá con arados, no con espadas. Los pacifistas se regocijan; Los realistas se preocupan por lo que se esconde en la oscuridad.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Sólo postura defensiva: escudos y muros, no espadas.';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'Los recursos se destinan a fortificaciones, escudos y sistemas de alerta temprana. No se producen armas ofensivas. Un enfoque equilibrado que mantenga abiertas las opciones sin provocar a vecinos potenciales.';
+
+  @override
+  String get event_tradeFederation_title => 'Federación de Comercio';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'A medida que la colonia se acerca a la viabilidad, las facciones debaten cómo estructurar su economía. La cuestión va más allá de la mera supervivencia: definirá el tipo de sociedad que echará raíces en suelo extraño. Comerciantes, comunalistas y burócratas exponen sus argumentos.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Establecer zonas de libre comercio con regulación mínima';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'Los mercados surgen en cada módulo de hábitat. La innovación florece cuando los comerciantes compiten. La desigualdad de riqueza crece, pero también lo hace el conjunto total de recursos disponibles para la colonia.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Implementar el intercambio comunitario de todos los recursos.';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Se abolió la propiedad privada. Todo es de todos. Nadie pasa hambre, pero nadie tiene incentivos para producir más que el mínimo. La mediocridad es cómoda.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Crear un sistema comercial gestionado por el estado';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'El gobierno controla todo el comercio, fija los precios y asigna los recursos. El sistema es justo pero inflexible. En los pasillos de mantenimiento surgen mercados negros.';
+
+  @override
+  String get event_faithVsScience_title => 'Fe versus ciencia';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'El telescopio de la nave ha capturado imágenes de un fenómeno cósmico que contradice directamente el principio central del movimiento religioso dominante. El científico jefe quiere publicar los hallazgos; el líder religioso insiste en que destrozarán a la comunidad.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Publicar los hallazgos científicos completos.';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'La verdad prevalece sobre la comodidad. Los datos se divulgan y el movimiento religioso se fractura. Algunos creyentes adaptan su fe; otros lo pierden por completo. El conocimiento avanza.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Suprimir los hallazgos para preservar la armonía social';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'Los datos están clasificados. La comunidad religiosa permanece estable, pero el equipo científico está desmoralizado. La verdad diferida no es la verdad negada, pero así se siente.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Convocar un panel conjunto para encontrar armonía entre ambas visiones';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Científicos y teólogos trabajan juntos para reinterpretar los hallazgos. Surge una nueva síntesis que amplía tanto la comprensión como la fe. No todos están convencidos, pero el diálogo es sano.';
+
+  @override
+  String get event_surveillanceState_title => 'Estado de vigilancia';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'Tras una serie de incidentes de sabotaje, el jefe de seguridad propone instalar sistemas de vigilancia en todos los compartimentos del barco. Cámaras, micrófonos y escáneres biométricos rastrearían los movimientos de cada colono. Los defensores de la privacidad están horrorizados.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Rechazar por completo la propuesta de vigilancia';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'Se preserva la privacidad. El saboteador sigue prófugo, pero los colonos duermen mejor sabiendo que no los vigilan. La investigación continúa por medios tradicionales.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Implementar vigilancia completa en todo el barco.';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Cada rincón del barco está monitoreado. El saboteador es capturado a los pocos días. Pero las cámaras permanecen y el jefe de seguridad no muestra interés en apagarlas. Alguna vez.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Instalar monitoreo limitado solo en áreas críticas';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Las cámaras cubren la sala de máquinas, la armería y el puente. Las viviendas siguen siendo privadas. El saboteador es finalmente identificado mediante un análisis de patrones. Una respuesta mesurada.';
+
+  @override
+  String get event_nativeAlliance_title => 'Alianza Nativa';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'La civilización nativa ha propuesto un tratado formal. Su embajador llega en lanzadera, un ser elegante que habla a través de un dispositivo traductor de asombrosa sofisticación. Ofrecen tres formas de relación, cada una con diferentes implicaciones para el futuro de la colonia.';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'Firmar un tratado de alianza igualitaria';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'El tratado establece la defensa mutua, la investigación compartida y la igualdad de derechos territoriales. Ambas civilizaciones crecerán juntas. Los nativos comparten conocimientos agrícolas que transforman las perspectivas de su colonia.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Negociar desde una posición de dominio colonial';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'Aprovecha su tecnología avanzada para obtener condiciones favorables. Los nativos ceden territorio y recursos. Hacen señas con manos temblorosas. La historia ha visto esto antes y rara vez termina bien.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Establecer una asociación comercial centrada en el beneficio mutuo';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'El comercio cierra la brecha entre las especies. Los materiales nativos fluyen hacia sus talleres; Su tecnología mejora su medicina. La amistad surge del beneficio mutuo.';
 }

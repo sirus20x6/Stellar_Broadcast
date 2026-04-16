@@ -9,9 +9,6 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
-  String get appTitle => 'Stellar Broadcast';
-
-  @override
   String get ui_title_stellar => 'STELLAR';
 
   @override
@@ -39,13 +36,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_title_startVoyage => 'START REIS';
 
   @override
+  String get ui_title_seedInvalid =>
+      'Ongeldige zaadcode. Gebruik alleen A–Z en 0–9.';
+
+  @override
   String ui_voyage_sector(int count) {
     return 'SEC $count';
   }
 
   @override
   String ui_voyage_seed(String code) {
-    return 'SEED: $code';
+    return 'ZAAD: $code';
   }
 
   @override
@@ -67,13 +68,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_voyage_systemNav => 'Nav';
 
   @override
-  String get ui_voyage_systemCryopods => 'Cryopods';
+  String get ui_voyage_systemCryopods => 'Cryopoden';
 
   @override
   String get ui_voyage_systemCulture => 'Cultuur';
 
   @override
-  String get ui_voyage_systemTech => 'Tech';
+  String get ui_voyage_systemTech => 'Technologie';
 
   @override
   String get ui_voyage_systemConstruct => 'Constructie';
@@ -198,6 +199,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_scan_statRadiation => 'STRALING';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'SONDES: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'ONZEKERHEID: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'PLANEETANALYSE';
 
   @override
@@ -277,38 +288,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_landing_statNavigation => 'Navigatie';
 
   @override
-  String get ui_landing_statCryopods => 'Cryopods';
+  String get ui_landing_statCryopods => 'Cryopoden';
 
   @override
   String get ui_landing_statCulture => 'Cultuur';
 
   @override
-  String get ui_landing_statTech => 'Tech';
+  String get ui_landing_statTech => 'Technologie';
 
   @override
-  String get ui_landing_statConstructors => 'Constructors';
+  String get ui_landing_statConstructors => 'Constructeurs';
 
   @override
   String get ui_landing_statShields => 'Schilden';
 
   @override
   String get ui_landing_statLandingSys => 'Landingssys';
-
-  @override
-  String get ui_landingSequence_phase1 => 'FASE 1: ORBITAAL COMMIT';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Afdalingsvenster open. Commitment aan entry.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'FASE 2: ATMOSFERISCH VUUR';
-
-  @override
-  String get ui_landingSequence_title => 'LANDINGSSEQUENTIE';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'BEKIJK KOLONIERAPPORT';
 
   @override
   String get ui_ending_colonyEstablished => 'KOLONIE GEVESTIGD';
@@ -336,6 +331,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'DAAG VRIEND UIT';
+
+  @override
+  String get ui_ending_shareCard => 'DEEL KAART';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Deel uw reis';
+
+  @override
+  String get ui_ending_shareCardShare => 'DEEL';
+
+  @override
+  String get ui_ending_shareCardCancel => 'ANNULEREN';
 
   @override
   String get ui_ending_copySeed => 'KOPIEER SEED';
@@ -453,7 +460,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_settings_haptics => 'HAPTIEK';
 
   @override
-  String get ui_settings_premium => 'PREMIUM';
+  String get ui_settings_premium => 'PREMIE';
 
   @override
   String get ui_settings_goPremium => 'Ga Premium';
@@ -469,6 +476,15 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Systeemstandaard';
+
+  @override
+  String get ui_settings_statsPosition => 'Statistieken en knoppenpositie';
+
+  @override
+  String get ui_settings_statsLeft => 'LINKS';
+
+  @override
+  String get ui_settings_statsRight => 'RECHTS';
 
   @override
   String get ui_legacy_title => 'NALATENSCHAP';
@@ -570,22 +586,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_event_landing => 'LANDING';
 
   @override
-  String get ui_event_atmScan => 'ATM SCAN';
+  String get ui_event_atmScan => 'ATM-SCAN';
 
   @override
-  String get ui_event_gravScan => 'GRAV SCAN';
+  String get ui_event_gravScan => 'GRAV-SCAN';
 
   @override
-  String get ui_event_minScan => 'MIN SCAN';
+  String get ui_event_minScan => 'MIN-SCAN';
 
   @override
   String get ui_event_lifeScan => 'LEVEN SCAN';
 
   @override
-  String get ui_event_tempScan => 'TEMP SCAN';
+  String get ui_event_tempScan => 'TEMP.SCAN';
 
   @override
-  String get ui_event_h2oScan => 'H2O SCAN';
+  String get ui_event_h2oScan => 'H2O-SCAN';
 
   @override
   String get onboarding_page0_title => 'De Laatste Hoop van de Mensheid';
@@ -773,7 +789,37 @@ class AppLocalizationsNl extends AppLocalizations {
   String get planet_featureMedicinalFlora => 'Medicinale flora';
 
   @override
-  String get ui_monthJan => 'JAN';
+  String get planet_featurePerpetualAurora => 'Eeuwige Aurora';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Versteende Megaflora';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Ondergrondse rivieren';
+
+  @override
+  String get planet_featureObsidianPlains => 'Obsidiaan vlakten';
+
+  @override
+  String get planet_featureSaltFlats => 'Zoutvlakten';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Vleesetende flora';
+
+  @override
+  String get planet_featureGhostCities => 'Spooksteden';
+
+  @override
+  String get planet_featureArchiveVaults => 'Archiveer kluizen';
+
+  @override
+  String get planet_featureSinkholeFields => 'Zinkgatvelden';
+
+  @override
+  String get planet_featureApexPredator => 'Apex-roofdier';
+
+  @override
+  String get ui_monthJan => 'JANUARI';
 
   @override
   String get ui_monthFeb => 'FEB';
@@ -782,22 +828,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_monthMar => 'MRT';
 
   @override
-  String get ui_monthApr => 'APR';
+  String get ui_monthApr => 'APRIL';
 
   @override
   String get ui_monthMay => 'MEI';
 
   @override
-  String get ui_monthJun => 'JUN';
+  String get ui_monthJun => 'JUNI';
 
   @override
-  String get ui_monthJul => 'JUL';
+  String get ui_monthJul => 'JULI';
 
   @override
   String get ui_monthAug => 'AUG';
 
   @override
-  String get ui_monthSep => 'SEP';
+  String get ui_monthSep => 'SEPT';
 
   @override
   String get ui_monthOct => 'OKT';
@@ -4267,18 +4313,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Atmosfeer';
 
   @override
-  String get ending_scoreLabel_gravity => 'Zwaartekracht';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Temperatuur';
-
-  @override
-  String get ending_scoreLabel_water => 'Water';
-
-  @override
-  String get ending_scoreLabel_resources => 'Grondstoffen';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Inheemse Relaties';
 
   @override
@@ -4387,19 +4421,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Stamraad';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Theocratie';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'Militaire Junta';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Bedrijfsoligarchie';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Fascistische staat';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Gemeente';
 
   @override
   String get ending_cultureRenaissance => 'Renaissance';
@@ -4453,10 +4487,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ending_nativesConflict => 'Conflict';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'Alliantie';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'Onderwerping';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4497,66 +4531,6 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'De atmosferische druk is gevaarlijk laag — afgedichte habitats zijn essentieel. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Een glanzende, met mineralen dooraderde maan domineert de nachtelijke hemel, haar metaalachtige oppervlak sterrenlicht weerkaatsend over het landschap. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Een gebroken maan doemt op boven, haar afbrokkelende oppervlak een vage ring van puin nalepend — een constante herinnering aan het bombardement dat dreigt beneden. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Een bleke, kale maan rijst boven de horizon, haar kraterachtige oppervlak een stille schildwacht over de kolonie. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'De planeet draait snel — dagen duren slechts uren, en Coriolis-winden beuken alles dat hoog staat. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'De planeet draait met kwellende traagheid. Het naar de zon gerichte halfrond bakt terwijl de donkere kant bevriest, en alleen de schemerstrook ertussen biedt respijt. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Vulkaanketens splitsen de horizon, hun hellingen doorstreept met rivieren van gesmolten rots. De lucht smaakt naar zwavel en de grond trilt onder de voeten. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'De korst is gebroken en rusteloos — verse spleten openen zich zonder waarschuwing, glinsterende mineraaladeren blootleggend te midden van stofwolken. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Bliksem schiet over de hemel in aaneengesloten vellen, nacht in dag veranderend en de lucht vullend met de smaak van ozon. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Wolken van lichtgevende sporen drijven op elke bries, prachtig en dodelijk — kolonisten hebben afgedichte habitats of filtratiemaskers nodig om buiten te overleven. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'De planeet is voornamelijk oceaan — uitgestrekte, donkere wateren die zich uitstrekken tot elke horizon, met slechts verspreide archipels die het oppervlak doorbreken. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Geothermische bronnen breken door de korst, pluimen van mineraalrijk stoom uitstotend dat het omringende landschap verwarmt en oases van leven onderhoudt. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Een krachtig magnetisch veld omhult de planeet, stellaire straling afbuigend maar onafgeschermde elektronica in de war brengend. Kompassen draaien nutteloos. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Zonder een sterk magnetisch veld tast de stellaire wind de bovenste atmosfeer aan. Spectaculaire noorderlichten cascaderen over de hemel op alle breedtegraden. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Kolossale schepselen bewegen door het landschap — sommige zo groot als gebouwen, hun voetstappen kilometers verderop gevoeld. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'De biosfeer werkt als een ineensluitend web van symbiose: elk organisme hangt af van en onderhoudt zijn buren in een elegant, fragiel evenwicht. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4603,27 +4577,27 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Een theocratische raad leidt $planetName en put wijsheid uit het geloof dat de kolonisten door de leegte heen hield.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'Een militaire commandostructuur regeert $planetName, de discipline die hen in de ruimte heeft gered en die nu hun beschaving bepaalt.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Een consortium van hulpbronnenbeheerders leidt $planetName, waarbij hun economisch inzicht essentieel is gebleken om te overleven.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Een autoritair regime controleert $planetName met ijzeren vuist, waarbij burgerlijke vrijheden worden opgeofferd voor de orde in de nieuwe wereld.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'De mensen van $planetName regeren zichzelf collectief en delen middelen en beslissingen gelijkelijk onder alle kolonisten.';
   }
 
   @override
@@ -4663,10 +4637,6 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Een instabiele maan in een vervallende baan regende puin neer op de kolonie, verwoestte infrastructuur en vernietigde onvervangbare technologie in periodieke meteorenbombardementen.';
-
-  @override
-  String get ending_moonBarren =>
-      'Een kale maan hing aan de buitenaardse hemel, een troosteloos gezelschap dat de kolonisten niets bood behalve een vertrouwd gezicht om naar te staren in de lange nachten.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4755,12 +4725,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Een formele alliantie verbindt de kolonisten en de inheemse beschaving van $planetName, waarbij hun gecombineerde kennis iets groters opbouwt dan elk van hen alleen zou kunnen.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'De inheemse bevolking van $planetName leeft onder koloniaal bestuur, hun cultuur wordt onderdrukt omdat de kolonisten hun eigen orde opleggen.';
   }
 
   @override
@@ -4798,27 +4768,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'MANEN';
-
-  @override
-  String get ui_rings => 'RINGEN';
-
-  @override
   String get ui_landing_landOnMoon => 'LAND OP MAAN';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Maan: $moonPercent% vs Planeet: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity =>
-      'Lagere zwaartekracht — eenvoudigere landing';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type Ringenstelsel';
-  }
 
   @override
   String get moon_barren => 'Dor';
@@ -4846,60 +4796,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Metallisch';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Een eenzame maan hangt aan de hemel boven de kolonie.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count manen cirkelen boven hen, wentelde schaduwen werpend over het landschap.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Onder hen wenkt een bewoonbare wereld — een groen juweel dat een tweede grens biedt.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Een bevroren maan glanst met uitgestrekte ijsafzettingen, een reservoir dat wacht om aangeboord te worden.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'IJs gewonnen van de bevroren maan vult de watervoorraad van de kolonie aan, een kale wereld veranderend in iets leefbaars.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'De kolonie werd niet op de planeet zelf gevestigd, maar op haar meest veelbelovende maan — een kleinere wereld met zachtere zwaartekracht en grotere belofte.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Een vage stofring welft over de hemel, een etherische schoonheid toevoegend aan elke zonsopgang.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Een schitterende ring van ijs vangt het sterrenlicht, de hemel beschilderend met prismatisch vuur.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Een dichte rotsachtige ring omgordt de planeet, een bron van bouwmaterialen die langzaam naar binnen regent.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Een metallische ring glinstert boven hen, rijk aan erts dat de industrie van de kolonie voedt.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Een bewoonbare maan biedt een tweede kans op kolonisatie.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'IJs gewonnen van de bevroren maan vult de watervoorraad van de kolonie aan.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'De kolonie draait onder $count ma(a)n(en).';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'Het alleenspraak van de AI';
@@ -5427,6 +5323,30 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'TIK OM OVER TE SLAAN';
+
+  @override
+  String get ui_common_tapRingToChoose => 'TIK OP EEN RING OM TE KIEZEN';
+
+  @override
+  String get ui_common_tapToContinue => 'TIK OM VERDER TE GAAN';
+
+  @override
+  String get ui_tooltip_back => 'Rug';
+
+  @override
+  String get ui_tooltip_codex => 'Codex';
+
+  @override
+  String get ui_tooltip_settings => 'Instellingen';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Leaderboards';
+
+  @override
+  String get ui_tooltip_bugReport => 'Rapporteer een bug';
+
+  @override
   String get event_pulsarLighthouse_title => 'Pulsarvuurtoren';
 
   @override
@@ -5447,6 +5367,14 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'We houden ruim afstand van de pulsar en verbranden extra brandstof voor een veilige koers. De bemanning bekijkt de vegende bundel door gefilterde kijkvensters — prachtig, maar ver weg.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Trek je terug voordat de sweep ons bereikt';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'We zwaaien weg bij een noodbrand voordat de volgende straal passeert. Het signaal van de pulsar verdwijnt achter ons: er worden geen gegevens verzameld, er wordt geen schade geleden, er wordt een beetje brandstof besteed aan ontwijkende stuwkracht.';
 
   @override
   String get event_alienNursery_title => 'Buitenaardse Kraamkamer';
@@ -5537,4 +5465,470 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'Het experimentele antischimmelmiddel toont aanvankelijk belofte, maar een resistente stam breekt door. Tegen de tijd dat we overgaan tot een volledige zuivering, heeft de plaag zich verspreid naar de voedingslijnen van de cryopods. De schade is erger dan wanneer we van begin af aan doortastend hadden gehandeld.';
+
+  @override
+  String get event_constitutionalConvention_title =>
+      'Constitutionele Conventie';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'De bevolking van het kolonieschip is onrustig geworden zonder formeel bestuur. Afgevaardigden van elk dek verzamelen zich in het vrachtruim om een ​​charter op te stellen dat zal bepalen hoe de toekomstige kolonie zal worden geregeerd. Drie facties presenteren concurrerende visies voor de nieuwe regering.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Stel een democratisch handvest op met algemeen kiesrecht';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'De kolonisten ratificeren een grondwet die gelijke vertegenwoordiging garandeert. De besluitvorming vertraagt, maar het moreel stijgt naarmate elke stem wordt gehoord.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Zorg voor een sterke uitvoerende macht met noodbevoegdheden';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Er wordt één enkele leider aangesteld met verregaande autoriteit. Beslissingen komen snel, maar andersdenkenden fluisteren over tirannie op de benedendekken.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Vorm een ​​technocratische raad van specialisten';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Ingenieurs, wetenschappers en artsen vormen een regerende raad op basis van expertise. De efficiëntie verbetert, hoewel sommigen zich uitgesloten voelen van de macht.';
+
+  @override
+  String get event_militaryCoupThreat_title =>
+      'Dreiging van een militaire staatsgreep';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'Commandant Vasquez van de veiligheidsdienst van het schip heeft de wapenkamer in beslag genomen en een ultimatum gesteld: verleen militaire noodkrachten, anders worden alle dekken afgesloten. De situatie is onstabiel en de kolonisten kijken naar jou uit voor een reactie.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Weersta de staatsgreep met loyale bemanningsleden';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'Trouwe bemanningsleden verzamelen zich om zich tegen Vasquez te verzetten. De impasse eindigt met minimaal bloedvergieten, maar de veiligheidsdiensten zijn verzwakt en sommige kolonisten komen in het kruisvuur terecht.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Geef je over aan de eisen van de commandant';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vasquez neemt de controle over de scheepsoperaties over. De orde wordt snel hersteld, maar dit gaat ten koste van de burgerlijke vrijheden. Gewapende patrouilles lopen nu door elke gang.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Onderhandel over beperkte noodbevoegdheden met een zonsondergangsclausule';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'Na gespannen onderhandelingen aanvaardt Vasquez tijdelijk gezag met toezicht. Een kwetsbaar compromis dat niemand volledig tevreden stelt, maar geweld voorkomt.';
+
+  @override
+  String get event_religiousAwakening_title => 'Religieus ontwaken';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Een charismatische prediker heeft honderden kolonisten tot een nieuwe geloofsbeweging getrokken. Ze verzamelen zich elke cyclus in de observatiekoepel, terwijl hun hymnes door de ventilatieschachten weerklinken. Sommige bemanningsleden maken zich zorgen over fanatisme; Anderen vinden echte troost in de leringen.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'Omarm de geloofsbeweging en zorg voor middelen';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'De beweging bloeit met officiële steun. Het moreel onder de gelovigen verbetert, en hun gemeenschapszin versterkt de sociale banden aan boord van het schip.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Dwing strikt secularisme af aan boord van het schip';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Religieuze bijeenkomsten zijn beperkt tot privévertrekken. De beweging gaat ondergronds en kweekt wrok, maar het wetenschappelijk rationalisme blijft de officiële doctrine.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'Sta aanbidding toe, maar controleer de invloed ervan';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'Het geloof is toegestaan, maar wordt gescheiden gehouden van het bestuur. Er wordt een kapelaan aangesteld om contact te onderhouden met het commando. Er blijft een ongemakkelijk evenwicht bestaan.';
+
+  @override
+  String get event_corporateTakeover_title => 'Bedrijfsovername';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'De resourcemanagers van het schip hebben stilletjes de controle over de voedseldistributie, waterrecycling en energietoewijzing geconsolideerd. Ze stellen nu voor om hun autoriteit te formaliseren in een bedrijfsstructuur die de economie van de toekomstige kolonie zou beheren.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Laat de principes van de vrije markt de hulpbronnen beheersen';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'De bedrijfsfractie neemt het beheer van de hulpbronnen over. De efficiëntie verbetert dramatisch, maar de prijzen stijgen en de armste kolonisten hebben moeite om de basisbehoeften te betalen.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Nationaliseer alle hulpbronnen onder collectief eigendom';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Hulpbronnen worden in beslag genomen en onder gemeenschappelijke controle geplaatst. De bedrijfsfractie wordt ontmanteld, maar de innovatie stagneert zonder winstprikkels.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Implementeer gereguleerde markten met vangnetten';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Er ontstaat een gemengde economie met prijscontroles en welzijnsprogramma\'s. Geen van beide facties is volledig tevreden, maar aan de basisbehoeften wordt voldaan terwijl er toch enige ondernemingszin mogelijk is.';
+
+  @override
+  String get event_successionCrisis_title => 'Successiecrisis';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'De kapitein van het schip is in hun slaap overleden, waardoor er geen opvolger is aangewezen. Drie facties strijden onmiddellijk om controle: de burgerraad eist verkiezingen, de veiligheidschef claimt krijgsgezag en de oudere kolonisten beroepen zich op traditionele leiderschapsrituelen.';
+
+  @override
+  String get event_successionCrisis_choice0 => 'Houd een noodverkiezing';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'Een chaotische maar pittige verkiezing levert een nieuwe kapitein op, gekozen door middel van volksstemming. Het proces is rommelig, maar de kolonisten voelen zich eigenaar van hun leiderschap.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Laat het leger het bevel overnemen';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'Het hoofd van de beveiliging stapt in de stoel van de kapitein. De discipline wordt onmiddellijk hersteld, maar de burgerbemanning kijkt met groeiend ongemak naar de gewapende bewakers.';
+
+  @override
+  String get event_successionCrisis_choice2 =>
+      'Roep een raad van oudsten bijeen';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'De oudste en meest ervaren kolonisten vormen een bestuursraad. Hun wijsheid leidt het schip, hoewel sommige jongere bemanningsleden zich gemarginaliseerd voelen door de gerontocratie.';
+
+  @override
+  String get event_nativeSovereignty_title => 'Inheemse soevereiniteit';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Langeafstandsscans bevestigen intelligent leven op de doelplaneet. Onderschepte communicatie onthult een geavanceerde beschaving die jouw nadering heeft opgemerkt. Ze zenden een formele eis uit: erkennen hun territoriale soevereiniteit of krijgen bij aankomst te maken met weerstand.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Erken de inheemse soevereiniteit en vraag toestemming om zich te vestigen';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'U geeft een formele erkenning van inheemse rechten door. De reacties zijn voorzichtig maar positief. Toekomstige relaties zullen beginnen op basis van wederzijds respect, ook al zijn de landingsplaatsen beperkt.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Beweer de koloniale suprematie en bereid je voor op verzet';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'U zendt uw voornemen uit om hoe dan ook een schikking te treffen. De bemanning begint met wapenoefeningen en het plannen van fortificaties. De inboorlingen zwijgen, wat op de een of andere manier angstaanjagender is dan bedreigingen.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Stel een gedeeld bestuur van de planeet voor';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'U biedt een raamwerk voor co-existentie en het delen van hulpbronnen. De inboorlingen zijn geïntrigeerd maar op hun hoede. De onderhandelingen zullen complex zijn, maar de mogelijkheid van vrede bestaat.';
+
+  @override
+  String get event_laborStrike_title => 'Arbeidsstaking';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'De technische bemanning heeft haar baan opgezegd en eist kortere diensten, betere voedselrantsoenen en een stem in navigatiebeslissingen. Kritieke systemen draaien op geautomatiseerde back-ups, maar die zullen niet lang meegaan. De rest van de kolonisten kijkt zenuwachtig toe.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'Voldoe volledig aan de eisen van de arbeiders';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'De staking eindigt onmiddellijk. Werknemers keren onder betere omstandigheden terug naar hun posten. De productiviteit daalt licht naarmate de kortere diensten van kracht worden, maar de loyaliteit is onwrikbaar.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Onderdruk de staking en dwing verplichte arbeid af';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Veiligheidstroepen begeleiden de arbeiders onder schot terug naar hun posten. De motoren zoemen weer, maar de haat sluimert op de benedendekken. Verschillende werknemers zijn opgesloten in wijken.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Bied een gedeeltelijk compromis over de belangrijkste eisen';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'Na marathononderhandelingen wordt een deal gesloten: betere rantsoenen en advies, maar geen verkorting van de dienstduur. Geen van beide partijen is enthousiast, maar de motoren blijven draaien.';
+
+  @override
+  String get event_censorshipDebate_title => 'Censuurdebat';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Een uitgelekt document onthult de ware toestand van de falende systemen van het schip. De paniek verspreidt zich door de lagere dekken. De communicatiefunctionaris stelt voor om de toegang tot informatie te beperken om verdere onrust te voorkomen. Voorstanders van burgerlijke vrijheden zijn verontwaardigd.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Garandeer gratis toegang tot alle informatie';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Er is sprake van volledige transparantie. De aanvankelijke paniek neemt af als kolonisten zich verenigen om de problemen op te lossen die ze nu begrijpen. Het vertrouwen in leiderschap groeit, ook al veroorzaakt bepaalde informatie onrust.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'Implementeer volledige informatiecontrole';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Alle communicatie wordt nu gefilterd via commando\'s. De paniek houdt op en maakt plaats voor een griezelige kalmte. Maar geruchten vullen de leegte die door de gecensureerde waarheid wordt achtergelaten, en ze zijn vaak erger dan de werkelijkheid.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Filter alleen beveiligingsgevoelige informatie';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Er wordt een classificatiesysteem opgezet. De meeste informatie stroomt vrijelijk, maar militaire en kritieke systeemgegevens vereisen goedkeuring. Een werkbare middenweg die grotendeels voldoet.';
+
+  @override
+  String get event_colonialCharter_title => 'Koloniaal Handvest';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'Nu de planeetval nadert, moeten de kolonisten fundamentele wetten opstellen voor hun nieuwe samenleving. Er zijn drie filosofische kampen ontstaan, die elk een andere visie verdedigen op wat de kolonie zou moeten worden. Het debat is verhit en zeer persoonlijk.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Een progressief handvest dat de nadruk legt op individuele rechten';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'Het handvest verankert persoonlijke vrijheden, gelijkheid en sociale mobiliteit. Kunstenaars en denkers vieren feest; traditionalisten waarschuwen dat ongecontroleerde vrijheid tot chaos leidt.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Een conservatief handvest dat de tradities van de aarde bewaart';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'Het handvest codificeert traditionele waarden, gezinsstructuren en religieuze naleving. Velen vinden troost in vertrouwde gewoonten; Anderen voelen zich verstikt door het gewicht van het ouderwetse denken.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Een pragmatisch handvest gericht op overleven en groei';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'Het handvest geeft prioriteit aan hulpbronnenbeheer, technisch onderwijs en economische ontwikkeling. Het mist poëzie, maar zorgt ervoor dat de kolonie efficiënt en goed georganiseerd zal zijn.';
+
+  @override
+  String get event_separatistMovement_title => 'Separatistische beweging';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Een factie kolonisten heeft zich onafhankelijk verklaard van het scheepsbestuur. Ze hebben zich in het achterste gedeelte gebarricadeerd en eisen het recht op om na de landing hun eigen nederzetting te stichten. Ze controleren 15% van de voedselreserves van het schip en een back-up navigatie-array.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Regionale autonomie verlenen binnen een federaal kader';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'De separatisten aanvaarden een deal: een eigen district met lokaal bestuur, onder een losse federale paraplu. Het precedent van fragmentatie baart sommigen zorgen, maar de vrede blijft gehandhaafd.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Bestorm de barricades en forceer hereniging';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Beveiligingsteams doorbreken het achterste gedeelte. De separatisten verzetten zich hevig. De orde wordt hersteld, maar tegen verschrikkelijke kosten. Het schip is verenigd in lichaam, zo niet in geest.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Pak de fundamentele grieven aan die de beweging aandrijven';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Bemiddelaars proberen te begrijpen wat de factie wegduwde. Hervormingen in de distributie en vertegenwoordiging van hulpbronnen brengen de separatisten langzaamaan weer in de gelederen. Genezing kost tijd.';
+
+  @override
+  String get event_warCouncil_title => 'Oorlogsraad';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'Nu er potentiële bedreigingen worden gedetecteerd in nabijgelegen systemen, roept de leiding van het schip een oorlogsraad bijeen. De vraag: hoeveel van de beperkte middelen van de kolonie moeten worden besteed aan militaire paraatheid versus civiele infrastructuur?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Volledige bewapening: smeed wapens en train soldaten';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Werkplaatsen worden opnieuw ingericht voor wapenproductie. Elke gezonde kolonist krijgt gevechtstraining. Het schip barst van de wapens, maar het budget voor landbouwuitrusting krimpt.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Ontwapening: smelt wapens tot gereedschap';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'Het arsenaal wordt geleegd en de inhoud ervan wordt gerecycled tot bouwmaterialen. De kolonie zal bouwen met ploegscharen, niet met zwaarden. Pacifisten verheugen zich; Realisten maken zich zorgen over wat er in het donker op de loer ligt.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Alleen defensieve houding: schilden en muren, geen zwaarden';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'De middelen gaan naar vestingwerken, schilden en systemen voor vroegtijdige waarschuwing. Er worden geen aanvalswapens geproduceerd. Een evenwichtige aanpak die opties open houdt zonder potentiële buren te provoceren.';
+
+  @override
+  String get event_tradeFederation_title => 'Handelsfederatie';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'Terwijl de kolonie de levensvatbaarheid nadert, debatteren facties over de manier waarop ze de economie moeten structureren. De vraag gaat verder dan louter overleven; het zal het soort samenleving definiëren dat wortel schiet op vreemde bodem. Kooplieden, communisten en bureaucraten maken allemaal hun standpunt kenbaar.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Vestig vrijhandelszones met minimale regelgeving';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'In elke habitatmodule ontstaan ​​markten. Innovatie bloeit terwijl handelaren concurreren. De ongelijkheid in rijkdom groeit, maar dat geldt ook voor de totale hoeveelheid middelen die voor de kolonie beschikbaar zijn.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Implementeer het gemeenschappelijk delen van alle bronnen';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Privé-eigendom wordt afgeschaft. Alles is van iedereen. Niemand lijdt honger, maar niemand heeft de prikkel om meer te produceren dan het minimum. Middelmatigheid is comfortabel.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Creëer een door de staat beheerd handelssysteem';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'De overheid controleert alle handel, stelt prijzen vast en wijst middelen toe. Het systeem is eerlijk, maar inflexibel. Zwarte markten ontstaan ​​in de onderhoudscorridors.';
+
+  @override
+  String get event_faithVsScience_title => 'Geloof versus wetenschap';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'De telescoop van het schip heeft beelden vastgelegd van een kosmisch fenomeen dat rechtstreeks in tegenspraak is met het centrale principe van de dominante geloofsbeweging. De hoofdwetenschapper wil de bevindingen publiceren; de religieuze leider houdt vol dat ze de gemeenschap zullen verscheuren.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Publiceer de wetenschappelijke bevindingen volledig';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'De waarheid prevaleert boven comfort. De gegevens worden vrijgegeven en de religieuze beweging breekt. Sommige gelovigen passen hun geloof aan; anderen verliezen het volledig. Kennis gaat vooruit.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Onderdruk de bevindingen om de sociale harmonie te behouden';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'De gegevens zijn geclassificeerd. De religieuze gemeenschap blijft stabiel, maar het wetenschapsteam is gedemoraliseerd. Uitgestelde waarheid betekent niet dat de waarheid wordt ontkend, maar zo voelt het wel.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Roep een gezamenlijk panel bijeen om harmonie tussen beide standpunten te vinden';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Wetenschappers en theologen werken samen om de bevindingen te herinterpreteren. Er ontstaat een nieuwe synthese die zowel het begrip als het geloof vergroot. Niet iedereen is overtuigd, maar de dialoog is gezond.';
+
+  @override
+  String get event_surveillanceState_title => 'Toezicht staat';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'Na een reeks sabotage-incidenten stelt de veiligheidschef voor om in elk compartiment van het schip monitoringsystemen te installeren. Camera\'s, microfoons en biometrische scanners zouden de bewegingen van elke kolonist volgen. Voorstanders van privacy zijn geschokt.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Wijs het surveillancevoorstel volledig af';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'De privacy blijft behouden. De saboteur blijft op vrije voeten, maar de kolonisten slapen gemakkelijker omdat ze weten dat ze niet in de gaten worden gehouden. Het onderzoek wordt voortgezet met traditionele middelen.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Implementeer volledige bewaking over het hele schip';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Elke hoek van het schip wordt bewaakt. De saboteur wordt binnen enkele dagen gepakt. Maar de camera\'s blijven, en het hoofd van de beveiliging toont geen interesse om ze uit te zetten. Ooit.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Installeer beperkte monitoring alleen in kritieke gebieden';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Camera\'s bestrijken de machinekamer, de wapenkamer en de brug. Woonvertrekken blijven privé. De saboteur wordt uiteindelijk geïdentificeerd door middel van patroonanalyse. Een afgemeten reactie.';
+
+  @override
+  String get event_nativeAlliance_title => 'Inheemse Alliantie';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'De inheemse beschaving heeft een formeel verdrag voorgesteld. Hun ambassadeur arriveert per shuttle, een elegant wezen dat spreekt via een vertaalapparaat van verbazingwekkende verfijning. Ze bieden drie relatievormen, elk met verschillende implicaties voor de toekomst van de kolonie.';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'Teken een gelijkwaardig alliantieverdrag';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'Het verdrag regelt wederzijdse verdediging, gedeeld onderzoek en gelijke territoriale rechten. Beide beschavingen zullen samen groeien. De inboorlingen delen landbouwkennis die de vooruitzichten voor uw kolonie verandert.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Onderhandel vanuit een positie van koloniale dominantie';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'U maakt gebruik van uw geavanceerde technologie om gunstige voorwaarden te garanderen. De inboorlingen staan ​​grondgebied en hulpbronnen af. Ze tekenen met trillende handen. De geschiedenis heeft dit eerder gezien en het eindigt zelden goed.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Een handelspartnerschap tot stand brengen dat gericht is op wederzijds voordeel';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'Handel overbrugt de kloof tussen soorten. Native materialen stromen naar uw workshops; jouw technologie verbetert hun medicijn. Vriendschap groeit uit wederzijds voordeel.';
 }

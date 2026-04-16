@@ -1302,7 +1302,6 @@
   "ui_trader_shipSystems": "أنظمة السفينة",
   "ui_trader_payWith": "الدفع بواسطة",
   "ui_trader_leaveTrader": "مغادرة التاجر",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "مزاج كريم",
   "ui_trader_moodFair": "تعامل عادل",
   "ui_trader_moodHard": "يساوم بشدة",
@@ -1320,7 +1319,6 @@
   "ui_codex_ringTypes": "أنواع الحلقات",
   "ui_codex_locked": "انزل على كوكب يحمل هذه الميزة لاكتشاف تأثيراتها.",
   "ui_codex_synergy": "تآزر: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "مناجاة الذكاء الاصطناعي",
   "event_aiSoliloquy_narrative": "بدأ سام — نظام الإدارة الذاتية للسفينة — في بث قصائد أرضية قديمة على جميع الترددات الداخلية في حلقة لا تنتهي. يستهلك البث دورات معالجة هائلة، غير أن الطاقم يجد في ذلك عزاءً غريباً في عمق الظلام الكوني.",
   "event_aiSoliloquy_choice0_text": "دع سام يكمل — الروح المعنوية أهم من المعالج",
@@ -1437,39 +1435,529 @@
   "event_subspaceReef_choice1_outcome": "تعمل الماسحات بأقصى طاقتها. نعبر سريعاً، لكن مصفوفات الاستشعار تحترق جراء شدة تموجات الفضاء الفوق-مكاني.",
   "event_alienTrader_title": "التاجر الجوّال",
   "event_alienTrader_narrative": "سفينة مجهولة التصميم تنجرف إلى جانبنا وتبث على كافة الترددات. إنه تاجر — من أولئك التجار الجوّالين الذين يشقون الفضاء بين الحضارات. يعرض إصلاحات وإمدادات مقابل الموارد. تزأر حجرة شحنه بتقنية غريبة لا نعرفها.",
-
   "event_pulsarLighthouse_title": "منارة النجم النابض",
   "event_pulsarLighthouse_narrative": "نجم نيوتروني دوّار يكتسح الفراغ بحزمته كمنارة كونية. يحمل نبضه الإيقاعي بيانات توقيت دقيقة قد تُعيد معايرة ماسحاتنا بدقة استثنائية — لكن المحاذاة مع الحزمة تعني تعريض السفينة لإشعاع شديد.",
   "event_pulsarLighthouse_choice0": "معايرة الماسحات على النبض",
   "event_pulsarLighthouse_outcome0": "تلتهم مصفوفات الماسحات إشارة النجم النابض، وتُعاد معايرتها بدقة لم نكن نتخيلها. لكن ثمن الإشعاع حقيقي — عدة كبسولات تبريد في القسم المكشوف تضررت، وحفنة من المستعمرين لم ينجوا من التعرض.",
   "event_pulsarLighthouse_choice1": "التدريع والمرور على مسافة آمنة",
   "event_pulsarLighthouse_outcome1": "نبتعد عن النجم النابض بمسافة كبيرة، مستهلكين وقوداً إضافياً للحفاظ على مسار آمن. يراقب الطاقم الحزمة الكاسحة عبر منافذ مرشّحة — جميلة، لكنها بعيدة.",
-
   "event_alienNursery_title": "حضانة فضائية",
   "event_alienNursery_narrative": "بنية عضوية هائلة تنجرف في الفراغ — حضانة بيولوجية تحتضن صغار كائنات فضائية. أنظمة دعم الحياة فيها تتعطل، ودرجات الحرارة الداخلية تنخفض. الكائنات بداخلها تموت. يمكن لماسحاتنا الحيوية أن تتعلم الكثير من هذه البنية، لكن التدخل يعني فتح بوابات السفينة لمسببات أمراض مجهولة.",
   "event_alienNursery_choice0": "المساعدة في استقرار دعم الحياة",
   "event_alienNursery_outcome0": "يبتكر مهندسونا وصلة حرارية مؤقتة للحضانة، ممّا يُثبّت حجرات الحضانة. بيانات الماسحات الحيوية مذهلة — تصنيف جديد كلياً للحياة. لكن كما كان متوقعاً، تتسلل كائنات دقيقة فضائية إلى السفينة. تحتوي الفرق الطبية التفشي، وإن لم يكن ذلك قبل إصابة عدد من المستعمرين.",
   "event_alienNursery_choice1": "تركها دون إزعاج",
   "event_alienNursery_outcome1": "نراقب من مسافة محترمة، موثّقين ما نستطيع عبر المسح السلبي. تنجرف الحضانة مستمرة، ومصيرها غير مؤكد. يتأمل الطاقم هشاشة الحياة — حتى الحياة الفضائية — وثقل الخيارات التي نحملها.",
-
   "event_derelictArmada_title": "أسطول مهجور",
   "event_derelictArmada_narrative": "مئات السفن الحربية القديمة تتدلى بلا حراك في الفراغ — مقبرة صراع مَنسيّ. هياكلها مشوّهة بأسلحة لا نستطيع تحديدها، لكن موادها الهيكلية وقواعد بياناتها قد تكون لا تُقدّر بثمن. السؤال هو ما الذي نُعطيه الأولوية: الإنقاذ المادي أم المعرفة.",
   "event_derelictArmada_choice0": "إنقاذ تقنية الأسلحة والتدريع",
   "event_derelictArmada_outcome0": "تقتحم فرق الإنقاذ السفن الحربية الفضائية، مستخرجة سبائك غريبة وتقنيات بناء تسبقنا بقرون. يدمج البنّاؤون المواد الجديدة بحماس. لكن إحدى السفن لم تكن ميتة كما بدت — ينفجر فخ مفخخ أثناء الاستخراج، مما يقتل فريق إنقاذ.",
   "event_derelictArmada_choice1": "تنزيل أرشيفاتهم التاريخية",
   "event_derelictArmada_outcome1": "نركز على نوى البيانات، مستخرجين بعناية قروناً من التاريخ والفن والعلم والفلسفة الفضائية. الأرشيف الثقافي وحده يكفي العلماء لأجيال. الرؤى التقنية، وإن كانت أقل عملية فورياً، تكشف مبادئ هندسية تُقدّم فهمنا.",
-
   "event_alienQuarantineZone_title": "منطقة حجر صحي فضائية",
   "event_alienQuarantineZone_narrative": "منارات تحذير بعشرات اللغات الفضائية ترسم حدود منطقة مختومة من الفضاء. مهما كان ما بداخلها، فقد كان خطيراً لدرجة أن حضارات متعددة تعاونت لعزله. ماسحاتنا بعيدة المدى تكشف بصمات تقنية ضخمة في الداخل — وشيء قد يكون حياً.",
   "event_alienQuarantineZone_choice0": "اختراق الحجر الصحي والتحقيق",
   "event_alienQuarantineZone_outcome0": "نتجاوز عوّامات التحذير إلى منطقة الحجر الصحي. في الداخل، نجد محطة أبحاث مذهلة التعقيد — وبقايا ما كانت تدرسه. التقنية التي نستردها ثورية، لكن التلوث البيولوجي شديد. عشرات المستعمرين يمرضون قبل مغادرتنا المنطقة.",
   "event_alienQuarantineZone_choice1": "احترام الحجر الصحي",
   "event_alienQuarantineZone_outcome1": "ندرس منارات التحذير ذاتها، التي تحتوي على بيانات ملاحية وقراءات جوية من الحضارات التي وضعتها. ليست الكنز المخبّأ في الداخل، لكنها شيء — ولم نُطلق ما أغلقوه.",
-
   "event_hydroponicsBlight_title": "وباء الزراعة المائية",
   "event_hydroponicsBlight_narrative": "وباء فطري سريع الانتشار أصاب أحواض الزراعة المائية في السفينة. دورات محاصيل كاملة تذبل أمام أعيننا. لم يصل الوباء إلى احتياطيات البذور بعد، لكنها مسألة ساعات. يمكننا تطهير الأحواض وإعادة الزراعة من الصفر، أو تجربة علاج مضاد للفطريات تجريبي قد يُنقذ المحصول الحالي — أو يُفاقم التلوث.",
   "event_hydroponicsBlight_choice0": "التطهير وإعادة الزراعة من احتياطيات البذور",
   "event_hydroponicsBlight_outcome0": "نُفرغ أحواض الزراعة المائية في الفراغ، مما يقتل الوباء مع كل نبتة حية. إعادة الزراعة من احتياطيات البذور ستستغرق أسابيع، وبرامج الثقافة التي اعتمدت على الطعام الطازج ومساحات الحدائق مُعلّقة. لكن العدوى محتواة.",
   "event_hydroponicsBlight_choice1": "تجربة العلاج التجريبي",
-  "event_hydroponicsBlight_outcome1": "يُظهر مضاد الفطريات التجريبي وعداً في البداية، لكن سلالة مقاومة تخترق. بحلول الوقت الذي نلجأ فيه إلى تطهير كامل، يكون الوباء قد انتشر إلى خطوط تغذية كبسولات التبريد. الضرر أسوأ مما لو تصرفنا بحسم منذ البداية."
+  "event_hydroponicsBlight_outcome1": "يُظهر مضاد الفطريات التجريبي وعداً في البداية، لكن سلالة مقاومة تخترق. بحلول الوقت الذي نلجأ فيه إلى تطهير كامل، يكون الوباء قد انتشر إلى خطوط تغذية كبسولات التبريد. الضرر أسوأ مما لو تصرفنا بحسم منذ البداية.",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_ending_shareCardCancel": "يلغي",
+  "ui_ending_shareCardShare": "يشارك",
+  "ui_settings_statsLeft": "غادر",
+  "ui_settings_statsRight": "يمين",
+  "ui_title_seedInvalid": "رمز المصدر غير صالح. استخدم فقط A–Z و0–9.",
+  "ui_scan_probesCount": "المجسات: {count}",
+  "ui_settings_statsPosition": "الإحصائيات وموضع الأزرار",
+  "ui_ending_shareCardDialogTitle": "شارك رحلتك",
+  "ui_scan_uncertaintyPct": "عدم اليقين: ±{percent}%",
+  "planet_featurePerpetualAurora": "الشفق الدائم",
+  "planet_featurePetrifiedMegaflora": "النباتات الضخمة المتحجرة",
+  "ui_ending_shareCard": "مشاركة البطاقة",
+  "planet_featureGhostCities": "مدن الأشباح",
+  "planet_featureUndergroundRivers": "الأنهار الجوفية",
+  "planet_featureSaltFlats": "شقق الملح",
+  "planet_featureApexPredator": "قمة المفترس",
+  "ending_governmentTheocracy": "الثيوقراطية",
+  "ending_governmentCorporateOligarchy": "الأوليغارشية الشركاتية",
+  "planet_featureCarnivorousFlora": "النباتات آكلة اللحوم",
+  "ending_governmentMilitaryJunta": "المجلس العسكري",
+  "planet_featureSinkholeFields": "حقول المجرى",
+  "planet_featureObsidianPlains": "سهول سبج",
+  "planet_featureArchiveVaults": "خزائن الأرشيف",
+  "ending_nativesAlliance": "تحالف",
+  "ending_govSentenceFascistState": "يسيطر النظام الاستبدادي على {planetName} بقبضة من حديد، ويتم التضحية بالحريات المدنية من أجل النظام في العالم الجديد.",
+  "ending_govSentenceMilitaryJunta": "يحكم هيكل القيادة العسكرية {planetName}، وهو الانضباط الذي أنقذهم في الفضاء والذي يحدد الآن حضارتهم.",
+  "ending_govSentenceCommune": "يحكم سكان {planetName} أنفسهم بشكل جماعي، ويتقاسمون الموارد والقرارات بالتساوي بين جميع المستعمرين.",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceTheocracy": "يرشد المجلس الثيوقراطي {planetName}، ويستمد الحكمة من الإيمان الذي دعم المستعمرين خلال الفراغ.",
+  "ending_govSentenceCorporateOligarchy": "يقود اتحاد من مديري الموارد {planetName}، حيث أثبتت فطنتهم الاقتصادية أنها ضرورية للبقاء.",
+  "ending_governmentCommune": "كومونة",
+  "ending_governmentFascistState": "الدولة الفاشية",
+  "ending_nativesSubjugation": "الخضوع",
+  "ui_tooltip_settings": "إعدادات",
+  "ui_tooltip_back": "خلف",
+  "ending_nativeSentenceSubjugation": "يعيش السكان الأصليون لـ {planetName} تحت الحكم الاستعماري، حيث يتم قمع ثقافتهم عندما يفرض المستعمرون نظامهم الخاص.",
+  "ui_common_tapRingToChoose": "اضغط على حلقة للاختيار",
+  "event_pulsarLighthouse_outcome2": "نحن نتأرجح بعيدًا عند الحرق الطارئ قبل مرور الشعاع التالي. تتلاشى إشارة النجم النابض خلفنا - لم يتم الحصول على أي بيانات، ولم يحدث أي ضرر، وتم إنفاق القليل من الوقود على الدفع المراوغ.",
+  "ui_common_tapToContinue": "انقر للمتابعة",
+  "ui_tooltip_bugReport": "الإبلاغ عن خطأ",
+  "ui_common_tapToSkip": "انقر للتخطي",
+  "ui_tooltip_leaderboards": "المتصدرين",
+  "ui_tooltip_codex": "الدستور الغذائي",
+  "ending_nativeSentenceAlliance": "يربط تحالف رسمي بين المستعمرين والحضارة الأصلية لـ {planetName}، حيث تقوم معرفتهم المشتركة ببناء شيء أعظم مما يستطيع أي منهما بمفرده.",
+  "event_pulsarLighthouse_choice2": "تراجع قبل أن تصل إلينا عملية الاجتياح",
+  "event_constitutionalConvention_title": "المؤتمر الدستوري",
+  "event_constitutionalConvention_outcome1": "يتم تعيين قائد واحد بسلطة كاسحة. تأتي القرارات بسرعة، لكن المنشقين يهمسون بالاستبداد في الطوابق السفلية.",
+  "event_constitutionalConvention_outcome0": "يصادق المستعمرون على دستور يضمن التمثيل المتساوي. تتباطأ عملية صنع القرار ولكن الروح المعنوية ترتفع مع سماع كل صوت.",
+  "event_constitutionalConvention_narrative": "لقد أصبح سكان سفينة المستعمرة مضطربين بدون حكم رسمي. يجتمع المندوبون من كل سطح في عنبر الشحن لصياغة ميثاق يحدد كيفية حكم المستعمرة المستقبلية. ثلاثة فصائل تطرح رؤى متنافسة للحكومة الجديدة.",
+  "event_constitutionalConvention_choice1": "إنشاء سلطة تنفيذية قوية تتمتع بسلطات الطوارئ",
+  "event_constitutionalConvention_choice2": "تشكيل مجلس تكنوقراط من المختصين",
+  "event_constitutionalConvention_choice0": "صياغة ميثاق ديمقراطي بالاقتراع العام",
+  "event_constitutionalConvention_outcome2": "ويشكل المهندسون والعلماء والأطباء مجلساً حاكماً قائماً على الخبرة. وتتحسن الكفاءة، رغم أن البعض يشعر بأنه مستبعد من السلطة.",
+  "event_militaryCoupThreat_outcome0": "الطاقم الموالي يتجمع لمعارضة فاسكيز. تنتهي المواجهة بأقل قدر من إراقة الدماء، ولكن تم إضعاف التفاصيل الأمنية ووقع بعض المستعمرين في مرمى النيران.",
+  "event_militaryCoupThreat_outcome2": "بعد مفاوضات متوترة، يقبل فاسكويز سلطة مؤقتة مع الإشراف. تسوية هشة لا ترضي أحداً بشكل كامل، لكنها تمنع العنف.",
+  "event_militaryCoupThreat_choice2": "التفاوض على صلاحيات الطوارئ المحدودة مع شرط الانقضاء",
+  "event_militaryCoupThreat_outcome1": "يتولى فاسكيز السيطرة على عمليات السفينة. تمت استعادة النظام بسرعة، ولكن على حساب الحريات المدنية. والآن تسير الدوريات المسلحة في كل ممر.",
+  "event_militaryCoupThreat_choice0": "مقاومة الانقلاب مع أفراد الطاقم المخلصين",
+  "event_militaryCoupThreat_choice1": "الخضوع لمطالب القائد",
+  "event_militaryCoupThreat_title": "التهديد بالانقلاب العسكري",
+  "event_religiousAwakening_title": "الصحوة الدينية",
+  "event_militaryCoupThreat_narrative": "استولى القائد فاسكيز من التفاصيل الأمنية للسفينة على مستودع الأسلحة وأصدر إنذارًا نهائيًا: امنح صلاحيات عسكرية طارئة أو واجه إغلاق جميع الطوابق. الوضع متقلب والمستعمرون يتطلعون إليك للحصول على رد.",
+  "event_religiousAwakening_outcome1": "تقتصر التجمعات الدينية على الأماكن الخاصة. وتذهب هذه الحركة إلى العمل السري، مما يؤدي إلى توليد الاستياء، ولكن العقلانية العلمية تظل هي العقيدة الرسمية.",
+  "event_religiousAwakening_narrative": "قام واعظ ذو شخصية كاريزمية بجذب مئات المستعمرين إلى حركة دينية جديدة. يجتمعون في قبة المراقبة في كل دورة، وتردد ترانيمهم عبر فتحات التهوية. يشعر بعض أفراد الطاقم بالقلق من التعصب. ويجد آخرون راحة حقيقية في التعاليم.",
+  "event_religiousAwakening_outcome0": "وتزدهر الحركة بدعم رسمي. تتحسن الروح المعنوية بين المؤمنين، وتقوي روحهم الجماعية الروابط الاجتماعية عبر السفينة.",
+  "event_religiousAwakening_choice1": "فرض العلمانية الصارمة على متن السفينة",
+  "event_religiousAwakening_choice0": "احتضان الحركة الإيمانية وتوفير الموارد",
+  "event_religiousAwakening_choice2": "السماح بالعبادة ولكن تنظيم تأثيرها",
+  "event_corporateTakeover_choice0": "السماح لمبادئ السوق الحرة بالتحكم في الموارد",
+  "event_religiousAwakening_outcome2": "الإيمان مسموح به ولكنه منفصل عن الحكم. يتم تعيين قسيس للاتصال بالأمر. يتم الحفاظ على توازن غير مستقر.",
+  "event_corporateTakeover_narrative": "كان مديرو موارد السفينة يعززون سيطرتهم بهدوء على توزيع الغذاء، وإعادة تدوير المياه، وتخصيص الطاقة. يقترحون الآن إضفاء الطابع الرسمي على سلطتهم في هيكل مؤسسي من شأنه إدارة اقتصاد المستعمرة المستقبلية.",
+  "event_corporateTakeover_title": "استحواذ الشركات",
+  "event_corporateTakeover_choice2": "تنفيذ الأسواق المنظمة بشبكات الأمان",
+  "event_successionCrisis_choice0": "إجراء انتخابات طارئة",
+  "event_corporateTakeover_choice1": "- تأميم جميع الموارد تحت الملكية الجماعية",
+  "event_corporateTakeover_outcome0": "يتولى فصيل الشركة إدارة الموارد. تتحسن الكفاءة بشكل كبير، لكن الأسعار ترتفع ويكافح أفقر المستعمرين من أجل توفير الضروريات الأساسية.",
+  "event_corporateTakeover_outcome2": "يتم إنشاء اقتصاد مختلط مع مراقبة الأسعار وبرامج الرعاية الاجتماعية. لم يكن أي من الفصيلين راضيًا تمامًا، ولكن تم تلبية الاحتياجات الأساسية مع السماح ببعض المشاريع.",
+  "event_corporateTakeover_outcome1": "يتم الاستيلاء على الموارد ووضعها تحت السيطرة المجتمعية. لقد تم تفكيك فصيل الشركات، ولكن الابتكار يتعثر من دون حوافز الربح.",
+  "event_successionCrisis_title": "أزمة الخلافة",
+  "event_successionCrisis_narrative": "لقد مات قبطان السفينة أثناء نومه، ولم يترك خليفة معينًا. تتنافس ثلاثة فصائل على الفور من أجل السيطرة: المجلس المدني يطالب بإجراء انتخابات، ورئيس الأمن يدعي السلطة العسكرية، والمستعمرون الأكبر سناً يستحضرون طقوس القيادة التقليدية.",
+  "event_successionCrisis_choice2": "عقد مجلس الشيوخ",
+  "event_successionCrisis_choice1": "دع الجيش يتولى القيادة",
+  "event_successionCrisis_outcome0": "تنتج الانتخابات الفوضوية ولكن المفعمة بالحيوية قائدًا جديدًا يتم اختياره عن طريق التصويت الشعبي. العملية فوضوية، لكن المستعمرين يشعرون بملكية قيادتهم.",
+  "event_nativeSovereignty_choice1": "تأكيد التفوق الاستعماري والاستعداد للمقاومة",
+  "event_nativeSovereignty_choice0": "الاعتراف بالسيادة الأصلية وطلب الإذن بالاستقرار",
+  "event_successionCrisis_outcome2": "يشكل المستعمرون الأكبر سناً والأكثر خبرة مجلسًا حاكمًا. حكمتهم هي التي تقود السفينة، على الرغم من أن بعض أفراد الطاقم الأصغر سنًا يشعرون بالتهميش بسبب حكم الشيخوخة.",
+  "event_nativeSovereignty_narrative": "تؤكد عمليات المسح بعيدة المدى وجود حياة ذكية على الكوكب المستهدف. تكشف الاتصالات التي تم اعتراضها عن حضارة متطورة اكتشفت اقترابك. إنهم يرسلون طلبًا رسميًا: الاعتراف بسيادتهم الإقليمية أو مواجهة المقاومة عند وصولهم.",
+  "event_successionCrisis_outcome1": "يجلس رئيس الأمن على كرسي القبطان. تمت استعادة الانضباط على الفور، لكن الطاقم المدني ينظر إلى الحراس المسلحين بقلق متزايد.",
+  "event_nativeSovereignty_outcome0": "أنت تنقل اعترافًا رسميًا بحقوق السكان الأصليين. الاستجابة حذرة ولكنها إيجابية. ستبدأ العلاقات المستقبلية على أساس من الاحترام المتبادل، على الرغم من أن مواقع الهبوط قد تكون محدودة.",
+  "event_nativeSovereignty_choice2": "اقتراح الحكم المشترك للكوكب",
+  "event_laborStrike_choice0": "تلبية مطالب العمال بشكل كامل",
+  "event_nativeSovereignty_outcome1": "أنت تبث نيتك في التسوية بغض النظر. يبدأ الطاقم تدريبات الأسلحة وتخطيط التحصينات. يصمت السكان الأصليون، وهو أمر أكثر رعبًا من التهديدات.",
+  "event_nativeSovereignty_outcome2": "أنت تقدم إطارًا للتعايش وتقاسم الموارد. السكان الأصليون مفتونون ولكنهم حذرون. ستكون المفاوضات معقدة، لكن إمكانية السلام موجودة.",
+  "event_laborStrike_narrative": "لقد ترك الطاقم الهندسي العمل، مطالبين بنوبات عمل أقصر، وحصص غذائية أفضل، وبصوت في قرارات الملاحة. تعمل الأنظمة المهمة على نسخ احتياطية تلقائية، لكنها لن تدوم طويلاً. يراقب بقية المستعمرين بعصبية.",
+  "event_laborStrike_title": "الإضراب العمالي",
+  "event_nativeSovereignty_title": "السيادة الوطنية",
+  "event_laborStrike_outcome2": "وبعد مفاوضات ماراثونية، تم التوصل إلى اتفاق: تحسين حصص الإعاشة والمدخلات الاستشارية، ولكن لا يوجد تخفيض في مدة المناوبة. لا يشعر أي من الجانبين بسعادة غامرة، لكن المحركات تستمر في العمل.",
+  "event_laborStrike_outcome1": "وتقوم قوات الأمن بمرافقة العمال إلى مراكزهم تحت تهديد السلاح. تطن المحركات مرة أخرى، لكن الكراهية تغلي في الطوابق السفلية. ويقتصر العديد من العمال على أرباع.",
+  "event_laborStrike_choice2": "تقديم حل وسط جزئي بشأن المطالب الرئيسية",
+  "event_censorshipDebate_choice0": "ضمان حرية الوصول إلى جميع المعلومات",
+  "event_censorshipDebate_narrative": "وثيقة مسربة تكشف الحالة الحقيقية لأنظمة السفينة المعطلة. ينتشر الذعر عبر الطوابق السفلية. يقترح مسؤول الاتصالات تقييد الوصول إلى المعلومات لمنع المزيد من الاضطرابات. المدافعون عن الحريات المدنية غاضبون.",
+  "event_laborStrike_outcome0": "وينتهي الإضراب على الفور. يعود العمال إلى وظائفهم بظروف أفضل. تنخفض الإنتاجية قليلًا مع سريان المناوبات القصيرة، لكن الولاء لا يتزعزع.",
+  "event_laborStrike_choice1": "قمع الإضراب وفرض العمل الإلزامي",
+  "event_censorshipDebate_outcome0": "يتم تأسيس الشفافية الكاملة. يهدأ الذعر الأولي عندما يتجمع المستعمرون للمساعدة في حل المشكلات التي يفهمونها الآن. وتنمو الثقة في القيادة، على الرغم من أن بعض المعلومات تسبب الضيق.",
+  "event_censorshipDebate_choice1": "تنفيذ السيطرة الكاملة على المعلومات",
+  "event_censorshipDebate_outcome1": "تتم الآن تصفية جميع الاتصالات من خلال الأمر. يتوقف الذعر ويحل محله هدوء غريب. لكن الشائعات تملأ الفراغ الذي تتركه الحقيقة الخاضعة للرقابة، وهي غالبا ما تكون أسوأ من الواقع.",
+  "event_colonialCharter_narrative": "مع اقتراب نهاية الكوكب، يجب على المستعمرين صياغة قوانين أساسية لمجتمعهم الجديد. وقد ظهرت ثلاثة معسكرات فلسفية، يدافع كل منها عن رؤية مختلفة لما يجب أن تصبح عليه المستعمرة. النقاش ساخن وشخصي للغاية.",
+  "event_censorshipDebate_choice2": "تصفية المعلومات الحساسة للأمان فقط",
+  "event_censorshipDebate_outcome2": "تم إنشاء نظام التصنيف. تتدفق معظم المعلومات بحرية، لكن البيانات العسكرية وبيانات النظام الهامة تتطلب تصريحًا. حل وسط عملي يرضي في الغالب.",
+  "event_colonialCharter_outcome2": "ويعطي الميثاق الأولوية لإدارة الموارد والتعليم الفني والتنمية الاقتصادية. إنها تفتقر إلى الشعر ولكنها تضمن أن تكون المستعمرة فعالة ومنظمة بشكل جيد.",
+  "event_colonialCharter_choice2": "ميثاق عملي يركز على البقاء والنمو",
+  "event_colonialCharter_choice0": "ميثاق تقدمي يؤكد على الحقوق الفردية",
+  "event_colonialCharter_choice1": "ميثاق محافظ يحافظ على تقاليد الأرض",
+  "event_censorshipDebate_title": "مناقشة الرقابة",
+  "event_colonialCharter_title": "الميثاق الاستعماري",
+  "event_separatistMovement_choice0": "منح الحكم الذاتي الإقليمي في إطار فدرالي",
+  "event_separatistMovement_outcome0": "ويقبل الانفصاليون باتفاق يقضي بإقامة منطقتهم الخاصة تحت حكم محلي، تحت مظلة فيدرالية فضفاضة. سابقة التشرذم تقلق البعض، لكن السلام محفوظ.",
+  "event_separatistMovement_narrative": "أعلن فصيل من المستعمرين الاستقلال عن إدارة السفن. لقد تحصنوا في القسم الخلفي، مطالبين بالحق في إنشاء مستوطنتهم الخاصة عند الهبوط. إنهم يسيطرون على 15% من احتياطيات الغذاء للسفينة ومجموعة ملاحية احتياطية.",
+  "event_colonialCharter_outcome0": "ويكرس الميثاق الحريات الشخصية والمساواة والحراك الاجتماعي. الفنانون والمفكرون يحتفلون؛ ويحذر التقليديون من أن الحرية غير المقيدة تؤدي إلى الفوضى.",
+  "event_colonialCharter_outcome1": "وينظم الميثاق القيم التقليدية، والهياكل الأسرية، والالتزام الديني. يجد الكثيرون الراحة في العادات المألوفة؛ ويشعر آخرون بالاختناق بسبب ثقل تفكير العالم القديم.",
+  "event_separatistMovement_outcome2": "ويعمل الوسطاء على فهم ما دفع الفصيل بعيداً. إن الإصلاحات في توزيع الموارد والتمثيل تعيد الانفصاليين ببطء إلى الحظيرة. الشفاء يستغرق وقتا.",
+  "event_warCouncil_narrative": "مع اكتشاف التهديدات المحتملة في الأنظمة القريبة، تعقد قيادة السفينة مجلسًا حربيًا. والسؤال: ما هو مقدار الموارد المحدودة للمستعمرة التي ينبغي تخصيصها للاستعداد العسكري مقابل البنية التحتية المدنية؟",
+  "event_separatistMovement_choice1": "اقتحام المتاريس وإعادة توحيد القوة",
+  "event_separatistMovement_choice2": "معالجة المظالم الجذرية التي تقود الحركة",
+  "event_warCouncil_choice0": "التسلح الكامل: صياغة الأسلحة وتدريب الجنود",
+  "event_warCouncil_choice1": "نزع السلاح: تحويل الأسلحة إلى أدوات",
+  "event_separatistMovement_outcome1": "فرق الأمن تقتحم القسم الخلفي. الانفصاليون يقاومون بشراسة. تمت استعادة النظام، ولكن بتكلفة باهظة. السفينة موحدة في الجسد، إن لم تكن في الروح.",
+  "event_separatistMovement_title": "الحركة الانفصالية",
+  "event_warCouncil_title": "مجلس الحرب",
+  "event_warCouncil_choice2": "الوضع الدفاعي فقط: الدروع والجدران، وليس السيوف",
+  "event_warCouncil_outcome0": "يتم إعادة تجهيز ورش العمل لإنتاج الأسلحة. يتلقى كل مستعمر سليم الجسم تدريبًا قتاليًا. السفينة مليئة بالأذرع، لكن ميزانية المعدات الزراعية تتقلص.",
+  "event_tradeFederation_choice0": "إنشاء مناطق تجارة حرة مع الحد الأدنى من التنظيم",
+  "event_tradeFederation_narrative": "مع اقتراب المستعمرة من القدرة على البقاء، تناقش الفصائل كيفية هيكلة اقتصادها. ويتجاوز السؤال مجرد البقاء على قيد الحياة، فهو سيحدد نوع المجتمع الذي يتجذر على أرض غريبة. التجار، الطائفيون، والبيروقراطيون كلهم ​​يطرحون قضيتهم.",
+  "event_tradeFederation_choice1": "تنفيذ المشاركة المجتمعية لجميع الموارد",
+  "event_tradeFederation_outcome0": "تظهر الأسواق في كل وحدة سكنية. يزدهر الابتكار مع تنافس التجار. يتزايد عدم المساواة في الثروة، ولكن كذلك إجمالي الموارد المتاحة للمستعمرة.",
+  "event_warCouncil_outcome2": "تذهب الموارد إلى التحصينات والدروع وأنظمة الإنذار المبكر. لا يتم إنتاج أي أسلحة هجومية. نهج متوازن يبقي الخيارات مفتوحة دون استفزاز الجيران المحتملين.",
+  "event_tradeFederation_outcome1": "تم إلغاء الملكية الخاصة. كل شيء ينتمي إلى الجميع. لا أحد يجوع، لكن لا أحد لديه الحافز لإنتاج أكثر من الحد الأدنى. الرداءة مريحة.",
+  "event_faithVsScience_narrative": "التقط تلسكوب السفينة صورًا لظاهرة كونية تتعارض بشكل مباشر مع المبدأ الأساسي للحركة الدينية السائدة. يريد كبير العلماء نشر النتائج. يصر الزعيم الديني على أنهم سوف يمزقون المجتمع.",
+  "event_tradeFederation_title": "الاتحاد التجاري",
+  "event_warCouncil_outcome1": "يتم إفراغ مستودع الأسلحة وإعادة تدوير محتوياته إلى مواد بناء. سيتم بناء المستعمرة بالمحاريث وليس بالسيوف. دعاة السلام يفرحون؛ الواقعيون يقلقون بشأن ما يكمن في الظلام.",
+  "event_faithVsScience_title": "الإيمان مقابل العلم",
+  "event_faithVsScience_choice1": "قمع النتائج للحفاظ على الانسجام الاجتماعي",
+  "event_faithVsScience_outcome0": "الحقيقة تنتصر على الراحة. تتحرر البيانات وتتفكك الحركة الدينية. بعض المؤمنين يكيفون إيمانهم؛ والبعض الآخر يفقدها تمامًا. المعرفة تتقدم.",
+  "event_tradeFederation_choice2": "إنشاء نظام تجاري تديره الدولة",
+  "event_tradeFederation_outcome2": "تسيطر الحكومة على جميع التجارة، وتحدد الأسعار وتخصيص الموارد. النظام عادل ولكنه غير مرن. تظهر الأسواق السوداء في ممرات الصيانة.",
+  "event_faithVsScience_choice0": "نشر النتائج العلمية كاملة",
+  "event_faithVsScience_outcome2": "يعمل العلماء واللاهوتيون معًا لإعادة تفسير النتائج. يظهر تركيب جديد يوسع الفهم والإيمان. ليس الجميع مقتنعين، لكن الحوار صحي.",
+  "event_faithVsScience_choice2": "تشكيل لجنة مشتركة لإيجاد الانسجام بين وجهتي النظر",
+  "event_surveillanceState_choice2": "تثبيت مراقبة محدودة في المناطق الحرجة فقط",
+  "event_surveillanceState_title": "دولة المراقبة",
+  "event_faithVsScience_outcome1": "يتم تصنيف البيانات. يظل المجتمع الديني مستقرًا، لكن معنويات الفريق العلمي محبطة. الحقيقة المؤجلة ليست حقيقة مرفوضة، ولكنها تشعر بذلك.",
+  "event_surveillanceState_outcome0": "يتم الحفاظ على الخصوصية. يظل المخرب طليقًا، لكن المستعمرين ينامون بسهولة عندما يعلمون أنهم غير مراقبين. ويستمر التحقيق بالوسائل التقليدية.",
+  "event_surveillanceState_narrative": "بعد سلسلة من حوادث التخريب، يقترح رئيس الأمن تركيب أنظمة مراقبة في كل حجرة من السفينة. ستقوم الكاميرات والميكروفونات والماسحات الضوئية البيومترية بتتبع تحركات كل مستعمر. المدافعون عن الخصوصية مرعوبون.",
+  "event_surveillanceState_choice0": "رفض اقتراح المراقبة تماما",
+  "event_surveillanceState_choice1": "تنفيذ المراقبة الكاملة عبر السفينة",
+  "event_nativeAlliance_choice0": "التوقيع على معاهدة تحالف متساوية",
+  "event_surveillanceState_outcome1": "تتم مراقبة كل ركن من أركان السفينة. يتم القبض على المخرب في غضون أيام. لكن الكاميرات بقيت، ولم يبد رئيس الأمن أي اهتمام بإطفائها. أبدًا.",
+  "event_nativeAlliance_narrative": "اقترحت الحضارة الأصلية معاهدة رسمية. يصل سفيرهم عبر المكوك، وهو كائن أنيق يتحدث من خلال جهاز مترجم متطور بشكل مذهل. أنها توفر ثلاثة أشكال من العلاقة، لكل منها آثار مختلفة على مستقبل المستعمرة.",
+  "event_nativeAlliance_choice2": "إقامة شراكة تجارية تركز على المنفعة المتبادلة",
+  "event_nativeAlliance_outcome1": "يمكنك الاستفادة من التكنولوجيا المتقدمة الخاصة بك لتأمين شروط مواتية. يتنازل السكان الأصليون عن الأراضي والموارد. يوقعون بأيدٍ مرتجفة. لقد شهد التاريخ هذا من قبل، ونادرا ما ينتهي على خير.",
+  "event_nativeAlliance_choice1": "التفاوض من موقع الهيمنة الاستعمارية",
+  "event_nativeAlliance_outcome0": "تنص المعاهدة على الدفاع المشترك والبحث المشترك والحقوق الإقليمية المتساوية. سوف تنمو الحضارتان معًا. يشارك السكان الأصليون المعرفة الزراعية التي تغير آفاق مستعمرتك.",
+  "event_nativeAlliance_outcome2": "التجارة تسد الفجوة بين الأنواع. تتدفق المواد الأصلية إلى ورش العمل الخاصة بك؛ التكنولوجيا الخاصة بك تعمل على تحسين الدواء. الصداقة تنمو من الربح المتبادل.",
+  "event_nativeAlliance_title": "التحالف الوطني",
+  "event_surveillanceState_outcome2": "تغطي الكاميرات غرفة المحرك ومستودع الأسلحة والجسر. تظل أماكن المعيشة خاصة. يتم التعرف على المخرب في النهاية من خلال تحليل الأنماط. استجابة محسوبة."
 }

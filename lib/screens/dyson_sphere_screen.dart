@@ -12,9 +12,10 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFFFFD54F);
 const _kStarWhite = Color(0xFFFFFFFF);
 const _kStarGold = Color(0xFFFFD54F);
@@ -22,7 +23,7 @@ const _kStarDeep = Color(0xFFFF8F00);
 const _kRingColor = Color(0xFFFFB74D);
 const _kBeamColor = Color(0xFFFFE082);
 const _kBoardColor = Color(0xFFFFB74D);
-const _kSalvageColor = Color(0xFF00E5FF);
+const _kSalvageColor = SpaceColors.cyan;
 const _kStudyColor = Color(0xFF69F0AE);
 
 class DysonSphereScreen extends ConsumerStatefulWidget {
@@ -35,7 +36,7 @@ class DysonSphereScreen extends ConsumerStatefulWidget {
 }
 
 class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, EventTypewriterMixin<DysonSphereScreen> {
   late final AnimationController _starController;
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
@@ -43,10 +44,6 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
   late final Animation<double> _pulseAnim;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedSection;
@@ -66,9 +63,10 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -78,39 +76,9 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int index) {
@@ -125,7 +93,11 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
       _resolved = true;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -134,7 +106,7 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
+    disposeTypewriter();
     _starController.dispose();
     _titleGlow.dispose();
     _pulseController.dispose();
@@ -155,84 +127,28 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'DYSON SPHERE',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(26),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 3,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'DYSON SPHERE',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    fontSize: 26,
+    letterSpacing: 3,
+  );
 
-  Widget _buildNarrativeCard() {
-    final event = widget.event;
-    if (!_resolved && event.narrative.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          _displayedText,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    if (_resolved && _selectedSection != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: (_isPositiveOutcome ? Colors.green : Colors.red)
-              .withValues(alpha: 0.1),
-          border: Border.all(
-            color: (_isPositiveOutcome ? Colors.green : Colors.red)
-                .withValues(alpha: 0.4),
-          ),
-        ),
-        child: Text(
-          event.choices[_selectedSection!].outcome,
-          style: TextStyle(
-            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildNarrativeCard() => EventNarrativeCard(
+    accentColor: _kAccent,
+    displayText: displayedText,
+    outcomeText: (_resolved && _selectedSection != null)
+        ? widget.event.choices[_selectedSection!].outcome
+        : null,
+    outcomeIsPositive: _isPositiveOutcome,
+  );
 
   Widget _buildVisualAreaWidget() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _resolved
               ? null
               : (details) => _handleTap(details, constraints),
@@ -253,83 +169,47 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            EventStarField(
+              controller: _starController,
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -341,23 +221,22 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          if (_typewriterDone)
-            Expanded(child: _buildVisualAreaWidget()),
-          if (!_typewriterDone) const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved || !_typewriterDone) ...[
-            const SizedBox(height: 12),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 12),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                if (typewriterDone) Expanded(child: _buildVisualAreaWidget()),
+                if (!typewriterDone) const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved || !typewriterDone) ...[
+                  const SizedBox(height: 12),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -410,13 +289,16 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) { _skipTypewriter(); return; }
+    if (!typewriterDone) {
+      skipTypewriter();
+      return;
+    }
     final size = Size(constraints.maxWidth, constraints.maxHeight);
     final tapPos = details.localPosition;
     final cx = size.width / 2;
@@ -459,63 +341,77 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.colonistDelta != 0) {
       final sign = choice.colonistDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Colonists',
-        delta: '$sign${choice.colonistDelta}',
-        isPositive: choice.colonistDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Colonists',
+          delta: '$sign${choice.colonistDelta}',
+          isPositive: choice.colonistDelta > 0,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
       return Text(
         'No effect',
-        style:
-            TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -626,18 +522,19 @@ class _DysonSpherePainter extends CustomPainter {
 
     // Core radial gradient fill.
     final corePaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          _kStarWhite,
-          _kStarWhite.withValues(alpha: 0.95),
-          _kStarGold,
-          _kStarDeep,
-          _kStarDeep.withValues(alpha: 0.0),
-        ],
-        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
-      ).createShader(
-        Rect.fromCircle(center: Offset(cx, cy), radius: pulseRadius),
-      );
+      ..shader =
+          RadialGradient(
+            colors: [
+              _kStarWhite,
+              _kStarWhite.withValues(alpha: 0.95),
+              _kStarGold,
+              _kStarDeep,
+              _kStarDeep.withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+          ).createShader(
+            Rect.fromCircle(center: Offset(cx, cy), radius: pulseRadius),
+          );
     canvas.drawCircle(Offset(cx, cy), pulseRadius, corePaint);
 
     // Bright white center.
@@ -647,8 +544,7 @@ class _DysonSpherePainter extends CustomPainter {
     canvas.drawCircle(Offset(cx, cy), pulseRadius * 0.3, hotCenter);
   }
 
-  void _drawDysonRings(
-      Canvas canvas, Size size, double cx, double cy) {
+  void _drawDysonRings(Canvas canvas, Size size, double cx, double cy) {
     // Ring definitions: radius factor, arc sweep (degrees), tilt (degrees),
     // rotation speed multiplier.
     final rings = [
@@ -696,7 +592,13 @@ class _DysonSpherePainter extends CustomPainter {
 
         // Panel dimensions.
         final panelW = radius * panelSweep * 0.85;
-        final panelH = 3.0 + (i == 0 ? 2.0 : i == 1 ? 1.5 : 1.0);
+        final panelH =
+            3.0 +
+            (i == 0
+                ? 2.0
+                : i == 1
+                ? 1.5
+                : 1.0);
 
         // Subtle gradient across panel for metallic feel.
         final gradientShift = 0.5 + 0.5 * sin(aMid * 3 + animationValue * pi);
@@ -719,11 +621,7 @@ class _DysonSpherePainter extends CustomPainter {
         canvas.rotate(aMid + pi / 2);
         canvas.drawRRect(
           RRect.fromRectAndRadius(
-            Rect.fromCenter(
-              center: Offset.zero,
-              width: panelW,
-              height: panelH,
-            ),
+            Rect.fromCenter(center: Offset.zero, width: panelW, height: panelH),
             const Radius.circular(0.5),
           ),
           panelPaint,
@@ -743,22 +641,19 @@ class _DysonSpherePainter extends CustomPainter {
           width: radius * 2,
           height: radius * 2 * cos(tiltRad).abs(),
         );
-        canvas.drawArc(
-            arcRect, startAngle, sweepRad, false, glowPaint);
+        canvas.drawArc(arcRect, startAngle, sweepRad, false, glowPaint);
       }
 
       canvas.restore();
     }
   }
 
-  void _drawEnergyBeams(
-      Canvas canvas, Size size, double cx, double cy) {
+  void _drawEnergyBeams(Canvas canvas, Size size, double cx, double cy) {
     final rng = Random(42);
 
     for (int i = 0; i < 4; i++) {
-      final angle = (i / 4) * 2 * pi +
-          animationValue * pi * 0.3 +
-          rng.nextDouble() * 0.5;
+      final angle =
+          (i / 4) * 2 * pi + animationValue * pi * 0.3 + rng.nextDouble() * 0.5;
       final ringIdx = i % 3;
       final radiusFactor = [0.25, 0.35, 0.45][ringIdx];
       final radius = size.width * radiusFactor;
@@ -783,16 +678,16 @@ class _DysonSpherePainter extends CustomPainter {
 
       // Wider glow along beam.
       final glowPaint = Paint()
-        ..color =
-            _kBeamColor.withValues(alpha: (beamAlpha * 0.4).clamp(0.0, 1.0))
+        ..color = _kBeamColor.withValues(
+          alpha: (beamAlpha * 0.4).clamp(0.0, 1.0),
+        )
         ..strokeWidth = 4
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
       canvas.drawLine(Offset(sx, sy), Offset(cx, cy), glowPaint);
     }
   }
 
-  void _drawTapZones(
-      Canvas canvas, Size size, double cx, double cy) {
+  void _drawTapZones(Canvas canvas, Size size, double cx, double cy) {
     final innerRadius = size.width * 0.25;
     final middleRadius = size.width * 0.35;
     final outerRadius = size.width * 0.45;
@@ -836,8 +731,7 @@ class _DysonSpherePainter extends CustomPainter {
       final pulseGlow = Paint()
         ..color = zone.color.withValues(alpha: zoneAlpha * 0.2)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
-      canvas.drawCircle(
-          zone.center, 28 + 6 * pulseValue, pulseGlow);
+      canvas.drawCircle(zone.center, 28 + 6 * pulseValue, pulseGlow);
 
       // Zone circle.
       final circlePaint = Paint()
@@ -863,8 +757,7 @@ class _DysonSpherePainter extends CustomPainter {
         text: TextSpan(
           text: zone.label,
           style: TextStyle(
-            color:
-                zone.color.withValues(alpha: labelAlpha.clamp(0.0, 1.0)),
+            color: zone.color.withValues(alpha: labelAlpha.clamp(0.0, 1.0)),
             fontSize: 9,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.5,
@@ -876,10 +769,7 @@ class _DysonSpherePainter extends CustomPainter {
 
       textPainter.paint(
         canvas,
-        Offset(
-          zone.center.dx - textPainter.width / 2,
-          zone.center.dy + 30,
-        ),
+        Offset(zone.center.dx - textPainter.width / 2, zone.center.dy + 30),
       );
     }
   }

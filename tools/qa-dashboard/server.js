@@ -75,7 +75,7 @@ async function playApiRequest(path) {
     const req = require('https').request({
       hostname: 'androidpublisher.googleapis.com',
       path: base + path,
-      method: path.includes('edits') && !path.includes('/') ? 'POST' : 'GET',
+      method: path === '/edits' ? 'POST' : 'GET',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
     }, (res) => {
       let body = '';
@@ -86,7 +86,7 @@ async function playApiRequest(path) {
       });
     });
     req.on('error', reject);
-    if (!path.includes('/')) req.write('{}');
+    if (path === '/edits') req.write('{}');
     req.end();
   });
 }

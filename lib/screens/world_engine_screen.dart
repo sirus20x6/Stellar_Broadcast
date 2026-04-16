@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,11 +13,12 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFF26A69A);
 const _kPlanetCore = Color(0xFF37474F);
 const _kPlanetSurface = Color(0xFF546E7A);
@@ -39,21 +41,15 @@ class WorldEngineScreen extends ConsumerStatefulWidget {
 }
 
 class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, EventTypewriterMixin<WorldEngineScreen> {
   // ── Animation controllers ──────────────────────────────────────────────
 
-  late final AnimationController _starController;
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _pulseController;
   late final AnimationController _energyController;
 
   // ── Typewriter state ───────────────────────────────────────────────────
-
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // ── Choice state ───────────────────────────────────────────────────────
 
@@ -65,18 +61,14 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -88,38 +80,10 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
       duration: const Duration(seconds: 8),
     )..repeat();
 
-    _startTypewriter();
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
 
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(
-      const Duration(milliseconds: 30),
-      (timer) {
-        if (_charIndex >= widget.event.narrative.length) {
-          timer.cancel();
-          if (mounted) setState(() => _typewriterDone = true);
-          return;
-        }
-        if (mounted) {
-          setState(() {
-            _charIndex++;
-            _displayedText = widget.event.narrative.substring(0, _charIndex);
-          });
-        }
-      },
-    );
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onSystemSelected(int index) {
@@ -138,13 +102,16 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
       if (mounted) setState(() => _showEffectChips = true);
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
   }
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _energyController.dispose();
@@ -155,79 +122,59 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   Widget build(BuildContext context) {
     final event = widget.event;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _isResolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field background.
+            const EventStarField(),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: !typewriterDone
+                    ? skipTypewriter
+                    : _isResolved
+                    ? () {
+                        GameSfx().playVaried(GameSfx.buttonClick);
+                        Navigator.of(context).pop();
+                      }
+                    : null,
+                child: () {
+                  final screen = ScreenInfo.of(context);
+                  final isLandscape =
+                      screen.isLandscape &&
+                      screen.screenClass != ScreenClass.compact;
+                  return isLandscape
+                      ? _buildLandscape(event)
+                      : _buildPortrait(event);
+                }(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: !_typewriterDone
-                  ? _skipTypewriter
-                  : _isResolved
-                      ? () {
-                          GameSfx().playVaried(GameSfx.buttonClick);
-                          Navigator.of(context).pop();
-                        }
-                      : null,
-              child: () {
-                final screen = ScreenInfo.of(context);
-                final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
-                return isLandscape ? _buildLandscape(event) : _buildPortrait(event);
-              }(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Shared widget builders ──────────────────────────────────────────
-
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'WORLD ENGINE',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(26),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 3,
-          shadows: [
-            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value), blurRadius: 20),
-            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5), blurRadius: 40),
           ],
         ),
       ),
     );
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'WORLD ENGINE',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    fontSize: 26,
+    letterSpacing: 3,
+  );
+
   Widget _buildNarrativeCard(GameEvent event) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _typewriterDone ? null : _skipTypewriter,
+      onTap: typewriterDone ? null : skipTypewriter,
       child: SizedBox(
         width: double.infinity,
         child: Container(
@@ -236,7 +183,9 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
             color: _kBgColor.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: _isResolved ? _kAccent.withValues(alpha: 0.8) : _kAccent.withValues(alpha: 0.3),
+              color: _isResolved
+                  ? _kAccent.withValues(alpha: 0.8)
+                  : _kAccent.withValues(alpha: 0.3),
               width: _isResolved ? 2 : 1,
             ),
           ),
@@ -247,9 +196,16 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 400),
                   child: Text(
-                    _isResolved && _selectedSystem != null ? event.choices[_selectedSystem!].outcome : _displayedText,
+                    _isResolved && _selectedSystem != null
+                        ? event.choices[_selectedSystem!].outcome
+                        : displayedText,
                     key: ValueKey(_isResolved ? 'outcome' : 'narrative'),
-                    style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5, letterSpacing: 0.3),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      height: 1.5,
+                      letterSpacing: 0.3,
+                    ),
                   ),
                 ),
                 if (_isResolved && _showEffectChips) ...[
@@ -265,67 +221,44 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   }
 
   Widget _buildVisualArea() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return GestureDetector(
-          onTapDown: _typewriterDone && !_isResolved
-              ? (details) => _handleTap(details, constraints.biggest)
-              : null,
-          child: AnimatedBuilder(
-            animation: Listenable.merge([_pulseController, _energyController]),
-            builder: (_, __) => CustomPaint(
-              size: constraints.biggest,
-              painter: _WorldEnginePainter(
-                animationValue: _energyController.value,
-                pulseValue: _pulseController.value,
-                selectedSystem: _selectedSystem,
-                isResolved: _isResolved,
+    return RepaintBoundary(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: typewriterDone && !_isResolved
+                ? (details) => _handleTap(details, constraints.biggest)
+                : null,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([
+                _pulseController,
+                _energyController,
+              ]),
+              builder: (_, __) => CustomPaint(
+                size: constraints.biggest,
+                painter: _WorldEnginePainter(
+                  animationValue: _energyController.value,
+                  pulseValue: _pulseController.value,
+                  selectedSystem: _selectedSystem,
+                  isResolved: _isResolved,
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_isResolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: const Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: _kAccent, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: 2),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _isResolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   Widget _buildPortrait(GameEvent event) {
     return Column(
@@ -338,10 +271,17 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
                 _buildTitle(),
                 const SizedBox(height: 6),
                 _buildNarrativeCard(event),
-                if (!_typewriterDone)
+                if (!typewriterDone)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 11, letterSpacing: 2)),
+                    child: Text(
+                      context.l10n.ui_common_tapToSkip,
+                      style: TextStyle(
+                        color: _kAccent.withValues(alpha: 0.5),
+                        fontSize: 11,
+                        letterSpacing: 2,
+                      ),
+                    ),
                   ),
                 const SizedBox(height: 4),
                 Expanded(flex: 3, child: _buildVisualArea()),
@@ -394,16 +334,21 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
           ),
         ),
         // Ad banner full width at bottom.
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   /// Calculate subsystem node positions for a given canvas size.
+  ///
+  /// Radius is keyed off `min(width, height)` — not width — so a short/wide
+  /// canvas (portrait mode, visual area after narrative) doesn't push the
+  /// bottom "ACTIVATE TERRAFORMER" node below the hit-testable bounds. Must
+  /// match `_WorldEnginePainter.paint` which uses the same basis.
   static List<Offset> _nodePositions(Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final planetR = size.width * 0.15;
+    final planetR = min(size.width, size.height) * 0.15;
     return [
       // 0: Atmosphere — upper-left of planet.
       Offset(cx - planetR * 2.2, cy - planetR * 1.8),
@@ -415,7 +360,10 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
   }
 
   void _handleTap(TapDownDetails details, Size canvasSize) {
-    if (!_typewriterDone) { _skipTypewriter(); return; }
+    if (!typewriterDone) {
+      skipTypewriter();
+      return;
+    }
     final nodes = _nodePositions(canvasSize);
     const hitRadius = 50.0;
 
@@ -436,35 +384,41 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-        color: _kAtmosphere,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+          color: _kAtmosphere,
+        ),
+      );
     }
 
     for (final entry in choice.nextPlanetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: 'NEXT ${systemLabel(entry.key)}',
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-        color: _kTerraformer,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: 'NEXT ${systemLabel(entry.key)}',
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+          color: _kTerraformer,
+        ),
+      );
     }
 
     if (chips.isEmpty) return const SizedBox.shrink();
@@ -473,31 +427,30 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
       spacing: 6,
       runSpacing: 6,
       children: chips
-          .map((d) => Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+          .map(
+            (d) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: (d.color ?? (d.isPositive ? Colors.green : Colors.red))
+                    .withValues(alpha: 0.15),
+                border: Border.all(
                   color: (d.color ?? (d.isPositive ? Colors.green : Colors.red))
-                      .withValues(alpha: 0.15),
-                  border: Border.all(
-                    color:
-                        (d.color ?? (d.isPositive ? Colors.green : Colors.red))
-                            .withValues(alpha: 0.5),
-                  ),
+                      .withValues(alpha: 0.5),
                 ),
-                child: Text(
-                  '${d.label}  ${d.delta}',
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: d.color ??
-                        (d.isPositive ? Colors.green : Colors.red),
-                    letterSpacing: 0.4,
-                  ),
+              ),
+              child: Text(
+                '${d.label}  ${d.delta}',
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: d.color ?? (d.isPositive ? Colors.green : Colors.red),
+                  letterSpacing: 0.4,
                 ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -540,7 +493,10 @@ class _WorldEnginePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final planetR = size.width * 0.15;
+    // Key the planet radius off min(w, h) so the terraformer node at the
+    // bottom stays inside the hit-test bounds in short/wide canvases
+    // (portrait mode with narrative above the visual area).
+    final planetR = min(size.width, size.height) * 0.15;
 
     _drawMachineFramework(canvas, size, cx, cy, planetR);
     _drawPlanet(canvas, size, cx, cy, planetR);
@@ -627,9 +583,7 @@ class _WorldEnginePainter extends CustomPainter {
 
     // Continent-like shapes — subtle bezier patches.
     canvas.save();
-    canvas.clipPath(
-      Path()..addOval(planetRect),
-    );
+    canvas.clipPath(Path()..addOval(planetRect));
 
     final continentColor = surfaceColor.withValues(alpha: 0.35);
     final continentPaint = Paint()..color = continentColor;
@@ -701,17 +655,18 @@ class _WorldEnginePainter extends CustomPainter {
 
     // Atmospheric haze at the planet edge.
     final hazePaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          Colors.transparent,
-          _kAccent.withValues(alpha: 0.05),
-          _kAccent.withValues(alpha: 0.12),
-          Colors.transparent,
-        ],
-        stops: const [0.75, 0.88, 0.95, 1.0],
-      ).createShader(
-        Rect.fromCircle(center: Offset(cx, cy), radius: planetR * 1.15),
-      );
+      ..shader =
+          RadialGradient(
+            colors: [
+              Colors.transparent,
+              _kAccent.withValues(alpha: 0.05),
+              _kAccent.withValues(alpha: 0.12),
+              Colors.transparent,
+            ],
+            stops: const [0.75, 0.88, 0.95, 1.0],
+          ).createShader(
+            Rect.fromCircle(center: Offset(cx, cy), radius: planetR * 1.15),
+          );
     canvas.drawCircle(Offset(cx, cy), planetR * 1.15, hazePaint);
   }
 
@@ -799,8 +754,7 @@ class _WorldEnginePainter extends CustomPainter {
           final dotPos = Offset.lerp(nodePos, planetEdge, t)!;
           final dotAlpha = isResolved ? 0.9 : 0.5 + 0.3 * pulseValue;
 
-          final dotPaint = Paint()
-            ..color = color.withValues(alpha: dotAlpha);
+          final dotPaint = Paint()..color = color.withValues(alpha: dotAlpha);
           canvas.drawCircle(dotPos, 2.5, dotPaint);
 
           // Glow around the dot.
@@ -887,8 +841,7 @@ class _WorldEnginePainter extends CustomPainter {
     canvas.drawPath(path, strokePaint);
 
     // Inner bright point.
-    final dotPaint = Paint()
-      ..color = color.withValues(alpha: 0.9 * brightness);
+    final dotPaint = Paint()..color = color.withValues(alpha: 0.9 * brightness);
     canvas.drawCircle(center, 3, dotPaint);
   }
 
@@ -938,8 +891,7 @@ class _WorldEnginePainter extends CustomPainter {
     );
 
     // Center dot.
-    final dotPaint = Paint()
-      ..color = color.withValues(alpha: 0.9 * brightness);
+    final dotPaint = Paint()..color = color.withValues(alpha: 0.9 * brightness);
     canvas.drawCircle(center, 3, dotPaint);
   }
 
@@ -959,7 +911,9 @@ class _WorldEnginePainter extends CustomPainter {
     final path = Path();
     var firstPoint = true;
     for (int i = 0; i < teethCount; i++) {
-      final baseAngle = (i / teethCount) * 2 * pi - pi / 2 +
+      final baseAngle =
+          (i / teethCount) * 2 * pi -
+          pi / 2 +
           animationValue * 0.5; // slow rotation
       final halfTooth = toothWidth / 2;
 
@@ -1027,7 +981,11 @@ class _WorldEnginePainter extends CustomPainter {
     double planetR,
   ) {
     final nodes = _WorldEngineScreenState._nodePositions(size);
-    final labels = ['ATMOSPHERE\nPROCESSOR', 'SALVAGE\nHULL PLATES', 'ACTIVATE\nTERRAFORMER'];
+    final labels = [
+      'ATMOSPHERE\nPROCESSOR',
+      'SALVAGE\nHULL PLATES',
+      'ACTIVATE\nTERRAFORMER',
+    ];
 
     for (int i = 0; i < 3; i++) {
       final pos = nodes[i];
@@ -1055,10 +1013,7 @@ class _WorldEnginePainter extends CustomPainter {
       final nodeSize = planetR * 0.55;
       textPainter.paint(
         canvas,
-        Offset(
-          pos.dx - textPainter.width / 2,
-          pos.dy + nodeSize + 6,
-        ),
+        Offset(pos.dx - textPainter.width / 2, pos.dy + nodeSize + 6),
       );
     }
   }

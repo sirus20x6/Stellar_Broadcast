@@ -184,7 +184,7 @@ class ShipSystems {
     return values.entries.reduce((a, b) => a.value <= b.value ? a : b).key;
   }
 
-  /// Mean health across all 13 systems.
+  /// Mean health across all 14 systems.
   double get averageHealth {
     double sum = 0;
     for (final name in systemNames) {
@@ -245,21 +245,31 @@ class ShipSystems {
       };
 
   factory ShipSystems.fromJson(Map<String, dynamic> json) => ShipSystems(
-        hull: (json['hull'] as num).toDouble(),
-        nav: (json['nav'] as num).toDouble(),
-        cryopods: (json['cryopods'] as num).toDouble(),
-        culture: (json['culture'] as num).toDouble(),
-        tech: (json['tech'] as num).toDouble(),
-        constructors: (json['constructors'] as num).toDouble(),
-        shields: (json['shields'] as num).toDouble(),
-        landingSystem: (json['landingSystem'] as num).toDouble(),
-        atmosphericScanner: (json['atmosphericScanner'] as num).toDouble(),
-        gravimetricScanner: (json['gravimetricScanner'] as num).toDouble(),
-        mineralScanner: (json['mineralScanner'] as num).toDouble(),
-        lifeSignsScanner: (json['lifeSignsScanner'] as num).toDouble(),
-        temperatureScanner: (json['temperatureScanner'] as num).toDouble(),
-        waterScanner: (json['waterScanner'] as num).toDouble(),
+        hull: _readStat(json, 'hull'),
+        nav: _readStat(json, 'nav'),
+        cryopods: _readStat(json, 'cryopods'),
+        culture: _readStat(json, 'culture', max: 1.5),
+        tech: _readStat(json, 'tech', max: 1.5),
+        constructors: _readStat(json, 'constructors'),
+        shields: _readStat(json, 'shields'),
+        landingSystem: _readStat(json, 'landingSystem'),
+        atmosphericScanner: _readStat(json, 'atmosphericScanner'),
+        gravimetricScanner: _readStat(json, 'gravimetricScanner'),
+        mineralScanner: _readStat(json, 'mineralScanner'),
+        lifeSignsScanner: _readStat(json, 'lifeSignsScanner'),
+        temperatureScanner: _readStat(json, 'temperatureScanner'),
+        waterScanner: _readStat(json, 'waterScanner'),
       );
+
+  /// Reads a ship stat from JSON, clamped to [0.0, max]. Missing or malformed
+  /// fields default to 1.0 (full health) so loading an older or corrupted save
+  /// degrades gracefully instead of crashing.
+  static double _readStat(Map<String, dynamic> json, String key,
+      {double max = 1.0}) {
+    final v = json[key];
+    if (v is num) return v.toDouble().clamp(0.0, max);
+    return 1.0;
+  }
 
   @override
   String toString() =>

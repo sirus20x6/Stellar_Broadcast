@@ -9,9 +9,6 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTitle => 'स्टेलर ब्रॉडकास्ट';
-
-  @override
   String get ui_title_stellar => 'स्टेलर';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'यात्रा शुरू करें';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'अमान्य बीज कोड. केवल A-Z और 0-9 का उपयोग करें।';
 
   @override
   String ui_voyage_sector(int count) {
@@ -196,6 +197,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ui_scan_statRadiation => 'विकिरण';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'जांच: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'अनिश्चितता: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'ग्रह विश्लेषण';
 
   @override
@@ -293,22 +304,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ui_landing_statLandingSys => 'लैंडिंग तंत्र';
 
   @override
-  String get ui_landingSequence_phase1 => 'चरण 1: कक्षीय प्रतिबद्धता';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'अवरोहण खिड़की खुली। प्रवेश हेतु प्रतिबद्ध।';
-
-  @override
-  String get ui_landingSequence_phase2 => 'चरण 2: वायुमंडलीय अग्नि';
-
-  @override
-  String get ui_landingSequence_title => 'लैंडिंग अनुक्रम';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'बस्ती रिपोर्ट देखें';
-
-  @override
   String get ui_ending_colonyEstablished => 'बस्ती स्थापित';
 
   @override
@@ -334,6 +329,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'मित्र को चुनौती दें';
+
+  @override
+  String get ui_ending_shareCard => 'शेयर कार्ड';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'अपनी यात्रा साझा करें';
+
+  @override
+  String get ui_ending_shareCardShare => 'शेयर करना';
+
+  @override
+  String get ui_ending_shareCardCancel => 'रद्द करना';
 
   @override
   String get ui_ending_copySeed => 'सीड कॉपी करें';
@@ -467,6 +474,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'सिस्टम डिफ़ॉल्ट';
+
+  @override
+  String get ui_settings_statsPosition => 'आँकड़े और बटन स्थिति';
+
+  @override
+  String get ui_settings_statsLeft => 'बाएं';
+
+  @override
+  String get ui_settings_statsRight => 'सही';
 
   @override
   String get ui_legacy_title => 'विरासत केंद्र';
@@ -769,6 +785,36 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'औषधीय वनस्पति';
+
+  @override
+  String get planet_featurePerpetualAurora => 'सदाबहार अरोरा';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'पेट्रीफाइड मेगाफ्लोरा';
+
+  @override
+  String get planet_featureUndergroundRivers => 'भूमिगत नदियाँ';
+
+  @override
+  String get planet_featureObsidianPlains => 'ओब्सीडियन मैदान';
+
+  @override
+  String get planet_featureSaltFlats => 'नमक के फ्लैट';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'मांसाहारी वनस्पति';
+
+  @override
+  String get planet_featureGhostCities => 'भूत शहर';
+
+  @override
+  String get planet_featureArchiveVaults => 'पुरालेख तिजोरियाँ';
+
+  @override
+  String get planet_featureSinkholeFields => 'सिंकहोल फ़ील्ड';
+
+  @override
+  String get planet_featureApexPredator => 'चोटी लुटेरा';
 
   @override
   String get ui_monthJan => 'जन';
@@ -4236,18 +4282,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'वायुमंडल';
 
   @override
-  String get ending_scoreLabel_gravity => 'गुरुत्व';
-
-  @override
-  String get ending_scoreLabel_temperature => 'तापमान';
-
-  @override
-  String get ending_scoreLabel_water => 'जल';
-
-  @override
-  String get ending_scoreLabel_resources => 'संसाधन';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'मूल निवासी संबंध';
 
   @override
@@ -4356,19 +4390,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'जनजातीय परिषद';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'थेअक्रसी';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'सैन्य जुंटा';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'कॉर्पोरेट कुलीनतंत्र';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'फासीवादी राज्य';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'कम्यून';
 
   @override
   String get ending_cultureRenaissance => 'पुनर्जागरण';
@@ -4422,10 +4456,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ending_nativesConflict => 'संघर्ष';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'गठबंधन';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'दमन';
 
   @override
   String get ending_landscapeGravityHigh => 'भारी गुरुत्व सब पर दबाता है। ';
@@ -4465,66 +4499,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'वायुमंडलीय दबाव खतरनाक रूप से कम — सीलबंद आवास अनिवार्य। ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'एक चमकता, खनिज-धारित चंद्रमा रात्रि आकाश पर राज करता है, इसकी धात्विक सतह तारों के प्रकाश को भूदृश्य पर प्रतिबिंबित करती है। ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'एक खंडित चंद्रमा ऊपर मँडराता है, इसकी क्षयशील सतह मलबे की एक धीमी वलय खींचती — नीचे धमकाते प्रहार की निरंतर याद। ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'एक पीला, बंजर चंद्रमा क्षितिज से ऊपर उगता है, इसकी गर्तमय सतह बस्ती पर मौन प्रहरी। ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'ग्रह तीव्रता से घूमता है — दिन केवल घंटों के, और कोरिओलिस हवाएँ खड़ी हर चीज़ को पीटती हैं। ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'ग्रह पीड़ादायक धीमेपन से घूमता है। सूर्य-मुखी गोलार्ध जलता है जबकि अंधेरा पक्ष जमता है, और केवल बीच का धुंधलका पट्टी राहत देता है। ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'ज्वालामुखी श्रृंखलाएँ क्षितिज चीरती हैं, उनकी ढलानें पिघली चट्टान की नदियों से धारीदार। हवा गंधक चखती है और भूमि पैरों तले काँपती है। ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'पपड़ी खंडित और अशांत — बिना चेतावनी नई दरारें खुलती हैं, धूल के बादलों में चमकती खनिज नसें उजागर करती हुई। ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'बिजली आकाश में निरंतर चादरों में चमकती है, रात को दिन बनाती और हवा को ओज़ोन की गंध से भरती। ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'चमकते बीजाणुओं के बादल हर हवा पर बहते हैं, सुंदर और घातक — बाहर जीवित रहने के लिए उपनिवेशियों को सीलबंद आवास या फ़िल्टर मास्क चाहिए। ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'ग्रह अधिकतर महासागर — विशाल, गहरे जल हर क्षितिज तक फैले, केवल बिखरे द्वीपसमूह सतह तोड़ते। ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'भूतापीय छिद्र पपड़ी भेदते हैं, खनिज-समृद्ध भाप के गुबार उगलते जो आसपास के भूदृश्य को गर्म करते और जीवन के मरूद्यान बनाए रखते हैं। ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'शक्तिशाली चुंबकीय क्षेत्र ग्रह को लपेटता है, तारकीय विकिरण विक्षेपित करता पर बिना ढाल इलेक्ट्रॉनिक्स से खिलवाड़। कंपास व्यर्थ घूमते हैं। ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'शक्तिशाली चुंबकीय क्षेत्र बिना, तारकीय पवन ऊपरी वायुमंडल छीलती है। शानदार ध्रुवीय ज्योति सभी अक्षांशों पर आकाश में बहती है। ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'विशालकाय जीव भूदृश्य पर चलते हैं — कुछ इमारतों जितने बड़े, उनके पदचाप किलोमीटरों दूर महसूस। ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'जैवमंडल सहजीविता के परस्पर जुड़े जाल के रूप में काम करता है: हर जीव अपने पड़ोसियों पर निर्भर और उन्हें पोषित करता है एक सुंदर, नाज़ुक संतुलन में। ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4571,27 +4545,27 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'एक धार्मिक परिषद $planetName का मार्गदर्शन करती है, जो उस विश्वास से ज्ञान प्राप्त करती है जिसने उपनिवेशवादियों को शून्य के माध्यम से बनाए रखा।';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'एक सैन्य कमान संरचना $planetName को नियंत्रित करती है, वह अनुशासन जिसने उन्हें अंतरिक्ष में बचाया था अब उनकी सभ्यता को परिभाषित कर रहा है।';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'संसाधन प्रबंधकों का एक संघ $planetName का नेतृत्व करता है, उनका आर्थिक कौशल अस्तित्व के लिए आवश्यक साबित हुआ है।';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'एक अधिनायकवादी शासन सख्ती से $planetName को नियंत्रित करता है, नई दुनिया में व्यवस्था के लिए नागरिक स्वतंत्रता की बलि चढ़ा दी जाती है।';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return '$planetName के लोग सामूहिक रूप से खुद पर शासन करते हैं, सभी उपनिवेशवादियों के बीच संसाधनों और निर्णयों को समान रूप से साझा करते हैं।';
   }
 
   @override
@@ -4631,10 +4605,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'क्षयशील कक्षा में अस्थिर चंद्रमा ने बस्ती पर मलबा बरसाया, अवसंरचना तबाह की और समय-समय पर उल्का बमबारी में अपूरणीय तकनीक नष्ट की।';
-
-  @override
-  String get ending_moonBarren =>
-      'एक बंजर चंद्रमा अपरिचित आकाश में लटका, एक उजाड़ साथी जिसने उपनिवेशियों को लंबी रातों में देखने को एक परिचित दृश्य के अलावा कुछ नहीं दिया।';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4723,12 +4693,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'एक औपचारिक गठबंधन उपनिवेशवादियों और $planetName की मूल सभ्यता को बांधता है, उनका संयुक्त ज्ञान किसी भी अकेले से कहीं अधिक बड़ा निर्माण कर सकता है।';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return '$planetName की मूल आबादी औपनिवेशिक शासन के अधीन रहती है, उनकी संस्कृति दबा दी गई क्योंकि उपनिवेशवादियों ने अपना आदेश लागू कर दिया।';
   }
 
   @override
@@ -4766,26 +4736,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'चन्द्रमा';
-
-  @override
-  String get ui_rings => 'वलय';
-
-  @override
   String get ui_landing_landOnMoon => 'चन्द्रमा पर उतरें';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'चन्द्रमा: $moonPercent% बनाम ग्रह: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'कम गुरुत्वाकर्षण — आसान अवतरण';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type वलय प्रणाली';
-  }
 
   @override
   String get moon_barren => 'बंजर';
@@ -4813,60 +4764,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get ring_metallic => 'धात्विक';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'बस्ती के आकाश में एक अकेला चन्द्रमा टँगा है।';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count चन्द्रमा ऊपर परिक्रमा करते हैं, भूदृश्य पर बदलती छायाएँ बिखेरते।';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'उनमें एक वासयोग्य लोक पुकारता है — एक हरा रत्न जो दूसरी सीमांत भूमि का वादा करता है।';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'एक जमा हुआ चन्द्रमा विशाल हिम भंडारों से दमकता है, दोहन की प्रतीक्षा करता एक जलाशय।';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'जमे चन्द्रमा से काटी गई बर्फ बस्ती की जल आपूर्ति को पूरित करती है, एक बंजर लोक को रहने योग्य बनाती।';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'बस्ती स्वयं ग्रह पर नहीं, बल्कि उसके सबसे आशाजनक चन्द्रमा पर बसी — एक छोटा लोक जिसका गुरुत्व कोमल और संभावनाएँ अधिक थीं।';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'एक धुँधला धूल-वलय आकाश में चाप बनाता है, हर सूर्योदय में अलौकिक सौंदर्य जोड़ता।';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'हिम का एक दीप्तिमान वलय तारों की रोशनी पकड़ता है, आकाश को प्रिज़्म की अग्नि से रँगता।';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'एक सघन चट्टानी वलय ग्रह को घेरता है, धीरे-धीरे भीतर गिरती निर्माण सामग्री का स्रोत।';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'एक धात्विक वलय ऊपर जगमगाता है, अयस्क से भरपूर जो बस्ती के उद्योग को ईंधन देता है।';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'एक वासयोग्य चन्द्रमा उपनिवेशीकरण का दूसरा अवसर प्रदान करता है।';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'जमे चन्द्रमा से काटी गई बर्फ बस्ती की जल आपूर्ति को पूरित करती है।';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'बस्ती $count चन्द्रमा(ओं) के नीचे परिक्रमा करती है।';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'AI का एकालाप';
@@ -5391,6 +5288,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'छोड़ने के लिए टैप करें';
+
+  @override
+  String get ui_common_tapRingToChoose => 'चुनने के लिए एक अंगूठी टैप करें';
+
+  @override
+  String get ui_common_tapToContinue => 'जारी रखने के लिए टैप करें';
+
+  @override
+  String get ui_tooltip_back => 'पीछे';
+
+  @override
+  String get ui_tooltip_codex => 'ज़ाब्ता';
+
+  @override
+  String get ui_tooltip_settings => 'सेटिंग्स';
+
+  @override
+  String get ui_tooltip_leaderboards => 'लीडरबोर्ड';
+
+  @override
+  String get ui_tooltip_bugReport => 'एक बग रिपोर्ट करो';
+
+  @override
   String get event_pulsarLighthouse_title => 'पल्सर प्रकाशस्तंभ';
 
   @override
@@ -5412,6 +5333,14 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'हम पल्सर से काफी दूरी बनाए रखते हैं, सुरक्षित प्रक्षेपवक्र के लिए अतिरिक्त ईंधन जलाते हुए। चालक दल फ़िल्टर्ड व्यूपोर्ट्स से घूमती किरण को देखता है — सुंदर, लेकिन दूर।';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'स्वीप हम तक पहुंचने से पहले पीछे हट जाओ';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'अगली किरण गुजरने से पहले हम आपातकालीन बर्न पर झूल जाते हैं। पल्सर का सिग्नल हमारे पीछे फीका पड़ जाता है - कोई डेटा प्राप्त नहीं हुआ, कोई नुकसान नहीं हुआ, टालमटोल करने वाले जोर पर थोड़ा सा ईंधन खर्च हुआ।';
 
   @override
   String get event_alienNursery_title => 'एलियन नर्सरी';
@@ -5500,4 +5429,465 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'प्रयोगात्मक ऐंटीफंगल पहले आशाजनक दिखता है, लेकिन एक प्रतिरोधी उपभेद सफल हो जाता है। जब तक हम पूर्ण शुद्धिकरण का सहारा लेते हैं, महामारी क्रायोपॉड पोषक लाइनों तक फैल चुकी होती है। नुकसान उससे बदतर है जो शुरू से निर्णायक कार्रवाई करने पर होता।';
+
+  @override
+  String get event_constitutionalConvention_title => 'संवैधानिक परंपरा';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'औपचारिक शासन के बिना कॉलोनी जहाज की आबादी बेचैन हो गई है। हर डेक से प्रतिनिधि एक चार्टर का मसौदा तैयार करने के लिए कार्गो होल्ड में इकट्ठा होते हैं जो परिभाषित करेगा कि भविष्य की कॉलोनी पर कैसे शासन किया जाएगा। तीन गुट नई सरकार के लिए प्रतिस्पर्धी दृष्टिकोण प्रस्तुत करते हैं।';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'सार्वभौमिक मताधिकार के साथ एक लोकतांत्रिक चार्टर का मसौदा तैयार करें';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'उपनिवेशवासी समान प्रतिनिधित्व की गारंटी देने वाले संविधान का अनुमोदन करते हैं। निर्णय लेने की गति धीमी हो जाती है लेकिन हर आवाज सुनी जाने से मनोबल बढ़ता है।';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'आपातकालीन शक्तियों के साथ एक मजबूत कार्यकारिणी की स्थापना करें';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'व्यापक प्राधिकार के साथ एक ही नेता की नियुक्ति की जाती है। निर्णय तेजी से आते हैं लेकिन असहमत लोग निचले डेक में अत्याचार की कानाफूसी करते हैं।';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'विशेषज्ञों की एक तकनीकी परिषद का गठन करें';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'इंजीनियर, वैज्ञानिक और डॉक्टर विशेषज्ञता के आधार पर एक सत्तारूढ़ परिषद बनाते हैं। दक्षता में सुधार होता है, हालांकि कुछ लोग सत्ता से बाहर महसूस करते हैं।';
+
+  @override
+  String get event_militaryCoupThreat_title => 'सैन्य तख्तापलट की धमकी';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'जहाज के सुरक्षा विभाग के कमांडर वास्केज़ ने शस्त्रागार को जब्त कर लिया है और एक अल्टीमेटम जारी किया है: आपातकालीन सैन्य शक्तियां प्रदान करें या सभी डेक को बंद कर दें। स्थिति अस्थिर है और उपनिवेशवासी प्रतिक्रिया के लिए आपकी ओर देख रहे हैं।';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'वफादार चालक दल के सदस्यों के साथ तख्तापलट का विरोध करें';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'वास्क्वेज़ का विरोध करने के लिए वफादार दल की रैली। गतिरोध न्यूनतम रक्तपात के साथ समाप्त हो जाता है, लेकिन सुरक्षा विवरण कमजोर हो जाता है और कुछ उपनिवेशवासी गोलीबारी में फंस जाते हैं।';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'कमांडर की मांगों को प्रस्तुत करें';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'वास्केज़ ने जहाज संचालन का नियंत्रण ग्रहण किया। व्यवस्था तेजी से बहाल की जाती है, लेकिन नागरिक स्वतंत्रता की कीमत पर। सशस्त्र गश्ती दल अब हर गलियारे पर चलते हैं।';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'सनसेट क्लॉज के साथ सीमित आपातकालीन शक्तियों पर बातचीत करें';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'तनावपूर्ण बातचीत के बाद, वास्केज़ ने निरीक्षण के साथ अस्थायी अधिकार स्वीकार कर लिया। एक नाजुक समझौता जो किसी को भी पूरी तरह संतुष्ट नहीं करता, लेकिन हिंसा को रोकता है।';
+
+  @override
+  String get event_religiousAwakening_title => 'धार्मिक जागृति';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'एक करिश्माई उपदेशक ने सैकड़ों उपनिवेशवादियों को एक नए विश्वास आंदोलन में शामिल किया है। वे प्रत्येक चक्र में अवलोकन गुंबद में इकट्ठा होते हैं, उनके भजन वेंटिलेशन शाफ्ट के माध्यम से गूंजते हैं। कुछ क्रू सदस्य कट्टरता के बारे में चिंता करते हैं; दूसरों को शिक्षाओं में वास्तविक आराम मिलता है।';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'आस्था आंदोलन को अपनाएं और संसाधन उपलब्ध कराएं';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'आंदोलन सरकारी समर्थन से फलता-फूलता है। विश्वासियों के बीच मनोबल में सुधार होता है, और उनकी सांप्रदायिक भावना पूरे जहाज में सामाजिक बंधन को मजबूत करती है।';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'जहाज़ पर सख्त धर्मनिरपेक्षता लागू करें';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'धार्मिक आयोजन निजी क्वार्टरों तक ही सीमित हैं। आंदोलन भूमिगत हो जाता है, जिससे आक्रोश पैदा होता है, लेकिन वैज्ञानिक तर्कवाद आधिकारिक सिद्धांत बना हुआ है।';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'पूजा की अनुमति दें लेकिन उसके प्रभाव को नियंत्रित करें';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'आस्था की अनुमति है लेकिन शासन से अलग रखा गया है। आदेश के साथ संपर्क स्थापित करने के लिए एक पादरी को नियुक्त किया जाता है। एक असहज संतुलन बना रहता है.';
+
+  @override
+  String get event_corporateTakeover_title => 'कॉर्पोरेट अधिग्रहण';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'जहाज के संसाधन प्रबंधक चुपचाप भोजन वितरण, जल पुनर्चक्रण और बिजली आवंटन पर नियंत्रण मजबूत कर रहे हैं। अब वे अपने अधिकार को एक कॉर्पोरेट संरचना में औपचारिक रूप देने का प्रस्ताव करते हैं जो भविष्य की कॉलोनी की अर्थव्यवस्था का प्रबंधन करेगा।';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'संसाधनों को नियंत्रित करने के लिए मुक्त बाज़ार सिद्धांतों को अनुमति दें';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'कॉर्पोरेट गुट संसाधन प्रबंधन पर कब्ज़ा कर लेता है। दक्षता में नाटकीय रूप से सुधार होता है, लेकिन कीमतें बढ़ती हैं और सबसे गरीब उपनिवेशवादी बुनियादी ज़रूरतों को पूरा करने के लिए संघर्ष करते हैं।';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'सामूहिक स्वामित्व के तहत सभी संसाधनों का राष्ट्रीयकरण करें';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'संसाधनों को जब्त कर लिया जाता है और सांप्रदायिक नियंत्रण में रखा जाता है। कॉर्पोरेट गुट ख़त्म हो गया है, लेकिन लाभ प्रोत्साहन के बिना नवप्रवर्तन रुक जाता है।';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'सुरक्षा जाल के साथ विनियमित बाज़ारों को लागू करें';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'मूल्य नियंत्रण और कल्याण कार्यक्रमों के साथ एक मिश्रित अर्थव्यवस्था स्थापित की जाती है। कोई भी गुट पूरी तरह से संतुष्ट नहीं है, लेकिन कुछ उद्यम की अनुमति देते समय बुनियादी ज़रूरतें पूरी की जाती हैं।';
+
+  @override
+  String get event_successionCrisis_title => 'उत्तराधिकार संकट';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'जहाज के कप्तान की नींद में ही मृत्यु हो गई, और कोई नामित उत्तराधिकारी नहीं बचा। तीन गुट तुरंत नियंत्रण के लिए प्रतिस्पर्धा करते हैं: नागरिक परिषद चुनाव की मांग करती है, सुरक्षा प्रमुख मार्शल अधिकार का दावा करता है, और बुजुर्ग उपनिवेशवादी पारंपरिक नेतृत्व संस्कार का आह्वान करते हैं।';
+
+  @override
+  String get event_successionCrisis_choice0 => 'आपात्कालीन चुनाव कराओ';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'एक अराजक लेकिन उत्साही चुनाव लोकप्रिय वोट द्वारा चुना गया एक नया कप्तान तैयार करता है। प्रक्रिया गड़बड़ है, लेकिन उपनिवेशवासी अपने नेतृत्व पर स्वामित्व महसूस करते हैं।';
+
+  @override
+  String get event_successionCrisis_choice1 => 'सेना को कमान संभालने दीजिए';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'सुरक्षा प्रमुख कप्तान की कुर्सी पर बैठता है। अनुशासन तुरंत बहाल कर दिया जाता है, लेकिन नागरिक दल बढ़ती बेचैनी के साथ सशस्त्र गार्डों पर नजर रखते हैं।';
+
+  @override
+  String get event_successionCrisis_choice2 => 'बड़ों की एक परिषद बुलाओ';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'सबसे बुजुर्ग और सबसे अनुभवी उपनिवेशवादी एक गवर्निंग काउंसिल बनाते हैं। उनकी बुद्धिमत्ता जहाज का मार्गदर्शन करती है, हालाँकि कुछ युवा दल जेरोन्टोक्रेसी द्वारा हाशिए पर महसूस करते हैं।';
+
+  @override
+  String get event_nativeSovereignty_title => 'मूलनिवासी संप्रभुता';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'लंबी दूरी के स्कैन लक्ष्य ग्रह पर बुद्धिमान जीवन की पुष्टि करते हैं। अवरोधित संचार से एक परिष्कृत सभ्यता का पता चलता है जिसने आपके दृष्टिकोण का पता लगा लिया है। वे एक औपचारिक मांग प्रेषित करते हैं: अपनी क्षेत्रीय संप्रभुता को पहचानें या आगमन पर प्रतिरोध का सामना करें।';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'मूल संप्रभुता को मान्यता दें और बसने की अनुमति का अनुरोध करें';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'आप मूल अधिकारों की औपचारिक मान्यता प्रसारित करते हैं। प्रतिक्रिया सतर्क लेकिन सकारात्मक है. भविष्य के संबंध आपसी सम्मान की नींव पर शुरू होंगे, हालांकि लैंडिंग साइटें सीमित हो सकती हैं।';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'औपनिवेशिक वर्चस्व का दावा करें और प्रतिरोध के लिए तैयार रहें';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'आपने परवाह किए बिना समझौता करने का अपना इरादा प्रसारित किया। दल ने हथियार अभ्यास और किलेबंदी की योजना बनाना शुरू कर दिया। मूल निवासी चुप हो जाते हैं, जो किसी तरह धमकियों से भी अधिक भयावह है।';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'ग्रह पर साझा शासन का प्रस्ताव रखें';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'आप सह-अस्तित्व और संसाधन साझाकरण के लिए एक रूपरेखा प्रदान करते हैं। जातक जिज्ञासु लेकिन सावधान रहते हैं। बातचीत जटिल होगी, लेकिन शांति की संभावना मौजूद है।';
+
+  @override
+  String get event_laborStrike_title => 'श्रम हड़ताल';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'इंजीनियरिंग दल ने छोटी शिफ्ट, बेहतर भोजन राशन और नेविगेशन निर्णयों में आवाज उठाने की मांग करते हुए नौकरी छोड़ दी है। महत्वपूर्ण सिस्टम स्वचालित बैकअप पर चल रहे हैं, लेकिन वे लंबे समय तक नहीं चलेंगे। बाकी उपनिवेशवासी घबराकर देखते हैं।';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'कर्मचारियों की मांगों को पूर्ण रूप से पूरा करें';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'हड़ताल तुरंत ख़त्म हो. कर्मचारी बेहतर स्थिति के साथ अपने पदों पर लौटें। छोटी शिफ्ट प्रभावी होने से उत्पादकता थोड़ी कम हो जाती है, लेकिन निष्ठा अटल रहती है।';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'हड़ताल को दबाएँ और अनिवार्य श्रम लागू करें';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'सुरक्षा बल बंदूक की नोक पर श्रमिकों को उनके स्टेशनों तक वापस ले जाते हैं। इंजन फिर से गूंजने लगते हैं, लेकिन निचले डेक में नफरत उबलने लगती है। कई कर्मचारी क्वार्टरों तक ही सीमित हैं।';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'प्रमुख मांगों पर आंशिक समझौते की पेशकश करें';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'मैराथन बातचीत के बाद, एक समझौता हुआ: बेहतर राशन और सलाहकार इनपुट, लेकिन शिफ्ट की लंबाई में कोई कमी नहीं। कोई भी पक्ष रोमांचित नहीं है, लेकिन इंजन चलते रहते हैं।';
+
+  @override
+  String get event_censorshipDebate_title => 'सेंसरशिप बहस';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'एक लीक हुए दस्तावेज़ से जहाज़ के ख़राब सिस्टम की वास्तविक स्थिति का पता चलता है। निचले डेक पर दहशत फैल जाती है। संचार अधिकारी आगे की अशांति को रोकने के लिए सूचना पहुंच को प्रतिबंधित करने का प्रस्ताव करता है। नागरिक स्वतंत्रता के पैरोकार नाराज हैं।';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'सभी सूचनाओं तक निःशुल्क पहुंच की गारंटी दें';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'पूर्ण पारदर्शिता स्थापित की गई है। प्रारंभिक घबराहट कम हो जाती है क्योंकि उपनिवेशवासी उन समस्याओं को ठीक करने में मदद करने के लिए रैली करते हैं जिन्हें वे अब समझते हैं। नेतृत्व में विश्वास बढ़ता है, हालाँकि कुछ जानकारी परेशानी का कारण बनती है।';
+
+  @override
+  String get event_censorshipDebate_choice1 => 'पूर्ण सूचना नियंत्रण लागू करें';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'सभी संचार अब कमांड के माध्यम से फ़िल्टर किए जाते हैं। घबराहट रुक जाती है, उसकी जगह एक भयानक शांति आ जाती है। लेकिन अफ़वाहें सेंसर किए गए सत्य द्वारा छोड़े गए शून्य को भर देती हैं, और वे अक्सर वास्तविकता से भी बदतर होती हैं।';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'केवल सुरक्षा-संवेदनशील जानकारी फ़िल्टर करें';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'एक वर्गीकरण प्रणाली स्थापित की गई है। अधिकांश जानकारी स्वतंत्र रूप से प्रवाहित होती है, लेकिन सैन्य और महत्वपूर्ण सिस्टम डेटा को मंजूरी की आवश्यकता होती है। एक व्यावहारिक मध्य मार्ग जो अधिकतर संतुष्ट करता है।';
+
+  @override
+  String get event_colonialCharter_title => 'औपनिवेशिक चार्टर';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'ग्रहपात निकट आने के साथ, उपनिवेशवादियों को अपने नए समाज के लिए मौलिक कानूनों का मसौदा तैयार करना होगा। तीन दार्शनिक शिविर उभरे हैं, जिनमें से प्रत्येक ने कॉलोनी को कैसा बनना चाहिए, इसके लिए एक अलग दृष्टिकोण का समर्थन किया है। यह बहस गरमागरम और बेहद व्यक्तिगत है।';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'व्यक्तिगत अधिकारों पर जोर देने वाला एक प्रगतिशील चार्टर';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'चार्टर व्यक्तिगत स्वतंत्रता, समानता और सामाजिक गतिशीलता को सुनिश्चित करता है। कलाकार और विचारक जश्न मनाते हैं; परंपरावादियों ने चेतावनी दी है कि अनियंत्रित स्वतंत्रता अराजकता की ओर ले जाती है।';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'पृथ्वी की परंपराओं को संरक्षित करने वाला एक रूढ़िवादी चार्टर';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'चार्टर पारंपरिक मूल्यों, पारिवारिक संरचनाओं और धार्मिक पालन को संहिताबद्ध करता है। कई लोगों को परिचित रीति-रिवाजों में आराम मिलता है; अन्य लोग पुरानी दुनिया की सोच के बोझ से दबा हुआ महसूस करते हैं।';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'अस्तित्व और विकास पर केंद्रित एक व्यावहारिक चार्टर';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'चार्टर संसाधन प्रबंधन, तकनीकी शिक्षा और आर्थिक विकास को प्राथमिकता देता है। इसमें कविता का अभाव है लेकिन यह सुनिश्चित करता है कि कॉलोनी कुशल और सुव्यवस्थित होगी।';
+
+  @override
+  String get event_separatistMovement_title => 'अलगाववादी आंदोलन';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'उपनिवेशवादियों के एक गुट ने जहाज शासन से स्वतंत्रता की घोषणा की है। उन्होंने उतरने पर अपनी बस्ती स्थापित करने के अधिकार की मांग करते हुए खुद को पिछले हिस्से में बंद कर लिया है। वे जहाज के 15% खाद्य भंडार और बैकअप नेविगेशन सरणी को नियंत्रित करते हैं।';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'संघीय ढांचे के अंतर्गत क्षेत्रीय स्वायत्तता प्रदान करें';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'अलगाववादी एक समझौते को स्वीकार करते हैं: एक ढीली संघीय छतरी के नीचे, स्थानीय शासन के साथ उनका अपना जिला। विखंडन की मिसाल कुछ लोगों को चिंतित करती है, लेकिन शांति कायम है।';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'बैरिकेड्स पर हमला करें और पुनर्मिलन को बल दें';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'सुरक्षा दल ने पिछले हिस्से का उल्लंघन किया। अलगाववादी जमकर विरोध करते हैं. ऑर्डर बहाल हो गया है, लेकिन भयानक कीमत पर। जहाज आत्मा से नहीं तो शरीर से एक है।';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'आंदोलन को चलाने वाली मूल शिकायतों का समाधान करें';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'मध्यस्थ यह समझने के लिए काम करते हैं कि किस चीज़ ने गुट को दूर धकेल दिया। संसाधन वितरण और प्रतिनिधित्व में सुधार धीरे-धीरे अलगाववादियों को वापस लाते हैं। उपचार में समय लगता है.';
+
+  @override
+  String get event_warCouncil_title => 'युद्ध परिषद';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'आस-पास के सिस्टम में संभावित खतरों का पता चलने पर, जहाज का नेतृत्व एक युद्ध परिषद बुलाता है। प्रश्न: कॉलोनी के सीमित संसाधनों का कितना हिस्सा सैन्य तैयारियों बनाम नागरिक बुनियादी ढांचे के लिए समर्पित किया जाना चाहिए?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'पूर्ण आयुध: हथियार बनाना और सैनिकों को प्रशिक्षित करना';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'हथियारों के उत्पादन के लिए कार्यशालाओं को फिर से तैयार किया गया है। प्रत्येक सक्षम उपनिवेशवादी को युद्ध प्रशिक्षण प्राप्त होता है। जहाज हथियारों से भरा हुआ है, लेकिन खेती के उपकरणों का बजट कम हो गया है।';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'निरस्त्रीकरण: हथियारों को पिघलाकर औज़ार बनाएं';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'शस्त्रागार खाली कर दिया गया है और इसकी सामग्री को निर्माण सामग्री में पुनर्चक्रित किया गया है। कॉलोनी तलवारों से नहीं, हल के फालों से बनेगी। शांतिवादी आनन्दित होते हैं; यथार्थवादी इस बात की चिंता करते हैं कि अंधेरे में क्या छिपा है।';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'केवल रक्षात्मक मुद्रा: ढालें ​​और दीवारें, तलवारें नहीं';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'संसाधन किलेबंदी, ढाल और प्रारंभिक चेतावनी प्रणालियों में जाते हैं। किसी आक्रामक हथियार का उत्पादन नहीं किया जाता. एक संतुलित दृष्टिकोण जो संभावित पड़ोसियों को उकसाए बिना विकल्प खुले रखता है।';
+
+  @override
+  String get event_tradeFederation_title => 'व्यापार महासंघ';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'जैसे-जैसे कॉलोनी व्यवहार्यता के करीब पहुंचती है, गुट इस बात पर बहस करते हैं कि इसकी अर्थव्यवस्था की संरचना कैसे की जाए। प्रश्न केवल अस्तित्व से परे है - यह उस प्रकार के समाज को परिभाषित करेगा जो विदेशी धरती पर जड़ें जमाता है। व्यापारी, सांप्रदायिक और नौकरशाह सभी अपना पक्ष रखते हैं।';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'न्यूनतम विनियमन के साथ मुक्त व्यापार क्षेत्र स्थापित करें';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'प्रत्येक आवास मॉड्यूल में बाज़ार उभरते हैं। जैसे-जैसे व्यापारी प्रतिस्पर्धा करते हैं, नवाचार बढ़ता जाता है। धन असमानता बढ़ती है, लेकिन कॉलोनी के लिए उपलब्ध संसाधनों का कुल पूल भी बढ़ता है।';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'सभी संसाधनों का सामुदायिक बंटवारा लागू करें';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'निजी संपत्ति समाप्त कर दी गई है। सब कुछ सबका है. कोई भी भूखा नहीं सोता, लेकिन न्यूनतम से अधिक उत्पादन करने के लिए किसी को प्रोत्साहन नहीं मिलता। सामान्यता सहज है.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'एक राज्य-प्रबंधित व्यापार प्रणाली बनाएं';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'सरकार सभी व्यापार, कीमतें निर्धारित करने और संसाधनों के आवंटन को नियंत्रित करती है। व्यवस्था निष्पक्ष लेकिन अनम्य है. रखरखाव गलियारों में काला बाज़ार उभर कर सामने आता है।';
+
+  @override
+  String get event_faithVsScience_title => 'आस्था बनाम विज्ञान';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'जहाज की दूरबीन ने एक ब्रह्मांडीय घटना की तस्वीरें खींची हैं जो सीधे तौर पर प्रमुख आस्था आंदोलन के केंद्रीय सिद्धांत का खंडन करती हैं। प्रमुख वैज्ञानिक निष्कर्ष प्रकाशित करना चाहते हैं; धार्मिक नेता इस बात पर जोर देते हैं कि वे समुदाय को तोड़ देंगे।';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'वैज्ञानिक निष्कर्षों को पूर्ण रूप से प्रकाशित करें';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'आराम पर सच्चाई की जीत होती है. डेटा जारी होता है और धार्मिक आंदोलन टूट जाता है। कुछ विश्वासी अपने विश्वास को अनुकूलित करते हैं; अन्य इसे पूरी तरह से खो देते हैं। ज्ञान आगे बढ़ता है.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'सामाजिक समरसता बनाए रखने के लिए निष्कर्षों को दबाएँ';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'डेटा वर्गीकृत है. धार्मिक समुदाय स्थिर बना हुआ है, लेकिन विज्ञान टीम हतोत्साहित है। सत्य को स्थगित करना सत्य को नकारना नहीं है, बल्कि ऐसा महसूस होता है।';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'दोनों विचारों के बीच सामंजस्य स्थापित करने के लिए एक संयुक्त पैनल बुलाएँ';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'वैज्ञानिक और धर्मशास्त्री निष्कर्षों की पुनर्व्याख्या करने के लिए मिलकर काम करते हैं। एक नया संश्लेषण उभरता है जो समझ और विश्वास दोनों का विस्तार करता है। हर कोई आश्वस्त नहीं है, लेकिन बातचीत स्वस्थ है।';
+
+  @override
+  String get event_surveillanceState_title => 'निगरानी राज्य';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'तोड़फोड़ की घटनाओं की एक श्रृंखला के बाद, सुरक्षा प्रमुख ने जहाज के प्रत्येक डिब्बे में निगरानी प्रणाली स्थापित करने का प्रस्ताव रखा। कैमरे, माइक्रोफोन और बायोमेट्रिक स्कैनर हर उपनिवेशवादी की गतिविधियों पर नज़र रखेंगे। गोपनीयता की वकालत करने वाले भयभीत हैं।';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'निगरानी प्रस्ताव को पूरी तरह से खारिज करें';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'गोपनीयता संरक्षित है. तोड़फोड़ करने वाले अब भी बड़े पैमाने पर हैं, लेकिन उपनिवेशवासी यह जानते हुए आसानी से सो जाते हैं कि उन पर कोई नज़र नहीं रखी जा रही है। पारंपरिक तरीकों से जांच जारी है.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'पूरे जहाज पर पूर्ण निगरानी लागू करें';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'जहाज के हर कोने पर नजर रखी जाती है. कुछ ही दिनों में तोड़फोड़ करने वाले को पकड़ लिया जाता है। लेकिन कैमरे बने हुए हैं, और सुरक्षा प्रमुख उन्हें बंद करने में कोई दिलचस्पी नहीं दिखाते हैं। कभी।';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'केवल महत्वपूर्ण क्षेत्रों में सीमित निगरानी स्थापित करें';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'कैमरे इंजन कक्ष, शस्त्रागार और पुल को कवर करते हैं। रहने वाले क्वार्टर निजी रहते हैं। तोड़फोड़ करने वाले की अंततः पैटर्न विश्लेषण के माध्यम से पहचान की जाती है। एक नपी-तुली प्रतिक्रिया.';
+
+  @override
+  String get event_nativeAlliance_title => 'मूलनिवासी गठबंधन';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'देशी सभ्यता ने एक औपचारिक संधि का प्रस्ताव रखा है. उनके राजदूत शटल के माध्यम से आते हैं, एक सुंदर व्यक्ति जो आश्चर्यजनक परिष्कार के अनुवादक उपकरण के माध्यम से बोलता है। वे रिश्ते के तीन रूप पेश करते हैं, जिनमें से प्रत्येक कॉलोनी के भविष्य के लिए अलग-अलग निहितार्थ रखता है।';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'एक समान गठबंधन संधि पर हस्ताक्षर करें';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'संधि आपसी रक्षा, साझा अनुसंधान और समान क्षेत्रीय अधिकार स्थापित करती है। दोनों सभ्यताएं एक साथ विकसित होंगी. मूल निवासी कृषि ज्ञान साझा करते हैं जो आपकी कॉलोनी की संभावनाओं को बदल देता है।';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'औपनिवेशिक प्रभुत्व की स्थिति से बातचीत करें';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'आप अनुकूल शर्तों को सुरक्षित करने के लिए अपनी उन्नत तकनीक का लाभ उठाते हैं। मूल निवासी क्षेत्र और संसाधन सौंप देते हैं। वे कांपते हाथों से हस्ताक्षर करते हैं। इतिहास ने ऐसा पहले भी देखा है, और इसका अंत शायद ही कभी अच्छा होता है।';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'पारस्परिक लाभ पर केंद्रित व्यापार साझेदारी स्थापित करें';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'वाणिज्य प्रजातियों के बीच अंतर को पाटता है। आपकी कार्यशालाओं में मूल सामग्री प्रवाहित होती है; आपकी तकनीक उनकी दवा को बेहतर बनाती है। मित्रता पारस्परिक लाभ से बढ़ती है।';
 }

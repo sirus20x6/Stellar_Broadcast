@@ -43,6 +43,7 @@ import 'package:stellar_broadcast/screens/seed_vault_screen.dart';
 import 'package:stellar_broadcast/screens/settings_screen.dart' as local;
 import 'package:stellar_broadcast/screens/ship_status_screen.dart';
 import 'package:stellar_broadcast/screens/singularity_engine_screen.dart';
+import 'package:stellar_broadcast/screens/title_proto_screen.dart';
 import 'package:stellar_broadcast/screens/title_screen.dart';
 import 'package:stellar_broadcast/screens/trader_screen.dart';
 import 'package:stellar_broadcast/screens/void_whale_screen.dart';
@@ -119,7 +120,10 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkOnboarding();
-    _initDeepLinks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _initDeepLinks();
+    });
   }
 
   @override
@@ -138,8 +142,8 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
         .then((uri) {
           if (uri != null) _handleDeepLink(uri);
         })
-        .catchError((e) {
-          QaLogger.app.warning('Failed to get initial link', e);
+        .catchError((Object e, StackTrace st) {
+          QaLogger.app.warning('Failed to get initial link', e, st);
         });
 
     // Warm start.
@@ -147,12 +151,26 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
   }
 
   void _handleDeepLink(Uri uri) {
+    // The AndroidManifest restricts accepted schemes to stellarbroadcast://play
+    // but we still validate scheme/host defensively — a misconfigured intent
+    // filter or an iOS universal link could route other URIs here.
+    if (uri.scheme != 'stellarbroadcast' || uri.host != 'play') {
+      QaLogger.app.fine('Ignoring deep link with unexpected scheme/host: $uri');
+      return;
+    }
+
     // Debug: ?screen=<route> navigates directly to a screen for QA screenshots.
     // Optional &skip=true skips animations for instant screenshot capture.
+    // Gated to debug builds OR release builds compiled with QA_MODE=true so a
+    // malicious deep link can't wipe a live voyage on a Play Store install.
+    // QA_MODE is a compile-time constant (--dart-define=QA_MODE=true) and is
+    // never set on public builds.
     final screenParam = uri.queryParameters['screen'];
-    if (screenParam != null && screenParam.isNotEmpty) {
-      PlatformConfig.skipAnimations =
-          (uri.queryParameters['skip'] == 'true');
+    const qaMode = bool.fromEnvironment('QA_MODE', defaultValue: false);
+    if ((kDebugMode || qaMode) &&
+        screenParam != null &&
+        screenParam.isNotEmpty) {
+      PlatformConfig.skipAnimations = (uri.queryParameters['skip'] == 'true');
       if (_showOnboarding || !_loaded) {
         _pendingDeepLink = uri;
         return;
@@ -178,6 +196,10 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
     try {
       final seedInt = codeToSeed(seed);
+      if (seedInt == null) {
+        QaLogger.app.warning('Deep link contained invalid seed: $seed');
+        return;
+      }
       final upgrades = ref.read(legacyProvider).upgrades;
       final navContext = _navigatorKey.currentContext;
       if (navContext == null) return;
@@ -220,6 +242,13 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
     final notifier = ref.read(voyageProvider.notifier);
 
+    // Title — pop back to the home route (screenshot kick-off pushes /voyage
+    // so the stack is Title → Voyage; popUntil isFirst leaves us at Title).
+    if (screen == 'title') {
+      nav.popUntil((r) => r.isFirst);
+      return;
+    }
+
     // Screens that don't need game state — navigate directly.
     const noStateNeeded = {'settings', 'legacy', 'codex'};
     if (noStateNeeded.contains(screen)) {
@@ -237,6 +266,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     if (needsPlanet.contains(screen) &&
         ref.read(voyageProvider).currentPlanet == null) {
       await notifier.scanPlanet();
+      if (!mounted) return;
     }
 
     // Visual event screens — need a GameEvent argument.
@@ -249,6 +279,10 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       'world-engine': 'relic_world_engine',
       'mirror-array': 'relic_mirror_array',
       'chrono-vortex': 'chrono_vortex',
+      'void-whale': 'void_whale_calf',
+      'phantom-ship': 'phantom_ship',
+      'singularity-engine': 'singularity_engine',
+      'pulsar-lighthouse': 'pulsar_lighthouse',
     };
 
     if (eventScreens.containsKey(screen)) {
@@ -290,8 +324,12 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       notifier.debugDegradeSystem('landingSystem', 0.55);
     }
 
-    // Game over — navigate to /gameover directly (it reads state from provider).
+    // Game over — set a sample failure reason so the Phase 2 red box isn't
+    // empty, then navigate. (Normal play sets this via _checkGameOver.)
     if (screen == 'gameover') {
+      notifier.debugSetGameOverReason(
+        'HULL BREACH CRITICAL — STRUCTURAL COLLAPSE',
+      );
       nav.pushNamed('/gameover');
       return;
     }
@@ -309,13 +347,22 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
         GameSfx().pauseLongAudio();
       }
       // Save active voyage so it survives if the OS kills the process.
-      ref.read(voyageProvider.notifier).saveState();
+      unawaited(
+        ref.read(voyageProvider.notifier).saveState().catchError((
+          Object e,
+          StackTrace s,
+        ) {
+          debugPrint('saveState failed during app lifecycle change: $e');
+        }),
+      );
     } else if (state == AppLifecycleState.resumed) {
       if (!kIsWeb) {
         FlameAudio.bgm.resume();
         GameMusic().resumeEngineHum();
         GameSfx().resumeLongAudio();
       }
+      // Re-check purchases in case a promo code was redeemed while backgrounded.
+      QaIapService().restore().catchError((_) {});
     }
   }
 
@@ -451,6 +498,11 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
             return MaterialPageRoute(
               settings: settings,
               builder: (context) => const TitleScreen(),
+            );
+          case '/title-proto':
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => const TitleProtoScreen(),
             );
           case '/voyage':
             return MaterialPageRoute(

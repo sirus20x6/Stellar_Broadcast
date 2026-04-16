@@ -58,14 +58,22 @@ class GameEvent {
         choices: (json['choices'] as List<dynamic>)
             .map((c) => EventChoice.fromJson(c as Map<String, dynamic>))
             .toList(),
-        category: json['category'] != null
-            ? EventCategory.values.byName(json['category'] as String)
-            : EventCategory.common,
+        category: _parseCategory(json['category']),
         openTraderScreen: json['openTraderScreen'] as bool? ?? false,
         tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? const [],
         guard: json['guard'] as String?,
         route: json['route'] as String?,
       );
+
+  static EventCategory _parseCategory(Object? raw) {
+    if (raw is String) {
+      for (final v in EventCategory.values) {
+        if (v.name == raw) return v;
+      }
+    }
+    // Unknown category from an older save or malformed YAML — default to common.
+    return EventCategory.common;
+  }
 
   @override
   String toString() => 'GameEvent($id: $title)';

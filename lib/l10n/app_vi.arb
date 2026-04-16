@@ -610,7 +610,6 @@
   "ending_techPhrase_preIndustrial": "dù công nghệ thoái lui về trạng thái tiền công nghiệp, với công cụ tay và sức lao động gia súc làm xương sống cuộc sống hàng ngày.",
   "ending_techPhrase_stoneAge": "và không có phương tiện tái thiết, thuộc địa rơi vào tồn tại thời đồ đá, chế tạo công cụ từ đá và xương.",
   "ending_techPhrase_default": "và công nghệ ổn định ở mức dân di cư có thể duy trì.",
-  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
   "ending_populationHigh": "Gần như toàn bộ {colonists} dân di cư sống sót hành trình, cho {colonyName} nền tảng vốn nhân lực vững chắc.",
   "ending_populationMedium": "Trong số một ngàn ban đầu, {colonists} dân di cư đến {colonyName} — đủ để duy trì quần thể khả thi.",
   "ending_populationLow": "Chỉ {colonists} dân di cư sống sót đến {colonyName}, vốn gen nguy hiểm ít ỏi cho nền văn minh mới.",
@@ -1302,7 +1301,6 @@
   "ui_trader_shipSystems": "HỆ THỐNG TÀU",
   "ui_trader_payWith": "THANH TOÁN BẰNG",
   "ui_trader_leaveTrader": "RỜI THƯƠNG NHÂN",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "Tâm trạng hào phóng",
   "ui_trader_moodFair": "Giao dịch công bằng",
   "ui_trader_moodHard": "Mặc cả gay gắt",
@@ -1313,14 +1311,12 @@
   "ui_trader_culture": "Văn hóa",
   "ui_trader_tech": "Công nghệ",
   "ui_trader_greeting": "Ngươi có gì để cung cấp, loài người?",
-  "ui_codex_title": "CODEX",
   "ui_codex_discovered": "{count} / {total} ĐÃ KHÁM PHÁ",
   "ui_codex_surfaceFeatures": "ĐẶC ĐIỂM BỀ MẶT",
   "ui_codex_moonTypes": "LOẠI VỆ TINH",
   "ui_codex_ringTypes": "LOẠI VÀNH ĐAI",
   "ui_codex_locked": "Hạ cánh trên hành tinh có đặc điểm này để khám phá hiệu ứng của nó.",
   "ui_codex_synergy": "Hiệu ứng cộng hưởng: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "Độc Thoại Của AI",
   "event_aiSoliloquy_narrative": "SAM, AI Quản Lý Tự Động của tàu, đã bắt đầu phát đi vòng lặp thơ ca Trái Đất cổ đại trên tất cả tần số nội bộ. Phát sóng này tiêu thụ lượng lớn chu kỳ CPU, nhưng phi hành đoàn lại cảm thấy kỳ lạ an ủi trong bóng tối sâu thẳm.",
   "event_aiSoliloquy_choice0_text": "Để SAM tiếp tục — tinh thần quan trọng hơn CPU",
@@ -1437,39 +1433,521 @@
   "event_subspaceReef_choice1_outcome": "Máy quét bị đẩy đến giới hạn. Chúng ta vượt qua nhanh chóng, nhưng các mảng cảm biến bị cháy vì cường độ của các gợn sóng không gian con.",
   "event_alienTrader_title": "Thương Nhân Lang Thang",
   "event_alienTrader_narrative": "Một tàu thiết kế lạ trôi dạt bên cạnh, phát sóng trên mọi tần số. Đó là một thương nhân — một trong những thương nhân lang thang hoạt động trong không gian giữa các nền văn minh. Họ cung cấp sửa chữa và vật tư để đổi lấy tài nguyên. Khoang hàng của họ rung lên với công nghệ kỳ lạ.",
-
   "event_pulsarLighthouse_title": "Ngọn Hải Đăng Pulsar",
   "event_pulsarLighthouse_narrative": "Một sao neutron quay quét chùm tia xuyên qua hư không như ngọn hải đăng vũ trụ. Nhịp đập đều đặn của pulsar mang dữ liệu thời gian chính xác có thể hiệu chuẩn lại máy quét của chúng ta đến độ chính xác phi thường — nhưng căn chỉnh với chùm tia có nghĩa là phơi con tàu trước bức xạ cường độ cao.",
   "event_pulsarLighthouse_choice0": "Hiệu chuẩn máy quét theo xung",
   "event_pulsarLighthouse_outcome0": "Các dãy máy quét hấp thụ tín hiệu pulsar, hiệu chuẩn lại đến độ chính xác mà chúng ta chưa bao giờ tưởng tượng. Nhưng cái giá bức xạ là thật — một số buồng đông lạnh ở khu vực phơi nhiễm bị hư hại, và một vài người định cư không sống sót qua đợt phơi nhiễm.",
   "event_pulsarLighthouse_choice1": "Bật khiên và đi qua ở khoảng cách an toàn",
   "event_pulsarLighthouse_outcome1": "Chúng ta giữ khoảng cách rộng với pulsar, đốt thêm nhiên liệu để duy trì quỹ đạo an toàn. Phi hành đoàn ngắm chùm tia quét qua cửa sổ lọc ánh sáng — đẹp, nhưng xa vời.",
-
   "event_alienNursery_title": "Vườn Ươm Ngoài Hành Tinh",
   "event_alienNursery_narrative": "Một cấu trúc hữu cơ khổng lồ trôi dạt trong hư không — một vườn ươm sinh học đang ấp nở sinh vật non ngoài hành tinh. Hệ thống hỗ trợ sự sống đang hỏng, nhiệt độ bên trong giảm. Các sinh vật bên trong đang chết dần. Máy quét sinh học của chúng ta có thể học hỏi rất nhiều từ cấu trúc này, nhưng can thiệp có nghĩa là mở cửa khí cho mầm bệnh chưa biết.",
   "event_alienNursery_choice0": "Giúp ổn định hệ thống hỗ trợ sự sống",
   "event_alienNursery_outcome0": "Các kỹ sư của chúng ta chế tạo tạm một liên kết nhiệt đến vườn ươm, ổn định các buồng ấp. Dữ liệu máy quét sinh học thật phi thường — một hệ thống phân loại sự sống hoàn toàn mới. Nhưng đúng như lo ngại, vi sinh vật ngoài hành tinh tìm đường lên tàu. Đội y tế kiểm soát dịch bệnh, dù không kịp trước khi một số người định cư ngã bệnh.",
   "event_alienNursery_choice1": "Để yên không can thiệp",
   "event_alienNursery_outcome1": "Chúng ta quan sát từ khoảng cách tôn trọng, ghi chép những gì có thể qua quét thụ động. Vườn ươm tiếp tục trôi dạt, số phận bất định. Phi hành đoàn suy ngẫm về sự mong manh của sự sống — kể cả sự sống ngoài hành tinh — và gánh nặng của những lựa chọn mà chúng ta mang theo.",
-
   "event_derelictArmada_title": "Hạm Đội Bỏ Hoang",
   "event_derelictArmada_narrative": "Hàng trăm chiến hạm cổ đại treo bất động trong hư không — nghĩa trang của một cuộc xung đột bị lãng quên. Thân tàu mang vết sẹo từ vũ khí mà chúng ta không nhận dạng được, nhưng vật liệu cấu trúc và cơ sở dữ liệu trên tàu có thể vô giá. Câu hỏi là ưu tiên điều gì: cứu vớt vật chất hay kiến thức.",
   "event_derelictArmada_choice0": "Trục vớt công nghệ vũ khí và tấm giáp",
   "event_derelictArmada_outcome0": "Đội trục vớt cắt vào chiến hạm ngoài hành tinh, chiết xuất hợp kim kỳ lạ và kỹ thuật xây dựng vượt trước chúng ta hàng thế kỷ. Đội xây dựng tích hợp vật liệu mới một cách nhiệt tình. Nhưng một con tàu không chết như vẻ ngoài — một bẫy nổ kích hoạt trong lúc chiết xuất, giết chết một đội trục vớt.",
   "event_derelictArmada_choice1": "Tải về kho lưu trữ lịch sử của họ",
   "event_derelictArmada_outcome1": "Chúng ta tập trung vào lõi dữ liệu, cẩn thận chiết xuất hàng thế kỷ lịch sử, nghệ thuật, khoa học và triết học ngoài hành tinh. Riêng kho lưu trữ văn hóa đã đủ khiến các học giả bận rộn nhiều thế hệ. Những hiểu biết công nghệ, dù kém thực tiễn ngay lập tức, tiết lộ các nguyên lý kỹ thuật thúc đẩy sự hiểu biết của chúng ta.",
-
   "event_alienQuarantineZone_title": "Vùng Cách Ly Ngoài Hành Tinh",
   "event_alienQuarantineZone_narrative": "Đèn hiệu cảnh báo bằng hàng chục ngôn ngữ ngoài hành tinh đánh dấu ranh giới một vùng không gian bị niêm phong. Bất cứ thứ gì bị nhốt bên trong đủ nguy hiểm để nhiều nền văn minh hợp tác cô lập nó. Máy quét tầm xa phát hiện dấu hiệu công nghệ khổng lồ bên trong — và thứ gì đó có thể còn sống.",
   "event_alienQuarantineZone_choice0": "Phá vỡ cách ly và điều tra",
   "event_alienQuarantineZone_outcome0": "Chúng ta vượt qua phao cảnh báo vào vùng cách ly. Bên trong, chúng ta tìm thấy một trạm nghiên cứu phức tạp đến kinh ngạc — và tàn tích của thứ nó đang nghiên cứu. Công nghệ thu được mang tính cách mạng, nhưng ô nhiễm sinh học nghiêm trọng. Hàng chục người định cư ngã bệnh trước khi chúng ta rời vùng.",
   "event_alienQuarantineZone_choice1": "Tôn trọng cách ly",
   "event_alienQuarantineZone_outcome1": "Chúng ta nghiên cứu chính các đèn hiệu cảnh báo, chứa dữ liệu hàng hải và số đo khí quyển từ các nền văn minh đặt chúng. Không phải kho báu bên trong, nhưng cũng là điều gì đó — và chúng ta không giải phóng thứ mà họ đã khóa chặt.",
-
   "event_hydroponicsBlight_title": "Dịch Bệnh Thủy Canh",
   "event_hydroponicsBlight_narrative": "Một dịch nấm lan nhanh đã lây nhiễm các khoang thủy canh của tàu. Toàn bộ chu kỳ cây trồng héo rũ trước mắt chúng ta. Dịch chưa lan đến kho hạt giống dự trữ, nhưng chỉ là vấn đề vài giờ. Chúng ta có thể thanh tẩy các khoang và trồng lại từ đầu, hoặc thử phương pháp kháng nấm thực nghiệm có thể cứu vụ thu hoạch hiện tại — hoặc lan truyền ô nhiễm thêm.",
   "event_hydroponicsBlight_choice0": "Thanh tẩy và trồng lại từ kho hạt giống",
   "event_hydroponicsBlight_outcome0": "Chúng ta xả khí các khoang thủy canh vào chân không, tiêu diệt dịch bệnh cùng mọi cây trồng sống. Trồng lại từ kho hạt giống sẽ mất nhiều tuần, và các chương trình văn hóa phụ thuộc vào thực phẩm tươi và không gian vườn bị đình chỉ. Nhưng dịch bệnh đã được kiểm soát.",
   "event_hydroponicsBlight_choice1": "Thử phương pháp thực nghiệm",
-  "event_hydroponicsBlight_outcome1": "Thuốc kháng nấm thực nghiệm ban đầu cho thấy triển vọng, nhưng một chủng kháng thuốc đột phá. Đến khi chúng ta chuyển sang thanh tẩy toàn diện, dịch đã lan sang đường dinh dưỡng buồng đông lạnh. Thiệt hại tệ hơn so với nếu chúng ta hành động quyết đoán ngay từ đầu."
+  "event_hydroponicsBlight_outcome1": "Thuốc kháng nấm thực nghiệm ban đầu cho thấy triển vọng, nhưng một chủng kháng thuốc đột phá. Đến khi chúng ta chuyển sang thanh tẩy toàn diện, dịch đã lan sang đường dinh dưỡng buồng đông lạnh. Thiệt hại tệ hơn so với nếu chúng ta hành động quyết đoán ngay từ đầu.",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_ending_shareCardShare": "CHIA SẺ",
+  "ui_ending_shareCardCancel": "HỦY BỎ",
+  "ui_settings_statsLeft": "BÊN TRÁI",
+  "ui_settings_statsRight": "PHẢI",
+  "ui_scan_uncertaintyPct": "SỰ KHÔNG CHẮC CHẮN: ±{percent}%",
+  "ui_settings_statsPosition": "Số liệu thống kê & vị trí nút",
+  "ui_scan_probesCount": "ĐẦU DÒ: {count}",
+  "planet_featurePerpetualAurora": "Cực quang vĩnh cửu",
+  "planet_featurePetrifiedMegaflora": "Megaflora hóa đá",
+  "ui_ending_shareCard": "THẺ CHIA SẺ",
+  "ui_ending_shareCardDialogTitle": "Chia sẻ hành trình của bạn",
+  "ui_title_seedInvalid": "Mã hạt giống không hợp lệ. Chỉ sử dụng A–Z và 0–9.",
+  "planet_featureSaltFlats": "Cánh đồng muối",
+  "planet_featureApexPredator": "Động vật ăn thịt đỉnh cao",
+  "planet_featureGhostCities": "Thành phố ma",
+  "planet_featureCarnivorousFlora": "Hệ thực vật ăn thịt",
+  "planet_featureArchiveVaults": "Kho lưu trữ",
+  "planet_featureSinkholeFields": "Cánh đồng hố sụt",
+  "planet_featureUndergroundRivers": "Sông ngầm",
+  "planet_featureObsidianPlains": "Đồng bằng Obsidian",
+  "ending_govSentenceTheocracy": "Một hội đồng thần quyền hướng dẫn {planetName}, rút ​​ra sự khôn ngoan từ đức tin đã duy trì những người thuộc địa vượt qua khoảng trống.",
+  "ending_governmentTheocracy": "Thần quyền",
+  "ending_governmentFascistState": "Nhà nước phát xít",
+  "ending_governmentCommune": "Xã",
+  "ending_nativesAlliance": "liên minh",
+  "ending_governmentCorporateOligarchy": "Đầu sỏ doanh nghiệp",
+  "ending_governmentMilitaryJunta": "Hội đồng quân sự",
+  "ending_nativesSubjugation": "chinh phục",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ending_govSentenceMilitaryJunta": "Một cơ cấu chỉ huy quân sự quản lý {planetName}, kỷ luật đã cứu họ trong không gian giờ đây đã xác định nền văn minh của họ.",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceFascistState": "Một chế độ độc tài kiểm soát {planetName} bằng nắm đấm sắt, các quyền tự do dân sự bị hy sinh vì trật tự trong thế giới mới.",
+  "ending_govSentenceCorporateOligarchy": "Một nhóm các nhà quản lý tài nguyên dẫn đầu {planetName}, sự nhạy bén về kinh tế của họ đã được chứng minh là cần thiết cho sự sống còn.",
+  "ending_nativeSentenceSubjugation": "Người dân bản địa {planetName} sống dưới sự cai trị của thực dân, nền văn hóa của họ bị đàn áp khi thực dân áp đặt trật tự của riêng họ.",
+  "ending_govSentenceCommune": "Người dân {planetName} tự quản lý tập thể, chia sẻ tài nguyên và quyết định một cách bình đẳng giữa tất cả những người thuộc địa.",
+  "ui_tooltip_back": "Mặt sau",
+  "ui_tooltip_settings": "Cài đặt",
+  "ui_common_tapRingToChoose": "NHẤN VÀO MỘT VÒNG ĐỂ CHỌN",
+  "ui_codex_title": "CODEX",
+  "ui_tooltip_codex": "Codex",
+  "ui_tooltip_leaderboards": "Bảng xếp hạng",
+  "ui_common_tapToSkip": "NHẤN ĐỂ BỎ QUA",
+  "ui_common_tapToContinue": "NHẤN ĐỂ TIẾP TỤC",
+  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
+  "ending_nativeSentenceAlliance": "Một liên minh chính thức gắn kết những người thực dân và nền văn minh bản địa của {planetName}, sự kết hợp kiến ​​thức của họ sẽ xây dựng nên thứ gì đó lớn lao hơn những gì một trong hai có thể làm được.",
+  "event_constitutionalConvention_title": "Công ước Hiến pháp",
+  "event_pulsarLighthouse_choice2": "Rút lui trước khi cuộc càn quét đến với chúng ta",
+  "event_constitutionalConvention_outcome0": "Những người thực dân phê chuẩn một hiến pháp đảm bảo sự đại diện bình đẳng. Việc ra quyết định chậm lại nhưng tinh thần lại tăng cao khi mọi tiếng nói đều được lắng nghe.",
+  "event_constitutionalConvention_choice1": "Thành lập một cơ quan điều hành mạnh mẽ với quyền lực khẩn cấp",
+  "event_constitutionalConvention_narrative": "Dân số của tàu thuộc địa ngày càng tăng không ngừng nghỉ nếu không có sự quản lý chính thức. Các đại biểu từ mỗi boong tập trung tại hầm hàng để soạn thảo một điều lệ xác định cách cai trị thuộc địa trong tương lai. Ba phe phái đưa ra những tầm nhìn cạnh tranh nhau cho chính phủ mới.",
+  "event_constitutionalConvention_outcome1": "Một nhà lãnh đạo duy nhất được bổ nhiệm với quyền lực sâu rộng. Các quyết định được đưa ra nhanh chóng nhưng những người bất đồng chính kiến ​​thì thầm về sự chuyên chế ở tầng dưới.",
+  "event_constitutionalConvention_choice0": "Soạn thảo hiến chương dân chủ với quyền bầu cử phổ thông",
+  "event_pulsarLighthouse_outcome2": "Chúng tôi quay đi khi bị bỏng khẩn cấp trước khi chùm tia tiếp theo đi qua. Tín hiệu của sao xung mờ dần phía sau chúng tôi - không thu được dữ liệu, không bị tổn hại, tốn một ít nhiên liệu cho lực đẩy né tránh.",
+  "ui_tooltip_bugReport": "Báo cáo lỗi",
+  "event_militaryCoupThreat_title": "Đe dọa đảo chính quân sự",
+  "event_constitutionalConvention_outcome2": "Các kỹ sư, nhà khoa học và bác sĩ thành lập một hội đồng cai trị dựa trên chuyên môn. Hiệu quả được cải thiện, mặc dù một số người cảm thấy bị loại khỏi quyền lực.",
+  "event_militaryCoupThreat_choice2": "Đàm phán quyền hạn khẩn cấp có giới hạn với điều khoản hoàng hôn",
+  "event_constitutionalConvention_choice2": "Thành lập hội đồng chuyên gia kỹ trị",
+  "event_militaryCoupThreat_choice0": "Chống lại cuộc đảo chính với các thuyền viên trung thành",
+  "event_militaryCoupThreat_outcome0": "Phi hành đoàn trung thành tập hợp để chống lại Vasquez. Cuộc xung đột kết thúc với sự đổ máu tối thiểu, nhưng lực lượng an ninh bị suy yếu và một số người dân thuộc địa bị vướng vào làn đạn.",
+  "event_militaryCoupThreat_outcome2": "Sau những cuộc đàm phán căng thẳng, Vasquez tạm thời chấp nhận quyền giám sát. Một sự thỏa hiệp mong manh không làm hài lòng ai hoàn toàn, nhưng ngăn ngừa bạo lực.",
+  "event_militaryCoupThreat_choice1": "Tuân theo yêu cầu của người chỉ huy",
+  "event_militaryCoupThreat_narrative": "Chỉ huy Vasquez phụ trách chi tiết an ninh của con tàu đã chiếm giữ kho vũ khí và đưa ra tối hậu thư: cấp quyền lực quân sự khẩn cấp hoặc phải đối mặt với việc khóa tất cả các boong. Tình hình rất bất ổn và những người thực dân đang tìm kiếm phản hồi từ bạn.",
+  "event_religiousAwakening_choice0": "Nắm bắt phong trào đức tin và cung cấp nguồn lực",
+  "event_religiousAwakening_choice1": "Thực thi chủ nghĩa thế tục nghiêm ngặt trên tàu",
+  "event_militaryCoupThreat_outcome1": "Vasquez đảm nhận quyền kiểm soát hoạt động của tàu. Trật tự được lập lại nhanh chóng nhưng phải trả giá bằng quyền tự do dân sự. Đội tuần tra có vũ trang bây giờ đi khắp mọi hành lang.",
+  "event_religiousAwakening_choice2": "Cho phép thờ cúng nhưng điều chỉnh ảnh hưởng của nó",
+  "event_religiousAwakening_narrative": "Một nhà truyền giáo có sức lôi cuốn đã thu hút hàng trăm người dân thuộc địa tham gia vào một phong trào đức tin mới. Họ tụ tập trong mái vòm quan sát mỗi chu kỳ, những bài thánh ca của họ vang vọng qua các trục thông gió. Một số thuyền viên lo lắng về sự cuồng tín; những người khác tìm thấy niềm an ủi thực sự trong giáo lý.",
+  "event_religiousAwakening_outcome0": "Phong trào phát triển mạnh mẽ với sự hỗ trợ chính thức. Tinh thần được cải thiện giữa các tín đồ và tinh thần chung của họ củng cố mối quan hệ xã hội trên con tàu.",
+  "event_religiousAwakening_outcome1": "Các cuộc tụ họp tôn giáo bị hạn chế ở các khu vực riêng tư. Phong trào diễn ra ngầm, gây phẫn nộ, nhưng chủ nghĩa duy lý khoa học vẫn là học thuyết chính thức.",
+  "event_corporateTakeover_narrative": "Các nhà quản lý tài nguyên của con tàu đã âm thầm củng cố quyền kiểm soát việc phân phối thực phẩm, tái chế nước và phân bổ năng lượng. Bây giờ họ đề xuất chính thức hóa quyền lực của mình thành một cơ cấu công ty có thể quản lý nền kinh tế của thuộc địa trong tương lai.",
+  "event_corporateTakeover_title": "Tiếp quản doanh nghiệp",
+  "event_religiousAwakening_title": "Thức tỉnh tôn giáo",
+  "event_corporateTakeover_choice2": "Triển khai thị trường được quản lý bằng mạng lưới an toàn",
+  "event_corporateTakeover_choice0": "Cho phép các nguyên tắc thị trường tự do quản lý tài nguyên",
+  "event_religiousAwakening_outcome2": "Đức tin được cho phép nhưng phải tách biệt khỏi sự quản lý. Một tuyên úy được bổ nhiệm để liên lạc với lệnh. Một sự cân bằng khó chịu được duy trì.",
+  "event_corporateTakeover_outcome1": "Tài nguyên bị tịch thu và đặt dưới sự kiểm soát của cộng đồng. Phe công ty bị giải tán, nhưng sự đổi mới bị đình trệ mà không có động cơ lợi nhuận.",
+  "event_corporateTakeover_outcome2": "Một nền kinh tế hỗn hợp được thiết lập với các biện pháp kiểm soát giá cả và các chương trình phúc lợi. Cả hai phe đều không hoàn toàn hài lòng, nhưng các nhu cầu cơ bản vẫn được đáp ứng đồng thời cho phép một số hoạt động kinh doanh.",
+  "event_corporateTakeover_outcome0": "Phe công ty tiếp quản việc quản lý tài nguyên. Hiệu quả được cải thiện đáng kể, nhưng giá cả tăng cao và những người dân thuộc địa nghèo nhất phải vật lộn để đủ khả năng chi trả cho những nhu cầu cơ bản.",
+  "event_corporateTakeover_choice1": "Quốc hữu hóa mọi tài nguyên thuộc sở hữu tập thể",
+  "event_successionCrisis_outcome0": "Một cuộc bầu cử hỗn loạn nhưng đầy tinh thần đã tạo ra một đội trưởng mới được bầu chọn bằng phiếu phổ thông. Quá trình này rất lộn xộn, nhưng những người thuộc địa cảm thấy mình có quyền làm chủ quyền lãnh đạo của mình.",
+  "event_successionCrisis_title": "Khủng hoảng kế nhiệm",
+  "event_nativeSovereignty_title": "chủ quyền bản địa",
+  "event_successionCrisis_narrative": "Thuyền trưởng của con tàu đã chết trong giấc ngủ, không để lại người kế vị được chỉ định. Ba phe phái ngay lập tức tranh giành quyền kiểm soát: hội đồng dân sự yêu cầu bầu cử, người đứng đầu an ninh tuyên bố có quyền lực, và những người thực dân lớn tuổi áp dụng các nghi thức lãnh đạo truyền thống.",
+  "event_successionCrisis_outcome2": "Những thực dân lớn tuổi nhất và giàu kinh nghiệm nhất thành lập một hội đồng quản lý. Sự khôn ngoan của họ dẫn dắt con tàu, mặc dù một số thủy thủ đoàn trẻ hơn cảm thấy bị chế độ lão thành gạt ra ngoài lề xã hội.",
+  "event_nativeSovereignty_narrative": "Quét tầm xa xác nhận sự sống thông minh trên hành tinh mục tiêu. Thông tin liên lạc bị chặn tiết lộ một nền văn minh tinh vi đã phát hiện ra cách tiếp cận của bạn. Họ truyền đi một yêu cầu chính thức: công nhận chủ quyền lãnh thổ của mình hoặc đối mặt với sự kháng cự khi đến nơi.",
+  "event_successionCrisis_outcome1": "Trưởng phòng an ninh bước vào ghế thuyền trưởng. Kỷ luật được khôi phục ngay lập tức, nhưng phi hành đoàn dân sự để mắt đến những người bảo vệ có vũ trang với sự lo lắng ngày càng tăng.",
+  "event_nativeSovereignty_choice0": "Công nhận chủ quyền bản địa và xin phép giải quyết",
+  "event_successionCrisis_choice1": "Hãy để quân đội nắm quyền chỉ huy",
+  "event_nativeSovereignty_outcome0": "Bạn truyền đạt sự công nhận chính thức về quyền bản địa. Phản ứng là thận trọng nhưng tích cực. Các mối quan hệ trong tương lai sẽ bắt đầu trên nền tảng tôn trọng lẫn nhau, mặc dù địa điểm hạ cánh có thể bị hạn chế.",
+  "event_successionCrisis_choice2": "Triệu tập hội đồng trưởng lão",
+  "event_successionCrisis_choice0": "Tổ chức bầu cử khẩn cấp",
+  "event_nativeSovereignty_outcome1": "Bạn truyền đi ý định giải quyết của mình bất chấp điều đó. Phi hành đoàn bắt đầu diễn tập vũ khí và lập kế hoạch củng cố. Những người bản xứ im lặng, điều này phần nào còn đáng sợ hơn cả những lời đe dọa.",
+  "event_nativeSovereignty_choice1": "Khẳng định quyền lực tối cao của thuộc địa và chuẩn bị kháng chiến",
+  "event_laborStrike_choice0": "Đáp ứng đầy đủ nhu cầu của người lao động",
+  "event_laborStrike_narrative": "Đội ngũ kỹ thuật đã nghỉ việc, yêu cầu ca làm việc ngắn hơn, khẩu phần ăn tốt hơn và có tiếng nói trong các quyết định điều hướng. Các hệ thống quan trọng đang chạy trên cơ chế sao lưu tự động nhưng chúng sẽ không tồn tại được lâu. Những người thuộc địa còn lại lo lắng theo dõi.",
+  "event_laborStrike_outcome0": "Cuộc đình công kết thúc ngay lập tức. Công nhân trở lại vị trí của họ với điều kiện được cải thiện. Năng suất giảm nhẹ khi ca làm việc ngắn hơn có hiệu lực, nhưng lòng trung thành là không thể lay chuyển.",
+  "event_nativeSovereignty_outcome2": "Bạn đưa ra một khuôn khổ để cùng tồn tại và chia sẻ tài nguyên. Người bản xứ tò mò nhưng cảnh giác. Các cuộc đàm phán sẽ phức tạp, nhưng khả năng hòa bình vẫn tồn tại.",
+  "event_nativeSovereignty_choice2": "Đề xuất quản trị chung hành tinh",
+  "event_laborStrike_choice1": "Đàn áp đình công và cưỡng chế lao động cưỡng bức",
+  "event_laborStrike_outcome1": "Lực lượng an ninh hộ tống các công nhân trở về trạm của họ trước họng súng. Động cơ lại kêu vo vo, nhưng lòng căm thù vẫn sôi sục ở các tầng dưới. Một số công nhân bị giới hạn trong khu.",
+  "event_laborStrike_title": "đình công lao động",
+  "event_laborStrike_outcome2": "Sau các cuộc đàm phán kéo dài, một thỏa thuận đã đạt được: khẩu phần ăn tốt hơn và ý kiến ​​tư vấn đầu vào, nhưng không giảm thời gian làm ca. Không bên nào vui mừng, nhưng động cơ vẫn tiếp tục chạy.",
+  "event_laborStrike_choice2": "Đưa ra sự thỏa hiệp một phần đối với các yêu cầu chính",
+  "event_censorshipDebate_choice1": "Thực hiện kiểm soát thông tin đầy đủ",
+  "event_censorshipDebate_choice0": "Đảm bảo quyền truy cập miễn phí vào tất cả các thông tin",
+  "event_censorshipDebate_outcome1": "Tất cả thông tin liên lạc hiện được lọc thông qua lệnh. Sự hoảng loạn dừng lại, thay vào đó là sự bình tĩnh kỳ lạ. Nhưng tin đồn lấp đầy khoảng trống do sự thật bị kiểm duyệt để lại, và chúng thường tệ hơn thực tế.",
+  "event_censorshipDebate_narrative": "Một tài liệu bị rò rỉ tiết lộ tình trạng thực sự của hệ thống hỏng hóc của con tàu. Sự hoảng loạn lan khắp các tầng dưới. Nhân viên truyền thông đề xuất hạn chế quyền truy cập thông tin để ngăn chặn tình trạng bất ổn tiếp theo. Những người ủng hộ quyền tự do dân sự đang phẫn nộ.",
+  "event_censorshipDebate_outcome0": "Sự minh bạch hoàn toàn được thiết lập. Sự hoảng loạn ban đầu giảm bớt khi những người dân thuộc địa tập hợp lại để giúp khắc phục những vấn đề mà giờ đây họ đã hiểu. Niềm tin vào sự lãnh đạo ngày càng tăng, mặc dù một số thông tin gây ra lo lắng.",
+  "event_colonialCharter_title": "Hiến chương thuộc địa",
+  "event_censorshipDebate_title": "Tranh luận về kiểm duyệt",
+  "event_colonialCharter_choice0": "Một điều lệ tiến bộ nhấn mạnh đến quyền cá nhân",
+  "event_colonialCharter_choice2": "Một điều lệ thực dụng tập trung vào sự tồn tại và phát triển",
+  "event_colonialCharter_choice1": "Một hiến chương bảo thủ bảo tồn truyền thống của Trái đất",
+  "event_censorshipDebate_choice2": "Chỉ lọc thông tin nhạy cảm về bảo mật",
+  "event_censorshipDebate_outcome2": "Một hệ thống phân loại được thiết lập. Hầu hết thông tin đều được lưu chuyển tự do, nhưng dữ liệu hệ thống quân sự và quan trọng cần được cấp phép. Một nền tảng trung bình khả thi mà hầu hết đáp ứng.",
+  "event_colonialCharter_narrative": "Khi hành tinh sắp sụp đổ, những người thực dân phải soạn thảo những luật cơ bản cho xã hội mới của họ. Ba trường phái triết học đã xuất hiện, mỗi trường phái ủng hộ một tầm nhìn khác nhau về hình ảnh thuộc địa sẽ trở thành. Cuộc tranh luận sôi nổi và mang tính cá nhân sâu sắc.",
+  "event_colonialCharter_outcome1": "Hiến chương quy định các giá trị truyền thống, cấu trúc gia đình và việc tuân thủ tôn giáo. Nhiều người tìm thấy niềm an ủi trong những phong tục quen thuộc; những người khác cảm thấy ngột ngạt trước sức nặng của lối suy nghĩ cũ kỹ.",
+  "event_colonialCharter_outcome0": "Hiến chương quy định các quyền tự do cá nhân, bình đẳng và di chuyển xã hội. Các nghệ sĩ và nhà tư tưởng ăn mừng; những người theo chủ nghĩa truyền thống cảnh báo rằng quyền tự do không được kiểm soát sẽ dẫn đến hỗn loạn.",
+  "event_separatistMovement_choice0": "Trao quyền tự chủ khu vực trong khuôn khổ liên bang",
+  "event_separatistMovement_narrative": "Một nhóm thực dân đã tuyên bố độc lập khỏi việc quản lý tàu thuyền. Họ đã rào chắn ở khu vực phía sau, đòi quyền thành lập khu định cư của riêng mình khi hạ cánh. Họ kiểm soát 15% lượng lương thực dự trữ của con tàu và dàn dẫn đường dự phòng.",
+  "event_colonialCharter_outcome2": "Điều lệ ưu tiên quản lý tài nguyên, giáo dục kỹ thuật và phát triển kinh tế. Nó thiếu chất thơ nhưng đảm bảo thuộc địa sẽ hoạt động hiệu quả và được tổ chức tốt.",
+  "event_separatistMovement_title": "Phong trào ly khai",
+  "event_separatistMovement_choice2": "Giải quyết những bất bình gốc rễ thúc đẩy phong trào",
+  "event_warCouncil_choice0": "Vũ khí đầy đủ: rèn vũ khí và huấn luyện binh lính",
+  "event_separatistMovement_choice1": "Bão các chướng ngại vật và thống nhất lực lượng",
+  "event_separatistMovement_outcome1": "Đội an ninh đột nhập vào khu vực phía sau. Phe ly khai chống trả quyết liệt. Trật tự được lập lại nhưng phải trả giá đắt. Con tàu thống nhất về thể xác, nếu không phải về tinh thần.",
+  "event_separatistMovement_outcome0": "Những người ly khai chấp nhận một thỏa thuận: quận riêng của họ có chính quyền địa phương, dưới sự bảo trợ lỏng lẻo của liên bang. Tiền lệ chia cắt khiến một số người lo lắng, nhưng hòa bình vẫn được duy trì.",
+  "event_warCouncil_narrative": "Khi các mối đe dọa tiềm tàng được phát hiện trong các hệ thống gần đó, lãnh đạo con tàu triệu tập một hội đồng chiến tranh. Câu hỏi: bao nhiêu nguồn lực hạn chế của thuộc địa nên được dành cho việc chuẩn bị quân sự so với cơ sở hạ tầng dân sự?",
+  "event_warCouncil_choice2": "Chỉ tư thế phòng thủ: khiên và tường, không dùng kiếm",
+  "event_warCouncil_title": "Hội đồng chiến tranh",
+  "event_separatistMovement_outcome2": "Những người hòa giải làm việc để hiểu điều gì đã đẩy phe phái ra đi. Những cải cách trong việc phân phối và đại diện tài nguyên dần dần đưa những người ly khai trở lại thế trận. Chữa bệnh cần có thời gian.",
+  "event_tradeFederation_title": "Liên đoàn Thương mại",
+  "event_warCouncil_choice1": "Giải trừ vũ khí: nấu chảy vũ khí thành công cụ",
+  "event_warCouncil_outcome1": "Kho vũ khí được làm trống và nội dung của nó được tái chế thành vật liệu xây dựng. Thuộc địa sẽ xây dựng bằng lưỡi cày chứ không phải bằng kiếm. Những người theo chủ nghĩa hòa bình vui mừng; những người thực tế lo lắng về những gì ẩn giấu trong bóng tối.",
+  "event_warCouncil_outcome2": "Nguồn lực được chuyển đến các công sự, lá chắn và hệ thống cảnh báo sớm. Không có vũ khí tấn công nào được sản xuất. Một cách tiếp cận cân bằng giúp duy trì các lựa chọn mở mà không gây khó chịu cho những người hàng xóm tiềm năng.",
+  "event_warCouncil_outcome0": "Các xưởng được trang bị lại để sản xuất vũ khí. Mọi người dân thuộc địa khỏe mạnh đều được huấn luyện chiến đấu. Con tàu được trang bị vũ khí nhưng ngân sách dành cho thiết bị nông nghiệp lại bị thu hẹp.",
+  "event_tradeFederation_outcome0": "Thị trường mọc lên ở mọi mô-đun môi trường sống. Sự đổi mới phát triển mạnh mẽ khi các nhà giao dịch cạnh tranh. Bất bình đẳng giàu nghèo ngày càng tăng, nhưng tổng nguồn tài nguyên sẵn có cho thuộc địa cũng tăng theo.",
+  "event_tradeFederation_narrative": "Khi thuộc địa sắp có khả năng tồn tại, các phe phái tranh luận về cách cấu trúc nền kinh tế của nó. Câu hỏi vượt xa sự sống còn đơn thuần - nó sẽ xác định kiểu xã hội bắt nguồn từ vùng đất xa lạ. Các thương gia, những người theo chủ nghĩa xã hội và các quan chức đều đưa ra lý lẽ của mình.",
+  "event_tradeFederation_choice0": "Thiết lập các khu vực thương mại tự do với quy định tối thiểu",
+  "event_tradeFederation_choice1": "Thực hiện chia sẻ chung tất cả các tài nguyên",
+  "event_tradeFederation_choice2": "Tạo ra một hệ thống thương mại do nhà nước quản lý",
+  "event_tradeFederation_outcome1": "Sở hữu tư nhân bị bãi bỏ. Mọi thứ đều thuộc về mọi người. Không ai bị đói, nhưng không ai có động cơ để sản xuất nhiều hơn mức tối thiểu. Sự tầm thường là thoải mái.",
+  "event_tradeFederation_outcome2": "Chính phủ kiểm soát mọi hoạt động thương mại, định giá và phân bổ nguồn lực. Hệ thống này công bằng nhưng không linh hoạt. Chợ đen xuất hiện ở các hành lang bảo trì.",
+  "event_faithVsScience_choice0": "Công bố đầy đủ các kết quả khoa học",
+  "event_faithVsScience_title": "Đức tin vs Khoa học",
+  "event_faithVsScience_outcome0": "Sự thật chiếm ưu thế hơn sự thoải mái. Dữ liệu được công bố và phong trào tôn giáo bị rạn nứt. Một số tín đồ điều chỉnh đức tin của họ; những người khác mất nó hoàn toàn. Kiến thức tiến bộ.",
+  "event_faithVsScience_choice2": "Triệu tập một hội đồng chung để tìm sự hài hòa giữa cả hai quan điểm",
+  "event_faithVsScience_narrative": "Kính viễn vọng của con tàu đã chụp được những hình ảnh về một hiện tượng vũ trụ mâu thuẫn trực tiếp với nguyên lý trung tâm của phong trào đức tin thống trị. Nhà khoa học đứng đầu muốn công bố những phát hiện này; nhà lãnh đạo tôn giáo khẳng định họ sẽ chia rẽ cộng đồng.",
+  "event_surveillanceState_choice0": "Từ chối hoàn toàn đề xuất giám sát",
+  "event_surveillanceState_choice1": "Thực hiện giám sát toàn diện trên tàu",
+  "event_faithVsScience_choice1": "Ngăn chặn những phát hiện để duy trì sự hài hòa xã hội",
+  "event_surveillanceState_narrative": "Sau hàng loạt sự cố phá hoại, người đứng đầu an ninh đề xuất lắp đặt hệ thống giám sát ở mọi khoang trên tàu. Máy ảnh, micrô và máy quét sinh trắc học sẽ theo dõi mọi chuyển động của người dân thuộc địa. Những người ủng hộ quyền riêng tư đang kinh hoàng.",
+  "event_faithVsScience_outcome1": "Dữ liệu được phân loại. Cộng đồng tôn giáo vẫn ổn định, nhưng đội ngũ khoa học mất tinh thần. Sự thật bị trì hoãn không phải là sự thật bị phủ nhận, nhưng nó có cảm giác như vậy.",
+  "event_faithVsScience_outcome2": "Các nhà khoa học và nhà thần học làm việc cùng nhau để giải thích lại những phát hiện này. Một sự tổng hợp mới xuất hiện nhằm mở rộng cả sự hiểu biết lẫn niềm tin. Không phải ai cũng bị thuyết phục, nhưng cuộc đối thoại vẫn lành mạnh.",
+  "event_surveillanceState_choice2": "Chỉ cài đặt giám sát hạn chế ở những khu vực quan trọng",
+  "event_nativeAlliance_narrative": "Nền văn minh bản địa đã đề xuất một hiệp ước chính thức. Đại sứ của họ đến bằng tàu con thoi, một người thanh lịch nói chuyện qua một thiết bị phiên dịch có độ tinh vi đáng kinh ngạc. Họ đưa ra ba hình thức quan hệ, mỗi hình thức có ý nghĩa khác nhau đối với tương lai của thuộc địa.",
+  "event_nativeAlliance_choice1": "Đàm phán từ vị thế thống trị thuộc địa",
+  "event_nativeAlliance_choice0": "Ký hiệp ước liên minh bình đẳng",
+  "event_surveillanceState_outcome1": "Mọi ngóc ngách của con tàu đều được giám sát. Kẻ phá hoại bị bắt trong vòng vài ngày. Nhưng các camera vẫn còn và giám đốc an ninh tỏ ra không quan tâm đến việc tắt chúng đi. Bao giờ.",
+  "event_surveillanceState_title": "Trạng thái giám sát",
+  "event_surveillanceState_outcome2": "Camera bao phủ phòng máy, kho vũ khí và cầu. Khu nhà ở vẫn riêng tư. Kẻ phá hoại cuối cùng được xác định thông qua phân tích mẫu. Một phản ứng đo lường.",
+  "event_surveillanceState_outcome0": "Quyền riêng tư được bảo tồn. Kẻ phá hoại vẫn chưa bị bắt, nhưng những người dân thuộc địa dễ ngủ hơn khi biết rằng họ không bị theo dõi. Cuộc điều tra tiếp tục thông qua các phương tiện truyền thống.",
+  "event_nativeAlliance_title": "Liên minh bản địa",
+  "event_nativeAlliance_choice2": "Thiết lập quan hệ đối tác thương mại tập trung vào lợi ích chung",
+  "event_nativeAlliance_outcome0": "Hiệp ước thiết lập phòng thủ chung, nghiên cứu chung và quyền lãnh thổ bình đẳng. Cả hai nền văn minh sẽ cùng nhau phát triển. Người bản xứ chia sẻ kiến ​​thức nông nghiệp giúp thay đổi triển vọng thuộc địa của bạn.",
+  "event_nativeAlliance_outcome2": "Thương mại thu hẹp khoảng cách giữa các loài. Nguyên liệu gốc chảy vào xưởng của bạn; công nghệ của bạn cải thiện thuốc của họ. Tình bạn phát triển từ lợi ích chung.",
+  "event_nativeAlliance_outcome1": "Bạn tận dụng công nghệ tiên tiến của mình để đảm bảo các điều khoản có lợi. Người bản địa nhượng lại lãnh thổ và tài nguyên. Họ ký với đôi tay run rẩy. Lịch sử đã chứng kiến ​​điều này trước đây và nó hiếm khi kết thúc tốt đẹp."
 }

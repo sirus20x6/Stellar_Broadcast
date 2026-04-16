@@ -9,9 +9,6 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => '스텔라 브로드캐스트';
-
-  @override
   String get ui_title_stellar => '스텔라';
 
   @override
@@ -37,6 +34,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => '항해 시작';
+
+  @override
+  String get ui_title_seedInvalid => '잘못된 시드 코드입니다. A~Z 및 0~9만 사용하세요.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -186,6 +186,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ui_scan_statRadiation => '방사선';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return '조사: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return '불확실성: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => '행성 분석';
 
   @override
@@ -282,21 +292,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ui_landing_statLandingSys => '착륙 시스템';
 
   @override
-  String get ui_landingSequence_phase1 => '1단계: 궤도 진입';
-
-  @override
-  String get ui_landingSequence_phase1Desc => '강하 창 개방. 진입 개시.';
-
-  @override
-  String get ui_landingSequence_phase2 => '2단계: 대기권 돌입';
-
-  @override
-  String get ui_landingSequence_title => '착륙 시퀀스';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => '식민지 보고서 보기';
-
-  @override
   String get ui_ending_colonyEstablished => '식민지 건설 완료';
 
   @override
@@ -322,6 +317,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => '친구에게 도전';
+
+  @override
+  String get ui_ending_shareCard => '카드 공유';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => '당신의 항해를 공유하세요';
+
+  @override
+  String get ui_ending_shareCardShare => '공유하다';
+
+  @override
+  String get ui_ending_shareCardCancel => '취소';
 
   @override
   String get ui_ending_copySeed => '시드 복사';
@@ -455,6 +462,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => '시스템 기본값';
+
+  @override
+  String get ui_settings_statsPosition => '통계 및 버튼 위치';
+
+  @override
+  String get ui_settings_statsLeft => '왼쪽';
+
+  @override
+  String get ui_settings_statsRight => '오른쪽';
 
   @override
   String get ui_legacy_title => '유산 허브';
@@ -755,6 +771,36 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => '약용 식물';
+
+  @override
+  String get planet_featurePerpetualAurora => '영원한 오로라';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => '석화된 메가플로라';
+
+  @override
+  String get planet_featureUndergroundRivers => '지하 강';
+
+  @override
+  String get planet_featureObsidianPlains => '흑요석 평원';
+
+  @override
+  String get planet_featureSaltFlats => '소금 평원';
+
+  @override
+  String get planet_featureCarnivorousFlora => '육식성 식물';
+
+  @override
+  String get planet_featureGhostCities => '유령 도시';
+
+  @override
+  String get planet_featureArchiveVaults => '아카이브 볼트';
+
+  @override
+  String get planet_featureSinkholeFields => '싱크홀 필드';
+
+  @override
+  String get planet_featureApexPredator => '에이펙스 프레데터';
 
   @override
   String get ui_monthJan => '1월';
@@ -3997,18 +4043,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => '대기';
 
   @override
-  String get ending_scoreLabel_gravity => '중력';
-
-  @override
-  String get ending_scoreLabel_temperature => '온도';
-
-  @override
-  String get ending_scoreLabel_water => '수분';
-
-  @override
-  String get ending_scoreLabel_resources => '자원';
-
-  @override
   String get ending_scoreLabel_nativeRelations => '원주민 관계';
 
   @override
@@ -4116,19 +4150,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ending_governmentTribalCouncil => '부족 의회';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => '신정';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => '군사정권';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => '기업 과두제';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => '파시스트 국가';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => '코뮌';
 
   @override
   String get ending_cultureRenaissance => '르네상스';
@@ -4182,10 +4216,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ending_nativesConflict => '갈등';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => '동맹';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => '진압';
 
   @override
   String get ending_landscapeGravityHigh => '무거운 중력이 모든 것을 짓누른다. ';
@@ -4217,66 +4251,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ending_landscapeAtmoLow => '대기압이 위험할 정도로 낮다 — 밀봉된 서식지가 필수적이다. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      '빛나는 광물 줄무늬의 위성이 밤하늘을 지배하며, 금속 표면이 별빛을 풍경 위에 반사한다. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      '갈라진 위성이 머리 위에 어렴풋이 보이며, 부서지는 표면이 희미한 파편 고리를 끌고 있다 — 아래를 위협하는 폭격의 끊임없는 경고. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      '창백하고 황량한 위성이 수평선 위에 떠오르며, 분화구 투성이 표면이 식민지를 말없이 지켜본다. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      '행성이 빠르게 자전한다 — 낮이 몇 시간밖에 지속되지 않고, 코리올리 바람이 우뚝 선 것들을 때린다. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      '행성이 고통스러울 정도로 느리게 회전한다. 태양 쪽 반구는 타오르고 어두운 쪽은 얼어붙으며, 그 사이의 황혼 지대만이 안식처를 제공한다. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      '화산 산맥이 수평선을 가르며, 경사면에 용암의 강이 줄무늬를 그린다. 공기에서 유황 맛이 나고 발밑의 땅이 떨린다. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      '지각이 갈라지고 불안하다 — 새로운 균열이 예고 없이 벌어지며, 먼지 구름 속에서 빛나는 광맥을 드러낸다. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      '번개가 연속적인 장막으로 하늘을 가르며 밤을 낮으로 바꾸고 공기를 오존 냄새로 채운다. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      '발광하는 포자 구름이 모든 바람에 떠다니며 아름답고 치명적이다 — 식민자들은 밀봉된 서식지나 여과 마스크가 없으면 야외에서 생존할 수 없다. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      '행성은 대부분이 바다다 — 광대하고 어두운 물이 모든 수평선까지 뻗어 있고, 산재한 군도만이 수면을 깬다. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      '지열 분출구가 지각을 뚫고 광물이 풍부한 증기 기둥을 내뿜으며 주변 풍경을 따뜻하게 하고 생명의 오아시스를 유지한다. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      '강력한 자기장이 행성을 감싸 항성 방사선을 편향시키지만 비차폐 전자장비에 혼란을 일으킨다. 나침반이 무용하게 회전한다. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      '강한 자기장 없이 항성풍이 상층 대기를 벗겨낸다. 장관의 오로라가 모든 위도에서 하늘을 가로질러 흐른다. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      '건물만 한 거대한 생물이 풍경을 가로지르며, 그 발걸음이 수 킬로미터 밖에서 느껴진다. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      '생태계가 공생의 맞물린 그물로 작동한다: 모든 생물이 이웃에 의존하고 유지하는 우아하고 연약한 균형. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4323,27 +4297,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return '신권 의회는 $planetName을 인도하며 공허 속에서 식민지 개척자들을 지탱한 신앙에서 지혜를 이끌어냅니다.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return '군사 지휘 구조가 $planetName을 관리하며, 이는 이제 그들의 문명을 정의하는 우주에서 그들을 구한 규율입니다.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return '자원 관리자 컨소시엄이 생존에 필수적인 것으로 입증된 경제적 통찰력인 $planetName을(를) 이끌고 있습니다.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return '권위주의 정권은 철권으로 $planetName을 통제하고, 신세계의 질서를 위해 시민의 자유를 희생했습니다.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return '$planetName의 사람들은 집단적으로 스스로를 통치하며 모든 식민지 주민들이 자원과 결정을 동등하게 공유합니다.';
   }
 
   @override
@@ -4383,10 +4357,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       '쇠퇴하는 궤도의 불안정한 위성이 식민지에 파편비를 내려, 주기적 유성 폭격으로 기반 시설을 파괴하고 대체 불가능한 기술을 망가뜨렸다.';
-
-  @override
-  String get ending_moonBarren =>
-      '황량한 위성이 외계 하늘에 걸려, 식민자들에게 긴 밤에 바라볼 익숙한 광경 외에는 아무것도 제공하지 않는 황량한 동반자였다.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4473,12 +4443,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return '공식적인 동맹을 통해 식민지 주민들과 $planetName의 원주민 문명이 결속되고, 그들의 결합된 지식은 둘 중 하나만 할 수 있는 것보다 더 위대한 무언가를 구축합니다.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return '$planetName의 원주민은 식민 지배하에 살고 있으며, 식민주의자들이 자신들의 질서를 강요함에 따라 그들의 문화는 억압되었습니다.';
   }
 
   @override
@@ -4516,26 +4486,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => '위성';
-
-  @override
-  String get ui_rings => '고리';
-
-  @override
   String get ui_landing_landOnMoon => '위성 착륙';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return '위성: $moonPercent% vs 행성: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => '낮은 중력 — 착륙이 용이함';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type 고리 체계';
-  }
 
   @override
   String get moon_barren => '불모';
@@ -4563,57 +4514,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get ring_metallic => '금속';
-
-  @override
-  String get ending_landscapeMoonSingle => '하나의 위성이 식민지 위 하늘에 걸려 있다.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count개의 위성이 머리 위를 공전하며, 대지 위로 끊임없이 변하는 그림자를 드리운다.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      '그중 거주 가능한 세계가 손짓한다 — 제2의 개척지를 약속하는 녹색 보석.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      '얼어붙은 위성이 거대한 얼음 퇴적층을 품고 빛나며, 개척될 날을 기다리는 저수지.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      '얼어붙은 위성에서 채취한 얼음이 식민지의 수자원을 보충하여, 불모의 세계를 살 만한 곳으로 변모시켰다.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      '식민지는 행성 자체가 아니라 가장 유망한 위성 위에 건설되었다 — 더 작지만 중력이 온화하고 가능성이 큰 세계.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      '희미한 먼지 고리가 하늘을 가로질러 호를 그리며, 매번 일출에 영묘한 아름다움을 더한다.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      '눈부신 얼음 고리가 별빛을 붙잡아 하늘을 무지개빛 불꽃으로 물들인다.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      '촘촘한 암석 고리가 행성을 두르고 있으며, 서서히 안쪽으로 쏟아지는 건축 자재의 원천이다.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      '머리 위에서 금속 고리가 반짝이며, 식민지의 산업을 지탱하는 풍부한 광석을 품고 있다.';
-
-  @override
-  String get ending_moonHabitableNote => '거주 가능한 위성이 식민화의 두 번째 기회를 제공한다.';
-
-  @override
-  String get ending_moonIceHarvestNote => '얼어붙은 위성에서 채취한 얼음이 식민지의 수자원을 보충한다.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return '식민지는 $count개의 위성 아래에서 공전한다.';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'AI의 독백';
@@ -5103,6 +5003,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => '건너뛰려면 탭하세요.';
+
+  @override
+  String get ui_common_tapRingToChoose => '반지를 탭하여 선택하세요';
+
+  @override
+  String get ui_common_tapToContinue => '계속하려면 탭하세요.';
+
+  @override
+  String get ui_tooltip_back => '뒤쪽에';
+
+  @override
+  String get ui_tooltip_codex => '사본';
+
+  @override
+  String get ui_tooltip_settings => '설정';
+
+  @override
+  String get ui_tooltip_leaderboards => '리더보드';
+
+  @override
+  String get ui_tooltip_bugReport => '버그 신고';
+
+  @override
   String get event_pulsarLighthouse_title => '펄서 등대';
 
   @override
@@ -5122,6 +5046,13 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       '펄서로부터 넉넉한 거리를 두고 안전한 궤도를 유지하기 위해 추가 연료를 소모했다. 승무원들은 필터가 달린 관측창을 통해 회전하는 빔을 지켜봤다 — 아름답지만 멀었다.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 => '스윕이 우리에게 도달하기 전에 후퇴';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      '다음 빔이 통과하기 전에 비상 화상에 휘둘러 버립니다. 펄서의 신호가 우리 뒤에서 사라집니다. 데이터를 얻지도, 피해를 입지도 않고, 회피 추력에 약간의 연료가 소비됩니다.';
 
   @override
   String get event_alienNursery_title => '외계 보육실';
@@ -5206,4 +5137,424 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       '실험적 항진균제가 처음에는 가능성을 보였지만 내성 변종이 돌파했다. 전면 정화에 나설 때쯤 역병은 냉동포드 영양 라인까지 퍼져 있었다. 처음부터 단호하게 행동했을 때보다 피해가 더 컸다.';
+
+  @override
+  String get event_constitutionalConvention_title => '헌법회의';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      '식민지 함선의 인구는 공식적인 거버넌스 없이 불안해졌습니다. 모든 갑판의 대표자들이 화물창에 모여 미래 식민지의 통치 방식을 정의할 헌장의 초안을 작성합니다. 세 파벌이 새 정부에 대해 경쟁적인 비전을 제시합니다.';
+
+  @override
+  String get event_constitutionalConvention_choice0 => '보통선거로 민주헌장 초안을 작성하세요';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      '식민지 주민들은 평등한 대표성을 보장하는 헌법을 비준했습니다. 의사결정 속도는 느려지지만 모든 목소리가 반영될수록 사기는 높아집니다.';
+
+  @override
+  String get event_constitutionalConvention_choice1 => '비상권한을 갖춘 강력한 집행부를 확립하라';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      '단일한 지도자가 광범위한 권한을 가지고 임명됩니다. 결정은 빠르게 내려지지만 반대자들은 아랫층에서 폭정에 대해 속삭입니다.';
+
+  @override
+  String get event_constitutionalConvention_choice2 => '전문가들로 구성된 기술주의적 협의회 구성';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      '엔지니어, 과학자, 의사는 전문성을 바탕으로 통치위원회를 구성합니다. 효율성은 향상되지만 일부 사람들은 권력에서 배제되었다고 느낍니다.';
+
+  @override
+  String get event_militaryCoupThreat_title => '군사 쿠데타 위협';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      '함선의 보안 부대 사령관 바스케즈(Vasquez)가 무기고를 장악하고 최후 통첩을 발령했습니다. 긴급 군사력을 부여하지 않으면 모든 갑판이 폐쇄됩니다. 상황은 불안정하며 식민지 주민들은 당신의 대응을 기다리고 있습니다.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 => '충성스러운 승무원과 함께 쿠데타에 저항하세요';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      '바스케스에 반대하기 위해 충성스러운 승무원들이 집결합니다. 대치 상황은 최소한의 유혈 사태로 끝났지만 보안 세부 사항이 약화되고 일부 식민지 주민이 총격을 가하게 됩니다.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => '지휘관의 요구를 들어라';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vasquez는 선박 운영을 통제합니다. 질서는 신속하게 회복되지만 시민의 자유는 희생됩니다. 이제 무장 순찰대가 모든 복도를 돌아다닙니다.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 => '일몰 조항을 통해 제한된 비상 권한을 협상합니다.';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      '긴장된 협상 끝에 바스케스는 감독과 함께 임시 권한을 받아들입니다. 누구도 완전히 만족시키지 못하지만 폭력을 방지하는 깨지기 쉬운 타협입니다.';
+
+  @override
+  String get event_religiousAwakening_title => '종교적 각성';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      '카리스마 넘치는 설교자가 수백 명의 식민지 주민을 새로운 신앙 운동으로 이끌었습니다. 그들은 매 주기마다 관측 돔에 모이고 그들의 찬송가가 환기구를 통해 울려퍼집니다. 일부 승무원은 광신주의에 대해 걱정합니다. 다른 사람들은 가르침에서 진정한 위로를 얻습니다.';
+
+  @override
+  String get event_religiousAwakening_choice0 => '신앙 운동을 수용하고 자원을 제공하십시오';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      '이 운동은 공식적인 지원을 받아 번창합니다. 신자들 사이의 사기는 향상되고, 그들의 공동체 정신은 배 전체의 사회적 유대를 강화합니다.';
+
+  @override
+  String get event_religiousAwakening_choice1 => '배에서 엄격한 세속주의를 시행하십시오.';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      '종교 모임은 개인 숙소로 제한됩니다. 이 운동은 지하화되어 분노를 불러일으키지만 과학적 합리주의는 여전히 공식적인 교리로 남아 있습니다.';
+
+  @override
+  String get event_religiousAwakening_choice2 => '예배를 허용하되 그 영향력을 규제하라';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      '신앙은 허용되지만 통치와는 분리되어 있습니다. 지휘에 연락하기 위해 목사가 임명됩니다. 불안한 균형이 유지됩니다.';
+
+  @override
+  String get event_corporateTakeover_title => '기업 인수';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      '선박의 자원 관리자는 식량 분배, 물 재활용 및 전력 할당에 대한 통제를 조용히 통합해 왔습니다. 이제 그들은 미래 식민지의 경제를 관리할 기업 구조로 자신의 권한을 공식화할 것을 제안합니다.';
+
+  @override
+  String get event_corporateTakeover_choice0 => '자유 시장 원칙이 자원을 관리하도록 허용';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      '기업 세력이 자원 관리를 맡습니다. 효율성은 극적으로 향상되지만 가격은 상승하고 가장 가난한 식민지 주민들은 기본적인 생필품을 구입하기 위해 고군분투합니다.';
+
+  @override
+  String get event_corporateTakeover_choice1 => '모든 자원을 집단소유로 국유화';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      '자원은 압수되어 공동 통제하에 놓이게 됩니다. 기업파벌은 해체됐지만 이익 인센티브 없이 혁신은 정체됐다.';
+
+  @override
+  String get event_corporateTakeover_choice2 => '안전망을 통해 규제 시장 구현';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      '가격 통제와 복지 프로그램을 통해 혼합 경제가 확립됩니다. 두 세력 모두 완전히 만족하지는 않지만 일부 기업을 허용하면서 기본적인 요구 사항이 충족됩니다.';
+
+  @override
+  String get event_successionCrisis_title => '후계 위기';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      '배의 선장이 잠든 사이에 사망하여 후임자가 정해지지 않았습니다. 세 세력이 즉시 통제권을 놓고 경쟁합니다. 민간 ​​의회는 선거를 요구하고, 보안 책임자는 계엄권을 주장하며, 식민지 주민은 전통적인 리더십 의식을 발동합니다.';
+
+  @override
+  String get event_successionCrisis_choice0 => '긴급선거 실시';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      '혼란스러우면서도 활기 넘치는 선거를 통해 대중 투표로 선출된 새로운 주장이 탄생합니다. 과정은 지저분하지만 식민지 주민들은 자신의 리더십에 대한 주인의식을 느낍니다.';
+
+  @override
+  String get event_successionCrisis_choice1 => '군이 지휘권을 맡게 하라';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      '보안 책임자가 선장 의자로 들어갑니다. 규율은 즉시 회복되지만 민간인 승무원은 점점 불안해지면서 무장 경비원을 주시합니다.';
+
+  @override
+  String get event_successionCrisis_choice2 => '장로회를 소집하다';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      '가장 나이가 많고 경험이 풍부한 식민지 주민들이 통치 위원회를 구성합니다. 그들의 지혜가 배를 인도하지만 일부 젊은 선원들은 노인정치로 인해 소외감을 느낍니다.';
+
+  @override
+  String get event_nativeSovereignty_title => '원주민 주권';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      '장거리 스캔을 통해 대상 행성의 지적 생명체를 확인합니다. 가로채는 통신을 통해 당신의 접근 방식을 감지한 정교한 문명이 드러납니다. 그들은 공식적인 요구를 전달합니다: 영토 주권을 인정하지 않으면 도착 시 저항에 직면합니다.';
+
+  @override
+  String get event_nativeSovereignty_choice0 => '원주민 주권을 인정하고 정착 허가를 요청합니다.';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      '귀하는 원주민 권리에 대한 공식적인 인정을 전달합니다. 반응은 조심스럽긴 하지만 긍정적이다. 미래의 관계는 상호 존중을 바탕으로 시작될 것입니다. 그러나 착륙 지점은 제한될 수 있습니다.';
+
+  @override
+  String get event_nativeSovereignty_choice1 => '식민지 패권을 주장하고 저항에 대비하세요';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      '당신은 상관없이 해결하겠다는 의사를 방송합니다. 승무원은 무기 훈련과 요새화 계획을 시작합니다. 원주민들은 침묵하는데, 이는 위협보다 더 무서운 일입니다.';
+
+  @override
+  String get event_nativeSovereignty_choice2 => '지구의 공유 거버넌스 제안';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      '공존과 리소스 공유를 위한 프레임워크를 제공합니다. 원주민들은 호기심이 많지만 조심스럽습니다. 협상은 복잡하겠지만 평화의 가능성은 존재합니다.';
+
+  @override
+  String get event_laborStrike_title => '노동 파업';
+
+  @override
+  String get event_laborStrike_narrative =>
+      '엔지니어링 팀은 교대 시간 단축, 더 나은 식량 배급, 항해 결정에 대한 목소리를 요구하면서 직장을 그만뒀습니다. 중요한 시스템은 자동 백업으로 실행되고 있지만 오래 지속되지는 않습니다. 나머지 식민지 주민들은 초조하게 지켜보고 있습니다.';
+
+  @override
+  String get event_laborStrike_choice0 => '노동자들의 요구를 전면적으로 충족시키다';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      '파업은 즉시 종료된다. 근로자들은 개선된 조건으로 직장으로 복귀합니다. 교대 근무 시간이 단축되면서 생산성은 약간 떨어지지만 충성도는 흔들리지 않습니다.';
+
+  @override
+  String get event_laborStrike_choice1 => '파업을 진압하고 노동의무를 강화하라';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      '보안군은 총구를 겨누며 노동자들을 각자의 기지로 호송합니다. 엔진이 다시 윙윙거리지만 아래쪽 갑판에서는 증오가 끓어오르고 있습니다. 여러 명의 근로자가 숙소에 갇혀 있습니다.';
+
+  @override
+  String get event_laborStrike_choice2 => '주요 요구 사항에 대해 부분적인 타협을 제안합니다.';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      '마라톤 협상 후 거래가 성사되었습니다. 더 나은 배급량과 자문 입력이 이루어졌지만 교대 근무 시간은 단축되지 않았습니다. 어느 쪽도 흥분하지 않지만 엔진은 계속 작동합니다.';
+
+  @override
+  String get event_censorshipDebate_title => '검열 논쟁';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      '유출된 문서는 선박의 고장난 시스템의 실제 상태를 드러냅니다. 패닉은 하부 데크를 통해 퍼집니다. 통신 담당관은 추가 불안을 ​​방지하기 위해 정보 접근을 제한할 것을 제안합니다. 시민 자유 옹호론자들은 분노하고 있습니다.';
+
+  @override
+  String get event_censorshipDebate_choice0 => '모든 정보에 대한 무료 접근 보장';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      '완전한 투명성이 확립되었습니다. 식민지 주민들이 현재 이해하고 있는 문제를 해결하기 위해 집결하면서 초기의 패닉은 가라앉습니다. 일부 정보는 괴로움을 야기하지만 리더십에 대한 신뢰는 커집니다.';
+
+  @override
+  String get event_censorshipDebate_choice1 => '완전한 정보 통제 구현';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      '이제 모든 통신은 명령을 통해 필터링됩니다. 공황 상태가 멈추고 으스스한 고요함으로 바뀌었습니다. 그러나 소문은 검열된 진실이 남긴 공백을 메우며, 종종 현실보다 더 나쁩니다.';
+
+  @override
+  String get event_censorshipDebate_choice2 => '보안에 민감한 정보만 필터링';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      '분류체계가 확립되어 있습니다. 대부분의 정보는 자유롭게 흐르지만 군사 및 중요 시스템 데이터에는 정리가 필요합니다. 대부분 만족하는 실행 가능한 중간 지점입니다.';
+
+  @override
+  String get event_colonialCharter_title => '식민지 헌장';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      '행성 몰락이 다가오면서 식민지 주민들은 새로운 사회를 위한 기본 법률을 초안해야 합니다. 세 개의 철학적 진영이 등장했으며, 각각은 식민지가 어떻게 되어야 하는지에 대한 서로 다른 비전을 옹호했습니다. 논쟁은 뜨겁고 매우 개인적입니다.';
+
+  @override
+  String get event_colonialCharter_choice0 => '개인의 권리를 강조하는 진보적인 헌장';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      '이 헌장은 개인의 자유, 평등, 사회적 이동성을 보장합니다. 예술가와 사상가들이 축하합니다. 전통주의자들은 확인되지 않은 자유가 혼란을 가져온다고 경고한다.';
+
+  @override
+  String get event_colonialCharter_choice1 => '지구의 전통을 보존하는 보수 헌장';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      '헌장은 전통적인 가치, 가족 구조 및 종교적 준수를 성문화합니다. 많은 사람들은 친숙한 관습에서 위안을 찾습니다. 다른 사람들은 구시대적 사고의 무게 때문에 답답함을 느낍니다.';
+
+  @override
+  String get event_colonialCharter_choice2 => '생존과 성장에 초점을 맞춘 실용적인 헌장';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      '헌장은 자원 관리, 기술 교육 및 경제 개발을 우선시합니다. 시가 부족하지만 식민지가 효율적이고 잘 조직될 수 있도록 보장합니다.';
+
+  @override
+  String get event_separatistMovement_title => '분리주의 운동';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      '식민지 주민들이 선박 통치로부터의 독립을 선언했습니다. 그들은 선미 부분에 바리케이드를 치고 착륙 시 자신들만의 정착지를 건설할 권리를 요구했습니다. 그들은 선박의 식량 비축량과 백업 항법 장치의 15%를 통제합니다.';
+
+  @override
+  String get event_separatistMovement_choice0 => '연방 체제 내에서 지역 자치권 부여';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      '분리주의자들은 느슨한 연방 우산 아래 지역 거버넌스를 갖는 자신들의 지구라는 거래를 받아들입니다. 분열의 전례가 일부를 걱정하지만 평화는 유지됩니다.';
+
+  @override
+  String get event_separatistMovement_choice1 => '바리케이드를 무너뜨리고 통일을 강요하라';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      '보안팀이 후방 부분을 침입했습니다. 분리주의자들은 격렬하게 저항한다. 질서가 회복되었으나 엄청난 대가를 치렀습니다. 배는 정신은 아니더라도 몸은 하나로 뭉쳐 있습니다.';
+
+  @override
+  String get event_separatistMovement_choice2 => '운동을 이끄는 근본적인 불만을 해결하십시오.';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      '중재자는 무엇이 그 세력을 밀어냈는지 이해하기 위해 노력합니다. 자원 분배와 대표성의 개혁은 천천히 분리주의자들을 다시 우리 편으로 끌어들입니다. 치유에는 시간이 걸립니다.';
+
+  @override
+  String get event_warCouncil_title => '전쟁 의회';
+
+  @override
+  String get event_warCouncil_narrative =>
+      '근처 시스템에서 잠재적인 위협이 감지되자 함선의 지도부는 전쟁 위원회를 소집합니다. 질문: 식민지의 제한된 자원 중 얼마나 많은 부분을 군사 대비와 민간 기반 시설에 할당해야 합니까?';
+
+  @override
+  String get event_warCouncil_choice0 => '완전무장: 무기를 제작하고 병사를 훈련시키세요';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      '무기 생산을 위해 작업장이 재편성되었습니다. 모든 건강한 이주민은 전투 훈련을 받습니다. 배에는 무기가 가득하지만 농기구 예산은 줄어들고 있습니다.';
+
+  @override
+  String get event_warCouncil_choice1 => '군축: 무기를 도구로 녹여라';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      '무기고는 비워지고 그 내용물은 건축 자재로 재활용됩니다. 식민지는 칼이 아닌 보습으로 건설될 것입니다. 평화주의자들은 기뻐합니다. 현실주의자들은 어둠 속에 무엇이 숨어 있는지 걱정합니다.';
+
+  @override
+  String get event_warCouncil_choice2 => '방어 자세만: 칼이 아닌 방패와 벽';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      '자원은 요새, 방어막, 조기 경보 시스템에 사용됩니다. 공격용 무기는 생산되지 않습니다. 잠재적인 이웃을 자극하지 않고 옵션을 열어두는 균형 잡힌 접근 방식입니다.';
+
+  @override
+  String get event_tradeFederation_title => '무역 연맹';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      '식민지가 생존 가능성에 가까워짐에 따라 파벌들은 경제를 구조화하는 방법에 대해 토론합니다. 문제는 단순한 생존을 넘어, 낯선 땅에 뿌리를 내리는 사회의 종류를 정의할 것입니다. 상인, 공동체주의자, 관료 모두가 주장을 펼치고 있습니다.';
+
+  @override
+  String get event_tradeFederation_choice0 => '최소한의 규제로 자유무역지대 구축';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      '모든 서식지 모듈에서 시장이 생겨납니다. 거래자들이 경쟁하면서 혁신이 번창합니다. 부의 불평등은 커지지만 식민지에서 사용할 수 있는 총 자원 풀도 커집니다.';
+
+  @override
+  String get event_tradeFederation_choice1 => '모든 자원의 공동 공유 구현';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      '사유재산은 폐지됩니다. 모든 것은 모든 사람의 것입니다. 배고픈 사람은 없지만 최소량 이상을 생산할 동기가 있는 사람은 없습니다. 평범함은 편안합니다.';
+
+  @override
+  String get event_tradeFederation_choice2 => '국가가 관리하는 무역 시스템을 구축하세요';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      '정부는 모든 무역, 가격 설정, 자원 할당을 통제합니다. 시스템은 공정하지만 융통성이 없습니다. 암시장은 유지 보수 통로에 나타납니다.';
+
+  @override
+  String get event_faithVsScience_title => '신앙 대 과학';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      '우주선의 망원경은 지배적인 신앙 운동의 중심 교리와 직접적으로 모순되는 우주 현상의 이미지를 포착했습니다. 수석 과학자는 연구 결과를 발표하기를 원합니다. 종교 지도자는 공동체를 분열시킬 것이라고 주장합니다.';
+
+  @override
+  String get event_faithVsScience_choice0 => '과학적 연구 결과 전문을 공개하세요';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      '진실은 위로보다 우선합니다. 데이터가 공개되고 종교 운동이 분열됩니다. 어떤 신자들은 그들의 신앙을 적응시킵니다. 다른 사람들은 그것을 완전히 잃습니다. 지식은 발전합니다.';
+
+  @override
+  String get event_faithVsScience_choice1 => '사회적 조화를 유지하기 위해 결과를 억제합니다.';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      '데이터는 분류됩니다. 종교계는 안정을 유지했지만 과학팀은 사기가 저하되었습니다. 연기된 진실은 부정된 진실이 아니지만, 그런 느낌이 듭니다.';
+
+  @override
+  String get event_faithVsScience_choice2 => '두 견해의 조화를 찾기 위해 공동 패널을 소집합니다.';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      '과학자들과 신학자들은 연구 결과를 재해석하기 위해 협력합니다. 이해와 믿음을 모두 확장하는 새로운 종합이 등장합니다. 모든 사람이 확신하는 것은 아니지만 대화는 건전합니다.';
+
+  @override
+  String get event_surveillanceState_title => '감시 상태';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      '일련의 파괴 행위 이후 보안 책임자는 선박의 모든 구획에 모니터링 시스템을 설치할 것을 제안합니다. 카메라, 마이크 및 생체 인식 스캐너는 모든 식민지 주민의 움직임을 추적합니다. 개인 정보 보호 옹호자들은 겁에 질려 있습니다.';
+
+  @override
+  String get event_surveillanceState_choice0 => '감시 제안을 전면 거부';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      '개인정보는 보호됩니다. 방해 공작원은 여전히 ​​​​대규모로 남아 있지만 식민지 주민들은 감시받지 않는다는 사실을 알고 더 쉽게 잠을 잘 수 있습니다. 조사는 전통적인 수단을 통해 계속됩니다.';
+
+  @override
+  String get event_surveillanceState_choice1 => '선박 전반에 걸쳐 완전한 감시를 구현합니다.';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      '선박의 모든 구석구석이 모니터링됩니다. 방해 공작원은 며칠 안에 체포됩니다. 그러나 카메라는 남아 있고 보안 책임자는 카메라를 끄는 데 관심을 보이지 않습니다. 항상.';
+
+  @override
+  String get event_surveillanceState_choice2 => '중요한 구역에만 제한된 모니터링을 설치하십시오.';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      '카메라는 기관실, 무기고, 교량을 감시합니다. 거주 공간은 비공개로 유지됩니다. 파괴자는 결국 패턴 분석을 통해 식별됩니다. 측정된 응답입니다.';
+
+  @override
+  String get event_nativeAlliance_title => '원주민 동맹';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      '원주민 문명은 공식적인 조약을 제안했습니다. 그들의 대사는 놀랍도록 정교한 통역 장치를 통해 말하는 우아한 존재인 셔틀을 타고 도착합니다. 그들은 세 가지 형태의 관계를 제공하며, 각각은 식민지의 미래에 대해 서로 다른 영향을 미칩니다.';
+
+  @override
+  String get event_nativeAlliance_choice0 => '평등동맹 조약을 체결하다';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      '이 조약은 상호 방어, 공동 연구, 평등한 영토권을 확립합니다. 두 문명은 함께 성장할 것입니다. 원주민들은 식민지 전망을 변화시키는 농업 지식을 공유합니다.';
+
+  @override
+  String get event_nativeAlliance_choice1 => '식민지배적 입장에서 협상하라';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      '귀하는 고급 기술을 활용하여 유리한 조건을 확보합니다. 원주민은 영토와 자원을 양도합니다. 그들은 떨리는 손으로 서명을 합니다. 역사는 이것을 이전에 보아왔으며, 좋게 끝나는 경우는 거의 없습니다.';
+
+  @override
+  String get event_nativeAlliance_choice2 => '상생 중심의 무역 파트너십 구축';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      '상업은 종 간의 격차를 해소합니다. 기본 자료가 귀하의 작업장으로 흘러갑니다. 당신의 기술은 그들의 약을 향상시킵니다. 우정은 상호 이익을 통해 성장합니다.';
 }

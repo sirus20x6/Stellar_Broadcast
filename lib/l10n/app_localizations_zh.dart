@@ -9,9 +9,6 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '星际广播';
-
-  @override
   String get ui_title_stellar => '星际';
 
   @override
@@ -37,6 +34,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => '开始远航';
+
+  @override
+  String get ui_title_seedInvalid => '种子代码无效。仅使用 A–Z 和 0–9。';
 
   @override
   String ui_voyage_sector(int count) {
@@ -184,6 +184,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui_scan_statRadiation => '辐射';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return '探头：$count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return '不确定度：±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => '星球分析';
 
   @override
@@ -279,21 +289,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui_landing_statLandingSys => '着陆系统';
 
   @override
-  String get ui_landingSequence_phase1 => '第一阶段: 轨道锁定';
-
-  @override
-  String get ui_landingSequence_phase1Desc => '降落窗口已开启。确认进入。';
-
-  @override
-  String get ui_landingSequence_phase2 => '第二阶段: 大气层穿越';
-
-  @override
-  String get ui_landingSequence_title => '着陆序列';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => '查看殖民地报告';
-
-  @override
   String get ui_ending_colonyEstablished => '殖民地已建立';
 
   @override
@@ -319,6 +314,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => '挑战好友';
+
+  @override
+  String get ui_ending_shareCard => '共享卡';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => '分享您的旅程';
+
+  @override
+  String get ui_ending_shareCardShare => '分享';
+
+  @override
+  String get ui_ending_shareCardCancel => '取消';
 
   @override
   String get ui_ending_copySeed => '复制种子';
@@ -452,6 +459,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => '系统默认';
+
+  @override
+  String get ui_settings_statsPosition => '统计数据和按钮位置';
+
+  @override
+  String get ui_settings_statsLeft => '左边';
+
+  @override
+  String get ui_settings_statsRight => '正确的';
 
   @override
   String get ui_legacy_title => '传承中心';
@@ -752,6 +768,36 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => '药用植物';
+
+  @override
+  String get planet_featurePerpetualAurora => '永恒的极光';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => '石化大植物群';
+
+  @override
+  String get planet_featureUndergroundRivers => '地下河';
+
+  @override
+  String get planet_featureObsidianPlains => '黑曜石平原';
+
+  @override
+  String get planet_featureSaltFlats => '盐滩';
+
+  @override
+  String get planet_featureCarnivorousFlora => '食肉植物区系';
+
+  @override
+  String get planet_featureGhostCities => '鬼城';
+
+  @override
+  String get planet_featureArchiveVaults => '档案库';
+
+  @override
+  String get planet_featureSinkholeFields => '天坑区';
+
+  @override
+  String get planet_featureApexPredator => '顶级掠食者';
 
   @override
   String get ui_monthJan => '一月';
@@ -3904,18 +3950,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => '大气';
 
   @override
-  String get ending_scoreLabel_gravity => '重力';
-
-  @override
-  String get ending_scoreLabel_temperature => '温度';
-
-  @override
-  String get ending_scoreLabel_water => '水源';
-
-  @override
-  String get ending_scoreLabel_resources => '资源';
-
-  @override
   String get ending_scoreLabel_nativeRelations => '原住民关系';
 
   @override
@@ -4023,19 +4057,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ending_governmentTribalCouncil => '部落议会';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => '神权政治';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => '军政府';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => '企业寡头政治';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => '法西斯国家';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => '公社';
 
   @override
   String get ending_cultureRenaissance => '文艺复兴';
@@ -4089,10 +4123,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ending_nativesConflict => '冲突';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => '联盟';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => '征服';
 
   @override
   String get ending_landscapeGravityHigh => '沉重的引力压迫着一切。';
@@ -4123,65 +4157,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ending_landscapeAtmoLow => '大气压力危险地低——密封栖息地至关重要。';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      '一颗闪耀的、矿脉纵横的卫星主宰着夜空，其金属表面将星光反射到大地上。';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      '一颗碎裂的卫星笼罩在头顶，其崩塌的表面拖着一圈微弱的碎片环——持续提醒着下方面临的轰击威胁。';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      '一颗苍白而荒芜的卫星升起在地平线之上，其布满陨坑的表面是殖民地上方沉默的哨兵。';
-
-  @override
-  String get ending_landscapeHighRotation => '行星高速自转——一天只有几个小时，科里奥利风猛击着一切高耸之物。';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      '行星以折磨人的速度缓慢旋转。向阳面烘烤，背阳面冰封，只有两者之间的晨昏线提供喘息之地。';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      '火山山脉裂开地平线，山坡上流淌着熔岩之河。空气弥漫着硫磺味，大地在脚下颤抖。';
-
-  @override
-  String get ending_landscapeTectonic =>
-      '地壳破碎而不安宁——新的裂缝毫无预警地裂开，在尘埃中暴露出闪闪发光的矿脉。';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      '闪电以连绵的电幕横扫天空，将黑夜变为白昼，空气中弥漫着臭氧的味道。';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      '发光的孢子云随风飘荡，美丽而致命——殖民者需要密封栖息地或过滤面罩才能在户外生存。';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      '行星几乎全是海洋——浩瀚而幽暗的水域延伸至每一处地平线，只有零散的群岛打破水面。';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      '地热喷口穿透地壳，喷出富含矿物质的蒸汽柱，温暖着周围的大地并维系着生命的绿洲。';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      '强大的磁场包裹着行星，偏转恒星辐射但对未屏蔽的电子设备造成破坏。指南针在这里毫无用处。';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      '没有强大的磁场，恒星风剥蚀着上层大气。壮丽的极光在所有纬度上倾泻而下。';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      '庞大的生物在大地上移动——有些大如建筑物，它们的脚步在数公里外都能感受到。';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      '生物圈以共生的互锁网络运行：每一个有机体都依赖并维系着它的邻居，形成一个优雅而脆弱的平衡。';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4228,27 +4203,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return '一个神权委员会指导$planetName，从支撑殖民者度过虚空的信仰中汲取智慧。';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return '军事指挥结构管辖着$planetName，这一纪律在太空中拯救了他们，现在定义了他们的文明。';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return '$planetName 是一个由资源管理者组成的联盟，事实证明他们的经济头脑对于生存至关重要。';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return '独裁政权用铁拳控制$planetName，为了新世界的秩序而牺牲了公民自由。';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return '$planetName 的人民实行集体自治，在所有殖民者之间平等分享资源和决策。';
   }
 
   @override
@@ -4287,10 +4262,6 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       '一颗轨道衰减的不稳定卫星向殖民地倾泻碎片，在周期性的陨石轰击中摧毁了基础设施和不可替代的技术。';
-
-  @override
-  String get ending_moonBarren =>
-      '一颗荒芜的卫星悬挂在外星天空中，一个荒凉的伴侣，在漫长的夜晚里只为殖民者提供了一个熟悉的仰望之物。';
 
   @override
   String get ending_culturePhrase_renaissance => '地球的艺术和文学传统不仅幸存了下来，还绽放为一场文艺复兴';
@@ -4373,12 +4344,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return '正式的联盟将殖民者和 $planetName 的本土文明联系在一起，他们的知识结合起来创造出了比任何一方单独都更伟大的东西。';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return '$planetName 的原住民生活在殖民统治之下，他们的文化因殖民者强加自己的秩序而受到压制。';
   }
 
   @override
@@ -4416,26 +4387,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => '卫星';
-
-  @override
-  String get ui_rings => '星环';
-
-  @override
   String get ui_landing_landOnMoon => '登陆卫星';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return '卫星：$moonPercent% vs 行星：$planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => '重力较低——着陆更为容易';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type星环系统';
-  }
 
   @override
   String get moon_barren => '荒芜';
@@ -4463,53 +4415,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get ring_metallic => '金属';
-
-  @override
-  String get ending_landscapeMoonSingle => '一轮孤月悬于殖民地上空，静默地俯瞰着这片新生的家园。';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count颗卫星在头顶运行，交错的阴影如潮汐般掠过大地。';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      '其中一颗宜居的星体散发着翠绿的光芒——一颗璀璨的宝石，昭示着第二片疆域的可能。';
-
-  @override
-  String get ending_landscapeMoonIce => '一颗冰封的卫星闪烁着寒光，蕴藏着无尽的冰层，宛如等待开启的巨大水库。';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      '从冰封卫星采集的冰层补充了殖民地的水源供给，将一个荒芜的世界化为可以栖居的乐土。';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      '殖民地并非建立在行星本身，而是落脚于其最具希望的卫星——一个引力更为温和、前景更加广阔的小型世界。';
-
-  @override
-  String get ending_landscapeRingDust => '一道淡薄的尘埃星环横亘天际，为每一次日出都增添了缥缈而梦幻的美感。';
-
-  @override
-  String get ending_landscapeRingIce => '一道璀璨的冰晶星环捕捉着星光，在苍穹中绘出七彩的辉焰。';
-
-  @override
-  String get ending_landscapeRingRocky => '一道致密的岩石星环环绕着行星，建筑材料如细雨般缓缓向内坠落，取之不尽。';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      '一道金属星环在头顶熠熠生辉，蕴含着丰富的矿藏，为殖民地的工业注入源源不断的动力。';
-
-  @override
-  String get ending_moonHabitableNote => '一颗宜居卫星提供了殖民的第二次机会。';
-
-  @override
-  String get ending_moonIceHarvestNote => '从冰封卫星采集的冰层补充了殖民地的水源供给。';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return '殖民地在$count颗卫星的注视下运转着。';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'AI的独白';
@@ -4995,6 +4900,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => '点击跳过';
+
+  @override
+  String get ui_common_tapRingToChoose => '点击戒指进行选择';
+
+  @override
+  String get ui_common_tapToContinue => '点击继续';
+
+  @override
+  String get ui_tooltip_back => '后退';
+
+  @override
+  String get ui_tooltip_codex => '法典';
+
+  @override
+  String get ui_tooltip_settings => '设置';
+
+  @override
+  String get ui_tooltip_leaderboards => '排行榜';
+
+  @override
+  String get ui_tooltip_bugReport => '报告错误';
+
+  @override
   String get event_pulsarLighthouse_title => '脉冲星灯塔';
 
   @override
@@ -5014,6 +4943,13 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       '我们与脉冲星保持了足够的距离，消耗额外燃料维持安全轨道。船员们透过滤光舷窗观赏那道扫过虚空的光束——美丽，但遥远。';
+
+  @override
+  String get event_pulsarLighthouse_choice2 => '在扫荡到达我们之前撤退';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      '在下一次光束通过之前，我们会在紧急燃烧时摆开。脉冲星的信号在我们身后逐渐消失——没有获得任何数据，没有受到任何伤害，在规避推力上消耗了一点燃料。';
 
   @override
   String get event_alienNursery_title => '外星育婴室';
@@ -5098,14 +5034,431 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       '实验性抗真菌剂起初显示出希望，但一种抗药性菌株突破了防线。等到我们决定全面清洗时，疫病已蔓延至冷冻舱的营养管线。造成的损害比一开始就果断行动更为严重。';
+
+  @override
+  String get event_constitutionalConvention_title => '制宪会议';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      '由于没有正式的治理，殖民船上的居民变得焦躁不安。来自各个甲板的代表聚集在货舱起草一份宪章，该宪章将定义如何统治未来的殖民地。三个派别对新政府提出了相互竞争的愿景。';
+
+  @override
+  String get event_constitutionalConvention_choice0 => '起草普选民主宪章';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      '殖民者批准了保证平等代表权的宪法。决策过程会变慢，但当每个声音都被听到时，士气就会飙升。';
+
+  @override
+  String get event_constitutionalConvention_choice1 => '建立一个拥有紧急​​权力的强有力的行政人员';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      '单一领导人被任命为拥有全面权力的人。决策很快就出来了，但持不同政见者却私下议论下层的暴政。';
+
+  @override
+  String get event_constitutionalConvention_choice2 => '组建专家技术委员会';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      '工程师、科学家和医生组成一个基于专业知识的执政委员会。效率提高了，尽管有些人感觉被排除在权力之外。';
+
+  @override
+  String get event_militaryCoupThreat_title => '军事政变威胁';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      '船上安全部队指挥官瓦斯奎兹已经扣押了军械库，并发出最后通牒：授予紧急军事权力，否则将面临所有甲板的封锁。局势不稳定，殖民者期待你的回应。';
+
+  @override
+  String get event_militaryCoupThreat_choice0 => '与忠诚的船员一起抵抗政变';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      '忠诚的船员集会反对瓦斯奎兹。对峙以极少的流血结束，但安全细节被削弱，一些殖民者陷入交火中。';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => '服从指挥官的要求';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      '瓦斯奎兹接管了船舶运营的控制权。秩序迅速恢复，但代价是公民自由。现在，每条走廊都有武装巡逻人员巡逻。';
+
+  @override
+  String get event_militaryCoupThreat_choice2 => '通过日落条款谈判有限的紧急权力';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      '经过紧张的谈判，瓦斯奎兹接受了有监督的临时权力。这是一种脆弱的妥协，无法让任何人完全满意，但可以防止暴力。';
+
+  @override
+  String get event_religiousAwakening_title => '宗教觉醒';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      '一位富有魅力的传教士吸引了数百名殖民者参加了一场新的信仰运动。他们每个周期都会聚集在观察穹顶，他们的赞美诗在通风井中回响。一些船员担心狂热情绪；其他人则在教义中找到真正的安慰。';
+
+  @override
+  String get event_religiousAwakening_choice0 => '拥抱信仰运动并提供资源';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      '该运动在官方支持下蓬勃发展。信徒的士气得到提高，他们的集体精神增强了全船的社会纽带。';
+
+  @override
+  String get event_religiousAwakening_choice1 => '在船上实行严格的世俗主义';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      '宗教集会仅限于私人场所。该运动转入地下，滋生怨恨，但科学理性主义仍然是官方信条。';
+
+  @override
+  String get event_religiousAwakening_choice2 => '允许崇拜但规范其影响';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      '信仰是允许的，但与治理分开。任命一名牧师与指挥部联络。维持着一种不稳定的平衡。';
+
+  @override
+  String get event_corporateTakeover_title => '公司收购';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      '船上的资源管理者一直在悄悄巩固对食物分配、水循环和电力分配的控制。他们现在提议将他们的权力正式化为一个公司结构，以管理未来殖民地的经济。';
+
+  @override
+  String get event_corporateTakeover_choice0 => '允许自由市场原则来管理资源';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      '公司派接管资源管理。效率大幅提高，但物价上涨，最贫穷的殖民者难以负担基本必需品。';
+
+  @override
+  String get event_corporateTakeover_choice1 => '将集体所有的所有资源国有化';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      '资源被没收并置于公共控制之下。公司派被解散，但创新在没有利润激励的情况下陷入停滞。';
+
+  @override
+  String get event_corporateTakeover_choice2 => '通过安全网实施受监管的市场';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      '通过价格控制和福利计划建立混合经济。两派都没有完全满足，但在允许一些企业的同时满足了基本需求。';
+
+  @override
+  String get event_successionCrisis_title => '继任危机';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      '这艘船的船长在睡梦中去世，没有留下指定的继任者。三个派别立即争夺控制权：民政委员会要求选举，安全首领要求军事权力，而年长的殖民者则援引传统的领导仪式。';
+
+  @override
+  String get event_successionCrisis_choice0 => '举行紧急选举';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      '一场混乱但激烈的选举产生了一位由民众投票选出的新队长。这个过程很混乱，但殖民者感到自己拥有领导权。';
+
+  @override
+  String get event_successionCrisis_choice1 => '让军队指挥';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      '保安队长坐上船长的椅子。纪律立即恢复，但平民船员用越来越不安的目光注视着武装警卫。';
+
+  @override
+  String get event_successionCrisis_choice2 => '召开长老会议';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      '最年长、最有经验的殖民者组成了一个管理委员会。他们的智慧指引着这艘船，尽管一些年轻的船员感到被老年人统治所边缘化。';
+
+  @override
+  String get event_nativeSovereignty_title => '本土主权';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      '远程扫描证实了目标星球上存在智慧生命。截获的通讯揭示了一个复杂的文明已经检测到了你的接近。他们提出正式要求：承认其领土主权，否则抵达时将面临抵抗。';
+
+  @override
+  String get event_nativeSovereignty_choice0 => '承认原住民主权并请求定居许可';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      '您传递对原住民权利的正式承认。反应谨慎但积极。未来的关系将在相互尊重的基础上开始，尽管登陆地点可能有限。';
+
+  @override
+  String get event_nativeSovereignty_choice1 => '维护殖民霸权并准备抵抗';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      '你表达了无论如何都要和解的意图。机组人员开始武器演习和防御工事规划。当地人保持沉默，这在某种程度上比威胁更可怕。';
+
+  @override
+  String get event_nativeSovereignty_choice2 => '提出地球共同治理';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      '您提供了一个共存和资源共享的框架。当地人很感兴趣，但也很警惕。谈判将会很复杂，但和平的可能性是存在的。';
+
+  @override
+  String get event_laborStrike_title => '劳工罢工';
+
+  @override
+  String get event_laborStrike_narrative =>
+      '工程人员已经辞职，要求更短的轮班时间、更好的食物配给以及在航行决策中的发言权。关键系统在自动备份上运行，但它们不会持续很长时间。其余的殖民者紧张地看着。';
+
+  @override
+  String get event_laborStrike_choice0 => '充分满足工人的诉求';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      '罢工立即结束。工人们重返岗位，条件有所改善。随着轮班时间缩短，生产力略有下降，但忠诚度是不可动摇的。';
+
+  @override
+  String get event_laborStrike_choice1 => '镇压罢工并强制劳动';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      '安全部队持枪护送工人返回工作地点。引擎再次发出嗡嗡声，但仇恨在下层甲板上酝酿。几名工人被限制在宿舍内。';
+
+  @override
+  String get event_laborStrike_choice2 => '对关键要求做出部分妥协';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      '经过马拉松式的谈判后，达成了一项协议：提供更好的口粮和咨询意见，但不减少轮班时间。双方都没有兴奋，但引擎仍在运转。';
+
+  @override
+  String get event_censorshipDebate_title => '审查制度辩论';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      '一份泄露的文件揭示了该船故障系统的真实状况。恐慌在下层甲板蔓延。通讯官员建议限制信息访问，以防止进一步的骚乱。公民自由倡导者感到愤怒。';
+
+  @override
+  String get event_censorshipDebate_choice0 => '保证免费获取所有信息';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      '建立了完全的透明度。随着殖民者集会帮助解决他们现在理解的问题，最初的恐慌逐渐消退。尽管有些信息会造成困扰，但对领导力的信任会增强。';
+
+  @override
+  String get event_censorshipDebate_choice1 => '实施全程信息管控';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      '所有通信现在都通过命令进行过滤。恐慌停止了，取而代之的是令人毛骨悚然的平静。但谣言填补了经过审查的真相留下的空白，而且它们往往比现实更糟糕。';
+
+  @override
+  String get event_censorshipDebate_choice2 => '仅过滤安全敏感信息';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      '建立了分类体系。大多数信息自由流动，但军事和关键系统数据需要许可。一个可行的中间立场，基本上令人满意。';
+
+  @override
+  String get event_colonialCharter_title => '殖民地宪章';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      '随着行星陨落的临近，殖民者必须为他们的新社会起草基本法律。三个哲学阵营已经出现，每个阵营都对殖民地应该成为什么样子提出了不同的愿景。这场辩论非常激烈，而且非常个人化。';
+
+  @override
+  String get event_colonialCharter_choice0 => '强调个人权利的进步宪章';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      '该宪章规定了个人自由、平等和社会流动性。艺术家和思想家庆祝；传统主义者警告说，不受约束的自由会导致混乱。';
+
+  @override
+  String get event_colonialCharter_choice1 => '保护地球传统的保守宪章';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      '该宪章将传统价值观、家庭结构和宗教仪式编入法典。许多人在熟悉的习俗中找到安慰；另一些人则因旧世界思想的重压而感到窒息。';
+
+  @override
+  String get event_colonialCharter_choice2 => '注重生存和发展的务实章程';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      '该宪章优先考虑资源管理、技术教育和经济发展。它缺乏诗意，但确保殖民地高效且组织良好。';
+
+  @override
+  String get event_separatistMovement_title => '分离主义运动';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      '一群殖民者宣布独立于船舶管理。他们把自己设在船尾，要求有权在登陆后建立自己的定居点。他们控制着船上 15% 的食物储备和备用导航阵列。';
+
+  @override
+  String get event_separatistMovement_choice0 => '在联邦框架内授予区域自治权';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      '分离主义者接受了一项协议：在松散的联邦保护伞下，他们自己的地区拥有地方治理。分裂的先例让一些人感到担忧，但和平得以维持。';
+
+  @override
+  String get event_separatistMovement_choice1 => '冲破路障并统一部队';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      '安全小组突破了船尾部分。分裂分子进行了激烈的抵抗。秩序得以恢复，但付出了惨重的代价。这艘船即使在精神上不是统一的，但在身体上是统一的。';
+
+  @override
+  String get event_separatistMovement_choice2 => '解决推动运动的根本不满';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      '调解员努力了解是什么驱使该派别离开。资源分配和代表权方面的改革慢慢地让分离主义者重新回归。治愈需要时间。';
+
+  @override
+  String get event_warCouncil_title => '战争委员会';
+
+  @override
+  String get event_warCouncil_narrative =>
+      '随着附近系统检测到潜在威胁，飞船领导层召开了一个战争委员会。问题是：殖民地有限的资源中有多少应该用于军事准备，而不是民用基础设施？';
+
+  @override
+  String get event_warCouncil_choice0 => '全副武装：锻造武器、训练士兵';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      '车间进行了改造，用于武器生产。每个身体健全的殖民者都接受战斗训练。船上布满了武器，但农业设备的预算却在缩减。';
+
+  @override
+  String get event_warCouncil_choice1 => '裁军：将武器熔化为工具';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      '军械库被清空，其内容被回收为建筑材料。殖民地将用犁头而不是剑来建造。和平主义者欢欣鼓舞；现实主义者担心黑暗中潜藏的东西。';
+
+  @override
+  String get event_warCouncil_choice2 => '仅防御姿势：盾牌和墙壁，而不是剑';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      '资源用于防御工事、防护罩和预警系统。不生产进攻性武器。这是一种平衡的方法，可以在不激怒潜在邻居的情况下保留选择余地。';
+
+  @override
+  String get event_tradeFederation_title => '贸易联盟';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      '随着殖民地接近生存能力，各派争论如何构建其经济。这个问题不仅仅是生存——它将定义在异国土壤上扎根的社会类型。商人、地方自治主义者和官僚都提出了自己的观点。';
+
+  @override
+  String get event_tradeFederation_choice0 => '以最少的监管建立自由贸易区';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      '每个栖息地模块中都出现了市场。随着交易者的竞争，创新蓬勃发展。财富不平等加剧，但殖民地可用的资源总量也在增加。';
+
+  @override
+  String get event_tradeFederation_choice1 => '实现所有资源的公共共享';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      '私有财产被废除。一切都属于每个人。没有人挨饿，但没有人有动力生产超过最低限度的产量。平庸很舒服。';
+
+  @override
+  String get event_tradeFederation_choice2 => '创建国家管理的贸易体系';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      '政府控制所有贸易、制定价格和分配资源。该制度是公平的，但缺乏灵活性。维修走廊出现黑市。';
+
+  @override
+  String get event_faithVsScience_title => '信仰与科学';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      '船上的望远镜捕捉到了一种宇宙现象的图像，这种现象与主流信仰运动的中心原则直接矛盾。首席科学家想要发表研究结果；宗教领袖坚称他们会分裂社区。';
+
+  @override
+  String get event_faithVsScience_choice0 => '完整发表科学发现';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      '真理胜过安慰。数据公布后，宗教运动破裂。一些信徒调整他们的信仰；另一些则改变他们的信仰。其他人则完全失去了它。知识进步。';
+
+  @override
+  String get event_faithVsScience_choice1 => '压制调查结果以维护社会和谐';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      '数据已分类。宗教界保持稳定，但科学团队士气低落。推迟真相并不是否认真相，但感觉就是这样。';
+
+  @override
+  String get event_faithVsScience_choice2 => '召开联合小组以寻求两种观点之间的和谐';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      '科学家和神学家共同努力重新解释这些发现。一种新的综合体出现，扩大了理解和信仰。并非所有人都相信，但对话是健康的。';
+
+  @override
+  String get event_surveillanceState_title => '监控状态';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      '在发生一系列破坏事件后，安全负责人建议在船上的每个舱室安装监控系统。摄像头、麦克风和生物识别扫描仪将跟踪每个殖民者的行动。隐私倡导者感到震惊。';
+
+  @override
+  String get event_surveillanceState_choice0 => '完全拒绝监视提议';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      '隐私得到保护。破坏者仍然逍遥法外，但殖民者知道自己没有被监视，所以睡得更安稳了。调查仍在通过传统手段继续进行。';
+
+  @override
+  String get event_surveillanceState_choice1 => '对全船实施全面监控';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      '船上的每个角落都受到监控。破坏者在几天之内就被抓获。但摄像头仍然存在，安全负责人也没有兴趣将其关闭。曾经。';
+
+  @override
+  String get event_surveillanceState_choice2 => '仅在关键区域安装有限的监控';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      '摄像机覆盖了机舱、军械库和舰桥。居住区保持私密。最终通过模式分析识别出破坏者。经过衡量的反应。';
+
+  @override
+  String get event_nativeAlliance_title => '本土联盟';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      '本土文明提出了正式条约。他们的大使乘坐航天飞机抵达，他是一位优雅的人，通过复杂程度惊人的翻译设备讲话。它们提供了三种形式的关系，每种形式对殖民地的未来都有不同的影响。';
+
+  @override
+  String get event_nativeAlliance_choice0 => '签订平等同盟条约';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      '该条约确立了共同防御、共享研究和平等领土权利。两种文明将共同发展。当地人分享农业知识，改变您的殖民地前景。';
+
+  @override
+  String get event_nativeAlliance_choice1 => '从殖民统治地位进行谈判';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      '您可以利用先进的技术来获得有利的条件。当地人割让领土和资源。他们用颤抖的双手签名。历史曾经见过这样的情况，而且很少有好的结局。';
+
+  @override
+  String get event_nativeAlliance_choice2 => '建立互惠互利的贸易伙伴关系';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      '商业弥合了物种之间的差距。原生材料流向您的工作室；你的技术改善了他们的医学。友谊因互利而增长。';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
 class AppLocalizationsZhTw extends AppLocalizationsZh {
   AppLocalizationsZhTw() : super('zh_TW');
-
-  @override
-  String get appTitle => '星際廣播';
 
   @override
   String get ui_title_stellar => '星際';
@@ -5133,6 +5486,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ui_title_startVoyage => '開始航程';
+
+  @override
+  String get ui_title_seedInvalid => '種子代碼無效。僅使用 A–Z 和 0–9。';
 
   @override
   String ui_voyage_sector(int count) {
@@ -5280,6 +5636,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ui_scan_statRadiation => '輻射';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return '探頭：$count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return '不確定度：±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => '行星分析';
 
   @override
@@ -5375,21 +5741,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ui_landing_statLandingSys => '降落系統';
 
   @override
-  String get ui_landingSequence_phase1 => '第一階段：軌道鎖定';
-
-  @override
-  String get ui_landingSequence_phase1Desc => '降落窗口開啟。鎖定進入軌道。';
-
-  @override
-  String get ui_landingSequence_phase2 => '第二階段：大氣燃燒';
-
-  @override
-  String get ui_landingSequence_title => '降落序列';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => '檢視殖民報告';
-
-  @override
   String get ui_ending_colonyEstablished => '殖民地已建立';
 
   @override
@@ -5415,6 +5766,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ui_ending_challengeFriend => '挑戰好友';
+
+  @override
+  String get ui_ending_shareCard => '共享卡';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => '分享您的旅程';
+
+  @override
+  String get ui_ending_shareCardShare => '分享';
+
+  @override
+  String get ui_ending_shareCardCancel => '取消';
 
   @override
   String get ui_ending_copySeed => '複製種子碼';
@@ -5548,6 +5911,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ui_settings_systemDefault => '系統預設';
+
+  @override
+  String get ui_settings_statsPosition => '統計資料和按鈕位置';
+
+  @override
+  String get ui_settings_statsLeft => '左邊';
+
+  @override
+  String get ui_settings_statsRight => '正確的';
 
   @override
   String get ui_legacy_title => '傳承中心';
@@ -5848,6 +6220,36 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get planet_featureMedicinalFlora => '藥用植物';
+
+  @override
+  String get planet_featurePerpetualAurora => '永恆的極光';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => '石化大植物群';
+
+  @override
+  String get planet_featureUndergroundRivers => '地下河';
+
+  @override
+  String get planet_featureObsidianPlains => '黑曜石平原';
+
+  @override
+  String get planet_featureSaltFlats => '鹽灘';
+
+  @override
+  String get planet_featureCarnivorousFlora => '食肉植物區系';
+
+  @override
+  String get planet_featureGhostCities => '鬼城';
+
+  @override
+  String get planet_featureArchiveVaults => '檔案庫';
+
+  @override
+  String get planet_featureSinkholeFields => '天坑區';
+
+  @override
+  String get planet_featureApexPredator => '頂級掠食者';
 
   @override
   String get ui_monthJan => '一月';
@@ -9001,18 +9403,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ending_scoreLabel_atmosphere => '大氣';
 
   @override
-  String get ending_scoreLabel_gravity => '重力';
-
-  @override
-  String get ending_scoreLabel_temperature => '溫度';
-
-  @override
-  String get ending_scoreLabel_water => '水源';
-
-  @override
-  String get ending_scoreLabel_resources => '資源';
-
-  @override
   String get ending_scoreLabel_nativeRelations => '原住民關係';
 
   @override
@@ -9120,6 +9510,21 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ending_governmentTribalCouncil => '部族議會';
 
   @override
+  String get ending_governmentTheocracy => '神權政治';
+
+  @override
+  String get ending_governmentMilitaryJunta => '軍政府';
+
+  @override
+  String get ending_governmentCorporateOligarchy => '企業寡頭政治';
+
+  @override
+  String get ending_governmentFascistState => '法西斯國家';
+
+  @override
+  String get ending_governmentCommune => '公社';
+
+  @override
   String get ending_cultureRenaissance => '文藝復興';
 
   @override
@@ -9171,6 +9576,12 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ending_nativesConflict => '衝突';
 
   @override
+  String get ending_nativesAlliance => '聯盟';
+
+  @override
+  String get ending_nativesSubjugation => '征服';
+
+  @override
   String get ending_landscapeGravityHigh => '沉重的重力壓迫著一切。';
 
   @override
@@ -9199,64 +9610,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ending_landscapeAtmoLow => '大氣壓力低到危險——密封棲息地是必需的。';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      '一輪閃耀的、礦脈縱橫的衛星主宰著夜空，其金屬表面將星光反射在整片大地上。';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      '一輪破碎的衛星盤踞在頭頂，其崩裂的表面拖曳著一圈微弱的碎片環——不斷提醒著下方可能遭受的轟擊。';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      '一輪蒼白荒蕪的衛星升上地平線，其坑坑窪窪的表面是殖民地上空沉默的哨兵。';
-
-  @override
-  String get ending_landscapeHighRotation => '行星自轉極快——一天只持續數小時，科里奧利風猛擊著一切高聳之物。';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      '行星以令人煎熬的緩慢旋轉著。向陽面被烘烤，背陽面冰封，唯有兩者之間的暮光帶提供了喘息之地。';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      '火山山脈劈開了地平線，斜坡上熔岩河流蜿蜒。空氣中瀰漫著硫磺的味道，大地在腳下顫抖。';
-
-  @override
-  String get ending_landscapeTectonic => '地殼斷裂且不安——新的裂縫毫無預警地開裂，在塵埃雲中露出閃閃發光的礦脈。';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      '閃電以連續的片狀弧光掠過天空，將黑夜化為白晝，空氣中充滿了臭氧的氣味。';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      '發光的孢子雲隨風飄散，美麗而致命——殖民者需要密封棲息地或過濾面罩才能在室外生存。';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      '行星大部分是海洋——浩瀚而幽深的水域延伸到每一個地平線，只有零星的群島破水而出。';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      '地熱噴口穿透地殼，噴出富含礦物質的蒸汽柱，溫暖著周圍的景觀並滋養著生命的綠洲。';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      '一個強大的磁場包裹著行星，偏轉了恆星輻射，但對未屏蔽的電子設備造成了嚴重干擾。指南針毫無用處地旋轉著。';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      '沒有強磁場的保護，恆星風剝蝕著高層大氣。壯觀的極光在所有緯度的天空中傾瀉而下。';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      '巨大的生物在大地上移動——有些如建築物般龐大，它們的腳步聲在數公里外都能感受到。';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      '生態圈以一張環環相扣的共生之網運作：每一個生物都依賴並維繫著它的鄰居，形成一種優雅而脆弱的平衡。';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -9302,6 +9655,31 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
+  String ending_govSentenceTheocracy(String planetName) {
+    return '一個神權委員會指導$planetName，從支撐殖民者度過虛空的信仰中汲取智慧。';
+  }
+
+  @override
+  String ending_govSentenceMilitaryJunta(String planetName) {
+    return '軍事指揮結構管轄著$planetName，這項紀律在太空中拯救了他們，現在定義了他們的文明。';
+  }
+
+  @override
+  String ending_govSentenceCorporateOligarchy(String planetName) {
+    return '$planetName 是一個由資源管理者組成的聯盟，事實證明他們的經濟頭腦對於生存至關重要。';
+  }
+
+  @override
+  String ending_govSentenceFascistState(String planetName) {
+    return '獨裁政權用鐵拳控制$planetName，為了新世界的秩序而犧牲了公民自由。';
+  }
+
+  @override
+  String ending_govSentenceCommune(String planetName) {
+    return '$planetName 的人民實行集體自治，在所有殖民者之間平等分享資源和決策。';
+  }
+
+  @override
   String ending_govSentenceDefault(String planetName) {
     return '$planetName的殖民者們盡其所能地組織了自己。';
   }
@@ -9337,10 +9715,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get ending_moonUnstable =>
       '一顆軌道衰減中的不穩定衛星不斷向殖民地傾瀉碎片，在周期性的隕石轟擊中摧毀了基礎設施和不可替代的技術。';
-
-  @override
-  String get ending_moonBarren =>
-      '一輪荒蕪的衛星懸掛在異星的天空中，一個孤寂的伴侶，在漫漫長夜中只為殖民者提供了一道熟悉的目光所繫。';
 
   @override
   String get ending_culturePhrase_renaissance => '地球的藝術和文學傳統不僅倖存了下來，更綻放為一場文藝復興';
@@ -9422,6 +9796,16 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
+  String ending_nativeSentenceAlliance(String planetName) {
+    return '正式的聯盟將殖民者和 $planetName 的本土文明聯繫在一起，他們的知識結合起來創造出了比任何一方單獨都更偉大的東西。';
+  }
+
+  @override
+  String ending_nativeSentenceSubjugation(String planetName) {
+    return '$planetName 的原住民生活在殖民統治之下，他們的文化因殖民者強加自己的秩序而受到壓制。';
+  }
+
+  @override
   String ending_outlookGoldenAge(String planetName) {
     return '獨處於$planetName且不受衝突所累，殖民地在群星間開闢了一條通往光明未來的道路。';
   }
@@ -9456,26 +9840,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get ui_moons => '衛星';
-
-  @override
-  String get ui_rings => '星環';
-
-  @override
   String get ui_landing_landOnMoon => '登陸衛星';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return '衛星：$moonPercent% vs 行星：$planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => '重力較低——著陸更為容易';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type星環系統';
-  }
 
   @override
   String get moon_barren => '荒蕪';
@@ -9503,53 +9868,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get ring_metallic => '金屬';
-
-  @override
-  String get ending_landscapeMoonSingle => '一輪孤月懸掛在殖民地的上空。';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count顆衛星在頭頂運行，將變幻的陰影投射在大地之上。';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      '其中一顆宜居的世界正在召喚——一顆翠綠的寶石，預示著第二片疆土。';
-
-  @override
-  String get ending_landscapeMoonIce => '一顆冰封的衛星閃耀著廣袤的冰層光芒，一座等待開採的水庫。';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      '從冰封衛星採集的冰層為殖民地補充了水源，將一片荒蕪之地化為適宜生存之所。';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      '殖民地並未建立在行星本身，而是建在最具潛力的衛星上——一個重力更溫和、前景更廣闊的小世界。';
-
-  @override
-  String get ending_landscapeRingDust => '一道微弱的塵埃星環橫跨天際，為每一次日出增添了一抹空靈之美。';
-
-  @override
-  String get ending_landscapeRingIce => '一道璀璨的冰晶星環捕捉著星光，以稜鏡般的火焰彩繪天穹。';
-
-  @override
-  String get ending_landscapeRingRocky => '一道密實的岩質星環環繞行星，建築材料如慢雨般緩緩墜落。';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      '一道金屬星環在頭頂閃爍，蘊含豐富的礦藏，為殖民地的工業注入源源不斷的動力。';
-
-  @override
-  String get ending_moonHabitableNote => '一顆宜居衛星帶來了殖民的第二次機會。';
-
-  @override
-  String get ending_moonIceHarvestNote => '從冰封衛星採集的冰層為殖民地補充了水源。';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return '殖民地在$count顆衛星的注視下運轉。';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'AI的獨白';
@@ -10035,6 +10353,30 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => '點擊跳過';
+
+  @override
+  String get ui_common_tapRingToChoose => '點擊戒指進行選擇';
+
+  @override
+  String get ui_common_tapToContinue => '點擊繼續';
+
+  @override
+  String get ui_tooltip_back => '後退';
+
+  @override
+  String get ui_tooltip_codex => '法典';
+
+  @override
+  String get ui_tooltip_settings => '設定';
+
+  @override
+  String get ui_tooltip_leaderboards => '排行榜';
+
+  @override
+  String get ui_tooltip_bugReport => '報告錯誤';
+
+  @override
   String get event_pulsarLighthouse_title => '脈衝星燈塔';
 
   @override
@@ -10054,6 +10396,13 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       '我們與脈衝星保持了足夠的距離，消耗額外燃料維持安全軌道。船員們透過濾光舷窗觀賞那道掃過虛空的光束——美麗，但遙遠。';
+
+  @override
+  String get event_pulsarLighthouse_choice2 => '在掃蕩到達我們之前撤退';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      '在下一次光束通過之前，我們會在緊急燃燒時擺開。脈衝星的訊號在我們身後逐漸消失——沒有獲得任何數據，沒有受到任何傷害，在規避推力上消耗了一點燃料。';
 
   @override
   String get event_alienNursery_title => '外星育嬰室';
@@ -10138,4 +10487,424 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       '實驗性抗真菌劑起初顯示出希望，但一種抗藥性菌株突破了防線。等到我們決定全面清洗時，疫病已蔓延至冷凍艙的營養管線。造成的損害比一開始就果斷行動更為嚴重。';
+
+  @override
+  String get event_constitutionalConvention_title => '制憲會議';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      '由於沒有正式的治理，殖民船上的居民變得焦躁不安。來自各個甲板的代表聚集在貨艙起草一份憲章，該憲章將定義如何統治未來的殖民地。三個派系對新政府提出了相互競爭的願景。';
+
+  @override
+  String get event_constitutionalConvention_choice0 => '起草普選民主憲章';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      '殖民者批准了保證平等代表權的憲法。決策過程會變慢，但當每個聲音都被聽到時，士氣就會飆升。';
+
+  @override
+  String get event_constitutionalConvention_choice1 => '建立一個擁有緊急權力的強有力的行政人員';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      '單一領導人被任命為擁有全面權力的人。決策很快就出來了，但持不同政見者卻私下議論下層的暴政。';
+
+  @override
+  String get event_constitutionalConvention_choice2 => '組成專家技術委員會';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      '工程師、科學家和醫生組成一個基於專業知識的執政委員會。效率提高了，儘管有些人感覺被排除在權力之外。';
+
+  @override
+  String get event_militaryCoupThreat_title => '軍事政變威脅';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      '船上安全部隊指揮官瓦斯奎茲已經扣押了軍械庫，並發出最後通牒：授予緊急軍事權力，否則將面臨所有甲板的封鎖。局勢不穩定，殖民者期待你的回應。';
+
+  @override
+  String get event_militaryCoupThreat_choice0 => '與忠誠的船員一起抵抗政變';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      '忠誠的船員集會反對瓦斯奎茲。對峙以極少的流血結束，但安全細節被削弱，一些殖民者陷入交火。';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => '服從指揮官的要求';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      '瓦斯奎茲接管了船舶營運的控制權。秩序迅速恢復，但代價是公民自由。現在，每條走廊都有武裝巡邏人員巡邏。';
+
+  @override
+  String get event_militaryCoupThreat_choice2 => '透過日落條款協商有限的緊急權力';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      '經過緊張的談判，瓦斯奎茲接受了有監督的臨時權力。這是一種脆弱的妥協，無法讓任何人完全滿意，但可以防止暴力。';
+
+  @override
+  String get event_religiousAwakening_title => '宗教覺醒';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      '一位富有魅力的傳教士吸引了數百名殖民者參加了一場新的信仰運動。他們每個週期都會聚集在觀察穹頂，他們的讚美詩在通風井中迴響。一些船員擔心狂熱情緒；其他人則在教義中找到真正的安慰。';
+
+  @override
+  String get event_religiousAwakening_choice0 => '擁抱信仰運動並提供資源';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      '該運動在官方支持下蓬勃發展。信徒的士氣提高，他們的集體精神增強了全船的社會紐帶。';
+
+  @override
+  String get event_religiousAwakening_choice1 => '在船上實行嚴格的世俗主義';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      '宗教集會僅限於私人場所。該運動轉入地下，滋生怨恨，但科學理性主義仍是官方信條。';
+
+  @override
+  String get event_religiousAwakening_choice2 => '允許崇拜但規範其影響';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      '信仰是允許的，但與治理分開。任命一名牧師與指揮部聯絡。維持著一種不穩定的平衡。';
+
+  @override
+  String get event_corporateTakeover_title => '公司收購';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      '船上的資源管理者一直在悄悄鞏固對食物分配、水循環和電力分配的控制。他們現在提議將他們的權力正式化為一個公司結構，以管理未來殖民地的經濟。';
+
+  @override
+  String get event_corporateTakeover_choice0 => '允許自由市場原則來管理資源';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      '公司派接管資源管理。效率大幅提高，但物價上漲，最貧窮的殖民者難以負擔基本必需品。';
+
+  @override
+  String get event_corporateTakeover_choice1 => '將集體所有的所有資源國有化';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      '資源被沒收並置於公共控制之下。公司派被解散，但創新在沒有利潤誘因的情況下陷入停滯。';
+
+  @override
+  String get event_corporateTakeover_choice2 => '透過安全網實施受監管的市場';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      '透過價格控制和福利計劃建立混合經濟。兩派都沒有完全滿足，但在允許一些企業的同時滿足了基本需求。';
+
+  @override
+  String get event_successionCrisis_title => '繼任危機';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      '這艘船的船長在睡夢中去世，沒有留下指定的繼任者。三個派系立即爭奪控制權：民政委員會要求選舉，安全首領要求軍事權力，而年長的殖民者則援引傳統的領導儀式。';
+
+  @override
+  String get event_successionCrisis_choice0 => '舉行緊急選舉';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      '一場混亂但激烈的選舉產生了一位由民眾投票選出的新隊長。這個過程很混亂，但殖民者覺得自己擁有領導權。';
+
+  @override
+  String get event_successionCrisis_choice1 => '讓軍隊指揮';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      '保安隊長坐上船長的椅子。紀律立即恢復，但平民船員用越來越不安的目光注視著武裝警衛。';
+
+  @override
+  String get event_successionCrisis_choice2 => '召開長老會議';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      '最年長、最有經驗的殖民者組成了一個管理委員會。他們的智慧指引著這艘船，儘管一些年輕的船員感到被老年人統治所邊緣化。';
+
+  @override
+  String get event_nativeSovereignty_title => '本土主權';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      '遠程掃描證實了目標星球上存在智慧生命。截獲的通訊揭示了一個複雜的文明已經偵測到了你的接近。他們提出正式要求：承認其領土主權，否則抵達時將面臨抵抗。';
+
+  @override
+  String get event_nativeSovereignty_choice0 => '承認原住民主權並請求定居許可';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      '您傳遞對原住民權利的正式承認。反應謹慎但積極。未来的关系将在相互尊重的基础上开始，尽管登陆地点可能有限。';
+
+  @override
+  String get event_nativeSovereignty_choice1 => '維護殖民霸權並準備抵抗';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      '你表達了無論如何都要和解的意圖。机组人员开始武器演习和防御工事规划。当地人保持沉默，这在某种程度上比威胁更可怕。';
+
+  @override
+  String get event_nativeSovereignty_choice2 => '提出地球共同治理';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      '您提供了一個共存和資源共享的框架。當地人很感興趣，但也很警惕。談判將會很複雜，但和平的可能性是存在的。';
+
+  @override
+  String get event_laborStrike_title => '勞工罷工';
+
+  @override
+  String get event_laborStrike_narrative =>
+      '工程人員已經辭職，要求更短的輪班時間、更好的食物配給以及在航行決策中的發言權。關鍵系統在自動備份上運行，但它們不會持續很長時間。其餘的殖民者緊張地看著。';
+
+  @override
+  String get event_laborStrike_choice0 => '充分滿足工人的訴求';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      '罷工立即結束。工人們重返崗位，條件有所改善。隨著輪班時間縮短，生產力略有下降，但忠誠度是不可動搖的。';
+
+  @override
+  String get event_laborStrike_choice1 => '鎮壓罷工並強制勞動';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      '安全部隊持槍護送工人返回工作地點。引擎再次發出嗡嗡聲，但仇恨在下層甲板上醞釀。幾名工人被限制在宿舍內。';
+
+  @override
+  String get event_laborStrike_choice2 => '對關鍵要求做出部分妥協';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      '經過馬拉松式的談判後，達成了一項協議：提供更好的口糧和諮詢意見，但不減少輪班時間。雙方都沒有興奮，但引擎仍在運轉。';
+
+  @override
+  String get event_censorshipDebate_title => '審查制度辯論';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      '一份洩漏的文件揭示了該船故障系統的真實狀況。恐慌在下層甲板蔓延。通訊官員建議限制資訊訪問，以防止進一步的騷亂。公民自由倡導者感到憤怒。';
+
+  @override
+  String get event_censorshipDebate_choice0 => '保證免費獲取所有信息';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      '建立了完全的透明度。隨著殖民者集會幫助解決他們現在理解的問題，最初的恐慌逐漸消退。儘管有些資訊會造成困擾，但對領導力的信任會增強。';
+
+  @override
+  String get event_censorshipDebate_choice1 => '實施全程資訊管控';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      '所有通訊現在都透過命令進行過濾。恐慌停止了，取而代之的是令人毛骨悚然的平靜。但謠言填補了經過審查的真相留下的空白，而且它們往往比現實更糟。';
+
+  @override
+  String get event_censorshipDebate_choice2 => '僅過濾安全敏感訊息';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      '建立了分類體系。大多數資訊自由流動，但軍事和關鍵系統數據需要許可。一個可行的中間立場，基本上令人滿意。';
+
+  @override
+  String get event_colonialCharter_title => '殖民地憲章';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      '隨著行星墮落的臨近，殖民者必須為他們的新社會起草基本法律。三個哲學陣營已經出現，每個陣營都對殖民地應該成為什麼樣子提出了不同的願景。這場辯論非常激烈，而且非常個人化。';
+
+  @override
+  String get event_colonialCharter_choice0 => '強調個人權利的進步憲章';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      '該憲章規定了個人自由、平等和社會流動。藝術家和思想家慶祝；傳統主義者警告說，不受約束的自由會導致混亂。';
+
+  @override
+  String get event_colonialCharter_choice1 => '保護地球傳統的保守憲章';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      '該憲章將傳統價值、家庭結構和宗教儀式編入法典。許多人在熟悉的習俗中找到安慰；其他人則因舊世界思想的重壓而感到窒息。';
+
+  @override
+  String get event_colonialCharter_choice2 => '注重生存與發展的務實章程';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      '該憲章優先考慮資源管理、技術教育和經濟發展。它缺乏詩意，但確保殖民地高效且組織良好。';
+
+  @override
+  String get event_separatistMovement_title => '分離主義運動';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      '一群殖民者宣布獨立於船舶管理。他們把自己設在船尾，要求有權在登陸後建立自己的定居點。他們控制著船上 15% 的食物儲備和備用導航陣列。';
+
+  @override
+  String get event_separatistMovement_choice0 => '在聯邦框架內授予區域自治權';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      '分離主義者接受了一項協議：在鬆散的聯邦保護傘下，他們自己的地區擁有地方治理。分裂的先例讓一些人感到擔憂，但和平得以維持。';
+
+  @override
+  String get event_separatistMovement_choice1 => '衝破路障並統一部隊';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      '安全小組突破了船尾部分。分裂分子進行了激烈的抵抗。秩序得以恢復，但付出了慘痛的代價。這艘船即使在精神上不是統一的，但在身體上是統一的。';
+
+  @override
+  String get event_separatistMovement_choice2 => '解決推動運動的根本不滿';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      '調解員努力了解是什麼驅使該派別離開。資源分配和代表權的改革慢慢地讓分離主義者重新回歸。治癒需要時間。';
+
+  @override
+  String get event_warCouncil_title => '戰爭委員會';
+
+  @override
+  String get event_warCouncil_narrative =>
+      '隨著附近系統偵測到潛在威脅，太空船領導層召開了一個戰爭委員會。問題是：殖民地有限的資源中有多少應該用於軍事準備，而不是民用基礎設施？';
+
+  @override
+  String get event_warCouncil_choice0 => '全副武裝：鍛造武器、訓練士兵';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      '車間進行了改造，用於武器生產。每個身體健全的殖民者都接受戰鬥訓練。船上佈滿了武器，但農業設備的預算卻在縮減。';
+
+  @override
+  String get event_warCouncil_choice1 => '裁軍：將武器融化為工具';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      '軍械庫被清空，其內容物回收為建築材料。殖民地將用犁頭而不是劍來建造。和平主義者歡欣鼓舞；現實主義者擔心黑暗中潛藏的東西。';
+
+  @override
+  String get event_warCouncil_choice2 => '僅防禦姿勢：盾牌和牆壁，而不是劍';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      '資源用於防禦工事、防護罩和預警系統。不生產攻擊性武器。這是一種平衡的方法，可以在不激怒潛在鄰居的情況下保留選擇餘地。';
+
+  @override
+  String get event_tradeFederation_title => '貿易聯盟';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      '隨著殖民地接近生存能力，各派系爭論如何建構其經濟。這個問題不僅僅是生存——它將定義在異國土壤上紮根的社會類型。商人、地方自治主義者和官僚都提出了自己的看法。';
+
+  @override
+  String get event_tradeFederation_choice0 => '以最少的監管建立自由貿易區';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      '每個棲息地模組中都出現了市場。隨著交易者的競爭，創新蓬勃發展。財富不均加劇，但殖民地可用的資源總量也在增加。';
+
+  @override
+  String get event_tradeFederation_choice1 => '實現所有資源的公共共享';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      '私有財產被廢除。一切都屬於每個人。沒有人挨餓，但沒有人有動力去生產超過最低限度的產量。平庸很舒服。';
+
+  @override
+  String get event_tradeFederation_choice2 => '創建國家管理的貿易體系';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      '政府控制所有貿易、制定價格和分配資源。該制度是公平的，但缺乏彈性。維修走廊出現黑市。';
+
+  @override
+  String get event_faithVsScience_title => '信仰與科學';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      '船上的望遠鏡捕捉到了一種宇宙現象的圖像，這種現象與主流信仰運動的中心原則直接矛盾。首席科學家想要發表研究結果；宗教領袖堅稱他們會分裂社區。';
+
+  @override
+  String get event_faithVsScience_choice0 => '完整發表科學發現';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      '真理勝過安慰。數據公佈後，宗教運動破裂。有些信徒調整他們的信仰；有些則改變他們的信仰。其他人則完全失去了它。知識進步。';
+
+  @override
+  String get event_faithVsScience_choice1 => '壓制調查結果以維護社會和諧';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      '數據已分類。宗教界保持穩定，但科學團隊士氣低落。推遲真相並不是否認真相，但感覺就是這樣。';
+
+  @override
+  String get event_faithVsScience_choice2 => '召開聯合小組以尋求兩種觀點之間的和諧';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      '科學家和神學家共同努力重新解釋這些發現。一種新的綜合體出現，擴大了理解和信仰。並非所有人都相信，但對話是健康的。';
+
+  @override
+  String get event_surveillanceState_title => '監控狀態';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      '在發生一系列破壞事件後，安全負責人建議在船上的每個艙室安裝監控系統。攝影機、麥克風和生物辨識掃描器將追蹤每個殖民者的行動。隱私權倡導者感到震驚。';
+
+  @override
+  String get event_surveillanceState_choice0 => '完全拒絕監視提議';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      '隱私得到保護。破壞者仍然逍遙法外，但殖民者知道自己沒有被監視，所以睡得更安穩了。調查仍在透過傳統手段繼續進行。';
+
+  @override
+  String get event_surveillanceState_choice1 => '對全船實施全面監控';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      '船上的每個角落都受到監控。破壞者在幾天之內就被抓獲。但攝影機仍然存在，安全負責人也沒有興趣將其關閉。曾經。';
+
+  @override
+  String get event_surveillanceState_choice2 => '僅在關鍵區域安裝有限的監控';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      '攝影機覆蓋了機艙、軍械庫和艦橋。居住區保持私密。最終透過模式分析識別出破壞者。經過衡量的反應。';
+
+  @override
+  String get event_nativeAlliance_title => '本土聯盟';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      '本土文明提出了正式條約。他們的大使乘坐太空梭抵達，他是一位優雅的人，透過複雜程度驚人的翻譯設備講話。它們提供了三種形式的關係，每種形式對殖民地的未來都有不同的影響。';
+
+  @override
+  String get event_nativeAlliance_choice0 => '簽訂平等同盟條約';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      '該條約確立了共同防禦、共享研究和平等領土權。两种文明将共同发展。當地人分享農業知識，改變您的殖民前景。';
+
+  @override
+  String get event_nativeAlliance_choice1 => '從殖民統治地位進行談判';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      '您可以利用先進的技術來獲得有利的條件。当地人割让领土和资源。他们用颤抖的双手签名。歷史曾經見過這樣的情況，很少有好的結局。';
+
+  @override
+  String get event_nativeAlliance_choice2 => '建立互惠互利的貿易夥伴關係';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      '商业弥合了物种之间的差距。原生材料流向您的工作室；你的技術改善了他們的醫學。友谊因互利而增长。';
 }

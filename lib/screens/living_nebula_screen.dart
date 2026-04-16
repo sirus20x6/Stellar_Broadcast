@@ -12,9 +12,10 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFF4DD0E1);
 const _kCommunicate = Color(0xFF4DD0E1);
 const _kRetreat = Color(0xFFCE93D8);
@@ -29,8 +30,7 @@ class LivingNebulaScreen extends ConsumerStatefulWidget {
 }
 
 class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+    with TickerProviderStateMixin, EventTypewriterMixin<LivingNebulaScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _pulseController;
@@ -38,10 +38,6 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
   late final AnimationController _nebulaController;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedPath; // 0 = communicate, 1 = retreat
@@ -52,18 +48,14 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -78,40 +70,10 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
       duration: const Duration(seconds: 60),
     )..repeat();
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
 
     GameSfx().playLong(GameSfx.spaceWhales);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int path) {
@@ -127,7 +89,9 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
     });
 
     // Apply effects via provider.
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[path]);
+    unawaited(
+      ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[path]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -136,8 +100,7 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _nebulaController.dispose();
@@ -146,32 +109,11 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'LIVING NEBULA',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(24),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 4,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'LIVING NEBULA',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+  );
 
   Widget _buildNarrativeCard() {
     if (!_resolved && widget.event.narrative.isNotEmpty) {
@@ -184,7 +126,7 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
           border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
         ),
         child: Text(
-          _displayedText,
+          displayedText,
           style: const TextStyle(
             color: Colors.white70,
             fontSize: 15,
@@ -199,11 +141,13 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: (_selectedPath == 0 ? _kCommunicate : _kRetreat)
-              .withValues(alpha: 0.1),
+          color: (_selectedPath == 0 ? _kCommunicate : _kRetreat).withValues(
+            alpha: 0.1,
+          ),
           border: Border.all(
-            color: (_selectedPath == 0 ? _kCommunicate : _kRetreat)
-                .withValues(alpha: 0.4),
+            color: (_selectedPath == 0 ? _kCommunicate : _kRetreat).withValues(
+              alpha: 0.4,
+            ),
           ),
         ),
         child: Text(
@@ -220,108 +164,74 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
   }
 
   Widget _buildVisualAreaWidget() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return AnimatedBuilder(
-          animation: Listenable.merge([_nebulaController, _pulseAnim]),
-          builder: (context, _) {
-            return GestureDetector(
-              onTapDown: _resolved
-                  ? null
-                  : (details) => _handleTap(details, constraints),
-              child: CustomPaint(
-                size: Size(constraints.maxWidth, constraints.maxHeight),
-                painter: _NebulaPainter(
-                  animationValue: _nebulaController.value,
-                  pulseValue: _pulseAnim.value,
-                  selectedPath: _selectedPath,
-                  isResolved: _resolved,
+    return RepaintBoundary(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return AnimatedBuilder(
+            animation: Listenable.merge([_nebulaController, _pulseAnim]),
+            builder: (context, _) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: _resolved
+                    ? null
+                    : (details) => _handleTap(details, constraints),
+                child: CustomPaint(
+                  size: Size(constraints.maxWidth, constraints.maxHeight),
+                  painter: _NebulaPainter(
+                    animationValue: _nebulaController.value,
+                    pulseValue: _pulseAnim.value,
+                    selectedPath: _selectedPath,
+                    isResolved: _resolved,
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -333,26 +243,25 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 16),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          if (_typewriterDone)
-            Expanded(child: _buildVisualAreaWidget()),
-          if (!_typewriterDone) ...[
-            const Spacer(),
-            _buildHintOrContinue(),
-          ],
-          if (_showEffects) ...[
-            const SizedBox(height: 12),
-            _buildEffectChips(),
-          ],
-          if (_resolved) ...[
-            const SizedBox(height: 4),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 4),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 16),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                if (typewriterDone) Expanded(child: _buildVisualAreaWidget()),
+                if (!typewriterDone) ...[
+                  const Spacer(),
+                  _buildHintOrContinue(),
+                ],
+                if (_showEffects) ...[
+                  const SizedBox(height: 12),
+                  _buildEffectChips(),
+                ],
+                if (_resolved) ...[
+                  const SizedBox(height: 4),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 4),
               ],
             ),
           ),
@@ -405,13 +314,16 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) { _skipTypewriter(); return; }
+    if (!typewriterDone) {
+      skipTypewriter();
+      return;
+    }
     if (widget.event.choices.length < 2) return;
 
     final tapPos = details.localPosition;
@@ -448,69 +360,85 @@ class _LivingNebulaScreenState extends ConsumerState<LivingNebulaScreen>
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.colonistDelta != 0) {
       final sign = choice.colonistDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Colonists',
-        delta: '$sign${choice.colonistDelta}',
-        isPositive: choice.colonistDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Colonists',
+          delta: '$sign${choice.colonistDelta}',
+          isPositive: choice.colonistDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
       return Text(
         'No effect',
         style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -628,7 +556,7 @@ class _NebulaPainter extends CustomPainter {
     if (isResolved) {
       final overlayColor = selectedPath == 0
           ? _kCommunicate.withValues(alpha: 0.08)
-          : const Color(0xFF0B1426).withValues(alpha: 0.15);
+          : SpaceColors.deepSpace.withValues(alpha: 0.15);
       final overlayPaint = Paint()
         ..color = overlayColor
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
@@ -642,27 +570,31 @@ class _NebulaPainter extends CustomPainter {
 
     // Outer glow.
     final outerGlow = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          const Color(0xFF7B1FA2).withValues(alpha: 0.15),
-          const Color(0xFF7B1FA2).withValues(alpha: 0.0),
-        ],
-      ).createShader(
-          Rect.fromCircle(center: Offset(cx, cy), radius: scaledR * 2.0))
+      ..shader =
+          RadialGradient(
+            colors: [
+              const Color(0xFF7B1FA2).withValues(alpha: 0.15),
+              const Color(0xFF7B1FA2).withValues(alpha: 0.0),
+            ],
+          ).createShader(
+            Rect.fromCircle(center: Offset(cx, cy), radius: scaledR * 2.0),
+          )
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
     canvas.drawCircle(Offset(cx, cy), scaledR * 2.0, outerGlow);
 
     // Mid glow.
     final midGlow = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          const Color(0xFF00897B).withValues(alpha: 0.4),
-          const Color(0xFF7B1FA2).withValues(alpha: 0.15),
-          const Color(0xFF7B1FA2).withValues(alpha: 0.0),
-        ],
-        stops: const [0.0, 0.6, 1.0],
-      ).createShader(
-          Rect.fromCircle(center: Offset(cx, cy), radius: scaledR * 1.5))
+      ..shader =
+          RadialGradient(
+            colors: [
+              const Color(0xFF00897B).withValues(alpha: 0.4),
+              const Color(0xFF7B1FA2).withValues(alpha: 0.15),
+              const Color(0xFF7B1FA2).withValues(alpha: 0.0),
+            ],
+            stops: const [0.0, 0.6, 1.0],
+          ).createShader(
+            Rect.fromCircle(center: Offset(cx, cy), radius: scaledR * 1.5),
+          )
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
     canvas.drawCircle(Offset(cx, cy), scaledR * 1.5, midGlow);
 
@@ -676,24 +608,29 @@ class _NebulaPainter extends CustomPainter {
           const Color(0xFF7B1FA2).withValues(alpha: 0.0),
         ],
         stops: const [0.0, 0.35, 0.7, 1.0],
-      ).createShader(
-          Rect.fromCircle(center: Offset(cx, cy), radius: scaledR))
+      ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: scaledR))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
     canvas.drawCircle(Offset(cx, cy), scaledR, corePaint);
 
     // Bright inner spot.
     final innerPaint = Paint()
-      ..color = const Color(0xFF4DD0E1).withValues(alpha: 0.25 + pulseValue * 0.15)
+      ..color = const Color(
+        0xFF4DD0E1,
+      ).withValues(alpha: 0.25 + pulseValue * 0.15)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
     canvas.drawCircle(Offset(cx, cy), scaledR * 0.35, innerPaint);
   }
 
   void _drawTendrils(
-      Canvas canvas, Size size, double cx, double cy, double coreRadius) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double coreRadius,
+  ) {
     for (var i = 0; i < _tendrilCount; i++) {
       final baseAngle = (i / _tendrilCount) * 2 * pi;
-      final swayOffset =
-          sin(animationValue * 2 * pi + i * 1.1) * 0.3;
+      final swayOffset = sin(animationValue * 2 * pi + i * 1.1) * 0.3;
       final angle = baseAngle + swayOffset;
       final length = coreRadius * (2.2 + 0.4 * sin(i * 2.7));
 
@@ -744,15 +681,21 @@ class _NebulaPainter extends CustomPainter {
   }
 
   void _drawParticles(
-      Canvas canvas, Size size, double cx, double cy, double coreRadius) {
-    final rng = Random(42); // Deterministic seed for consistent particle layout.
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double coreRadius,
+  ) {
+    final rng = Random(
+      42,
+    ); // Deterministic seed for consistent particle layout.
 
     for (var i = 0; i < 20; i++) {
       // Each particle rides a tendril.
       final tendrilIdx = i % _tendrilCount;
       final baseAngle = (tendrilIdx / _tendrilCount) * 2 * pi;
-      final swayOffset =
-          sin(animationValue * 2 * pi + tendrilIdx * 1.1) * 0.3;
+      final swayOffset = sin(animationValue * 2 * pi + tendrilIdx * 1.1) * 0.3;
       final angle = baseAngle + swayOffset;
       final length = coreRadius * (2.2 + 0.4 * sin(tendrilIdx * 2.7));
 
@@ -793,8 +736,14 @@ class _NebulaPainter extends CustomPainter {
     }
   }
 
-  void _drawCommunicatePath(Canvas canvas, Size size, double cx, double cy,
-      {bool bright = false, bool faded = false}) {
+  void _drawCommunicatePath(
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy, {
+    bool bright = false,
+    bool faded = false,
+  }) {
     final startX = size.width * 0.15;
     final startY = size.height * 0.88;
     final ctrlX = size.width * 0.15;
@@ -814,8 +763,18 @@ class _NebulaPainter extends CustomPainter {
       ..quadraticBezierTo(ctrlX, ctrlY, cx, cy);
 
     // Dashed path approximation.
-    _drawDashedBezier(canvas, startX, startY, ctrlX, ctrlY, cx, cy,
-        _kCommunicate.withValues(alpha: alpha), 3.0, bright ? 8.0 : 4.0);
+    _drawDashedBezier(
+      canvas,
+      startX,
+      startY,
+      ctrlX,
+      ctrlY,
+      cx,
+      cy,
+      _kCommunicate.withValues(alpha: alpha),
+      3.0,
+      bright ? 8.0 : 4.0,
+    );
 
     // Glow.
     final glowPaint = Paint()
@@ -828,13 +787,23 @@ class _NebulaPainter extends CustomPainter {
 
     // Label.
     if (!faded) {
-      _drawLabel(canvas, 'COMMUNICATE', Offset(startX, startY + 4),
-          _kCommunicate.withValues(alpha: alpha));
+      _drawLabel(
+        canvas,
+        'COMMUNICATE',
+        Offset(startX, startY + 4),
+        _kCommunicate.withValues(alpha: alpha),
+      );
     }
   }
 
-  void _drawRetreatPath(Canvas canvas, Size size, double cx, double cy,
-      {bool bright = false, bool faded = false}) {
+  void _drawRetreatPath(
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy, {
+    bool bright = false,
+    bool faded = false,
+  }) {
     final startX = size.width * 0.85;
     final startY = size.height * 0.88;
     final ctrlX = size.width * 0.85;
@@ -856,8 +825,18 @@ class _NebulaPainter extends CustomPainter {
       ..quadraticBezierTo(ctrlX, ctrlY, endX, endY);
 
     // Dashed path.
-    _drawDashedBezier(canvas, startX, startY, ctrlX, ctrlY, endX, endY,
-        _kRetreat.withValues(alpha: alpha), 3.0, bright ? 8.0 : 4.0);
+    _drawDashedBezier(
+      canvas,
+      startX,
+      startY,
+      ctrlX,
+      ctrlY,
+      endX,
+      endY,
+      _kRetreat.withValues(alpha: alpha),
+      3.0,
+      bright ? 8.0 : 4.0,
+    );
 
     // Glow.
     final glowPaint = Paint()
@@ -871,16 +850,26 @@ class _NebulaPainter extends CustomPainter {
     // Label.
     if (!faded) {
       _drawLabel(
-          canvas,
-          'RETREAT',
-          Offset(startX - 40, startY + 4),
-          _kRetreat.withValues(alpha: alpha));
+        canvas,
+        'RETREAT',
+        Offset(startX - 40, startY + 4),
+        _kRetreat.withValues(alpha: alpha),
+      );
     }
   }
 
-  void _drawDashedBezier(Canvas canvas, double x0, double y0, double cx,
-      double cy, double x1, double y1, Color color, double strokeWidth,
-      double blurRadius) {
+  void _drawDashedBezier(
+    Canvas canvas,
+    double x0,
+    double y0,
+    double cx,
+    double cy,
+    double x1,
+    double y1,
+    Color color,
+    double strokeWidth,
+    double blurRadius,
+  ) {
     const segments = 30;
     const dashLength = 2;
     const gapLength = 2;

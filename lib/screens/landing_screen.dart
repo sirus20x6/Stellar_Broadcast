@@ -12,10 +12,11 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 
 /// Features visible from orbit (same as scan_screen).
 const _obviousFeatures = {
@@ -36,7 +37,6 @@ class LandingScreen extends ConsumerStatefulWidget {
 
 class _LandingScreenState extends ConsumerState<LandingScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _starController;
   late final AnimationController _pulseController;
   late final AnimationController _entryController;
   late final Animation<double> _entryFade;
@@ -56,11 +56,6 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
     if (planet != null && planet.habitabilityScore > 0.7) {
       GameSfx().play(GameSfx.alienEden, volume: 0.5);
     }
-
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
 
     _pulseController = AnimationController(
       vsync: this,
@@ -83,7 +78,6 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
   @override
   void dispose() {
     _colonyNameController.dispose();
-    _starController.dispose();
     _pulseController.dispose();
     _entryController.dispose();
     super.dispose();
@@ -118,7 +112,14 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final voyage = ref.watch(voyageProvider);
+    // Watch only the fields whose changes should trigger rebuild. Avoids
+    // rebuilding when unrelated voyage state (log entries, encounter count,
+    // etc.) mutates.
+    ref.watch(voyageProvider.select((v) => v.currentPlanet));
+    ref.watch(voyageProvider.select((v) => v.ship));
+    ref.watch(voyageProvider.select((v) => v.fuel));
+    ref.watch(voyageProvider.select((v) => v.revealedFeatures));
+    final voyage = ref.read(voyageProvider);
     final planet = voyage.currentPlanet;
     final ship = voyage.ship;
 
@@ -144,25 +145,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
       body: Stack(
         children: [
           // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => Semantics(
-                  label: 'Animated star field background',
-                  excludeSemantics: true,
-                  child: CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 80,
-                      midStarCount: 30,
-                      nearStarCount: 10,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const EventStarField(),
 
           // Main content.
           SafeArea(
@@ -788,6 +771,9 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
           TextField(
             controller: _colonyNameController,
             maxLines: 1,
+            // Caps the name at 32 chars so it never overflows the ending screen
+            // header or bloats the save JSON.
+            maxLength: 32,
             textInputAction: TextInputAction.done,
             keyboardType: TextInputType.text,
             enableInteractiveSelection: true,
@@ -799,6 +785,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
               letterSpacing: 1,
             ),
             decoration: InputDecoration(
+              counterText: '',
               hintText: 'Name your colony',
               hintStyle: TextStyle(
                 color: _kAccent.withValues(alpha: 0.3),
@@ -844,7 +831,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
         const SizedBox(height: 16),
         if (planet.canLandOnMoon) ...[
           _GlowingActionButton(
-            label: 'LAND ON MOON',
+            label: context.l10n.ui_landing_landOnMoon,
             isPrimary: true,
             accentColor: const Color(0xFF4CAF50),
             pulseController: _pulseController,
@@ -934,7 +921,7 @@ class _PlanetVisualization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final screen = ScreenInfo.of(context);
     // On tablets in landscape, use a fraction of half the screen (column width).
     // On phones, use 55% of screen width. Cap at 300px to leave room for moons/rings.
@@ -997,7 +984,7 @@ class _PlanetVisualization extends StatelessWidget {
 
     final coreColor = Color.fromRGBO(r.toInt(), g.toInt(), b.toInt(), 1.0);
     final midColor = Color.lerp(coreColor, const Color(0xFF1A2940), 0.3)!;
-    final edgeColor = Color.lerp(coreColor, const Color(0xFF0B1426), 0.6)!;
+    final edgeColor = Color.lerp(coreColor, SpaceColors.deepSpace, 0.6)!;
 
     return [
       Color.lerp(Colors.white, coreColor, 0.5)!,

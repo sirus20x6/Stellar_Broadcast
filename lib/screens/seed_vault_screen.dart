@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,9 +13,10 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kFoodColor = Color(0xFF66BB6A);
 const _kHeritageColor = Color(0xFFFFB74D);
 
@@ -31,8 +33,7 @@ class SeedVaultScreen extends ConsumerStatefulWidget {
 }
 
 class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+    with TickerProviderStateMixin, EventTypewriterMixin<SeedVaultScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _waveController;
@@ -40,10 +41,6 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
   late final Animation<double> _snapAnim;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Slider / choice state.
   double _sliderValue = 0.5;
@@ -58,18 +55,14 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _waveController = AnimationController(
       vsync: this,
@@ -80,49 +73,16 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    _snapAnim = CurvedAnimation(
-      parent: _snapController,
-      curve: Curves.easeOut,
-    );
+    _snapAnim = CurvedAnimation(parent: _snapController, curve: Curves.easeOut);
     _snapController.addListener(_onSnapTick);
 
     // Initial snap to center.
     _snappedPosition = 3;
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
 
     GameSfx().playLong(GameSfx.criticalAlarm);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   // ── Slider logic ─────────────────────────────────────────────────────
@@ -174,9 +134,9 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     //   snap 2-4 (balanced)    → choices[2]
     //   snap 5-6 (heritage-heavy) → choices[1]
     final choiceIndex = switch (_snappedPosition!) {
-      0 || 1 => 0,  // food priority
-      2 || 3 || 4 => 2,  // balanced
-      5 || 6 => 1,  // heritage priority
+      0 || 1 => 0, // food priority
+      2 || 3 || 4 => 2, // balanced
+      5 || 6 => 1, // heritage priority
       _ => 2,
     };
 
@@ -192,7 +152,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
       _selectedChoice = choice;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(choice);
+    unawaited(ref.read(voyageProvider.notifier).handleEvent(choice));
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -201,9 +161,8 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
+    disposeTypewriter();
     _snapController.removeListener(_onSnapTick);
-    _starController.dispose();
     _titleGlow.dispose();
     _waveController.dispose();
     _snapController.dispose();
@@ -212,8 +171,11 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Color get _titleColor => Color.lerp(_kFoodColor, _kHeritageColor,
-      0.5 + 0.5 * sin(_titleGlow.value * pi))!;
+  Color get _titleColor => Color.lerp(
+    _kFoodColor,
+    _kHeritageColor,
+    0.5 + 0.5 * sin(_titleGlow.value * pi),
+  )!;
 
   Widget _buildTitle() {
     final screen = ScreenInfo.of(context);
@@ -250,7 +212,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     final titleColor = _titleColor;
     if (!_resolved && event.narrative.isNotEmpty) {
       return GestureDetector(
-        onTap: _typewriterDone ? null : _skipTypewriter,
+        onTap: typewriterDone ? null : skipTypewriter,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(14),
@@ -260,7 +222,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
             border: Border.all(color: titleColor.withValues(alpha: 0.2)),
           ),
           child: Text(
-            _displayedText,
+            displayedText,
             style: const TextStyle(
               color: Colors.white70,
               fontSize: 14,
@@ -296,30 +258,37 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     if (_resolved) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kFoodColor.withValues(alpha: 0.6)),
-                color: _kFoodColor.withValues(alpha: 0.08),
-              ),
-              child: const Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kFoodColor,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
+        child: Semantics(
+          button: true,
+          label: 'Continue',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                GameSfx().playVaried(GameSfx.buttonClick);
+                Navigator.of(context).pop();
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 20,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: _kFoodColor.withValues(alpha: 0.6)),
+                  color: _kFoodColor.withValues(alpha: 0.08),
+                ),
+                child: const Text(
+                  'CONTINUE',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _kFoodColor,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2,
+                  ),
                 ),
               ),
             ),
@@ -327,8 +296,15 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
         ),
       );
     }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 11, letterSpacing: 2));
+    if (!typewriterDone) {
+      return Text(
+        context.l10n.ui_common_tapToSkip,
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.4),
+          fontSize: 11,
+          letterSpacing: 2,
+        ),
+      );
     }
     return const SizedBox.shrink();
   }
@@ -338,39 +314,33 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -382,29 +352,29 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 24),
-          _buildTitle(),
-          const SizedBox(height: 16),
-          _buildNarrativeCard(),
-          if (!_typewriterDone)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: _buildHintOrContinue(),
-            ),
-          const SizedBox(height: 12),
-          if (_typewriterDone) ...[
-            Expanded(child: _buildVisualArea()),
-          ] else
-            const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved) ...[
-            const SizedBox(height: 10),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 8),
+                const SizedBox(height: 24),
+                _buildTitle(),
+                const SizedBox(height: 16),
+                _buildNarrativeCard(),
+                if (!typewriterDone)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: _buildHintOrContinue(),
+                  ),
+                const SizedBox(height: 12),
+                if (typewriterDone) ...[
+                  Expanded(child: _buildVisualArea()),
+                ] else
+                  const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved) ...[
+                  const SizedBox(height: 10),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -457,7 +427,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -470,38 +440,41 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
 
     return Column(
       children: [
-        // Tanks row.
+        // Tanks row. RepaintBoundary isolates the wave animation so its
+        // 60fps ticks don't force the whole screen to repaint.
         Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: AnimatedBuilder(
-                  animation: _waveController,
-                  builder: (_, __) => _SeedTank(
-                    label: 'FOOD CROPS',
-                    fillPercent: foodFill,
-                    accentColor: _kFoodColor,
-                    waveValue: _waveController.value,
-                    isWarning: foodFill < 0.20,
-                    titleGlowValue: _titleGlowAnim.value,
+          child: RepaintBoundary(
+            child: Row(
+              children: [
+                Expanded(
+                  child: AnimatedBuilder(
+                    animation: _waveController,
+                    builder: (_, __) => _SeedTank(
+                      label: 'FOOD CROPS',
+                      fillPercent: foodFill,
+                      accentColor: _kFoodColor,
+                      waveValue: _waveController.value,
+                      isWarning: foodFill < 0.20,
+                      titleGlowValue: _titleGlowAnim.value,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AnimatedBuilder(
-                  animation: _waveController,
-                  builder: (_, __) => _SeedTank(
-                    label: 'HERITAGE',
-                    fillPercent: heritageFill,
-                    accentColor: _kHeritageColor,
-                    waveValue: _waveController.value,
-                    isWarning: heritageFill < 0.20,
-                    titleGlowValue: _titleGlowAnim.value,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: AnimatedBuilder(
+                    animation: _waveController,
+                    builder: (_, __) => _SeedTank(
+                      label: 'HERITAGE',
+                      fillPercent: heritageFill,
+                      accentColor: _kHeritageColor,
+                      waveValue: _waveController.value,
+                      isWarning: heritageFill < 0.20,
+                      titleGlowValue: _titleGlowAnim.value,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
@@ -540,7 +513,8 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
                         boxShadow: [
                           BoxShadow(
                             color: _kFoodColor.withValues(
-                                alpha: _titleGlowAnim.value * 0.2),
+                              alpha: _titleGlowAnim.value * 0.2,
+                            ),
                             blurRadius: 12,
                           ),
                         ],
@@ -580,8 +554,11 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
                 height: isActive ? 12 : 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(1),
-                  color: Color.lerp(_kFoodColor, _kHeritageColor, _kSnapPositions[i])!
-                      .withValues(alpha: isActive ? 0.9 : 0.35),
+                  color: Color.lerp(
+                    _kFoodColor,
+                    _kHeritageColor,
+                    _kSnapPositions[i],
+                  )!.withValues(alpha: isActive ? 0.9 : 0.35),
                 ),
               );
             }),
@@ -624,11 +601,13 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
   }
 
   Widget _snapLabel(String text, Set<int> indices) {
-    final isActive = _snappedPosition != null &&
+    final isActive =
+        _snappedPosition != null &&
         indices.contains(_snappedPosition!) &&
         !_isDragging;
-    final color =
-        isActive ? Colors.white : Colors.white.withValues(alpha: 0.35);
+    final color = isActive
+        ? Colors.white
+        : Colors.white.withValues(alpha: 0.35);
     return Text(
       text,
       textAlign: TextAlign.center,
@@ -650,7 +629,9 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
       return Text(
         'No effect',
         style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -660,51 +641,63 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.colonistDelta != 0) {
       final sign = choice.colonistDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Colonists',
-        delta: '$sign${choice.colonistDelta}',
-        isPositive: choice.colonistDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Colonists',
+          delta: '$sign${choice.colonistDelta}',
+          isPositive: choice.colonistDelta > 0,
+        ),
+      );
     }
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     return Wrap(
@@ -845,8 +838,11 @@ class _SeedTank extends StatelessWidget {
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.warning_amber_rounded,
-                            color: Colors.redAccent, size: 16),
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.redAccent,
+                          size: 16,
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'LOW',
@@ -934,8 +930,7 @@ class _WavePainter extends CustomPainter {
 
     path.moveTo(0, size.height);
     for (double x = 0; x <= size.width; x += 2) {
-      final y =
-          midY + sin((x / size.width) * 2 * pi + phaseShift) * amplitude;
+      final y = midY + sin((x / size.width) * 2 * pi + phaseShift) * amplitude;
       path.lineTo(x, y);
     }
     path.lineTo(size.width, size.height);
@@ -997,11 +992,7 @@ class _GlowingThumbShape extends SliderComponentShape {
     );
 
     // Thumb body.
-    canvas.drawCircle(
-      center,
-      8,
-      Paint()..color = glowColor,
-    );
+    canvas.drawCircle(center, 8, Paint()..color = glowColor);
 
     // Inner highlight.
     canvas.drawCircle(

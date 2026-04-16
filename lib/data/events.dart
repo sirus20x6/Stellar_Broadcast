@@ -3534,6 +3534,11 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
         outcome: l10n.event_pulsarLighthouse_outcome1,
         fuelDelta: -10,
       ),
+      EventChoice(
+        text: l10n.event_pulsarLighthouse_choice2,
+        outcome: l10n.event_pulsarLighthouse_outcome2,
+        fuelDelta: -5,
+      ),
     ],
   ),
 
@@ -3653,36 +3658,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
   // ═══════════════════════════════════════════════════════════════════════
   GameEvent(
     id: 'constitutional_convention',
-    title: 'Constitutional Convention',
-    narrative:
-        'The colony ship\'s population has grown restless without formal governance. '
-        'Delegates from every deck gather in the cargo hold to draft a charter '
-        'that will define how the future colony is ruled. Three factions present '
-        'competing visions for the new government.',
+    title: l10n.event_constitutionalConvention_title,
+    narrative: l10n.event_constitutionalConvention_narrative,
     choices: [
       EventChoice(
-        text: 'Draft a democratic charter with universal suffrage',
-        outcome:
-            'The colonists ratify a constitution guaranteeing equal representation. '
-            'Decision-making slows but morale soars as every voice is heard.',
+        text: l10n.event_constitutionalConvention_choice0,
+        outcome: l10n.event_constitutionalConvention_outcome0,
         shipEffects: {'culture': 0.05},
         authorityDelta: -0.15,
         cultureDelta: 0.10,
       ),
       EventChoice(
-        text: 'Establish a strong executive with emergency powers',
-        outcome:
-            'A single leader is appointed with sweeping authority. Decisions '
-            'come fast but dissenters whisper of tyranny in the lower decks.',
+        text: l10n.event_constitutionalConvention_choice1,
+        outcome: l10n.event_constitutionalConvention_outcome1,
         shipEffects: {'nav': 0.03},
         authorityDelta: 0.15,
         cultureDelta: -0.05,
       ),
       EventChoice(
-        text: 'Form a technocratic council of specialists',
-        outcome:
-            'Engineers, scientists, and doctors form a ruling council based on '
-            'expertise. Efficiency improves, though some feel excluded from power.',
+        text: l10n.event_constitutionalConvention_choice2,
+        outcome: l10n.event_constitutionalConvention_outcome2,
         shipEffects: {'tech': 0.03},
         economyDelta: 0.05,
         cultureDelta: 0.05,
@@ -3692,41 +3687,28 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'military_coup_threat',
-    title: 'Military Coup Threat',
+    title: l10n.event_militaryCoupThreat_title,
     category: EventCategory.rare,
-    narrative:
-        'Commander Vasquez of the ship\'s security detail has seized the armory '
-        'and issued an ultimatum: grant emergency military powers or face a '
-        'lockdown of all decks. The situation is volatile and the colonists '
-        'look to you for a response.',
+    narrative: l10n.event_militaryCoupThreat_narrative,
     choices: [
       EventChoice(
-        text: 'Resist the coup with loyal crew members',
-        outcome:
-            'Loyal crew rally to oppose Vasquez. The standoff ends with minimal '
-            'bloodshed, but the security detail is weakened and some colonists '
-            'are caught in the crossfire.',
+        text: l10n.event_militaryCoupThreat_choice0,
+        outcome: l10n.event_militaryCoupThreat_outcome0,
         shipEffects: {'culture': -0.05},
         colonistDelta: -20,
         authorityDelta: -0.10,
         militaryDelta: -0.05,
       ),
       EventChoice(
-        text: 'Submit to the commander\'s demands',
-        outcome:
-            'Vasquez assumes control of ship operations. Order is restored '
-            'swiftly, but at the cost of civil liberties. Armed patrols now '
-            'walk every corridor.',
+        text: l10n.event_militaryCoupThreat_choice1,
+        outcome: l10n.event_militaryCoupThreat_outcome1,
         shipEffects: {'nav': 0.03},
         authorityDelta: 0.15,
         militaryDelta: 0.10,
       ),
       EventChoice(
-        text: 'Negotiate limited emergency powers with a sunset clause',
-        outcome:
-            'After tense negotiations, Vasquez accepts temporary authority with '
-            'oversight. A fragile compromise that satisfies no one completely, '
-            'but prevents violence.',
+        text: l10n.event_militaryCoupThreat_choice2,
+        outcome: l10n.event_militaryCoupThreat_outcome2,
         shipEffects: {'culture': 0.03},
         authorityDelta: 0.05,
         militaryDelta: 0.05,
@@ -3737,39 +3719,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'religious_awakening',
-    title: 'Religious Awakening',
-    narrative:
-        'A charismatic preacher has drawn hundreds of colonists into a new '
-        'faith movement. They gather in the observation dome each cycle, '
-        'their hymns echoing through the ventilation shafts. Some crew members '
-        'worry about fanaticism; others find genuine comfort in the teachings.',
+    title: l10n.event_religiousAwakening_title,
+    narrative: l10n.event_religiousAwakening_narrative,
     choices: [
       EventChoice(
-        text: 'Embrace the faith movement and provide resources',
-        outcome:
-            'The movement flourishes with official support. Morale improves '
-            'among believers, and their communal spirit strengthens social bonds '
-            'across the ship.',
+        text: l10n.event_religiousAwakening_choice0,
+        outcome: l10n.event_religiousAwakening_outcome0,
         shipEffects: {'culture': 0.05},
         faithDelta: 0.15,
         cultureDelta: 0.05,
       ),
       EventChoice(
-        text: 'Enforce strict secularism aboard the ship',
-        outcome:
-            'Religious gatherings are restricted to private quarters. The '
-            'movement goes underground, breeding resentment, but scientific '
-            'rationalism remains the official doctrine.',
+        text: l10n.event_religiousAwakening_choice1,
+        outcome: l10n.event_religiousAwakening_outcome1,
         shipEffects: {'tech': 0.03},
         faithDelta: -0.10,
         authorityDelta: 0.05,
       ),
       EventChoice(
-        text: 'Allow worship but regulate its influence',
-        outcome:
-            'The faith is permitted but kept separate from governance. A '
-            'chaplain is appointed to liaise with command. An uneasy balance '
-            'is maintained.',
+        text: l10n.event_religiousAwakening_choice2,
+        outcome: l10n.event_religiousAwakening_outcome2,
         shipEffects: {'culture': 0.02},
         faithDelta: 0.05,
         authorityDelta: 0.05,
@@ -3779,39 +3748,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'corporate_takeover',
-    title: 'Corporate Takeover',
-    narrative:
-        'The ship\'s resource managers have been quietly consolidating control '
-        'over food distribution, water recycling, and power allocation. They '
-        'now propose formalizing their authority into a corporate structure '
-        'that would manage the future colony\'s economy.',
+    title: l10n.event_corporateTakeover_title,
+    narrative: l10n.event_corporateTakeover_narrative,
     choices: [
       EventChoice(
-        text: 'Allow free market principles to govern resources',
-        outcome:
-            'The corporate faction takes over resource management. Efficiency '
-            'improves dramatically, but prices rise and the poorest colonists '
-            'struggle to afford basic necessities.',
+        text: l10n.event_corporateTakeover_choice0,
+        outcome: l10n.event_corporateTakeover_outcome0,
         shipEffects: {'tech': 0.03},
         economyDelta: 0.15,
         authorityDelta: -0.05,
       ),
       EventChoice(
-        text: 'Nationalize all resources under collective ownership',
-        outcome:
-            'Resources are seized and placed under communal control. The '
-            'corporate faction is dismantled, but innovation stalls without '
-            'profit incentives.',
+        text: l10n.event_corporateTakeover_choice1,
+        outcome: l10n.event_corporateTakeover_outcome1,
         shipEffects: {'culture': 0.05},
         economyDelta: -0.10,
         authorityDelta: 0.10,
       ),
       EventChoice(
-        text: 'Implement regulated markets with safety nets',
-        outcome:
-            'A mixed economy is established with price controls and welfare '
-            'programs. Neither faction is fully satisfied, but basic needs '
-            'are met while allowing some enterprise.',
+        text: l10n.event_corporateTakeover_choice2,
+        outcome: l10n.event_corporateTakeover_outcome2,
         shipEffects: {'culture': 0.02, 'tech': 0.02},
         economyDelta: 0.05,
         cultureDelta: 0.05,
@@ -3821,40 +3777,27 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'succession_crisis',
-    title: 'Succession Crisis',
+    title: l10n.event_successionCrisis_title,
     category: EventCategory.rare,
-    narrative:
-        'The ship\'s captain has died in their sleep, leaving no designated '
-        'successor. Three factions immediately vie for control: the civilian '
-        'council demands elections, the security chief claims martial authority, '
-        'and the elder colonists invoke traditional leadership rites.',
+    narrative: l10n.event_successionCrisis_narrative,
     choices: [
       EventChoice(
-        text: 'Hold an emergency election',
-        outcome:
-            'A chaotic but spirited election produces a new captain chosen '
-            'by popular vote. The process is messy, but the colonists feel '
-            'ownership of their leadership.',
+        text: l10n.event_successionCrisis_choice0,
+        outcome: l10n.event_successionCrisis_outcome0,
         shipEffects: {'culture': 0.05},
         authorityDelta: -0.10,
         cultureDelta: 0.10,
       ),
       EventChoice(
-        text: 'Let the military assume command',
-        outcome:
-            'The security chief steps into the captain\'s chair. Discipline '
-            'is restored immediately, but civilian crew eye the armed guards '
-            'with growing unease.',
+        text: l10n.event_successionCrisis_choice1,
+        outcome: l10n.event_successionCrisis_outcome1,
         shipEffects: {'nav': 0.05},
         militaryDelta: 0.15,
         authorityDelta: 0.10,
       ),
       EventChoice(
-        text: 'Convene a council of elders',
-        outcome:
-            'The eldest and most experienced colonists form a governing council. '
-            'Their wisdom guides the ship, though some younger crew feel '
-            'marginalized by the gerontocracy.',
+        text: l10n.event_successionCrisis_choice2,
+        outcome: l10n.event_successionCrisis_outcome2,
         shipEffects: {'culture': 0.03},
         cultureDelta: 0.05,
         faithDelta: 0.05,
@@ -3864,42 +3807,29 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'native_sovereignty',
-    title: 'Native Sovereignty',
+    title: l10n.event_nativeSovereignty_title,
     category: EventCategory.rare,
-    narrative:
-        'Long-range scans confirm intelligent life on the target planet. '
-        'Intercepted communications reveal a sophisticated civilization that '
-        'has detected your approach. They transmit a formal demand: recognize '
-        'their territorial sovereignty or face resistance upon arrival.',
+    narrative: l10n.event_nativeSovereignty_narrative,
     choices: [
       EventChoice(
-        text: 'Recognize native sovereignty and request permission to settle',
-        outcome:
-            'You transmit a formal recognition of native rights. The response '
-            'is cautious but positive. Future relations will begin on a '
-            'foundation of mutual respect, though landing sites may be limited.',
+        text: l10n.event_nativeSovereignty_choice0,
+        outcome: l10n.event_nativeSovereignty_outcome0,
         shipEffects: {'culture': 0.05},
         planetModifiers: {'nativeDisposition': 0.10},
         militaryDelta: -0.10,
         cultureDelta: 0.10,
       ),
       EventChoice(
-        text: 'Assert colonial supremacy and prepare for resistance',
-        outcome:
-            'You broadcast your intention to settle regardless. The crew '
-            'begins weapons drills and fortification planning. The natives '
-            'go silent, which is somehow more terrifying than threats.',
+        text: l10n.event_nativeSovereignty_choice1,
+        outcome: l10n.event_nativeSovereignty_outcome1,
         shipEffects: {'hull': 0.03},
         planetModifiers: {'nativeDisposition': -0.15},
         militaryDelta: 0.10,
         authorityDelta: 0.10,
       ),
       EventChoice(
-        text: 'Propose shared governance of the planet',
-        outcome:
-            'You offer a framework for coexistence and resource sharing. '
-            'The natives are intrigued but wary. Negotiations will be complex, '
-            'but the possibility of peace exists.',
+        text: l10n.event_nativeSovereignty_choice2,
+        outcome: l10n.event_nativeSovereignty_outcome2,
         shipEffects: {'culture': 0.03},
         planetModifiers: {'nativeDisposition': 0.05},
         cultureDelta: 0.05,
@@ -3910,41 +3840,28 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'labor_strike',
-    title: 'Labor Strike',
-    narrative:
-        'The engineering crew has walked off the job, demanding shorter shifts, '
-        'better food rations, and a voice in navigation decisions. Critical '
-        'systems are running on automated backups, but they won\'t last long. '
-        'The rest of the colonists watch nervously.',
+    title: l10n.event_laborStrike_title,
+    narrative: l10n.event_laborStrike_narrative,
     choices: [
       EventChoice(
-        text: 'Meet the workers\' demands in full',
-        outcome:
-            'The strike ends immediately. Workers return to their posts with '
-            'improved conditions. Productivity drops slightly as shorter shifts '
-            'take effect, but loyalty is unshakeable.',
+        text: l10n.event_laborStrike_choice0,
+        outcome: l10n.event_laborStrike_outcome0,
         shipEffects: {'culture': 0.05, 'tech': -0.03},
         economyDelta: -0.10,
         cultureDelta: 0.05,
         authorityDelta: -0.05,
       ),
       EventChoice(
-        text: 'Suppress the strike and enforce mandatory labor',
-        outcome:
-            'Security forces escort the workers back to their stations at '
-            'gunpoint. The engines hum again, but hatred simmers in the '
-            'lower decks. Several workers are confined to quarters.',
+        text: l10n.event_laborStrike_choice1,
+        outcome: l10n.event_laborStrike_outcome1,
         shipEffects: {'tech': 0.03},
         colonistDelta: -15,
         authorityDelta: 0.10,
         militaryDelta: 0.05,
       ),
       EventChoice(
-        text: 'Offer a partial compromise on key demands',
-        outcome:
-            'After marathon negotiations, a deal is struck: better rations '
-            'and advisory input, but no reduction in shift length. Neither side '
-            'is thrilled, but the engines keep running.',
+        text: l10n.event_laborStrike_choice2,
+        outcome: l10n.event_laborStrike_outcome2,
         shipEffects: {'culture': 0.02},
         economyDelta: -0.05,
         authorityDelta: 0.05,
@@ -3954,39 +3871,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'censorship_debate',
-    title: 'Censorship Debate',
-    narrative:
-        'A leaked document reveals the true condition of the ship\'s failing '
-        'systems. Panic spreads through the lower decks. The communications '
-        'officer proposes restricting information access to prevent further '
-        'unrest. Civil liberties advocates are outraged.',
+    title: l10n.event_censorshipDebate_title,
+    narrative: l10n.event_censorshipDebate_narrative,
     choices: [
       EventChoice(
-        text: 'Guarantee free access to all information',
-        outcome:
-            'Full transparency is established. The initial panic subsides as '
-            'colonists rally to help fix the problems they now understand. '
-            'Trust in leadership grows, though some information causes distress.',
+        text: l10n.event_censorshipDebate_choice0,
+        outcome: l10n.event_censorshipDebate_outcome0,
         shipEffects: {'culture': 0.05},
         authorityDelta: -0.10,
         cultureDelta: 0.10,
       ),
       EventChoice(
-        text: 'Implement full information control',
-        outcome:
-            'All communications are now filtered through command. The panic '
-            'stops, replaced by an eerie calm. But rumors fill the void left '
-            'by censored truth, and they are often worse than reality.',
+        text: l10n.event_censorshipDebate_choice1,
+        outcome: l10n.event_censorshipDebate_outcome1,
         shipEffects: {'culture': -0.05},
         authorityDelta: 0.15,
         cultureDelta: -0.10,
       ),
       EventChoice(
-        text: 'Filter only security-sensitive information',
-        outcome:
-            'A classification system is established. Most information flows '
-            'freely, but military and critical system data requires clearance. '
-            'A workable middle ground that mostly satisfies.',
+        text: l10n.event_censorshipDebate_choice2,
+        outcome: l10n.event_censorshipDebate_outcome2,
         shipEffects: {'culture': 0.02},
         authorityDelta: 0.05,
         militaryDelta: 0.05,
@@ -3996,39 +3900,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'colonial_charter',
-    title: 'Colonial Charter',
-    narrative:
-        'With planetfall approaching, the colonists must draft fundamental '
-        'laws for their new society. Three philosophical camps have emerged, '
-        'each championing a different vision for what the colony should become. '
-        'The debate is heated and deeply personal.',
+    title: l10n.event_colonialCharter_title,
+    narrative: l10n.event_colonialCharter_narrative,
     choices: [
       EventChoice(
-        text: 'A progressive charter emphasizing individual rights',
-        outcome:
-            'The charter enshrines personal freedoms, equality, and social '
-            'mobility. Artists and thinkers celebrate; traditionalists warn '
-            'that unchecked freedom leads to chaos.',
+        text: l10n.event_colonialCharter_choice0,
+        outcome: l10n.event_colonialCharter_outcome0,
         shipEffects: {'culture': 0.05},
         cultureDelta: 0.15,
         authorityDelta: -0.05,
       ),
       EventChoice(
-        text: 'A conservative charter preserving Earth\'s traditions',
-        outcome:
-            'The charter codifies traditional values, family structures, and '
-            'religious observance. Many find comfort in familiar customs; '
-            'others feel stifled by the weight of old-world thinking.',
+        text: l10n.event_colonialCharter_choice1,
+        outcome: l10n.event_colonialCharter_outcome1,
         shipEffects: {'culture': 0.02},
         faithDelta: 0.10,
         cultureDelta: -0.05,
       ),
       EventChoice(
-        text: 'A pragmatic charter focused on survival and growth',
-        outcome:
-            'The charter prioritizes resource management, technical education, '
-            'and economic development. It lacks poetry but ensures the colony '
-            'will be efficient and well-organized.',
+        text: l10n.event_colonialCharter_choice2,
+        outcome: l10n.event_colonialCharter_outcome2,
         shipEffects: {'tech': 0.03},
         economyDelta: 0.10,
         authorityDelta: 0.05,
@@ -4038,41 +3929,28 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'separatist_movement',
-    title: 'Separatist Movement',
+    title: l10n.event_separatistMovement_title,
     category: EventCategory.rare,
-    narrative:
-        'A faction of colonists has declared independence from ship governance. '
-        'They\'ve barricaded themselves in the aft section, demanding the right '
-        'to establish their own settlement upon landing. They control 15%% of '
-        'the ship\'s food reserves and a backup navigation array.',
+    narrative: l10n.event_separatistMovement_narrative,
     choices: [
       EventChoice(
-        text: 'Grant regional autonomy within a federal framework',
-        outcome:
-            'The separatists accept a deal: their own district with local '
-            'governance, under a loose federal umbrella. The precedent of '
-            'fragmentation worries some, but peace is maintained.',
+        text: l10n.event_separatistMovement_choice0,
+        outcome: l10n.event_separatistMovement_outcome0,
         shipEffects: {'culture': 0.03},
         authorityDelta: -0.10,
         economyDelta: -0.05,
       ),
       EventChoice(
-        text: 'Storm the barricades and force reunification',
-        outcome:
-            'Security teams breach the aft section. The separatists resist '
-            'fiercely. Order is restored, but at terrible cost. The ship is '
-            'united in body, if not in spirit.',
+        text: l10n.event_separatistMovement_choice1,
+        outcome: l10n.event_separatistMovement_outcome1,
         shipEffects: {'hull': -0.03},
         colonistDelta: -25,
         authorityDelta: 0.15,
         militaryDelta: 0.05,
       ),
       EventChoice(
-        text: 'Address the root grievances driving the movement',
-        outcome:
-            'Mediators work to understand what pushed the faction away. '
-            'Reforms in resource distribution and representation slowly bring '
-            'the separatists back into the fold. Healing takes time.',
+        text: l10n.event_separatistMovement_choice2,
+        outcome: l10n.event_separatistMovement_outcome2,
         shipEffects: {'culture': 0.05},
         cultureDelta: 0.10,
         economyDelta: 0.05,
@@ -4082,39 +3960,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'war_council',
-    title: 'War Council',
-    narrative:
-        'With potential threats detected in nearby systems, the ship\'s '
-        'leadership convenes a war council. The question: how much of the '
-        'colony\'s limited resources should be devoted to military preparedness '
-        'versus civilian infrastructure?',
+    title: l10n.event_warCouncil_title,
+    narrative: l10n.event_warCouncil_narrative,
     choices: [
       EventChoice(
-        text: 'Full armament: forge weapons and train soldiers',
-        outcome:
-            'Workshops are retooled for weapons production. Every able-bodied '
-            'colonist receives combat training. The ship bristles with arms, '
-            'but the budget for farming equipment shrinks.',
+        text: l10n.event_warCouncil_choice0,
+        outcome: l10n.event_warCouncil_outcome0,
         shipEffects: {'shields': 0.05},
         militaryDelta: 0.15,
         economyDelta: -0.05,
       ),
       EventChoice(
-        text: 'Disarmament: melt weapons into tools',
-        outcome:
-            'The armory is emptied and its contents recycled into construction '
-            'materials. The colony will build with plowshares, not swords. '
-            'Pacifists rejoice; realists worry about what lurks in the dark.',
+        text: l10n.event_warCouncil_choice1,
+        outcome: l10n.event_warCouncil_outcome1,
         shipEffects: {'constructors': 0.05},
         militaryDelta: -0.10,
         cultureDelta: 0.05,
       ),
       EventChoice(
-        text: 'Defensive posture only: shields and walls, not swords',
-        outcome:
-            'Resources go to fortifications, shields, and early warning systems. '
-            'No offensive weapons are produced. A balanced approach that keeps '
-            'options open without provoking potential neighbors.',
+        text: l10n.event_warCouncil_choice2,
+        outcome: l10n.event_warCouncil_outcome2,
         shipEffects: {'shields': 0.03},
         militaryDelta: 0.05,
         authorityDelta: 0.05,
@@ -4124,39 +3989,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'trade_federation',
-    title: 'Trade Federation',
-    narrative:
-        'As the colony approaches viability, factions debate how to structure '
-        'its economy. The question goes beyond mere survival — it will define '
-        'the kind of society that takes root on alien soil. Merchants, '
-        'communalists, and bureaucrats all make their case.',
+    title: l10n.event_tradeFederation_title,
+    narrative: l10n.event_tradeFederation_narrative,
     choices: [
       EventChoice(
-        text: 'Establish free trade zones with minimal regulation',
-        outcome:
-            'Markets spring up in every habitat module. Innovation flourishes '
-            'as traders compete. Wealth inequality grows, but so does the '
-            'total pool of resources available to the colony.',
+        text: l10n.event_tradeFederation_choice0,
+        outcome: l10n.event_tradeFederation_outcome0,
         shipEffects: {'tech': 0.03},
         economyDelta: 0.15,
         authorityDelta: -0.05,
       ),
       EventChoice(
-        text: 'Implement communal sharing of all resources',
-        outcome:
-            'Private property is abolished. Everything belongs to everyone. '
-            'No one goes hungry, but no one has incentive to produce more '
-            'than the minimum. Mediocrity is comfortable.',
+        text: l10n.event_tradeFederation_choice1,
+        outcome: l10n.event_tradeFederation_outcome1,
         shipEffects: {'culture': 0.05},
         economyDelta: -0.15,
         cultureDelta: 0.05,
       ),
       EventChoice(
-        text: 'Create a state-managed trade system',
-        outcome:
-            'The government controls all trade, setting prices and allocating '
-            'resources. The system is fair but inflexible. Black markets '
-            'emerge in the maintenance corridors.',
+        text: l10n.event_tradeFederation_choice2,
+        outcome: l10n.event_tradeFederation_outcome2,
         shipEffects: {'nav': 0.02},
         economyDelta: 0.05,
         authorityDelta: 0.10,
@@ -4166,39 +4018,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'faith_vs_science',
-    title: 'Faith vs. Science',
-    narrative:
-        'The ship\'s telescope has captured images of a cosmic phenomenon '
-        'that directly contradicts the central tenet of the dominant faith '
-        'movement. The head scientist wants to publish the findings; the '
-        'religious leader insists they will tear the community apart.',
+    title: l10n.event_faithVsScience_title,
+    narrative: l10n.event_faithVsScience_narrative,
     choices: [
       EventChoice(
-        text: 'Publish the scientific findings in full',
-        outcome:
-            'Truth prevails over comfort. The data is released and the '
-            'religious movement fractures. Some believers adapt their faith; '
-            'others lose it entirely. Knowledge advances.',
+        text: l10n.event_faithVsScience_choice0,
+        outcome: l10n.event_faithVsScience_outcome0,
         shipEffects: {'tech': 0.03},
         faithDelta: -0.10,
         cultureDelta: 0.05,
       ),
       EventChoice(
-        text: 'Suppress the findings to preserve social harmony',
-        outcome:
-            'The data is classified. The religious community remains stable, '
-            'but the science team is demoralized. Truth deferred is not truth '
-            'denied, but it feels like it.',
+        text: l10n.event_faithVsScience_choice1,
+        outcome: l10n.event_faithVsScience_outcome1,
         shipEffects: {'culture': 0.03},
         faithDelta: 0.10,
         cultureDelta: -0.05,
       ),
       EventChoice(
-        text: 'Convene a joint panel to find harmony between both views',
-        outcome:
-            'Scientists and theologians work together to reinterpret the '
-            'findings. A new synthesis emerges that expands both understanding '
-            'and faith. Not everyone is convinced, but the dialogue is healthy.',
+        text: l10n.event_faithVsScience_choice2,
+        outcome: l10n.event_faithVsScience_outcome2,
         shipEffects: {'tech': 0.03, 'culture': 0.03},
         faithDelta: 0.05,
         cultureDelta: 0.05,
@@ -4208,39 +4047,26 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'surveillance_state',
-    title: 'Surveillance State',
-    narrative:
-        'After a series of sabotage incidents, the security chief proposes '
-        'installing monitoring systems in every compartment of the ship. '
-        'Cameras, microphones, and biometric scanners would track every '
-        'colonist\'s movements. Privacy advocates are horrified.',
+    title: l10n.event_surveillanceState_title,
+    narrative: l10n.event_surveillanceState_narrative,
     choices: [
       EventChoice(
-        text: 'Reject the surveillance proposal entirely',
-        outcome:
-            'Privacy is preserved. The saboteur remains at large, but the '
-            'colonists sleep easier knowing they aren\'t watched. Investigation '
-            'continues through traditional means.',
+        text: l10n.event_surveillanceState_choice0,
+        outcome: l10n.event_surveillanceState_outcome0,
         shipEffects: {'culture': 0.05},
         authorityDelta: -0.10,
         cultureDelta: 0.05,
       ),
       EventChoice(
-        text: 'Implement full surveillance across the ship',
-        outcome:
-            'Every corner of the ship is monitored. The saboteur is caught '
-            'within days. But the cameras remain, and the security chief shows '
-            'no interest in turning them off. Ever.',
+        text: l10n.event_surveillanceState_choice1,
+        outcome: l10n.event_surveillanceState_outcome1,
         shipEffects: {'tech': 0.03},
         authorityDelta: 0.15,
         militaryDelta: 0.05,
       ),
       EventChoice(
-        text: 'Install limited monitoring in critical areas only',
-        outcome:
-            'Cameras cover the engine room, armory, and bridge. Living quarters '
-            'remain private. The saboteur is eventually identified through '
-            'pattern analysis. A measured response.',
+        text: l10n.event_surveillanceState_choice2,
+        outcome: l10n.event_surveillanceState_outcome2,
         shipEffects: {'tech': 0.02},
         authorityDelta: 0.05,
         militaryDelta: 0.03,
@@ -4250,43 +4076,29 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
 
   GameEvent(
     id: 'native_alliance',
-    title: 'Native Alliance',
+    title: l10n.event_nativeAlliance_title,
     category: EventCategory.rare,
-    narrative:
-        'The native civilization has proposed a formal treaty. Their ambassador '
-        'arrives via shuttle, an elegant being who speaks through a translator '
-        'device of astonishing sophistication. They offer three forms of '
-        'relationship, each with different implications for the colony\'s future.',
+    narrative: l10n.event_nativeAlliance_narrative,
     choices: [
       EventChoice(
-        text: 'Sign an equal alliance treaty',
-        outcome:
-            'The treaty establishes mutual defense, shared research, and equal '
-            'territorial rights. Both civilizations will grow together. The '
-            'natives share agricultural knowledge that transforms your colony '
-            'prospects.',
+        text: l10n.event_nativeAlliance_choice0,
+        outcome: l10n.event_nativeAlliance_outcome0,
         shipEffects: {'culture': 0.08},
         planetModifiers: {'nativeDisposition': 0.15, 'biodiversity': 0.05},
         cultureDelta: 0.10,
         militaryDelta: -0.05,
       ),
       EventChoice(
-        text: 'Negotiate from a position of colonial dominance',
-        outcome:
-            'You leverage your advanced technology to secure favorable terms. '
-            'The natives cede territory and resources. They sign with trembling '
-            'hands. History has seen this before, and it rarely ends well.',
+        text: l10n.event_nativeAlliance_choice1,
+        outcome: l10n.event_nativeAlliance_outcome1,
         shipEffects: {'tech': 0.03},
         planetModifiers: {'nativeDisposition': -0.10, 'resources': 0.08},
         militaryDelta: 0.10,
         authorityDelta: 0.10,
       ),
       EventChoice(
-        text: 'Establish a trade partnership focused on mutual benefit',
-        outcome:
-            'Commerce bridges the gap between species. Native materials flow '
-            'to your workshops; your technology improves their medicine. '
-            'Friendship grows from mutual profit.',
+        text: l10n.event_nativeAlliance_choice2,
+        outcome: l10n.event_nativeAlliance_outcome2,
         shipEffects: {'tech': 0.03},
         planetModifiers: {'nativeDisposition': 0.05, 'resources': 0.05},
         economyDelta: 0.10,

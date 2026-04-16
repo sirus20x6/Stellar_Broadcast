@@ -74,7 +74,11 @@ dependencies {
     // Configure mediation groups in AdMob console to activate these.
     implementation("com.google.ads.mediation:applovin:13.1.0.0")
     implementation("com.google.ads.mediation:unity:4.17.0.0")
-    implementation("com.google.ads.mediation:facebook:6.20.0.2")
+    // Unity Ads SDK must be declared explicitly — as of adapter 4.6.x+ it is
+    // no longer pulled transitively. Without this line, the adapter receives
+    // bid requests but has no SDK to render ads, silently 0-filling.
+    implementation("com.unity3d.ads:unity-ads:4.17.0")
+    implementation("com.google.ads.mediation:facebook:6.21.0.2")
 }
 
 flutter {

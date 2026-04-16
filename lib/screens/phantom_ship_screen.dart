@@ -12,14 +12,15 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFF76FF03);
 const _kGlitch = Color(0xFFFF4081);
 const _kEcho = Color(0xFFB2FF59);
 const _kLeftWindowColor = Color(0xFF76FF03);
-const _kRightWindowColor = Color(0xFF00E5FF);
+const _kRightWindowColor = SpaceColors.cyan;
 
 class PhantomShipScreen extends ConsumerStatefulWidget {
   const PhantomShipScreen({super.key, required this.event});
@@ -31,18 +32,13 @@ class PhantomShipScreen extends ConsumerStatefulWidget {
 }
 
 class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+    with TickerProviderStateMixin, EventTypewriterMixin<PhantomShipScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _phaseController;
   late final AnimationController _glitchController;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedWindow;
@@ -53,18 +49,14 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _phaseController = AnimationController(
       vsync: this,
@@ -76,39 +68,9 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
       duration: const Duration(milliseconds: 500),
     )..repeat();
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int index) {
@@ -123,7 +85,11 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
       _resolved = true;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -132,8 +98,7 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _phaseController.dispose();
     _glitchController.dispose();
@@ -154,84 +119,29 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'TEMPORAL ECHO',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(24),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 2,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kGlitch.withValues(alpha: _titleGlowAnim.value * 0.3),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'TEMPORAL ECHO',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    letterSpacing: 2,
+    secondaryGlowColor: _kGlitch,
+    secondaryGlowAlphaScale: 0.3,
+  );
 
-  Widget _buildNarrativeCard() {
-    final event = widget.event;
-    if (!_resolved && event.narrative.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          _displayedText,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    if (_resolved && _selectedWindow != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: (_isPositiveOutcome ? Colors.green : Colors.red)
-              .withValues(alpha: 0.1),
-          border: Border.all(
-            color: (_isPositiveOutcome ? Colors.green : Colors.red)
-                .withValues(alpha: 0.4),
-          ),
-        ),
-        child: Text(
-          event.choices[_selectedWindow!].outcome,
-          style: TextStyle(
-            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildNarrativeCard() => EventNarrativeCard(
+    accentColor: _kAccent,
+    displayText: displayedText,
+    outcomeText: (_resolved && _selectedWindow != null)
+        ? widget.event.choices[_selectedWindow!].outcome
+        : null,
+    outcomeIsPositive: _isPositiveOutcome,
+  );
 
   Widget _buildVisualArea() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _resolved
               ? null
               : (details) => _handleTap(details, constraints),
@@ -252,53 +162,15 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text(
-        'TAP TO SKIP',
-        style: TextStyle(
-          color: _kAccent.withValues(alpha: 0.5),
-          fontSize: 12,
-          letterSpacing: 2,
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -306,37 +178,30 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -348,22 +213,22 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          Expanded(child: _buildVisualArea()),
-          if (!_typewriterDone) const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved || !_typewriterDone) ...[
-            const SizedBox(height: 12),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 12),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                Expanded(child: _buildVisualArea()),
+                if (!typewriterDone) const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved || !typewriterDone) ...[
+                  const SizedBox(height: 12),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -416,14 +281,14 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) {
-      _skipTypewriter();
+    if (!typewriterDone) {
+      skipTypewriter();
       return;
     }
     final size = Size(constraints.maxWidth, constraints.maxHeight);
@@ -455,54 +320,66 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
       final isPositive = entry.value > 0;
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: isPositive,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: isPositive,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
@@ -787,17 +664,14 @@ class _PhantomShipPainter extends CustomPainter {
   }
 
   /// Jagged diagonal fracture lines across the canvas.
-  void _drawFractureLines(
-    Canvas canvas,
-    Size size,
-    double glitchIntensity,
-  ) {
+  void _drawFractureLines(Canvas canvas, Size size, double glitchIntensity) {
     const lineCount = 4;
     final fracturePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8
-      ..color = _kGlitch
-          .withValues(alpha: (0.15 + 0.25 * glitchIntensity).clamp(0.0, 1.0));
+      ..color = _kGlitch.withValues(
+        alpha: (0.15 + 0.25 * glitchIntensity).clamp(0.0, 1.0),
+      );
 
     // Fixed seed so lines stay stable; vary only the alpha with glitch.
     final rng = Random(99);
@@ -887,8 +761,9 @@ class _PhantomShipPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color =
-            const Color(0xFF050510).withValues(alpha: isDimmed ? 0.3 : 0.80),
+        ..color = const Color(
+          0xFF050510,
+        ).withValues(alpha: isDimmed ? 0.3 : 0.80),
     );
 
     // Rim.
@@ -934,10 +809,7 @@ class _PhantomShipPainter extends CustomPainter {
 
     textPainter.paint(
       canvas,
-      Offset(
-        center.dx - textPainter.width / 2,
-        center.dy + radius + 8,
-      ),
+      Offset(center.dx - textPainter.width / 2, center.dy + radius + 8),
     );
   }
 

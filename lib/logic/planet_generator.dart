@@ -501,9 +501,9 @@ class PlanetGenerator {
     return RingSystem(type: type, density: density, tiltDegrees: tilt);
   }
 
-  /// Skewed distribution with high variance but low mean (~0.28).
+  /// Skewed distribution with high variance but low mean (~0.33).
   /// Uses min of 2 uniform samples to skew toward 0, preserving spread.
-  /// Min(U,U) has mean 1/3; × 0.84 ≈ 0.28.
+  /// Min(U,U) has mean 1/3.
   static double _betaApprox(Random r) {
     final a = r.nextDouble();
     final b = r.nextDouble();

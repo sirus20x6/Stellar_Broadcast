@@ -9,9 +9,6 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => 'ステラー・ブロードキャスト';
-
-  @override
   String get ui_title_stellar => 'STELLAR';
 
   @override
@@ -37,6 +34,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => '航海開始';
+
+  @override
+  String get ui_title_seedInvalid => '無効なシードコードです。 A ～ Z と 0 ～ 9 のみを使用してください。';
 
   @override
   String ui_voyage_sector(int count) {
@@ -184,6 +184,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ui_scan_statRadiation => '放射線';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'プローブ: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return '不確実性: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => '惑星分析';
 
   @override
@@ -280,21 +290,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ui_landing_statLandingSys => '着陸系統';
 
   @override
-  String get ui_landingSequence_phase1 => 'フェーズ1: 軌道離脱確定';
-
-  @override
-  String get ui_landingSequence_phase1Desc => '降下ウィンドウ開放。突入を開始する。';
-
-  @override
-  String get ui_landingSequence_phase2 => 'フェーズ2: 大気圏突入';
-
-  @override
-  String get ui_landingSequence_title => '着陸シーケンス';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'コロニー報告を見る';
-
-  @override
   String get ui_ending_colonyEstablished => 'コロニー設立';
 
   @override
@@ -320,6 +315,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => '友達に挑戦';
+
+  @override
+  String get ui_ending_shareCard => 'カードをシェアする';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'あなたの航海を共有しましょう';
+
+  @override
+  String get ui_ending_shareCardShare => '共有';
+
+  @override
+  String get ui_ending_shareCardCancel => 'キャンセル';
 
   @override
   String get ui_ending_copySeed => 'シードをコピー';
@@ -453,6 +460,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'システムのデフォルト';
+
+  @override
+  String get ui_settings_statsPosition => '統計とボタンの位置';
+
+  @override
+  String get ui_settings_statsLeft => '左';
+
+  @override
+  String get ui_settings_statsRight => '右';
 
   @override
   String get ui_legacy_title => '遺産ハブ';
@@ -753,6 +769,36 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => '薬用植物';
+
+  @override
+  String get planet_featurePerpetualAurora => 'パーペチュアル オーロラ';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => '化石化したメガフローラ';
+
+  @override
+  String get planet_featureUndergroundRivers => '地下河川';
+
+  @override
+  String get planet_featureObsidianPlains => '黒曜石平原';
+
+  @override
+  String get planet_featureSaltFlats => 'ソルトフラッツ';
+
+  @override
+  String get planet_featureCarnivorousFlora => '肉食植物';
+
+  @override
+  String get planet_featureGhostCities => 'ゴーストシティ';
+
+  @override
+  String get planet_featureArchiveVaults => 'アーカイブ保管庫';
+
+  @override
+  String get planet_featureSinkholeFields => 'シンクホールフィールド';
+
+  @override
+  String get planet_featureApexPredator => 'アペックス・プレデター';
 
   @override
   String get ui_monthJan => '1月';
@@ -3957,18 +4003,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => '大気';
 
   @override
-  String get ending_scoreLabel_gravity => '重力';
-
-  @override
-  String get ending_scoreLabel_temperature => '温度';
-
-  @override
-  String get ending_scoreLabel_water => '水源';
-
-  @override
-  String get ending_scoreLabel_resources => '資源';
-
-  @override
   String get ending_scoreLabel_nativeRelations => '先住民関係';
 
   @override
@@ -4076,19 +4110,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ending_governmentTribalCouncil => '部族評議会';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => '神権政治';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => '軍事政権';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => '企業寡頭制';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'ファシスト国家';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'コミューン';
 
   @override
   String get ending_cultureRenaissance => 'ルネサンス';
@@ -4142,10 +4176,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ending_nativesConflict => '衝突';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'アライアンス';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => '征服';
 
   @override
   String get ending_landscapeGravityHigh => '重い重力がすべてのものに圧し掛かる。';
@@ -4176,66 +4210,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ending_landscapeAtmoLow => '大気圧が危険なほど低い——密閉された居住区が不可欠だ。';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      '鉱物の筋が輝く金属質の月が夜空を支配し、その表面が星光を反射して景色を照らしている。';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      '砕けた月が頭上に迫り、崩壊する表面がかすかな破片の環を引いている——下界を脅かす爆撃の絶えざる警告だ。';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      '淡い不毛の月が地平線の上に昇り、クレーターだらけの表面がコロニーの静かな番人となっている。';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      '惑星は高速で自転し、一日がわずか数時間しかない。コリオリの風が背の高いものすべてを叩きつける。';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      '惑星は苦悶するほど遅く回る。太陽に面した半球は焼け、暗い側は凍り、その間の薄明帯だけが安息の地となる。';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      '火山帯が地平線を分断し、その斜面を溶岩の川が流れる。空気は硫黄の味がし、大地は足元で震える。';
-
-  @override
-  String get ending_landscapeTectonic =>
-      '地殻は亀裂だらけで落ち着きがない——新たな裂け目が予告なく開き、塵の雲の中にきらめく鉱脈が露出する。';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      '稲妻が連続的なシート状に空を走り、夜を昼に変え、オゾンの刺激臭で大気を満たす。';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      '発光する胞子の雲があらゆる風に漂う——美しく致命的。入植者が屋外で生きるには密閉された居住区かフィルターマスクが必要だ。';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      '惑星はほぼ海洋で、広大で暗い水がすべての地平線まで広がり、わずかな群島だけが海面を破っている。';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      '地熱噴出孔が地殻を突き破り、鉱物に富んだ蒸気の柱を噴き上げ、周囲の景観を暖めて生命のオアシスを支えている。';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      '強力な磁場が惑星を包み、恒星放射線を偏向させるが、非遮蔽の電子機器には大混乱を引き起こす。コンパスは無用だ。';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      '強い磁場がなく、恒星風が上層大気を削り取る。壮麗なオーロラがすべての緯度で空を流れ落ちる。';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      '巨大な生物が大地を闊歩する——建物ほどの大きさのものもあり、その足音は数キロメートル先でも感じられる。';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      '生態系が共生の連鎖網として機能している——すべての生物が隣人に依存し、支え合う優美で脆い均衡。';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4282,27 +4256,27 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return '神権評議会は$planetNameを導き、空白の中で入植者を支えた信仰から知恵を引き出します。';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return '$planetName は軍事指揮構造によって統治されており、宇宙で彼らを救った規律が今では彼らの文明を定義しています。';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return '資源管理者のコンソーシアムが $planetName を主導しており、彼らの経済的洞察力は生き残るために不可欠であることが証明されています。';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return '独裁政権が$planetNameを鉄拳で統制し、新世界での秩序のために市民の自由が犠牲になっています。';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return '$planetName の人々は集合的に自らを統治し、リソースと決定をすべての入植者間で平等に共有します。';
   }
 
   @override
@@ -4341,10 +4315,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       '軌道が崩壊しつつある不安定な月がコロニーに破片の雨を降らせ、周期的な隕石爆撃でインフラを破壊し、かけがえのない技術を失わせた。';
-
-  @override
-  String get ending_moonBarren =>
-      '不毛な月が異星の空に浮かび、入植者に長い夜に見上げる馴染みの光景以外の何も提供しない、荒涼とした伴星だった。';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4431,12 +4401,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return '正式な同盟は入植者と$planetNameの先住民文明を結びつけ、彼らの知識を組み合わせることで、どちらかが単独で達成できるものよりも優れたものを構築します。';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return '$planetName の原住民は植民地支配下で暮らしており、入植者が独自の命令を課すため文化は抑圧されています。';
   }
 
   @override
@@ -4474,26 +4444,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => '衛星';
-
-  @override
-  String get ui_rings => '環';
-
-  @override
   String get ui_landing_landOnMoon => '衛星に着陸';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return '衛星: $moonPercent% vs 惑星: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => '低重力 — 着陸容易';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$typeリングシステム';
-  }
 
   @override
   String get moon_barren => '不毛';
@@ -4521,55 +4472,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ring_metallic => '金属';
-
-  @override
-  String get ending_landscapeMoonSingle => 'コロニーの空にひとつの月が静かに懸かっている。';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$countつの衛星が頭上を巡り、移ろう影を大地に落としている。';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'その中に居住可能な世界がひとつ——緑に輝く宝石が第二のフロンティアを差し招いている。';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      '凍てつく衛星が広大な氷の鉱床を抱えて輝き、汲み上げられる日を待つ貯水庫のようだった。';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      '凍結衛星から採取された氷がコロニーの水資源を補い、不毛の世界を生存可能な地へと変えた。';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'コロニーは惑星そのものではなく、最も有望な衛星に築かれた——より小さく、重力が穏やかで、より大きな希望を秘めた世界だった。';
-
-  @override
-  String get ending_landscapeRingDust => '淡い塵の環が空を横切り、あらゆる夜明けに幻想的な美を添えている。';
-
-  @override
-  String get ending_landscapeRingIce => '壮麗な氷の環が星光を捉え、虹色の炎で天空を彩っている。';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      '密集した岩石の環が惑星を取り巻き、ゆっくりと内側へ降り注ぐ建材の源となっている。';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      '金属の環が頭上に煌めき、コロニーの産業を支える豊かな鉱石を湛えている。';
-
-  @override
-  String get ending_moonHabitableNote => '居住可能な衛星が植民の第二の機会を提供している。';
-
-  @override
-  String get ending_moonIceHarvestNote => '凍結衛星から採取された氷がコロニーの水資源を補っている。';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'コロニーは$countつの衛星の下で息づいている。';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'AIの独白';
@@ -5059,6 +4961,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'タップしてスキップ';
+
+  @override
+  String get ui_common_tapRingToChoose => 'リングをタップして選択してください';
+
+  @override
+  String get ui_common_tapToContinue => 'タップして続行';
+
+  @override
+  String get ui_tooltip_back => '戻る';
+
+  @override
+  String get ui_tooltip_codex => 'コーデックス';
+
+  @override
+  String get ui_tooltip_settings => '設定';
+
+  @override
+  String get ui_tooltip_leaderboards => 'リーダーボード';
+
+  @override
+  String get ui_tooltip_bugReport => 'バグを報告する';
+
+  @override
   String get event_pulsarLighthouse_title => 'パルサーの灯台';
 
   @override
@@ -5078,6 +5004,13 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'パルサーから大きく距離を取り、安全な軌道を維持するために余分な燃料を消費した。乗組員はフィルター越しの窓からビームの掃引を見守った——美しいが、遠い。';
+
+  @override
+  String get event_pulsarLighthouse_choice2 => '掃討軍が到着する前に撤退せよ';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      '次のビームが通過する前に緊急燃焼で振り払います。パルサーの信号は私たちの背後で消えていきます。データは得られず、被害も受けず、回避推力にわずかな燃料が費やされました。';
 
   @override
   String get event_alienNursery_title => '異星の育児室';
@@ -5162,4 +5095,424 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       '実験的な抗真菌剤は最初こそ期待を見せたが、耐性株が突破した。全面浄化に踏み切った時には、疫病はクライオポッドの栄養ラインにまで広がっていた。被害は最初から断固として行動していた場合よりもひどいものだった。';
+
+  @override
+  String get event_constitutionalConvention_title => '憲法制定会議';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      '植民地船の住民は正式な統治がなければ落ち着きのない増加を続けています。各デッキの代表者が貨物倉に集まり、将来の植民地をどのように統治するかを定義する憲章を起草します。 3 つの派閥が新政府に対して競合するビジョンを提示します。';
+
+  @override
+  String get event_constitutionalConvention_choice0 => '普通選挙を伴う民主憲章の草案を作成する';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      '入植者たちは平等な代表を保障する憲法を批准する。意思決定は遅くなりますが、あらゆる声が聞こえるにつれて士気は高まります。';
+
+  @override
+  String get event_constitutionalConvention_choice1 => '緊急権限を備えた強力な経営陣を確立する';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      '一人のリーダーが全権を持って任命されます。決定は迅速に下されるが、反対派は下層デッキで圧政のささやきを囁いている。';
+
+  @override
+  String get event_constitutionalConvention_choice2 => '専門家によるテクノクラート評議会を結成する';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'エンジニア、科学者、医師が専門知識に基づいて統治評議会を形成します。効率は向上しますが、権力から疎外されていると感じる人もいます。';
+
+  @override
+  String get event_militaryCoupThreat_title => '軍事クーデターの脅威';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      '同船の保安部隊のバスケス司令官は武器庫を占拠し、緊急軍事権限を与えるか、さもなければすべての甲板を封鎖するという最後通告を発した。状況は不安定であり、入植者はあなたの反応を待っています。';
+
+  @override
+  String get event_militaryCoupThreat_choice0 => '忠実な乗組員とともにクーデターに抵抗しましょう';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      '忠実な乗組員がバスケスに反対するために結集する。対立は最小限の流血で終わったが、警備体制は弱まり、一部の入植者が銃撃戦に巻き込まれた。';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => '指揮官の要求に従う';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'バスケス氏が船舶運航の指揮を執る。秩序は速やかに回復しますが、その代償として市民の自由が犠牲になります。現在、武装パトロールがあらゆる廊下を歩いています。';
+
+  @override
+  String get event_militaryCoupThreat_choice2 => '限定的な緊急権限をサンセット条項で交渉する';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      '緊迫した交渉の末、バスケスは監督付きの一時的な権限を受け入れる。誰も完全に満足させることはできないが、暴力を防ぐという脆弱な妥協案。';
+
+  @override
+  String get event_religiousAwakening_title => '発心';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'カリスマ的な説教師が何百人もの入植者を新たな信仰運動に引き込んだ。彼らはサイクルごとに観察ドームに集まり、彼らの賛美歌が換気シャフトに響き渡ります。乗組員の中には狂信を心配する人もいます。教えに真の慰めを感じる人もいます。';
+
+  @override
+  String get event_religiousAwakening_choice0 => '信仰運動を受け入れ、リソースを提供する';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'この運動は公的支援を受けて盛んになります。信者たちの士気は向上し、彼らの共同体精神は船全体の社会的絆を強化します。';
+
+  @override
+  String get event_religiousAwakening_choice1 => '船内で厳格な世俗主義を強制する';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      '宗教的な集会は私的な空間に限定されています。この運動は地下に潜り、憤りを生んでいるが、科学的合理主義が依然として公式の教義である。';
+
+  @override
+  String get event_religiousAwakening_choice2 => '礼拝は許可するが、その影響は規制する';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      '信仰は許可されていますが、統治とは切り離されています。指揮官と連絡を取るために牧師が任命される。不安定なバランスが保たれている。';
+
+  @override
+  String get event_corporateTakeover_title => '企業乗っ取り';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      '船の資源管理者たちは、食料の分配、水のリサイクル、電力の割り当てに対する管理を密かに強化してきた。彼らは現在、将来の植民地の経済を管理する企業構造に自らの権限を形式化することを提案している。';
+
+  @override
+  String get event_corporateTakeover_choice0 => '自由市場原理に基づいて資源を管理できるようにする';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      '企業派閥がリソース管理を引き継ぎます。効率は劇的に向上しますが、価格は上昇し、最も貧しい入植者は基本的な必需品を買うのに苦労しています。';
+
+  @override
+  String get event_corporateTakeover_choice1 => '集団所有の下ですべての資源を国有化する';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      '資源は押収され、共同体の管理下に置かれます。企業派閥は解体されたが、利益インセンティブがなければイノベーションは停滞する。';
+
+  @override
+  String get event_corporateTakeover_choice2 => 'セーフティネットを備えた規制市場の導入';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      '価格統制と福利厚生制度により混合経済が確立されている。どちらの派閥も完全に満足しているわけではありませんが、基本的なニーズは満たされ、ある程度の事業は許可されています。';
+
+  @override
+  String get event_successionCrisis_title => '後継者危機';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      '船長は眠っている間に亡くなり、後継者は指名されていない。すぐに 3 つの派閥が主導権を争うことになります。文民評議会は選挙を要求し、治安長官は軍権限を主張し、長老の入植者は伝統的なリーダーシップの儀式を発動します。';
+
+  @override
+  String get event_successionCrisis_choice0 => '緊急選挙をやれよ';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      '混沌としながらも活気に満ちた選挙により、人気投票によって選ばれた新しいキャプテンが誕生します。このプロセスは厄介だが、入植者たちは自分たちのリーダーシップに当事者意識があると感じている。';
+
+  @override
+  String get event_successionCrisis_choice1 => '軍に指揮を任せましょう';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      '保安責任者が船長席に足を踏み入れる。規律はすぐに回復されるが、民間乗組員は不安が募る様子で武装警備員を見つめている。';
+
+  @override
+  String get event_successionCrisis_choice2 => '長老会議を招集する';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      '最年長で最も経験豊富な入植者が統治評議会を形成します。彼らの知恵が船を導いていますが、若い乗組員の中には高齢者社会によって疎外されていると感じている人もいます。';
+
+  @override
+  String get event_nativeSovereignty_title => 'ネイティブ主権';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      '長距離スキャンにより、対象の惑星に知的生命体が存在することが確認されます。傍受された通信により、あなたの接近を検知した高度な文明が明らかになります。彼らは正式な要求を送信します。領土主権を認めるか、到着時に抵抗に直面するかです。';
+
+  @override
+  String get event_nativeSovereignty_choice0 => '先住民の主権を認め、定住の許可を求める';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'あなたは先住民の権利の正式な承認を伝達します。反応は慎重だが前向きだ。将来の関係は、相互尊重の基礎の上に始まるでしょうが、着陸地点は限られているかもしれません。';
+
+  @override
+  String get event_nativeSovereignty_choice1 => '植民地の優位性を主張し、抵抗に備える';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'あなたは関係なく和解する意向をブロードキャストします。乗組員は武器の訓練と要塞の計画を開始します。原住民は沈黙するが、それはどういうわけか脅しよりも恐ろしいことである。';
+
+  @override
+  String get event_nativeSovereignty_choice2 => '地球の共有統治を提案する';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      '共存とリソース共有のためのフレームワークを提供します。原住民たちは興味をそそられますが、警戒しています。交渉は複雑になるだろうが、和平の可能性は存在する。';
+
+  @override
+  String get event_laborStrike_title => '労働ストライキ';
+
+  @override
+  String get event_laborStrike_narrative =>
+      '技術乗組員は勤務の短縮、食料配給の改善、航行決定への発言権を求めて仕事を辞めた。重要なシステムは自動バックアップで実行されていますが、それは長くは続きません。残りの入植者たちは緊張しながら見守っています。';
+
+  @override
+  String get event_laborStrike_choice0 => '労働者の要求に徹底的に応える';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'ストライキは直ちに終了します。労働者は改善された状態でポストに戻ります。シフトの短縮により生産性は若干低下しますが、忠誠心は揺るぎません。';
+
+  @override
+  String get event_laborStrike_choice1 => 'ストライキを鎮圧し、強制労働を強制する';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      '治安部隊は銃を突きつけながら労働者たちを駐屯地まで護送する。エンジンは再び唸りを上げるが、下層甲板では憎悪がくすぶる。数人の労働者が宿舎に閉じ込められている。';
+
+  @override
+  String get event_laborStrike_choice2 => '主要な要求に対して部分的な妥協を提案する';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      '長時間にわたる交渉の末、配給の改善とアドバイスの提供という合意が成立しますが、シフトの長さは短縮されません。どちらの側も興奮していませんが、エンジンは動き続けます。';
+
+  @override
+  String get event_censorshipDebate_title => '検閲に関する議論';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      '漏洩した文書により、故障した船のシステムの本当の状態が明らかになりました。パニックが下層甲板に広がる。通信担当官は、さらなる不安を防ぐために情報へのアクセスを制限することを提案している。自由権擁護団体は激怒している。';
+
+  @override
+  String get event_censorshipDebate_choice0 => 'すべての情報への無料アクセスを保証';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      '完全な透明性が確立されています。入植者たちが現在理解している問題の解決に協力するために結集するにつれて、最初のパニックは沈静化します。一部の情報は不安を引き起こすものもありますが、リーダーシップへの信頼は高まります。';
+
+  @override
+  String get event_censorshipDebate_choice1 => '徹底した情報管理の実施';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'すべての通信がコマンドによってフィルタリングされるようになりました。パニックは止まり、不気味な静けさに変わります。しかし、噂は検閲された真実によって空いた穴を埋めるものであり、多くの場合、現実よりも悪いものになります。';
+
+  @override
+  String get event_censorshipDebate_choice2 => 'セキュリティ上の機密情報のみをフィルタリングする';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      '分類システムが確立されています。ほとんどの情報は自由に流れますが、軍事および重要なシステム データはクリアランスが必要です。ほぼ満足できる実行可能な中間点。';
+
+  @override
+  String get event_colonialCharter_title => '植民地憲章';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      '惑星崩壊が近づく中、入植者たちは新しい社会のための基本的な法律を起草しなければなりません。 3 つの哲学的陣営が出現し、それぞれが植民地がどうなるかについて異なるビジョンを擁護しています。議論は白熱しており、非常に個人的なものです。';
+
+  @override
+  String get event_colonialCharter_choice0 => '個人の権利を強調する進歩的な憲章';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'この憲章は個人の自由、平等、社会的流動性を謳っています。芸術家や思想家が祝う。伝統主義者は、チェックされない自由は混乱を招くと警告しています。';
+
+  @override
+  String get event_colonialCharter_choice1 => '地球の伝統を守る保守的な憲章';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'この憲章は、伝統的な価値観、家族構成、宗教的遵守を成文化したものです。多くの人は慣れ親しんだ習慣に安らぎを感じています。旧世界の考え方の重みに息苦しさを感じている人もいます。';
+
+  @override
+  String get event_colonialCharter_choice2 => '生存と成長に重点を置いた実用的な憲章';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'この憲章は資源管理、技術教育、経済発展を優先しています。それは詩に欠けていますが、植民地が効率的でよく組織されることを保証します。';
+
+  @override
+  String get event_separatistMovement_title => '分離主義運動';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      '入植者の一派が船舶の統治からの独立を宣言した。彼らは後部にバリケードを築き、着陸時に独自の居住地を確立する権利を要求した。彼らは船の食糧備蓄の 15% とバックアップ航行アレイを管理しています。';
+
+  @override
+  String get event_separatistMovement_choice0 => '連邦の枠組み内で地域自治を認める';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      '分離主義者たちは、緩い連邦の傘の下で、地方自治を伴う独自の地区という協定を受け入れた。断片化の前例を懸念する人もいるが、平和は維持されている。';
+
+  @override
+  String get event_separatistMovement_choice1 => 'バリケードを襲撃し、統一を強制する';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      '警備チームが後部セクションに侵入します。分離主義者たちは激しく抵抗する。秩序は回復しますが、多大な犠牲が伴います。船は精神的にはそうではないにしても、体は一つになっています。';
+
+  @override
+  String get event_separatistMovement_choice2 => '運動を推進する根本的な不満に対処する';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      '調停者は何が派閥を遠ざけたのか理解しようと努めている。資源の分配と代表の改革により、分離主義者はゆっくりと勢力の中に戻ってきます。治癒には時間がかかります。';
+
+  @override
+  String get event_warCouncil_title => '戦争評議会';
+
+  @override
+  String get event_warCouncil_narrative =>
+      '近くの星系で潜在的な脅威が検出されたため、船の指導部は軍評議会を招集します。問題は、植民地の限られた資源のうち、軍事的備えと民間のインフラにどれだけを充てるべきかということです。';
+
+  @override
+  String get event_warCouncil_choice0 => '完全武装: 武器を鍛造し、兵士を訓練する';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'ワークショップは武器生産用に改造されます。健常な入植者は全員戦闘訓練を受けます。船には武器が溢れていますが、農機具の予算は減ります。';
+
+  @override
+  String get event_warCouncil_choice1 => '武装解除: 武器をツールに溶かす';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      '武器庫は空になり、その中身は建設資材としてリサイクルされます。コロニーは剣ではなく鋤の刃を使って建設されます。平和主義者は喜ぶ。現実主義者は暗闇に何が潜んでいるかを心配します。';
+
+  @override
+  String get event_warCouncil_choice2 => '防御姿勢のみ: 剣ではなく盾と壁';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'リソースは要塞、盾、早期警戒システムに使われます。攻撃的な武器は生産されません。潜在的な隣人を刺激することなく、選択肢を開いたままにするバランスの取れたアプローチ。';
+
+  @override
+  String get event_tradeFederation_title => '通商連合';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      '植民地が存続可能に近づくにつれて、派閥はその経済をどのように構築するかについて議論します。この問題は、単なる生存を超えたものであり、異国の地に根付く社会の種類を定義することになります。商人、共産主義者、官僚たちは皆、自分たちの主張を主張します。';
+
+  @override
+  String get event_tradeFederation_choice0 => '最小限の規制で自由貿易地域を確立する';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'マーケットはすべての生息地モジュールに出現します。トレーダーが競争するにつれてイノベーションが栄えます。富の不平等は拡大しますが、植民地が利用できる資源の総量も拡大します。';
+
+  @override
+  String get event_tradeFederation_choice1 => 'すべてのリソースの共同共有を実装する';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      '私有財産は廃止される。すべてはみんなのものです。飢える人はいませんが、最低限以上のものを生産する動機を持っている人はいません。平凡は心地よい。';
+
+  @override
+  String get event_tradeFederation_choice2 => '国家管理貿易システムを創設する';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      '政府はすべての貿易を管理し、価格を設定し、資源を割り当てます。このシステムは公平ですが、柔軟性がありません。闇市場はメンテナンス通路に出現します。';
+
+  @override
+  String get event_faithVsScience_title => '信仰 vs. 科学';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      '船の望遠鏡は、支配的な信仰運動の中心的な教義に真っ向から反する宇宙現象の画像を捉えた。主任研究員は研究結果を発表したいと考えています。宗教指導者は共同体を引き裂くと主張する。';
+
+  @override
+  String get event_faithVsScience_choice0 => '科学的発見を完全に公開する';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      '真実は快適さよりも優先されます。データが公開され、宗教運動は分裂する。信者の中には自分の信仰を適応させる人もいます。他の人は完全にそれを失います。知識は進歩します。';
+
+  @override
+  String get event_faithVsScience_choice1 => '社会の調和を保つために調査結果を隠蔽する';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'データは機密扱いとなります。宗教界は安定を保っているが、科学チームは意気消沈している。真実の延期は真実の否定ではありませんが、そのように感じられます。';
+
+  @override
+  String get event_faithVsScience_choice2 => '双方の意見の調和を図るために共同委員会を招集する';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      '科学者と神学者は協力して発見を再解釈します。理解と信仰の両方を拡大する新しい統合が現れます。誰もが納得しているわけではありませんが、対話は健全です。';
+
+  @override
+  String get event_surveillanceState_title => '監視状態';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      '一連の妨害行為の後、保安責任者は船のすべてのコンパートメントに監視システムを設置することを提案します。カメラ、マイク、生体認証スキャナーがすべての入植者の動きを追跡します。プライバシー擁護派は恐怖を感じている。';
+
+  @override
+  String get event_surveillanceState_choice0 => '監視提案を完全に拒否する';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'プライバシーは保たれます。破壊工作員は依然として逃走中だが、入植者たちは監視されていないと知って眠りやすくなる。捜査は従来の手段で続けられる。';
+
+  @override
+  String get event_surveillanceState_choice1 => '船全体に完全な監視を実装する';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      '船の隅々まで監視されています。妨害者は数日以内に逮捕される。しかし、カメラは設置されたままで、警備責任者はカメラをオフにすることに関心を示しません。これまで。';
+
+  @override
+  String get event_surveillanceState_choice2 => '重要なエリアにのみ限定的な監視を設置する';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'カメラは機関室、武器庫、艦橋を監視します。居住区はプライベートのままです。最終的に妨害者はパターン分析によって特定されます。測定された応答。';
+
+  @override
+  String get event_nativeAlliance_title => 'ネイティブアライアンス';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      '先住民文明は正式な条約を提案しました。彼らの大使はシャトルで到着し、驚くほど洗練された翻訳機を通して話すエレガントな存在です。これらは 3 つの関係形式を提供し、それぞれがコロニーの将来に異なる意味を持ちます。';
+
+  @override
+  String get event_nativeAlliance_choice0 => '対等同盟条約に署名する';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'この条約は、相互防衛、共同研究、平等な領土権を確立します。両方の文明は共に成長します。先住民は、植民地の見通しを変える農業の知識を共有します。';
+
+  @override
+  String get event_nativeAlliance_choice1 => '植民地支配の立場から交渉する';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      '高度なテクノロジーを活用して有利な条件を確保します。原住民は領土と資源を譲渡します。彼らは震える手でサインをします。歴史上これまでにもこのような事態は見られましたが、良い結末を迎えることはめったにありません。';
+
+  @override
+  String get event_nativeAlliance_choice2 => '相互利益を重視した貿易パートナーシップを確立する';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      '商業は種間の溝を埋めます。ネイティブの材料がワークショップに流れ込みます。あなたのテクノロジーが彼らの医療を改善します。友情は相互の利益から生まれます。';
 }

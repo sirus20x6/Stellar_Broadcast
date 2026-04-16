@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kAccent = Color(0xFF00E5FF);
-const _kBgColor = Color(0xFF0B1426);
+const _kAccent = SpaceColors.cyan;
+const _kBgColor = SpaceColors.deepSpace;
 
 /// Modal dialog letting the player upgrade one scanner subsystem.
 class ScannerUpgradeDialog extends StatelessWidget {

@@ -1,13 +1,21 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:path_provider/path_provider.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:stellar_broadcast/logic/ending_calculator.dart';
+import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/voyage_log_entry.dart';
+import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, legacyProvider, seedToCode;
 import 'package:stellar_broadcast/services/leaderboard_api.dart';
@@ -18,18 +26,30 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/widgets/share_run_card.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 
-/// Format an integer with comma separators (e.g. 85200 -> "85,200").
-String _formatScore(int score) {
-  return score.toString().replaceAllMapped(
-    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-    (m) => '${m[1]},',
+/// Locale-aware integer formatter cache. NumberFormat instances are
+/// expensive to construct, so we cache one per locale tag and reuse it across
+/// the score tween (which calls _formatScore on every frame).
+final Map<String, intl.NumberFormat> _scoreFormatters = {};
+
+intl.NumberFormat _formatterFor(BuildContext context) {
+  final tag = Localizations.localeOf(context).toLanguageTag();
+  return _scoreFormatters.putIfAbsent(
+    tag,
+    () => intl.NumberFormat.decimalPattern(tag),
   );
 }
+
+/// Format an integer with locale-appropriate grouping separators
+/// (e.g. en: 85,200 / de: 85.200 / fr: 85 200 / hi: 85,200).
+String _formatScore(BuildContext context, int score) =>
+    _formatterFor(context).format(score);
 
 Map<String, String> _achievementNames(BuildContext context) => {
   'first_landing': context.l10n.ui_ending_achievementFirstLanding,
@@ -54,8 +74,6 @@ class EndingScreen extends ConsumerStatefulWidget {
 
 class _EndingScreenState extends ConsumerState<EndingScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _starController;
-
   // Phase controllers — staggered reveal.
   late final AnimationController _phase1Controller; // "COLONY ESTABLISHED"
   late final AnimationController _phase2Controller; // Score count-up
@@ -67,8 +85,11 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   late final Animation<double> _glowExpand;
   late final Animation<double> _glowOpacity;
 
-  // Score count animation.
-  late final Animation<int> _scoreCount;
+  // Score count animation. Not `final` because it's initialized with a
+  // placeholder (AlwaysStoppedAnimation(0)) before the score is calculated,
+  // then replaced with the real IntTween once [EndingCalculator.calculate]
+  // returns. Deferring the calc keeps the first frame unblocked.
+  late Animation<int> _scoreCount;
   int _finalScore = 0;
   String _tier = '';
   String _epilogue = '';
@@ -93,15 +114,11 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
 
   bool _hasCalculated = false;
 
-  @override
-  void initState() {
-    super.initState();
-
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-  }
+  /// Anchors the off-stage [RepaintBoundary] inside the share-card modal so
+  /// `_captureAndShareCard` can find the render object after the sheet has
+  /// laid out. Lives on the parent so the GlobalKey isn't recreated when
+  /// the sheet rebuilds.
+  final GlobalKey _shareCardKey = GlobalKey();
 
   @override
   void didChangeDependencies() {
@@ -109,7 +126,6 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     if (_hasCalculated) return;
     _hasCalculated = true;
 
-    // Calculate ending results.
     final voyage = ref.read(voyageProvider);
     final planet = voyage.currentPlanet;
     if (planet == null) {
@@ -120,6 +136,53 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       });
       return;
     }
+
+    // Initialize phase controllers synchronously (cheap construction)
+    // so build() can reference them immediately. _scoreCount starts as
+    // a placeholder and is replaced with the real IntTween once the
+    // scoring calculation finishes.
+    _phase1Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _glowExpand = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _phase1Controller, curve: Curves.easeOutCubic),
+    );
+    _glowOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _phase1Controller,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      ),
+    );
+    _phase2Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2500),
+    );
+    _scoreCount = const AlwaysStoppedAnimation(0);
+    _phase3Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _phase4Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _phase5Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    // Defer the heavy scoring math + legacy/leaderboard/analytics work to
+    // after the first frame paints. EndingCalculator.calculate() iterates
+    // over ~50 feature interactions and is 30–50 ms on low-end devices;
+    // running it synchronously would stutter the screen transition.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _computeResultsAndStartSequence(voyage, planet);
+    });
+  }
+
+  void _computeResultsAndStartSequence(VoyageState voyage, Planet planet) {
     final result = EndingCalculator.calculate(
       voyage.ship,
       planet,
@@ -130,28 +193,34 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       landedOnMoon: voyage.landedOnMoon,
       voyage: voyage,
     );
-    _finalScore = result.score;
-    _tier = result.tier;
-    _epilogue = result.epilogue;
-    _legacyPoints = (result.score / 8000).ceil();
-    _governmentType = result.governmentType;
-    _cultureLevel = result.cultureLevel;
-    _technologyLevel = result.technologyLevel;
-    _constructionLevel = result.constructionLevel;
-    _nativeRelations = result.nativeRelationsLabel;
-    _colonyDescription = result.colonyDescription;
-    _landscapeDescription = result.landscapeDescription;
-    _planetName = result.colonyName;
-    _breakdown = result.breakdown;
-    _planetsSkipped = voyage.planetsSkipped;
-    _totalDamageTaken = voyage.totalDamageTaken;
-    _fuelConsumed = voyage.fuelConsumed;
-    _energyConsumed = voyage.energyConsumed;
-    _scannersUpgraded = voyage.scannersUpgraded;
-    _planetsScanned = voyage.planetsScanned;
-    _voyageSeed = voyage.seed;
 
-    // Defer legacy updates to avoid modifying provider state during build.
+    setState(() {
+      _finalScore = result.score;
+      _tier = result.tier;
+      _epilogue = result.epilogue;
+      _legacyPoints = (result.score / 8000).ceil();
+      _governmentType = result.governmentType;
+      _cultureLevel = result.cultureLevel;
+      _technologyLevel = result.technologyLevel;
+      _constructionLevel = result.constructionLevel;
+      _nativeRelations = result.nativeRelationsLabel;
+      _colonyDescription = result.colonyDescription;
+      _landscapeDescription = result.landscapeDescription;
+      _planetName = result.colonyName;
+      _breakdown = result.breakdown;
+      _planetsSkipped = voyage.planetsSkipped;
+      _totalDamageTaken = voyage.totalDamageTaken;
+      _fuelConsumed = voyage.fuelConsumed;
+      _energyConsumed = voyage.energyConsumed;
+      _scannersUpgraded = voyage.scannersUpgraded;
+      _planetsScanned = voyage.planetsScanned;
+      _voyageSeed = voyage.seed;
+      // Swap the placeholder tween for one that animates to the real score.
+      _scoreCount = IntTween(begin: 0, end: _finalScore).animate(
+        CurvedAnimation(parent: _phase2Controller, curve: Curves.easeOutCubic),
+      );
+    });
+
     final planetName = planet.name;
     final voyageSeed = voyage.seed;
     final voyageIsDaily = voyage.isDaily;
@@ -175,7 +244,6 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     final voyageKeyEvents = List<String>.from(voyage.seenEventIds);
     final voyageLandedOnMoon = voyage.landedOnMoon;
 
-    // Capture planet details for the log.
     final planetFeatures = List<String>.from(planet.surfaceFeatures);
     final planetMoons = planet.moons.map((m) => m.type.name).toList();
     final planetRingType = planet.rings?.type.name;
@@ -191,166 +259,133 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     final voyageFaithAxis = voyage.faithAxis;
     final voyageMilitaryAxis = voyage.militaryAxis;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final legacyNotifier = ref.read(legacyProvider.notifier);
-      legacyNotifier.addVoyageResult(
-        VoyageLogEntry(
-          planetName: planetName,
-          tier: resultTier,
-          score: resultScore,
-          seed: voyageSeed,
-          encounterCount: voyageEncounters,
-          colonistsLanded: voyageColonists,
-          planetsScanned: voyagePlanetsScanned,
-          planetsSkipped: voyagePlanetsSkipped,
-          fuelConsumed: voyageFuelConsumed,
-          energyConsumed: voyageEnergyConsumed,
-          totalDamageTaken: voyageDamageTaken,
-          keyEvents: voyageKeyEvents,
-          timestamp: DateTime.now().millisecondsSinceEpoch,
-          isDaily: voyageIsDaily,
-          surfaceFeatures: planetFeatures,
-          moonTypes: planetMoons,
-          ringType: planetRingType,
-          nativeDescription: planetNativeDesc,
-          governmentType: resultGovernment,
-          cultureLevel: resultCulture,
-          technologyLevel: resultTech,
-          nativeRelations: resultNativeRelations,
-          landscapeDescription: resultLandscape,
-          landedOnMoon: voyageLandedOnMoon,
-        ),
-        isDaily: voyageIsDaily,
-      );
-      legacyNotifier.recordDiscoveries(discoveries);
-      final newAch = legacyNotifier.checkAchievements(
+    final legacyNotifier = ref.read(legacyProvider.notifier);
+    // Batch voyage log + discoveries + achievements into a single atomic
+    // persist so a crash mid-update can't leave the legacy state partially
+    // committed (e.g. score recorded but achievements not unlocked).
+    final newAch = legacyNotifier.finalizeVoyage(
+      entry: VoyageLogEntry(
+        planetName: planetName,
+        tier: resultTier,
         score: resultScore,
-        voyage: voyage,
-      );
-      if (mounted && newAch.isNotEmpty) {
-        setState(() => _newAchievements = newAch);
-      }
-
-      // Submit to Play Games leaderboards.
-      PlayGamesService.submitScore(resultScore,
-        androidId: AppConstants.kLeaderboardBestScoreAndroid,
-        iosId: AppConstants.kLeaderboardBestScoreIos,
-      );
-      if (voyageIsDaily) {
-        PlayGamesService.submitScore(resultScore,
-          androidId: AppConstants.kLeaderboardDailyAndroid,
-          iosId: AppConstants.kLeaderboardDailyIos,
-        );
-      }
-      PlayGamesService.submitScore(voyageEncounters,
-        androidId: AppConstants.kLeaderboardEncountersAndroid,
-        iosId: AppConstants.kLeaderboardEncountersIos,
-      );
-
-      // Submit to self-hosted leaderboard.
-      final cmdName = PlayGamesService.playerName ?? 'Commander';
-      final seedCode = voyageSeed > 0
-          ? voyageSeed.toRadixString(36).toUpperCase()
-          : null;
-      LeaderboardApi.submitScore(
-        player: cmdName, score: resultScore, board: 'best', seed: seedCode,
-      );
-      if (voyageIsDaily) {
-        LeaderboardApi.submitScore(
-          player: cmdName, score: resultScore, board: 'daily', seed: seedCode,
-        );
-      }
-      LeaderboardApi.submitScore(
-        player: cmdName, score: voyageEncounters, board: 'encounters', seed: seedCode,
-      );
-
-      // Analytics: voyage completion + achievements
-      AnalyticsService().logEvent(
-        name: QaEvents.voyageEnded,
-        parameters: {
-          'score': resultScore,
-          'tier': resultTier,
-          'planets_scanned': voyagePlanetsScanned,
-          'planets_skipped': voyagePlanetsSkipped,
-          'encounters': voyageEncounters,
-          'colonists': voyageColonists,
-          'fuel_consumed': voyageFuelConsumed,
-          'is_daily': voyageIsDaily,
-          'seed': voyageSeed,
-        },
-      );
-      AnalyticsService().logEvent(
-        name: QaEvents.leaderboardSubmitted,
-        parameters: {'board': 'best', 'score': resultScore},
-      );
-      for (final ach in newAch) {
-        AnalyticsService().logEvent(
-          name: QaEvents.achievementUnlocked,
-          parameters: {'achievement_id': ach},
-        );
-      }
-      AnalyticsService().logEvent(
-        name: 'governance_result',
-        parameters: {
-          'government_type': resultGovernment,
-          'authority_axis': voyageAuthorityAxis,
-          'culture_axis': voyageCultureAxis,
-          'economy_axis': voyageEconomyAxis,
-          'faith_axis': voyageFaithAxis,
-          'military_axis': voyageMilitaryAxis,
-        },
-      );
-    });
-
-    // Phase 1: Colony established text + expanding glow.
-    _phase1Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    );
-    _glowExpand = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _phase1Controller, curve: Curves.easeOutCubic),
-    );
-    _glowOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _phase1Controller,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+        seed: voyageSeed,
+        encounterCount: voyageEncounters,
+        colonistsLanded: voyageColonists,
+        planetsScanned: voyagePlanetsScanned,
+        planetsSkipped: voyagePlanetsSkipped,
+        fuelConsumed: voyageFuelConsumed,
+        energyConsumed: voyageEnergyConsumed,
+        totalDamageTaken: voyageDamageTaken,
+        keyEvents: voyageKeyEvents,
+        timestamp: DateTime.now().millisecondsSinceEpoch,
+        isDaily: voyageIsDaily,
+        surfaceFeatures: planetFeatures,
+        moonTypes: planetMoons,
+        ringType: planetRingType,
+        nativeDescription: planetNativeDesc,
+        governmentType: resultGovernment,
+        cultureLevel: resultCulture,
+        technologyLevel: resultTech,
+        nativeRelations: resultNativeRelations,
+        landscapeDescription: resultLandscape,
+        landedOnMoon: voyageLandedOnMoon,
       ),
+      discoveries: discoveries,
+      score: resultScore,
+      voyage: voyage,
+      isDaily: voyageIsDaily,
+    );
+    if (mounted && newAch.isNotEmpty) {
+      setState(() => _newAchievements = newAch);
+    }
+
+    // Submit to Play Games leaderboards.
+    PlayGamesService.submitScore(
+      resultScore,
+      androidId: AppConstants.kLeaderboardBestScoreAndroid,
+      iosId: AppConstants.kLeaderboardBestScoreIos,
+    );
+    if (voyageIsDaily) {
+      PlayGamesService.submitScore(
+        resultScore,
+        androidId: AppConstants.kLeaderboardDailyAndroid,
+        iosId: AppConstants.kLeaderboardDailyIos,
+      );
+    }
+    PlayGamesService.submitScore(
+      voyageEncounters,
+      androidId: AppConstants.kLeaderboardEncountersAndroid,
+      iosId: AppConstants.kLeaderboardEncountersIos,
     );
 
-    // Phase 2: Score counting.
-    // Use longer duration for 100K-scale scores so the count-up feels dramatic
-    // but doesn't try to render every integer. At 60fps over 2.5s, Flutter
-    // naturally skips values (showing ~150 distinct numbers).
-    _phase2Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2500),
+    // Submit to self-hosted leaderboard.
+    final cmdName = PlayGamesService.playerName ?? 'Commander';
+    final seedCode = voyageSeed > 0
+        ? voyageSeed.toRadixString(36).toUpperCase()
+        : null;
+    LeaderboardApi.submitScore(
+      player: cmdName,
+      score: resultScore,
+      board: 'best',
+      seed: seedCode,
     );
-    _scoreCount = IntTween(begin: 0, end: _finalScore).animate(
-      CurvedAnimation(parent: _phase2Controller, curve: Curves.easeOutCubic),
+    if (voyageIsDaily) {
+      LeaderboardApi.submitScore(
+        player: cmdName,
+        score: resultScore,
+        board: 'daily',
+        seed: seedCode,
+      );
+    }
+    LeaderboardApi.submitScore(
+      player: cmdName,
+      score: voyageEncounters,
+      board: 'encounters',
+      seed: seedCode,
     );
 
-    // Phase 3: Tier badge.
-    _phase3Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
+    // Analytics: voyage completion + achievements
+    AnalyticsService().logEvent(
+      name: QaEvents.voyageEnded,
+      parameters: {
+        'score': resultScore,
+        'tier': resultTier,
+        'planets_scanned': voyagePlanetsScanned,
+        'planets_skipped': voyagePlanetsSkipped,
+        'encounters': voyageEncounters,
+        'colonists': voyageColonists,
+        'fuel_consumed': voyageFuelConsumed,
+        'is_daily': voyageIsDaily,
+        'seed': voyageSeed,
+      },
     );
-
-    // Phase 4: Epilogue.
-    _phase4Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
+    AnalyticsService().logEvent(
+      name: QaEvents.leaderboardSubmitted,
+      parameters: {'board': 'best', 'score': resultScore},
     );
-
-    // Phase 5: Legacy points.
-    _phase5Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
+    for (final ach in newAch) {
+      AnalyticsService().logEvent(
+        name: QaEvents.achievementUnlocked,
+        parameters: {'achievement_id': ach},
+      );
+    }
+    AnalyticsService().logEvent(
+      name: 'governance_result',
+      parameters: {
+        'government_type': resultGovernment,
+        'authority_axis': voyageAuthorityAxis,
+        'culture_axis': voyageCultureAxis,
+        'economy_axis': voyageEconomyAxis,
+        'faith_axis': voyageFaithAxis,
+        'military_axis': voyageMilitaryAxis,
+      },
     );
 
     _startPhaseSequence();
 
     // Stop engine hum, crossfade to background music for ending.
     GameMusic().stopEngineHum();
+    GameSfx().stopAllLongAudio();
     GameMusic().returnToBgMusic();
 
     // Play success SFX based on score tier.
@@ -424,7 +459,6 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
 
   @override
   void dispose() {
-    _starController.dispose();
     _phase1Controller.dispose();
     _phase2Controller.dispose();
     _phase3Controller.dispose();
@@ -479,47 +513,37 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     return PopScope(
       canPop: false,
       child: Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => Semantics(
-                  label: 'Animated star field background',
-                  excludeSemantics: true,
-                  child: CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 100,
-                      midStarCount: 40,
-                      nearStarCount: 15,
-                    ),
-                  ),
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 100,
+              midStarCount: 40,
+              nearStarCount: 15,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: SingleChildScrollView(
+                child: ResponsiveContent(
+                  child: _buildContent(context, screen, tierColor),
                 ),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
-              child: ResponsiveContent(
-                child: _buildContent(context, screen, tierColor),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
   /// Builds the score + tier display (left side in landscape).
-  Widget _buildScoreAndTier(BuildContext context, ScreenInfo screen, Color tierColor) {
+  Widget _buildScoreAndTier(
+    BuildContext context,
+    ScreenInfo screen,
+    Color tierColor,
+  ) {
     return Column(
       children: [
         // Phase 1: "COLONY ESTABLISHED" with expanding glow.
@@ -547,9 +571,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   child: Icon(
                     Icons.public,
                     size: 80 + _glowExpand.value * 20,
-                    color: _kAccent.withValues(
-                      alpha: _glowOpacity.value,
-                    ),
+                    color: _kAccent.withValues(alpha: _glowOpacity.value),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -559,9 +581,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   style: TextStyle(
                     fontSize: screen.scaledFontSize(28),
                     fontWeight: FontWeight.bold,
-                    color: Colors.white.withValues(
-                      alpha: _glowOpacity.value,
-                    ),
+                    color: Colors.white.withValues(alpha: _glowOpacity.value),
                     letterSpacing: 4,
                     shadows: [
                       Shadow(
@@ -600,7 +620,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _formatScore(_scoreCount.value),
+                    _formatScore(context, _scoreCount.value),
                     style: TextStyle(
                       fontSize: screen.scaledFontSize(64),
                       fontWeight: FontWeight.bold,
@@ -667,24 +687,18 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
 
         const SizedBox(height: 12),
 
-        AnimatedBuilder(
-          animation: _phase3Controller,
-          builder: (_, __) {
-            final opacity = _phase3Controller.value.clamp(0.0, 1.0);
-            return Opacity(
-              opacity: opacity,
-              child: Text(
-                _tierSubtitle(_tier),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: tierColor.withValues(alpha: 0.8),
-                  fontSize: 13,
-                  letterSpacing: 2.2,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            );
-          },
+        FadeTransition(
+          opacity: _phase3Controller,
+          child: Text(
+            _tierSubtitle(_tier),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: tierColor.withValues(alpha: 0.8),
+              fontSize: 13,
+              letterSpacing: 2.2,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
 
         const SizedBox(height: 40),
@@ -713,9 +727,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                         _kAccent.withValues(alpha: 0.1),
                       ],
                     ),
-                    border: Border.all(
-                      color: _kAccent.withValues(alpha: 0.5),
-                    ),
+                    border: Border.all(color: _kAccent.withValues(alpha: 0.5)),
                     boxShadow: [
                       BoxShadow(
                         color: _kAccent.withValues(alpha: 0.2),
@@ -726,15 +738,11 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.auto_awesome,
-                        color: _kAccent,
-                        size: 24,
-                      ),
+                      const Icon(Icons.auto_awesome, color: _kAccent, size: 24),
                       const SizedBox(width: 12),
                       Flexible(
                         child: Text(
-                          'LEGACY POINTS EARNED: +${_formatScore(_legacyPoints)}',
+                          'LEGACY POINTS EARNED: +${_formatScore(context, _legacyPoints)}',
                           style: const TextStyle(
                             color: _kAccent,
                             fontSize: 16,
@@ -753,68 +761,64 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
 
         // Newly unlocked achievements.
         if (_newAchievements.isNotEmpty)
-          AnimatedBuilder(
-            animation: _phase5Controller,
-            builder: (_, __) {
-              final opacity = _phase5Controller.value.clamp(0.0, 1.0);
-              return Opacity(
-                opacity: opacity,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: const Color(0xFFFFD700).withValues(alpha: 0.4),
-                      ),
-                      color: const Color(0xFFFFD700).withValues(alpha: 0.08),
-                    ),
-                    child: Column(
+          FadeTransition(
+            opacity: _phase5Controller,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xFFFFD700).withValues(alpha: 0.4),
+                  ),
+                  color: const Color(0xFFFFD700).withValues(alpha: 0.08),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.emoji_events,
-                              color: Color(0xFFFFD700),
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              context.l10n.ui_ending_achievementsUnlocked,
-                              style: TextStyle(
-                                color: const Color(0xFFFFD700).withValues(alpha: 0.9),
-                                fontSize: 13,
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
+                        const Icon(
+                          Icons.emoji_events,
+                          color: Color(0xFFFFD700),
+                          size: 20,
                         ),
-                        const SizedBox(height: 12),
-                        ..._newAchievements.map((id) {
-                          final names = _achievementNames(context);
-                          final name = names[id] ?? id;
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(
-                              name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          );
-                        }),
+                        const SizedBox(width: 8),
+                        Text(
+                          context.l10n.ui_ending_achievementsUnlocked,
+                          style: TextStyle(
+                            color: const Color(
+                              0xFFFFD700,
+                            ).withValues(alpha: 0.9),
+                            fontSize: 13,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    ..._newAchievements.map((id) {
+                      final names = _achievementNames(context);
+                      final name = names[id] ?? id;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
-              );
-            },
+              ),
+            ),
           ),
       ],
     );
@@ -839,9 +843,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _kAccent.withValues(alpha: 0.2),
-                    ),
+                    border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
                     color: _kBgColor.withValues(alpha: 0.85),
                   ),
                   child: Text(
@@ -863,12 +865,67 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         const SizedBox(height: 24),
 
         // Colony details.
-        AnimatedBuilder(
-          animation: _phase4Controller,
-          builder: (_, __) {
-            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-            return Opacity(
-              opacity: opacity,
+        FadeTransition(
+          opacity: _phase4Controller,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
+              color: _kBgColor.withValues(alpha: 0.85),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  context.l10n.ui_ending_colonyProfile,
+                  style: TextStyle(
+                    color: _kAccent.withValues(alpha: 0.7),
+                    fontSize: 12,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _ColonyDetailRow(
+                  label: 'Government',
+                  value: _governmentType,
+                ),
+                _ColonyDetailRow(label: 'Culture', value: _cultureLevel),
+                _ColonyDetailRow(
+                  label: 'Technology',
+                  value: _technologyLevel,
+                ),
+                _ColonyDetailRow(
+                  label: 'Construction',
+                  value: _constructionLevel,
+                ),
+                if (_nativeRelations != 'None')
+                  _ColonyDetailRow(
+                    label: 'Natives',
+                    value: _nativeRelations,
+                  ),
+                const SizedBox(height: 12),
+                Text(
+                  _colonyDescription,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6),
+                    fontSize: 12,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Landscape description.
+        if (_landscapeDescription.isNotEmpty)
+          FadeTransition(
+            opacity: _phase4Controller,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -882,7 +939,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                 child: Column(
                   children: [
                     Text(
-                      context.l10n.ui_ending_colonyProfile,
+                      context.l10n.ui_ending_landscape,
                       style: TextStyle(
                         color: _kAccent.withValues(alpha: 0.7),
                         fontSize: 12,
@@ -890,16 +947,9 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    _ColonyDetailRow(label: 'Government', value: _governmentType),
-                    _ColonyDetailRow(label: 'Culture', value: _cultureLevel),
-                    _ColonyDetailRow(label: 'Technology', value: _technologyLevel),
-                    _ColonyDetailRow(label: 'Construction', value: _constructionLevel),
-                    if (_nativeRelations != 'None')
-                      _ColonyDetailRow(label: 'Natives', value: _nativeRelations),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
                     Text(
-                      _colonyDescription,
+                      _landscapeDescription,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
@@ -910,269 +960,304 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   ],
                 ),
               ),
-            );
-          },
-        ),
-
-        // Landscape description.
-        if (_landscapeDescription.isNotEmpty)
-          AnimatedBuilder(
-            animation: _phase4Controller,
-            builder: (_, __) {
-              final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-              return Opacity(
-                opacity: opacity,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _kAccent.withValues(alpha: 0.2),
-                      ),
-                      color: _kBgColor.withValues(alpha: 0.85),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          context.l10n.ui_ending_landscape,
-                          style: TextStyle(
-                            color: _kAccent.withValues(alpha: 0.7),
-                            fontSize: 12,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          _landscapeDescription,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.6),
-                            fontSize: 12,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            ),
           ),
 
         const SizedBox(height: 16),
 
         // Voyage record card.
-        AnimatedBuilder(
-          animation: _phase4Controller,
-          builder: (_, __) {
-            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-            return Opacity(
-              opacity: opacity,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _kAccent.withValues(alpha: 0.2),
+        FadeTransition(
+          opacity: _phase4Controller,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
+              color: _kBgColor.withValues(alpha: 0.85),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  context.l10n.ui_ending_voyageRecord,
+                  style: TextStyle(
+                    color: _kAccent.withValues(alpha: 0.7),
+                    fontSize: 12,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.w600,
                   ),
-                  color: _kBgColor.withValues(alpha: 0.85),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      context.l10n.ui_ending_voyageRecord,
-                      style: TextStyle(
-                        color: _kAccent.withValues(alpha: 0.7),
-                        fontSize: 12,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _ColonyDetailRow(label: 'Planets Scanned', value: '$_planetsScanned'),
-                    _ColonyDetailRow(label: 'Planets Skipped', value: '$_planetsSkipped'),
-                    _ColonyDetailRow(
-                      label: 'Damage Taken',
-                      value: '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
-                    ),
-                    _ColonyDetailRow(label: 'Fuel Consumed', value: '$_fuelConsumed'),
-                    _ColonyDetailRow(label: 'Energy Consumed', value: '$_energyConsumed'),
-                    _ColonyDetailRow(label: 'Scanners Upgraded', value: '$_scannersUpgraded'),
-                  ],
+                const SizedBox(height: 12),
+                _ColonyDetailRow(
+                  label: 'Planets Scanned',
+                  value: '$_planetsScanned',
                 ),
-              ),
-            );
-          },
+                _ColonyDetailRow(
+                  label: 'Planets Skipped',
+                  value: '$_planetsSkipped',
+                ),
+                _ColonyDetailRow(
+                  label: 'Damage Taken',
+                  value: '${(_totalDamageTaken * 100).toStringAsFixed(1)}%',
+                ),
+                _ColonyDetailRow(
+                  label: 'Fuel Consumed',
+                  value: '$_fuelConsumed',
+                ),
+                _ColonyDetailRow(
+                  label: 'Energy Consumed',
+                  value: '$_energyConsumed',
+                ),
+                _ColonyDetailRow(
+                  label: 'Scanners Upgraded',
+                  value: '$_scannersUpgraded',
+                ),
+              ],
+            ),
+          ),
         ),
 
         const SizedBox(height: 24),
 
         // Score breakdown.
         if (_breakdown != null)
-          AnimatedBuilder(
-            animation: _phase4Controller,
-            builder: (_, __) {
-              final opacity = _phase4Controller.value.clamp(0.0, 1.0);
-              return Opacity(
-                opacity: opacity,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: _kAccent.withValues(alpha: 0.2),
+          FadeTransition(
+            opacity: _phase4Controller,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
+                color: _kBgColor.withValues(alpha: 0.85),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    context.l10n.ui_ending_scoreBreakdown,
+                    style: TextStyle(
+                      color: _kAccent.withValues(alpha: 0.7),
+                      fontSize: 12,
+                      letterSpacing: 2,
+                      fontWeight: FontWeight.w600,
                     ),
-                    color: _kBgColor.withValues(alpha: 0.85),
                   ),
-                  child: Column(
+                  const SizedBox(height: 12),
+                  ..._breakdown!
+                      .localizedEntries(context.l10n)
+                      .map(
+                        (entry) =>
+                            _ScoreRow(label: entry.key, score: entry.value),
+                      ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 1,
+                    color: _kAccent.withValues(alpha: 0.2),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        context.l10n.ui_ending_scoreBreakdown,
+                        context.l10n.ui_ending_total,
                         style: TextStyle(
-                          color: _kAccent.withValues(alpha: 0.7),
-                          fontSize: 12,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.w600,
+                          fontFamily: 'monospace',
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: _kAccent.withValues(alpha: 0.9),
+                          letterSpacing: 1,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      ..._breakdown!.localizedEntries(context.l10n).map(
-                        (entry) => _ScoreRow(
-                          label: entry.key,
-                          score: entry.value,
+                      Text(
+                        '${_breakdown!.total.round()}',
+                        style: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        height: 1,
-                        color: _kAccent.withValues(alpha: 0.2),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.l10n.ui_ending_total,
-                            style: TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _kAccent.withValues(alpha: 0.9),
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          Text(
-                            '${_breakdown!.total.round()}',
-                            style: const TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
-                ),
-              );
-            },
+                ],
+              ),
+            ),
           ),
       ],
     );
   }
 
+  /// Opens the share-card preview sheet. The sheet hosts a fixed-size
+  /// [ShareRunCard] inside a [RepaintBoundary] keyed to [_shareCardKey];
+  /// once the user confirms, [_captureAndShareCard] turns it into a PNG.
+  Future<void> _showShareCardSheet(BuildContext context) async {
+    final cardData = ShareRunCardData(
+      score: _finalScore,
+      tier: _tier,
+      tierColor: _tierColor(_tier),
+      planetName: _planetName,
+      governmentType: _governmentType,
+      colonists: ref.read(voyageProvider).colonists,
+      planetsScanned: _planetsScanned,
+      seedCode: seedToCode(_voyageSeed),
+    );
+    GameSfx().play(GameSfx.buttonClick);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: SpaceColors.deepSpace,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        side: BorderSide(color: SpaceColors.cyan, width: 1.5),
+      ),
+      builder: (sheetContext) => _ShareCardSheet(
+        cardData: cardData,
+        cardKey: _shareCardKey,
+        onShare: () => _captureAndShareCard(sheetContext, cardData),
+      ),
+    );
+  }
+
+  /// Renders the share card to a PNG via [RenderRepaintBoundary.toImage] and
+  /// hands it to `share_plus`. Falls back to the existing text share if any
+  /// step fails — the user always gets *something* even if capture breaks.
+  Future<void> _captureAndShareCard(
+    BuildContext sheetContext,
+    ShareRunCardData data,
+  ) async {
+    final shareText = _buildShareText(data);
+    try {
+      final boundary = _shareCardKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary == null) {
+        throw StateError('share card boundary not laid out');
+      }
+      final image = await boundary.toImage(pixelRatio: 2.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        throw StateError('failed to encode share card png');
+      }
+      final bytes = byteData.buffer.asUint8List();
+      final tempDir = await getTemporaryDirectory();
+      final file = File(
+        '${tempDir.path}/stellar_broadcast_run_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await file.writeAsBytes(bytes);
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'image/png')],
+        text: shareText,
+      );
+    } catch (_) {
+      await Share.share(shareText);
+    }
+    if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+  }
+
+  String _buildShareText(ShareRunCardData data) =>
+      '🚀 STELLAR BROADCAST\n'
+      '\n'
+      'I scored ${_formatScore(context, data.score)} on ${data.planetName}!\n'
+      '🏆 ${data.tier} • ${data.governmentType}\n'
+      '\n'
+      'Think you can beat me? Tap to play the same voyage:\n'
+      'stellarbroadcast://play?seed=${data.seedCode}\n'
+      '\n'
+      "Don't have the app?\n"
+      'https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast';
+
   /// Builds the action buttons section.
   Widget _buildButtons(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _phase5Controller,
-      builder: (_, __) {
-        final opacity = _phase5Controller.value.clamp(0.0, 1.0);
-        return Opacity(
-          opacity: opacity,
-          child: Column(
-            children: [
-              _EndingButton(
-                label: context.l10n.ui_ending_challengeFriend,
-                isPrimary: true,
-                onTap: () {
-                  final text =
-                      '🚀 STELLAR BROADCAST\n'
-                      '\n'
-                      'I scored ${_formatScore(_finalScore)} on $_planetName!\n'
-                      '🏆 $_tier • $_governmentType\n'
-                      '\n'
-                      'Think you can beat me? Tap to play the same voyage:\n'
-                      'stellarbroadcast://play?seed=${seedToCode(_voyageSeed)}\n'
-                      '\n'
-                      "Don't have the app?\n"
-                      'https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast';
-                  Share.share(text);
-                },
-              ),
-              const SizedBox(height: 16),
-              _EndingButton(
-                label: context.l10n.ui_ending_copySeed,
-                isPrimary: false,
-                onTap: () {
-                  Clipboard.setData(
-                    ClipboardData(text: seedToCode(_voyageSeed)),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Seed ${seedToCode(_voyageSeed)} copied!'),
-                      backgroundColor: _kAccent.withValues(alpha: 0.9),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              _EndingButton(
-                label: context.l10n.ui_ending_viewLegacy,
-                isPrimary: false,
-                onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/legacy',
-                  (route) => route.isFirst,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _EndingButton(
-                label: context.l10n.ui_ending_newVoyage,
-                isPrimary: false,
-                onTap: () {
-                  ref.read(voyageProvider.notifier).startVoyage(l10n: context.l10n);
-                  Navigator.of(context).pushReplacementNamed('/');
-                },
-              ),
-            ],
+    return FadeTransition(
+      opacity: _phase5Controller,
+      child: Column(
+        children: [
+          _EndingButton(
+            label: context.l10n.ui_ending_challengeFriend,
+            isPrimary: true,
+            onTap: () {
+              final text =
+                  '🚀 STELLAR BROADCAST\n'
+                  '\n'
+                  'I scored ${_formatScore(context, _finalScore)} on $_planetName!\n'
+                  '🏆 $_tier • $_governmentType\n'
+                  '\n'
+                  'Think you can beat me? Tap to play the same voyage:\n'
+                  'stellarbroadcast://play?seed=${seedToCode(_voyageSeed)}\n'
+                  '\n'
+                  "Don't have the app?\n"
+                  'https://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast';
+              Share.share(text);
+            },
           ),
-        );
-      },
+          const SizedBox(height: 16),
+          _EndingButton(
+            label: context.l10n.ui_ending_shareCard,
+            isPrimary: false,
+            onTap: () => _showShareCardSheet(context),
+          ),
+          const SizedBox(height: 16),
+          _EndingButton(
+            label: context.l10n.ui_ending_copySeed,
+            isPrimary: false,
+            onTap: () {
+              Clipboard.setData(
+                ClipboardData(text: seedToCode(_voyageSeed)),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Seed ${seedToCode(_voyageSeed)} copied!'),
+                  backgroundColor: _kAccent.withValues(alpha: 0.9),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          _EndingButton(
+            label: context.l10n.ui_ending_viewLegacy,
+            isPrimary: false,
+            onTap: () => Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil('/legacy', (route) => route.isFirst),
+          ),
+          const SizedBox(height: 16),
+          _EndingButton(
+            label: context.l10n.ui_ending_newVoyage,
+            isPrimary: false,
+            onTap: () {
+              ref
+                  .read(voyageProvider.notifier)
+                  .startVoyage(l10n: context.l10n);
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ],
+      ),
     );
   }
 
   /// Builds the ad widget.
   Widget _buildAd(BuildContext context) {
-    return PremiumAdGate(child: AdaptiveNativeAd(
-      fallback: AdaptiveBannerAd(
-        size: QaBannerSize.mrec,
-        fallback: AdFallbackBanner(
-          height: 250,
-          onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+    return PremiumAdGate(
+      child: AdaptiveNativeAd(
+        fallback: AdaptiveBannerAd(
+          size: QaBannerSize.mrec,
+          fallback: AdFallbackBanner(
+            height: 250,
+            onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+          ),
         ),
       ),
-    ));
+    );
   }
 
-  Widget _buildContent(BuildContext context, ScreenInfo screen, Color tierColor) {
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+  Widget _buildContent(
+    BuildContext context,
+    ScreenInfo screen,
+    Color tierColor,
+  ) {
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     if (isLandscape) {
       return Column(
@@ -1182,14 +1267,10 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Left side: score, tier, legacy points, achievements.
-              Expanded(
-                child: _buildScoreAndTier(context, screen, tierColor),
-              ),
+              Expanded(child: _buildScoreAndTier(context, screen, tierColor)),
               const SizedBox(width: 24),
               // Right side: breakdown, details, voyage record.
-              Expanded(
-                child: _buildBreakdownAndDetails(context),
-              ),
+              Expanded(child: _buildBreakdownAndDetails(context)),
             ],
           ),
           const SizedBox(height: 32),
@@ -1363,38 +1444,137 @@ class _EndingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isPrimary ? _kAccent : _kAccent.withValues(alpha: 0.4),
-            width: isPrimary ? 2 : 1,
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isPrimary ? _kAccent : _kAccent.withValues(alpha: 0.4),
+              width: isPrimary ? 2 : 1,
+            ),
+            color: isPrimary
+                ? _kAccent.withValues(alpha: 0.15)
+                : Colors.transparent,
+            boxShadow: isPrimary
+                ? [
+                    BoxShadow(
+                      color: _kAccent.withValues(alpha: 0.2),
+                      blurRadius: 16,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                : null,
           ),
-          color: isPrimary
-              ? _kAccent.withValues(alpha: 0.15)
-              : Colors.transparent,
-          boxShadow: isPrimary
-              ? [
-                  BoxShadow(
-                    color: _kAccent.withValues(alpha: 0.2),
-                    blurRadius: 16,
-                    spreadRadius: 1,
-                  ),
-                ]
-              : null,
+          child: ExcludeSemantics(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: isPrimary ? Colors.white : _kAccent,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 3,
+              ),
+            ),
+          ),
         ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: isPrimary ? Colors.white : _kAccent,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 3,
+      ),
+    );
+  }
+}
+
+// ── Share-card preview sheet ────────────────────────────────────────────────
+
+/// Modal sheet that previews the [ShareRunCard] before capture. The card is
+/// rendered at its native logical resolution (1080×1350) inside a
+/// [RepaintBoundary]; a [FittedBox] scales the visible preview to whatever
+/// width the sheet has, while the underlying boundary stays at full size so
+/// `toImage(pixelRatio: 2.0)` produces a sharp ~2160×2700 PNG.
+class _ShareCardSheet extends StatelessWidget {
+  final ShareRunCardData cardData;
+  final GlobalKey cardKey;
+  final VoidCallback onShare;
+
+  const _ShareCardSheet({
+    required this.cardData,
+    required this.cardKey,
+    required this.onShare,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final maxHeight = MediaQuery.of(context).size.height * 0.88;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 12,
+          bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Drag handle.
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: SpaceColors.cyan.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  context.l10n.ui_ending_shareCardDialogTitle,
+                  style: const TextStyle(
+                    color: SpaceColors.cyan,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Card preview — RepaintBoundary stays at native resolution
+                // so the captured PNG is sharp; FittedBox shrinks the on-
+                // screen render to fit the sheet width.
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: RepaintBoundary(
+                      key: cardKey,
+                      child: SizedBox(
+                        width: ShareRunCard.cardWidth,
+                        height: ShareRunCard.cardHeight,
+                        child: ShareRunCard(data: cardData),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _EndingButton(
+                  label: context.l10n.ui_ending_shareCardShare,
+                  isPrimary: true,
+                  onTap: onShare,
+                ),
+                const SizedBox(height: 12),
+                _EndingButton(
+                  label: context.l10n.ui_ending_shareCardCancel,
+                  isPrimary: false,
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

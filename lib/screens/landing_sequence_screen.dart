@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 const _kWarning = Color(0xFFFF9800);
 const _kDanger = Color(0xFFFF1744);
 
@@ -27,10 +29,7 @@ class LandingSequenceScreen extends ConsumerStatefulWidget {
       _LandingSequenceScreenState();
 }
 
-class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
-
+class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
   final _lines = <_NarrativeLine>[];
   int _currentLine = 0;
   bool _sequenceComplete = false;
@@ -45,11 +44,6 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
   @override
   void initState() {
     super.initState();
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _buildSequence();
     GameSfx().playLong(GameSfx.landingSequence);
     _playSequence();
@@ -315,12 +309,6 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
   }
 
   @override
-  void dispose() {
-    _starController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
@@ -331,21 +319,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
       body: Stack(
         children: [
           // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const EventStarField(),
 
           // Narrative content.
           SafeArea(
@@ -427,8 +401,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen>
                           // Trigger landing and navigate to ending.
                           try {
                             ref.read(voyageProvider.notifier).landOnPlanet(context.l10n);
-                          } catch (e) {
-                            debugPrint('landOnPlanet error: $e');
+                          } catch (e, st) {
+                            QaLogger.app.warning('landOnPlanet failed', e, st);
                           }
                           Navigator.of(context).pushReplacementNamed('/ending');
                         },

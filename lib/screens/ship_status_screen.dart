@@ -41,8 +41,7 @@ class _ShipStatusScreenState extends ConsumerState<ShipStatusScreen>
 
   @override
   Widget build(BuildContext context) {
-    final voyage = ref.watch(voyageProvider);
-    final ship = voyage.ship;
+    final ship = ref.watch(voyageProvider.select((v) => v.ship));
 
     return Scaffold(
       backgroundColor: SpaceColors.deepSpace,

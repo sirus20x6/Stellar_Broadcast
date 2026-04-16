@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1085025464869",
+    "project_id": "stellarbroadcast-6cac1",
+    "storage_bucket": "stellarbroadcast-6cac1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085025464869:android:ca15c27541b93453b245cc",
+        "android_client_info": {
+          "package_name": "com.quickapps.stellar_broadcast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg6uHFS4I9QVWePAiuy2XqAEmmyPM_XGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

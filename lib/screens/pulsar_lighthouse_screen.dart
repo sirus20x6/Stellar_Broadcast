@@ -12,9 +12,10 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFFB3E5FC); // light blue
 const _kBeam = Color(0xFFE1F5FE); // white-blue
 const _kWarning = Color(0xFFFF5252); // red
@@ -30,10 +31,10 @@ class PulsarLighthouseScreen extends ConsumerStatefulWidget {
       _PulsarLighthouseScreenState();
 }
 
-class _PulsarLighthouseScreenState
-    extends ConsumerState<PulsarLighthouseScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+class _PulsarLighthouseScreenState extends ConsumerState<PulsarLighthouseScreen>
+    with
+        TickerProviderStateMixin,
+        EventTypewriterMixin<PulsarLighthouseScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _pulseController;
@@ -41,10 +42,6 @@ class _PulsarLighthouseScreenState
   late final AnimationController _beamController;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedChoice;
@@ -55,18 +52,14 @@ class _PulsarLighthouseScreenState
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -81,39 +74,9 @@ class _PulsarLighthouseScreenState
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int index) {
@@ -128,7 +91,11 @@ class _PulsarLighthouseScreenState
       _resolved = true;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -137,8 +104,7 @@ class _PulsarLighthouseScreenState
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _beamController.dispose();
@@ -159,84 +125,28 @@ class _PulsarLighthouseScreenState
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'PULSAR LIGHTHOUSE',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(24),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 2,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kCore.withValues(alpha: _titleGlowAnim.value * 0.5),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'PULSAR LIGHTHOUSE',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    letterSpacing: 2,
+    secondaryGlowColor: _kCore,
+  );
 
-  Widget _buildNarrativeCard() {
-    final event = widget.event;
-    if (!_resolved && event.narrative.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          _displayedText,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    if (_resolved && _selectedChoice != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: (_isPositiveOutcome ? Colors.green : Colors.red)
-              .withValues(alpha: 0.1),
-          border: Border.all(
-            color: (_isPositiveOutcome ? Colors.green : Colors.red)
-                .withValues(alpha: 0.4),
-          ),
-        ),
-        child: Text(
-          event.choices[_selectedChoice!].outcome,
-          style: TextStyle(
-            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildNarrativeCard() => EventNarrativeCard(
+    accentColor: _kAccent,
+    displayText: displayedText,
+    outcomeText: (_resolved && _selectedChoice != null)
+        ? widget.event.choices[_selectedChoice!].outcome
+        : null,
+    outcomeIsPositive: _isPositiveOutcome,
+  );
 
   Widget _buildVisualArea() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _resolved
               ? null
               : (details) => _handleTap(details, constraints),
@@ -257,54 +167,15 @@ class _PulsarLighthouseScreenState
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text(
-        'TAP TO SKIP',
-        style: TextStyle(
-          color: _kAccent.withValues(alpha: 0.5),
-          fontSize: 12,
-          letterSpacing: 2,
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -312,37 +183,30 @@ class _PulsarLighthouseScreenState
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -354,22 +218,22 @@ class _PulsarLighthouseScreenState
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          Expanded(child: _buildVisualArea()),
-          if (!_typewriterDone) const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved || !_typewriterDone) ...[
-            const SizedBox(height: 12),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 12),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                Expanded(child: _buildVisualArea()),
+                if (!typewriterDone) const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved || !typewriterDone) ...[
+                  const SizedBox(height: 12),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -422,14 +286,14 @@ class _PulsarLighthouseScreenState
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) {
-      _skipTypewriter();
+    if (!typewriterDone) {
+      skipTypewriter();
       return;
     }
     final size = Size(constraints.maxWidth, constraints.maxHeight);
@@ -447,7 +311,8 @@ class _PulsarLighthouseScreenState
     if (tapPos.dx >= padding && tapPos.dx < third - padding) {
       // RIDE BEAM — choice 0
       if (widget.event.choices.isNotEmpty) _onChoiceMade(0);
-    } else if (tapPos.dx >= third + padding && tapPos.dx < third * 2 - padding) {
+    } else if (tapPos.dx >= third + padding &&
+        tapPos.dx < third * 2 - padding) {
       // SCAN — choice 1
       if (widget.event.choices.length > 1) _onChoiceMade(1);
     } else if (tapPos.dx >= third * 2 + padding &&
@@ -468,54 +333,66 @@ class _PulsarLighthouseScreenState
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
       final isPositive = entry.value > 0;
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: isPositive,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: isPositive,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
@@ -618,8 +495,7 @@ class _PulsarLighthousePainter extends CustomPainter {
     final minDiff = diffPrimary < diffOpposite ? diffPrimary : diffOpposite;
     // flashIntensity goes to 1.0 when beam is aimed directly at viewer.
     final flashIntensity =
-        (1.0 - (minDiff / _flashZoneHalfAngle).clamp(0.0, 1.0))
-            .clamp(0.0, 1.0);
+        (1.0 - (minDiff / _flashZoneHalfAngle).clamp(0.0, 1.0)).clamp(0.0, 1.0);
 
     // 1. Subtle dark overlay to contrast beam.
     canvas.drawRect(
@@ -648,7 +524,12 @@ class _PulsarLighthousePainter extends CustomPainter {
   }
 
   void _drawMagneticField(
-      Canvas canvas, Size size, double cx, double cy, double coreRadius) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double coreRadius,
+  ) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0
@@ -677,37 +558,65 @@ class _PulsarLighthousePainter extends CustomPainter {
       if (side == 0.0) {
         // Symmetric — draw both sides.
         for (final s in [-1.0, 1.0]) {
-          final cp1 = Offset(cx + s * bulge, topPole.dy + (midY - topPole.dy) * 0.4);
-          final cp2 =
-              Offset(cx + s * bulge, bottomPole.dy - (bottomPole.dy - midY) * 0.4);
+          final cp1 = Offset(
+            cx + s * bulge,
+            topPole.dy + (midY - topPole.dy) * 0.4,
+          );
+          final cp2 = Offset(
+            cx + s * bulge,
+            bottomPole.dy - (bottomPole.dy - midY) * 0.4,
+          );
           final path = Path()
             ..moveTo(topPole.dx, topPole.dy)
-            ..cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, bottomPole.dx,
-                bottomPole.dy);
+            ..cubicTo(
+              cp1.dx,
+              cp1.dy,
+              cp2.dx,
+              cp2.dy,
+              bottomPole.dx,
+              bottomPole.dy,
+            );
           canvas.drawPath(path, paint);
         }
       } else {
-        final cp1 =
-            Offset(cx + side * bulge, topPole.dy + (midY - topPole.dy) * 0.4);
+        final cp1 = Offset(
+          cx + side * bulge,
+          topPole.dy + (midY - topPole.dy) * 0.4,
+        );
         final cp2 = Offset(
-            cx + side * bulge, bottomPole.dy - (bottomPole.dy - midY) * 0.4);
+          cx + side * bulge,
+          bottomPole.dy - (bottomPole.dy - midY) * 0.4,
+        );
         final path = Path()
           ..moveTo(topPole.dx, topPole.dy)
           ..cubicTo(
-              cp1.dx, cp1.dy, cp2.dx, cp2.dy, bottomPole.dx, bottomPole.dy);
+            cp1.dx,
+            cp1.dy,
+            cp2.dx,
+            cp2.dy,
+            bottomPole.dx,
+            bottomPole.dy,
+          );
         canvas.drawPath(path, paint);
       }
     }
   }
 
-  void _drawRadiationParticles(Canvas canvas, Size size, double cx, double cy,
-      double beamAngle, double flashIntensity) {
+  void _drawRadiationParticles(
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double beamAngle,
+    double flashIntensity,
+  ) {
     final rng = Random(42); // fixed seed for stable positions
     const particleCount = 25;
 
     for (int i = 0; i < particleCount; i++) {
       // Distribute particles along/near the beam axes.
-      final axis = (rng.nextBool() ? beamAngle : beamAngle + pi) +
+      final axis =
+          (rng.nextBool() ? beamAngle : beamAngle + pi) +
           (rng.nextDouble() - 0.5) * _beamHalfAngle * 4;
       final dist = size.width * (0.15 + rng.nextDouble() * 0.35);
       final px = cx + cos(axis) * dist;
@@ -746,8 +655,14 @@ class _PulsarLighthousePainter extends CustomPainter {
     }
   }
 
-  void _drawBeam(Canvas canvas, Size size, double cx, double cy,
-      double angle, double flashIntensity) {
+  void _drawBeam(
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double angle,
+    double flashIntensity,
+  ) {
     // Each beam is a triangle from the core to the canvas edge.
     // The tip is at the core; the base extends to the edge.
     // We clip to ensure it doesn't bleed behind the core.
@@ -785,16 +700,17 @@ class _PulsarLighthousePainter extends CustomPainter {
         _kBeam.withValues(alpha: baseAlpha),
         _kBeam.withValues(alpha: 0.0),
       ],
-    ).createShader(
-      Rect.fromPoints(tip, edgePoint),
-    );
+    ).createShader(Rect.fromPoints(tip, edgePoint));
 
     canvas.drawPath(
       beamPath,
       Paint()
         ..style = PaintingStyle.fill
         ..shader = shader
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6 + flashIntensity * 10),
+        ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal,
+          6 + flashIntensity * 10,
+        ),
     );
 
     // Extra bright inner beam core line.
@@ -803,38 +719,47 @@ class _PulsarLighthousePainter extends CustomPainter {
         beamPath,
         Paint()
           ..style = PaintingStyle.fill
-          ..color =
-              _kBeam.withValues(alpha: (flashIntensity * 0.35).clamp(0.0, 1.0))
+          ..color = _kBeam.withValues(
+            alpha: (flashIntensity * 0.35).clamp(0.0, 1.0),
+          )
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2),
       );
     }
   }
 
-  void _drawCore(Canvas canvas, double cx, double cy, double baseRadius,
-      double flashIntensity) {
+  void _drawCore(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double baseRadius,
+    double flashIntensity,
+  ) {
     final pulsedRadius = baseRadius * (0.85 + pulseValue * 0.3);
     final flashExtra = flashIntensity * baseRadius * 0.4;
     final radius = pulsedRadius + flashExtra;
 
     // Outer glow.
     final outerGlowPaint = Paint()
-      ..color = _kCore
-          .withValues(alpha: (0.15 + 0.2 * pulseValue + 0.3 * flashIntensity))
+      ..color = _kCore.withValues(
+        alpha: (0.15 + 0.2 * pulseValue + 0.3 * flashIntensity),
+      )
       ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, 20 + flashIntensity * 30 + pulseValue * 10);
+        BlurStyle.normal,
+        20 + flashIntensity * 30 + pulseValue * 10,
+      );
     canvas.drawCircle(Offset(cx, cy), radius * 2.5, outerGlowPaint);
 
     // Mid glow.
     final midGlowPaint = Paint()
       ..color = _kBeam.withValues(
-          alpha: (0.3 + 0.3 * pulseValue + 0.4 * flashIntensity).clamp(0.0, 1.0))
+        alpha: (0.3 + 0.3 * pulseValue + 0.4 * flashIntensity).clamp(0.0, 1.0),
+      )
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8 + flashIntensity * 12);
     canvas.drawCircle(Offset(cx, cy), radius * 1.4, midGlowPaint);
 
     // Core circle.
     final corePaint = Paint()
-      ..color = Color.lerp(
-          _kCore, Colors.white, 0.4 + 0.6 * flashIntensity)!;
+      ..color = Color.lerp(_kCore, Colors.white, 0.4 + 0.6 * flashIntensity)!;
     canvas.drawCircle(Offset(cx, cy), radius, corePaint);
 
     // Bright center pinpoint.
@@ -842,8 +767,9 @@ class _PulsarLighthousePainter extends CustomPainter {
       Offset(cx, cy),
       radius * 0.4,
       Paint()
-        ..color = Colors.white
-            .withValues(alpha: (0.8 + 0.2 * flashIntensity).clamp(0.0, 1.0)),
+        ..color = Colors.white.withValues(
+          alpha: (0.8 + 0.2 * flashIntensity).clamp(0.0, 1.0),
+        ),
     );
   }
 
@@ -883,7 +809,8 @@ class _PulsarLighthousePainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.fill
           ..color = _kAccent.withValues(
-              alpha: ((flashIntensity - 0.3) * 0.3).clamp(0.0, 1.0)),
+            alpha: ((flashIntensity - 0.3) * 0.3).clamp(0.0, 1.0),
+          ),
       );
     }
 
@@ -892,9 +819,15 @@ class _PulsarLighthousePainter extends CustomPainter {
       ..color = _kCore.withValues(alpha: 0.6 + flashIntensity * 0.3)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
     canvas.drawCircle(
-        Offset(sx - shipWidth * 0.15, sy + shipHeight * 0.5), 2, engineGlow);
+      Offset(sx - shipWidth * 0.15, sy + shipHeight * 0.5),
+      2,
+      engineGlow,
+    );
     canvas.drawCircle(
-        Offset(sx + shipWidth * 0.15, sy + shipHeight * 0.5), 2, engineGlow);
+      Offset(sx + shipWidth * 0.15, sy + shipHeight * 0.5),
+      2,
+      engineGlow,
+    );
   }
 
   void _drawChoiceZones(Canvas canvas, Size size) {
@@ -907,22 +840,34 @@ class _PulsarLighthousePainter extends CustomPainter {
 
     final zones = [
       _ChoiceZone(
-        rect: Rect.fromLTWH(hPad, zoneTop + vPad, third - hPad * 2,
-            zoneHeight - vPad * 2),
+        rect: Rect.fromLTWH(
+          hPad,
+          zoneTop + vPad,
+          third - hPad * 2,
+          zoneHeight - vPad * 2,
+        ),
         color: _kAccent,
         label: 'RIDE BEAM',
         index: 0,
       ),
       _ChoiceZone(
-        rect: Rect.fromLTWH(third + hPad, zoneTop + vPad,
-            third - hPad * 2, zoneHeight - vPad * 2),
+        rect: Rect.fromLTWH(
+          third + hPad,
+          zoneTop + vPad,
+          third - hPad * 2,
+          zoneHeight - vPad * 2,
+        ),
         color: _kCore,
         label: 'SCAN',
         index: 1,
       ),
       _ChoiceZone(
-        rect: Rect.fromLTWH(third * 2 + hPad, zoneTop + vPad,
-            third - hPad * 2, zoneHeight - vPad * 2),
+        rect: Rect.fromLTWH(
+          third * 2 + hPad,
+          zoneTop + vPad,
+          third - hPad * 2,
+          zoneHeight - vPad * 2,
+        ),
         color: _kWarning,
         label: 'RETREAT',
         index: 2,

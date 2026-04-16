@@ -30,6 +30,7 @@ class EventEngine {
         eventIndex ?? <String, GameEvent>{for (final e in eventPool) e.id: e};
 
     // Check for pending chained events first.
+    // We only return the first one found; others remain in pendingChains.
     for (final chain in state.pendingChains) {
       if (state.encounterCount >= chain.triggerAtEncounter) {
         final chained = indexedEvents[chain.eventId];
@@ -100,9 +101,22 @@ class EventEngine {
 
     if (candidates.isEmpty) candidates = available;
     if (candidates.isEmpty) candidates = pool; // fallback: skip guards
-    if (candidates.isEmpty) return eventPool[random.nextInt(eventPool.length)];
+    if (candidates.isEmpty) {
+      // Last-resort fallback. eventPool is normally non-empty (loaded from
+      // YAML on startup), but if a future code path supplies an empty pool
+      // we degrade to a no-op event rather than crashing.
+      if (eventPool.isEmpty) return _emptyEvent;
+      return eventPool[random.nextInt(eventPool.length)];
+    }
     return candidates[random.nextInt(candidates.length)];
   }
+
+  static final GameEvent _emptyEvent = GameEvent(
+    id: 'empty_fallback',
+    title: '',
+    narrative: '',
+    choices: const [],
+  );
 
   /// Resolves a weighted outcome for [choice] using [random].
   ///
@@ -114,14 +128,22 @@ class EventEngine {
     if (outcomes == null || outcomes.isEmpty) return choice;
 
     final totalWeight = outcomes.fold<int>(0, (sum, o) => sum + o.weight);
-    var roll = random.nextInt(totalWeight);
-    WeightedOutcome selected = outcomes.first;
-    for (final o in outcomes) {
-      roll -= o.weight;
-      if (roll < 0) {
-        selected = o;
-        break;
+    // Defensive: if every outcome has weight 0 (malformed YAML), pick the
+    // first outcome uniformly instead of crashing on Random.nextInt(0).
+    final WeightedOutcome selected;
+    if (totalWeight <= 0) {
+      selected = outcomes[random.nextInt(outcomes.length)];
+    } else {
+      var roll = random.nextInt(totalWeight);
+      WeightedOutcome pick = outcomes.first;
+      for (final o in outcomes) {
+        roll -= o.weight;
+        if (roll < 0) {
+          pick = o;
+          break;
+        }
       }
+      selected = pick;
     }
 
     return EventChoice(
@@ -156,8 +178,9 @@ class EventEngine {
   static VoyageState applyChoice(
     VoyageState state,
     EventChoice choice,
-    Random random,
-  ) {
+    Random random, {
+    String? triggeredEventId,
+  }) {
     // Deduct probe cost, then apply probe delta.
     var probes = state.probes;
     if (choice.probeCost > 0) {
@@ -241,21 +264,31 @@ class EventEngine {
       }
     }
 
-    // Schedule chained events.
+    // Schedule chained events. A delay of 0 means "the next encounter", not
+    // "this already-resolving encounter"; otherwise the cleanup below would
+    // immediately discard the chain before selection can see it.
     var pendingChains = List<PendingChain>.from(state.pendingChains);
     if (choice.chain != null) {
+      final delay = max(1, choice.chain!.delay);
       pendingChains.add(
         PendingChain(
           eventId: choice.chain!.eventId,
-          triggerAtEncounter: state.encounterCount + choice.chain!.delay,
+          triggerAtEncounter: state.encounterCount + delay,
         ),
       );
     }
 
-    // Remove any chained events that have fired this encounter.
-    pendingChains = pendingChains
-        .where((c) => c.triggerAtEncounter > state.encounterCount)
-        .toList();
+    // Remove the chain that just fired, and any ancient orphans.
+    pendingChains = pendingChains.where((c) {
+      // Keep if it's in the future.
+      if (c.triggerAtEncounter > state.encounterCount) return true;
+      // Keep if it's due but wasn't the one that just fired.
+      if (triggeredEventId != null && c.eventId != triggeredEventId) {
+        return true;
+      }
+      // Drop if it's the one that fired, or it's an old expired orphan.
+      return false;
+    }).toList();
 
     // Apply governance axis shifts.
     final authorityAxis = (state.authorityAxis + choice.authorityDelta).clamp(

@@ -1,8 +1,6 @@
 {
   "@@locale": "nl",
   "appTitle": "Stellar Broadcast",
-  "ui_title_stellar": "STELLAR",
-  "ui_title_broadcast": "BROADCAST",
   "ui_title_beginVoyage": "BEGIN REIS",
   "ui_title_dailyVoyage": "DAGELIJKSE REIS",
   "ui_title_dailyCompleted": "DAGELIJKS VOLTOOID",
@@ -10,20 +8,13 @@
   "ui_title_legacyHub": "NALATENSCHAP",
   "ui_title_cancel": "ANNULEREN",
   "ui_title_startVoyage": "START REIS",
-  "ui_voyage_sector": "SEC {count}",
-  "ui_voyage_seed": "SEED: {code}",
-  "ui_voyage_scanners": "SCANNERS",
   "ui_voyage_scanPlanet": "SCAN PLANEET",
   "ui_voyage_noEnergy": "GEEN ENERGIE",
   "ui_voyage_pressOn": "VERDER",
   "ui_voyage_systemHull": "Romp",
-  "ui_voyage_systemNav": "Nav",
-  "ui_voyage_systemCryopods": "Cryopods",
   "ui_voyage_systemCulture": "Cultuur",
-  "ui_voyage_systemTech": "Tech",
   "ui_voyage_systemConstruct": "Constructie",
   "ui_voyage_systemShields": "Schilden",
-  "ui_voyage_systemLanding": "Landing",
   "ui_voyage_scannerAtmo": "Atmo Scan",
   "ui_voyage_scannerGrav": "Grav Scan",
   "ui_voyage_scannerMineral": "Mineraal Scan",
@@ -49,12 +40,8 @@
   "ui_scan_allStatsVerified": "ALLE WAARDEN GEVERIFIEERD",
   "ui_scan_launchProbe": "LANCEER SONDE",
   "ui_scan_habitability": "BEWOONBAARHEID",
-  "ui_scan_statAtmos": "ATMOS",
-  "ui_scan_statTemp": "TEMP",
-  "ui_scan_statWater": "WATER",
   "ui_scan_statResource": "GRONDSTOFFEN",
   "ui_scan_statGravity": "ZWAARTEKRACHT",
-  "ui_scan_statBio": "BIO",
   "ui_scan_statAnomaly": "ANOMALIE",
   "ui_scan_statRadiation": "STRALING",
   "ui_landing_planetAnalysis": "PLANEETANALYSE",
@@ -74,17 +61,13 @@
   "ui_landing_pressOnward": "VERDER VAREN",
   "ui_landing_statAtmosphere": "Atmosfeer",
   "ui_landing_statTemperature": "Temperatuur",
-  "ui_landing_statWater": "Water",
   "ui_landing_statResources": "Grondstoffen",
   "ui_landing_statGravity": "Zwaartekracht",
   "ui_landing_statBiodiversity": "Biodiversiteit",
   "ui_landing_statAvgHealth": "Gem. Gezondheid",
   "ui_landing_statHull": "Romp",
   "ui_landing_statNavigation": "Navigatie",
-  "ui_landing_statCryopods": "Cryopods",
   "ui_landing_statCulture": "Cultuur",
-  "ui_landing_statTech": "Tech",
-  "ui_landing_statConstructors": "Constructors",
   "ui_landing_statShields": "Schilden",
   "ui_landing_statLandingSys": "Landingssys",
   "ui_landingSequence_phase1": "FASE 1: ORBITAAL COMMIT",
@@ -108,7 +91,6 @@
   "ui_ending_achievementGoldenAge": "Gouden Tijdperk",
   "ui_ending_achievementSurvivor": "Overlever",
   "ui_ending_achievementExplorer": "Ontdekker",
-  "ui_ending_achievementPerfectionist": "Perfectionist",
   "ui_ending_achievementDeathWorldSurvivor": "Dodenwereld Overlever",
   "ui_ending_achievementFullCrew": "Volledige Bemanning",
   "ui_ending_achievementProbeMaster": "Sondemeester",
@@ -137,16 +119,13 @@
   "ui_settings_music": "MUZIEK",
   "ui_settings_soundEffects": "GELUIDSEFFECTEN",
   "ui_settings_haptics": "HAPTIEK",
-  "ui_settings_premium": "PREMIUM",
   "ui_settings_goPremium": "Ga Premium",
   "ui_settings_enabled": "Ingeschakeld",
-  "ui_settings_volume": "Volume",
   "ui_settings_language": "Taal",
   "ui_settings_systemDefault": "Systeemstandaard",
   "ui_legacy_title": "NALATENSCHAP",
   "ui_legacy_commanderStats": "COMMANDANTSTATS",
   "ui_legacy_highScores": "HOOGSTE SCORES",
-  "ui_legacy_upgrades": "UPGRADES",
   "ui_legacy_achievements": "PRESTATIES",
   "ui_legacy_voyageLog": "REISLOGBOEK",
   "ui_legacy_voyages": "REIZEN",
@@ -165,23 +144,15 @@
   "ui_scannerUpgrade_title": "SCANNER-UPGRADE",
   "ui_scannerUpgrade_subtitle": "Kies een scanner om te upgraden",
   "ui_scannerUpgrade_skip": "OVERSLAAN",
-  "ui_scannerUpgrade_max": "MAX",
   "ui_scannerUpgrade_atmospheric": "Atmosferisch",
   "ui_scannerUpgrade_gravimetric": "Gravimetrisch",
   "ui_scannerUpgrade_mineral": "Mineraal",
   "ui_scannerUpgrade_lifeSigns": "Levenstekens",
   "ui_scannerUpgrade_temperature": "Temperatuur",
-  "ui_scannerUpgrade_water": "Water",
   "ui_event_continue": "DOORGAAN",
   "ui_event_tapToSkip": "TIK OM OVER TE SLAAN",
   "ui_event_colonists": "KOLONISTEN",
-  "ui_event_landing": "LANDING",
-  "ui_event_atmScan": "ATM SCAN",
-  "ui_event_gravScan": "GRAV SCAN",
-  "ui_event_minScan": "MIN SCAN",
   "ui_event_lifeScan": "LEVEN SCAN",
-  "ui_event_tempScan": "TEMP SCAN",
-  "ui_event_h2oScan": "H2O SCAN",
   "onboarding_page0_title": "De Laatste Hoop van de Mensheid",
   "onboarding_page0_description": "De Aarde sterft. De regeringen van de wereld hebben hun laatste reserves gebundeld om één laatste vaartuig te bouwen — een kolonieschip dat de overblijfselen van de mensheid de sterren in draagt.",
   "onboarding_page1_title": "Zoek een Nieuw Thuis",
@@ -190,7 +161,6 @@
   "onboarding_page2_description": "Elke reis leert de mensheid iets nieuws. Verdien Nalatenschapspunten om permanente upgrades vrij te spelen en graveer je naam in de sterren.",
   "onboarding_page3_title": "Jouw Privacy, Jouw Keuze",
   "onboarding_page3_description": "Kies hoe je Stellar Broadcast wilt ervaren.",
-  "planet_tierUtopia": "Utopia",
   "planet_tierParadise": "Paradijs",
   "planet_tierHabitable": "Bewoonbaar",
   "planet_tierHarsh": "Guur",
@@ -221,22 +191,12 @@
   "planet_featureGeothermalVents": "Geothermische Bronnen",
   "planet_featureStrongMagnetosphere": "Sterke Magnetosfeer",
   "planet_featureWeakMagnetosphere": "Zwakke Magnetosfeer",
-  "planet_featureMegafauna": "Megafauna",
   "planet_featureSymbioticOrganisms": "Symbiotische Organismen",
   "planet_featureGravityWells": "Zwaartekrachtputten",
   "planet_featureSubspaceEchoes": "Subruimte-echo's",
-  "ui_monthJan": "JAN",
-  "ui_monthFeb": "FEB",
   "ui_monthMar": "MRT",
-  "ui_monthApr": "APR",
   "ui_monthMay": "MEI",
-  "ui_monthJun": "JUN",
-  "ui_monthJul": "JUL",
-  "ui_monthAug": "AUG",
-  "ui_monthSep": "SEP",
   "ui_monthOct": "OKT",
-  "ui_monthNov": "NOV",
-  "ui_monthDec": "DEC",
   "event_asteroidField_title": "Asteroïdenveld",
   "event_asteroidField_narrative": "Langeafstandsscanners detecteren een dicht asteroïdenveld recht in ons vliegpad. Navigatie berekent twee opties: een riskante sprint door de smalste corridor, of een lange omweg die onze brandstofvoorraden zal belasten en het navigatiearray onder druk zet.",
   "event_asteroidField_choice0_text": "Door de corridor heen stampen",
@@ -447,7 +407,6 @@
   "event_geneticModification_choice1_outcome": "Sommigen melden zich vrijwillig, anderen weigeren. De kolonie zal verdeeld zijn tussen gemodificeerden en naturellen.",
   "event_geneticModification_choice2_text": "Afwijzen — de mensheid moet menselijk blijven",
   "event_geneticModification_choice2_outcome": "Het voorstel wordt opzijgelegd. De ongemodificeerde kolonisten zullen buitenaardse werelden tegemoettreden zoals de natuur hen maakte.",
-  "event_triageDecision_title": "Triage",
   "event_triageDecision_narrative": "Een virulente infectie verspreidt zich onder de wakkere bemanning. Het medisch team heeft genoeg antiviraal middel voor 80% van de geïnfecteerden. Ze hebben richtlijnen nodig over wie als eerste behandeld wordt.",
   "event_triageDecision_choice0_text": "Prioriteit aan essentieel personeel",
   "event_triageDecision_choice0_outcome": "Ingenieurs en piloten herstellen snel. Acht niet-essentiële bemanningsleden bezwijken voordat de behandeling hen bereikt.",
@@ -1129,7 +1088,6 @@
   "event_repairStation_choice2_outcome": "De AI van het station is vraatzuchtig naar data. Het kopieert onze gehele technische bibliotheek — technische handleidingen, wetenschappelijke databases, productieblauwdrukken — en fabriceert in ruil verse sondes en energiecellen uit ruwe materialen. Het techarchief is verminderd, maar de voorraden zijn van onschatbare waarde.",
   "event_repairStation_choice3_text": "Het culturele archief aanbieden voor een uitgebreide revisie",
   "event_repairStation_choice3_outcome": "Het station zendt de werken van Shakespeare, Bach en duizend andere menselijke stemmen zijn geheugenbanken in. In ruil voert het een grondige revisie uit en laadt de sonderuimtes met vers gefabriceerde eenheden. Het culturele archief is ontmanteld, maar het schip kan nu werkelijk zijn bestemming bereiken.",
-  "ending_scoreLabel_landing": "Landing",
   "ending_scoreLabel_construction": "Constructie",
   "ending_scoreLabel_technology": "Technologie",
   "ending_scoreLabel_culture": "Cultuur",
@@ -1165,7 +1123,6 @@
   "ending_governmentRepublic": "Republiek",
   "ending_governmentAutocracy": "Autocratie",
   "ending_governmentTribalCouncil": "Stamraad",
-  "ending_cultureRenaissance": "Renaissance",
   "ending_culturePreserved": "Bewaard",
   "ending_cultureFragmented": "Gefragmenteerd",
   "ending_cultureLost": "Verloren",
@@ -1181,7 +1138,6 @@
   "ending_nativesIntegrated": "Geïntegreerd",
   "ending_nativesCoexistence": "Coëxistentie",
   "ending_nativesTension": "Spanning",
-  "ending_nativesConflict": "Conflict",
   "ending_landscapeGravityHigh": "Zware zwaartekracht drukt op alles. ",
   "ending_landscapeGravityLow": "In de lage zwaartekracht lanceert elke stap kolonisten de lucht in. ",
   "ending_landscapeGravityNormal": "De zwaartekracht voelt bijna Aards. ",
@@ -1236,7 +1192,6 @@
   "ending_techPhrase_preIndustrial": "hoewel de technologie terugviel naar een pre-industriële staat, met handgereedschap en dierlijke arbeid als ruggengraat van het dagelijks leven.",
   "ending_techPhrase_stoneAge": "en zonder de middelen om te herbouwen, gleed de kolonie af naar een steentijdbestaan, gereedschap makend van steen en bot.",
   "ending_techPhrase_default": "en technologie stabiliseerde op een niveau dat de kolonisten konden onderhouden.",
-  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
   "ending_populationHigh": "Bijna alle {colonists} kolonisten overleefden de reis, wat {colonyName} een sterk fundament van menselijk kapitaal gaf.",
   "ending_populationMedium": "Van de oorspronkelijke duizend bereikten {colonists} kolonisten {colonyName} — genoeg om een levensvatbare populatie in stand te houden.",
   "ending_populationLow": "Slechts {colonists} kolonisten overleefden om {colonyName} te bereiken, een gevaarlijk kleine genenpool voor een nieuwe beschaving.",
@@ -1302,7 +1257,6 @@
   "ui_trader_shipSystems": "SCHIPSSYSTEMEN",
   "ui_trader_payWith": "BETAAL MET",
   "ui_trader_leaveTrader": "VERLAAT HANDELAAR",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "Gulle stemming",
   "ui_trader_moodFair": "Eerlijke handel",
   "ui_trader_moodHard": "Harde onderhandelaar",
@@ -1313,14 +1267,12 @@
   "ui_trader_culture": "Cultuur",
   "ui_trader_tech": "Techniek",
   "ui_trader_greeting": "Wat bied je aan, mens?",
-  "ui_codex_title": "CODEX",
   "ui_codex_discovered": "{count} / {total} ONTDEKT",
   "ui_codex_surfaceFeatures": "OPPERVLAKTEKENMERKEN",
   "ui_codex_moonTypes": "MAANTYPEN",
   "ui_codex_ringTypes": "RINGTYPEN",
   "ui_codex_locked": "Land op een planeet met dit kenmerk om de effecten ervan te onthullen.",
   "ui_codex_synergy": "Synergie: {features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "Het alleenspraak van de AI",
   "event_aiSoliloquy_narrative": "SAM, de autonome scheepsbeheers-AI, zendt in een lus oude aardse gedichten uit op alle interne frequenties. De uitzending verbruikt aanzienlijke CPU-cycli, maar de bemanning vindt het vreemd troostend in de diepe duisternis.",
   "event_aiSoliloquy_choice0_text": "SAM laten doorgaan — moreel is belangrijker dan CPU",
@@ -1437,39 +1389,551 @@
   "event_subspaceReef_choice1_outcome": "De scanners worden tot het uiterste belast. We komen er snel doorheen, maar de sensorarrays worden uitgebrand door de intensiteit van de subruimtegolven.",
   "event_alienTrader_title": "De zwervende handelaar",
   "event_alienTrader_narrative": "Een voertuig van onbekend ontwerp vaart langszij en zendt uit op alle frequenties. Het is een handelaar — een van de rondtrekkende kooplieden die de ruimtes tussen beschavingen bevaren. Ze bieden reparaties en voorraden aan in ruil voor grondstoffen. Hun vrachtruim zoemt van exotische technologie.",
-
   "event_pulsarLighthouse_title": "Pulsarvuurtoren",
   "event_pulsarLighthouse_narrative": "Een draaiende neutronenster veegt met zijn bundel over de leegte als een kosmische vuurtoren. De ritmische puls van de pulsar draagt nauwkeurige tijdsgegevens die onze scanners tot buitengewone precisie zouden kunnen herkalibreren — maar afstemmen op de bundel betekent het schip blootstellen aan intense straling.",
   "event_pulsarLighthouse_choice0": "Scanners kalibreren op de puls",
   "event_pulsarLighthouse_outcome0": "De scannerarrays absorberen het pulsarsignaal en herkalibreren tot precisies die we nooit voor mogelijk hadden gehouden. Maar de stralingskosten zijn reëel — meerdere cryopods in de blootgestelde sectie raken beschadigd, en een handvol kolonisten overleeft de blootstelling niet.",
   "event_pulsarLighthouse_choice1": "Afschermen en op veilige afstand passeren",
   "event_pulsarLighthouse_outcome1": "We houden ruim afstand van de pulsar en verbranden extra brandstof voor een veilige koers. De bemanning bekijkt de vegende bundel door gefilterde kijkvensters — prachtig, maar ver weg.",
-
   "event_alienNursery_title": "Buitenaardse Kraamkamer",
   "event_alienNursery_narrative": "Een enorme organische structuur drijft in de leegte — een biologische kraamkamer die buitenaardse jongen uitbroedt. De levensondersteunende systemen falen, de interne temperaturen dalen. De wezens binnenin sterven. Onze bioscanners zouden enorm veel van deze structuur kunnen leren, maar ingrijpen betekent onze luchtsluis openen voor onbekende ziekteverwekkers.",
   "event_alienNursery_choice0": "Helpen hun levensondersteuning te stabiliseren",
   "event_alienNursery_outcome0": "Onze ingenieurs improviseren een thermische verbinding met de kraamkamer en stabiliseren de broedkamers. De bioscannergegevens zijn buitengewoon — een geheel nieuwe taxonomie van het leven. Maar zoals gevreesd vinden buitenaardse micro-organismen hun weg aan boord. Medische teams bedwingen de uitbraak, hoewel niet voordat verschillende kolonisten ziek worden.",
   "event_alienNursery_choice1": "Ongemoeid laten",
   "event_alienNursery_outcome1": "We observeren op respectvolle afstand en documenteren wat we kunnen via passieve scans. De kraamkamer drijft verder, haar lot onzeker. De bemanning reflecteert op de kwetsbaarheid van het leven — zelfs buitenaards leven — en het gewicht van de keuzes die we dragen.",
-
   "event_derelictArmada_title": "Verlaten Armada",
   "event_derelictArmada_narrative": "Honderden oude oorlogsschepen hangen roerloos in de leegte — het kerkhof van een vergeten conflict. Hun rompen dragen littekens van wapens die we niet kunnen identificeren, maar hun constructiematerialen en boordcomputers zouden van onschatbare waarde kunnen zijn. De vraag is wat prioriteit krijgt: de fysieke berging of de kennis.",
   "event_derelictArmada_choice0": "Wapentechnologie en rompbeplating bergen",
   "event_derelictArmada_outcome0": "Bergingsteams snijden zich een weg in de buitenaardse oorlogsschepen en extraheren exotische legeringen en bouwtechnieken die eeuwen op ons voorlopen. De bouwers integreren de nieuwe materialen gretig. Maar één schip was niet zo dood als het leek — een boobyval ontploft tijdens de extractie en doodt een bergingsteam.",
   "event_derelictArmada_choice1": "Hun historische archieven downloaden",
   "event_derelictArmada_outcome1": "We richten ons op de datakernen en extraheren zorgvuldig eeuwen aan buitenaardse geschiedenis, kunst, wetenschap en filosofie. Het culturele archief alleen al zou geleerden generaties lang bezig kunnen houden. De technologische inzichten, hoewel minder direct praktisch, onthullen technische principes die ons eigen begrip vooruit helpen.",
-
   "event_alienQuarantineZone_title": "Buitenaardse Quarantainezone",
   "event_alienQuarantineZone_narrative": "Waarschuwingsboeien in een dozijn buitenaardse talen markeren de grens van een verzegeld gebied in de ruimte. Wat er ook binnenin opgesloten zit, het was gevaarlijk genoeg dat meerdere beschavingen samenwerkten om het te isoleren. Onze langeafstandsscans detecteren massieve technologische signaturen binnenin — en iets dat mogelijk leeft.",
   "event_alienQuarantineZone_choice0": "De quarantaine doorbreken en onderzoeken",
   "event_alienQuarantineZone_outcome0": "We varen voorbij de waarschuwingsboeien de quarantainezone in. Binnenin vinden we een onderzoeksstation van verbijsterende complexiteit — en de overblijfselen van wat het bestudeerde. De technologie die we bergen is revolutionair, maar de biologische besmetting is ernstig. Tientallen kolonisten worden ziek voordat we de zone verlaten.",
   "event_alienQuarantineZone_choice1": "De quarantaine respecteren",
   "event_alienQuarantineZone_outcome1": "We bestuderen de waarschuwingsboeien zelf, die navigatiegegevens en atmosferische metingen bevatten van de beschavingen die ze plaatsten. Het is niet de schat binnenin, maar het is iets — en we hebben niet losgelaten wat zij hadden opgesloten.",
-
   "event_hydroponicsBlight_title": "Hydroponische Plaag",
   "event_hydroponicsBlight_narrative": "Een snel verspreidende schimmelplaag heeft de hydroponische kweekruimtes van het schip geïnfecteerd. Hele oogstcycli verwelken voor onze ogen. De plaag heeft de zaadreserves nog niet bereikt, maar het is slechts een kwestie van uren. We kunnen de ruimtes zuiveren en opnieuw planten, of een experimentele antischimmelbehandeling proberen die de huidige oogst zou kunnen redden — of de besmetting verder verspreiden.",
   "event_hydroponicsBlight_choice0": "Zuiveren en herplanten uit zaadreserves",
   "event_hydroponicsBlight_outcome0": "We ventileren de hydroponische ruimtes naar het vacuüm en doden de plaag samen met elke levende plant. Herplanten vanuit zaadreserves zal weken duren, en de culturele programma's die afhankelijk waren van vers voedsel en tuinruimtes worden opgeschort. Maar de infectie is ingedamd.",
   "event_hydroponicsBlight_choice1": "Experimentele behandeling proberen",
-  "event_hydroponicsBlight_outcome1": "Het experimentele antischimmelmiddel toont aanvankelijk belofte, maar een resistente stam breekt door. Tegen de tijd dat we overgaan tot een volledige zuivering, heeft de plaag zich verspreid naar de voedingslijnen van de cryopods. De schade is erger dan wanneer we van begin af aan doortastend hadden gehandeld."
+  "event_hydroponicsBlight_outcome1": "Het experimentele antischimmelmiddel toont aanvankelijk belofte, maar een resistente stam breekt door. Tegen de tijd dat we overgaan tot een volledige zuivering, heeft de plaag zich verspreid naar de voedingslijnen van de cryopods. De schade is erger dan wanneer we van begin af aan doortastend hadden gehandeld.",
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_title_stellar": "STELLAR",
+  "ui_title_broadcast": "BROADCAST",
+  "ui_voyage_systemTech": "Technologie",
+  "ui_voyage_systemLanding": "Landing",
+  "ui_scan_statAtmos": "ATMOS",
+  "ui_scan_statTemp": "TEMP",
+  "ui_voyage_seed": "ZAAD: {code}",
+  "ui_voyage_sector": "SEC {count}",
+  "ui_voyage_systemNav": "Nav",
+  "ui_voyage_scanners": "SCANNERS",
+  "ui_scan_statWater": "WATER",
+  "ui_voyage_systemCryopods": "Cryopoden",
+  "ui_scan_statBio": "BIO",
+  "ui_landing_statWater": "Water",
+  "ui_landing_statCryopods": "Cryopoden",
+  "ui_landing_statTech": "Technologie",
+  "ui_title_seedInvalid": "Ongeldige zaadcode. Gebruik alleen A–Z en 0–9.",
+  "ui_ending_shareCardShare": "DEEL",
+  "ui_ending_shareCardCancel": "ANNULEREN",
+  "ui_ending_achievementPerfectionist": "Perfectionist",
+  "ui_settings_premium": "PREMIE",
+  "ui_settings_volume": "Volume",
+  "ui_settings_statsLeft": "LINKS",
+  "ui_settings_statsRight": "RECHTS",
+  "ui_ending_shareCard": "DEEL KAART",
+  "ui_settings_statsPosition": "Statistieken en knoppenpositie",
+  "ui_legacy_upgrades": "UPGRADES",
+  "ui_scan_uncertaintyPct": "ONZEKERHEID: ±{percent}%",
+  "ui_scan_probesCount": "SONDES: {count}",
+  "ui_ending_shareCardDialogTitle": "Deel uw reis",
+  "ui_landing_statConstructors": "Constructeurs",
+  "ui_scannerUpgrade_max": "MAX",
+  "ui_event_landing": "LANDING",
+  "ui_scannerUpgrade_water": "Water",
+  "planet_tierUtopia": "Utopia",
+  "ui_event_atmScan": "ATM-SCAN",
+  "ui_event_tempScan": "TEMP.SCAN",
+  "planet_featurePetrifiedMegaflora": "Versteende Megaflora",
+  "ui_event_minScan": "MIN-SCAN",
+  "planet_featurePerpetualAurora": "Eeuwige Aurora",
+  "planet_featureMegafauna": "Megafauna",
+  "ui_event_h2oScan": "H2O-SCAN",
+  "ui_event_gravScan": "GRAV-SCAN",
+  "planet_featureArchiveVaults": "Archiveer kluizen",
+  "planet_featureCarnivorousFlora": "Vleesetende flora",
+  "planet_featureSaltFlats": "Zoutvlakten",
+  "planet_featureGhostCities": "Spooksteden",
+  "planet_featureSinkholeFields": "Zinkgatvelden",
+  "planet_featureObsidianPlains": "Obsidiaan vlakten",
+  "planet_featureApexPredator": "Apex-roofdier",
+  "planet_featureUndergroundRivers": "Ondergrondse rivieren",
+  "ui_monthNov": "NOV",
+  "ui_monthDec": "DEC",
+  "event_triageDecision_title": "Triage",
+  "ending_scoreLabel_landing": "Landing",
+  "ending_governmentTheocracy": "Theocratie",
+  "ui_monthAug": "AUG",
+  "ending_governmentMilitaryJunta": "Militaire Junta",
+  "ui_monthJul": "JULI",
+  "ui_monthSep": "SEPT",
+  "ui_monthApr": "APRIL",
+  "ui_monthJan": "JANUARI",
+  "ui_monthJun": "JUNI",
+  "ui_monthFeb": "FEB",
+  "ending_nativesConflict": "Conflict",
+  "ending_cultureRenaissance": "Renaissance",
+  "ending_nativesAlliance": "Alliantie",
+  "ending_governmentCommune": "Gemeente",
+  "ending_nativesSubjugation": "Onderwerping",
+  "ending_govSentenceCommune": "De mensen van {planetName} regeren zichzelf collectief en delen middelen en beslissingen gelijkelijk onder alle kolonisten.",
+  "ending_govSentenceCorporateOligarchy": "Een consortium van hulpbronnenbeheerders leidt {planetName}, waarbij hun economisch inzicht essentieel is gebleken om te overleven.",
+  "ending_govSentenceFascistState": "Een autoritair regime controleert {planetName} met ijzeren vuist, waarbij burgerlijke vrijheden worden opgeofferd voor de orde in de nieuwe wereld.",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ending_govSentenceMilitaryJunta": "Een militaire commandostructuur regeert {planetName}, de discipline die hen in de ruimte heeft gered en die nu hun beschaving bepaalt.",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceTheocracy": "Een theocratische raad leidt {planetName} en put wijsheid uit het geloof dat de kolonisten door de leegte heen hield.",
+  "ui_codex_title": "CODEX",
+  "ending_governmentCorporateOligarchy": "Bedrijfsoligarchie",
+  "ui_common_tapRingToChoose": "TIK OP EEN RING OM TE KIEZEN",
+  "ui_common_tapToContinue": "TIK OM VERDER TE GAAN",
+  "ending_governmentFascistState": "Fascistische staat",
+  "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
+  "ui_common_tapToSkip": "TIK OM OVER TE SLAAN",
+  "ui_tooltip_back": "Rug",
+  "ui_tooltip_settings": "Instellingen",
+  "ui_tooltip_codex": "Codex",
+  "ending_nativeSentenceSubjugation": "De inheemse bevolking van {planetName} leeft onder koloniaal bestuur, hun cultuur wordt onderdrukt omdat de kolonisten hun eigen orde opleggen.",
+  "ending_nativeSentenceAlliance": "Een formele alliantie verbindt de kolonisten en de inheemse beschaving van {planetName}, waarbij hun gecombineerde kennis iets groters opbouwt dan elk van hen alleen zou kunnen.",
+  "event_pulsarLighthouse_choice2": "Trek je terug voordat de sweep ons bereikt",
+  "event_constitutionalConvention_title": "Constitutionele Conventie",
+  "ui_tooltip_bugReport": "Rapporteer een bug",
+  "ui_tooltip_leaderboards": "Leaderboards",
+  "event_constitutionalConvention_outcome1": "Er wordt één enkele leider aangesteld met verregaande autoriteit. Beslissingen komen snel, maar andersdenkenden fluisteren over tirannie op de benedendekken.",
+  "event_pulsarLighthouse_outcome2": "We zwaaien weg bij een noodbrand voordat de volgende straal passeert. Het signaal van de pulsar verdwijnt achter ons: er worden geen gegevens verzameld, er wordt geen schade geleden, er wordt een beetje brandstof besteed aan ontwijkende stuwkracht.",
+  "event_constitutionalConvention_choice1": "Zorg voor een sterke uitvoerende macht met noodbevoegdheden",
+  "event_constitutionalConvention_choice0": "Stel een democratisch handvest op met algemeen kiesrecht",
+  "event_constitutionalConvention_narrative": "De bevolking van het kolonieschip is onrustig geworden zonder formeel bestuur. Afgevaardigden van elk dek verzamelen zich in het vrachtruim om een ​​charter op te stellen dat zal bepalen hoe de toekomstige kolonie zal worden geregeerd. Drie facties presenteren concurrerende visies voor de nieuwe regering.",
+  "event_constitutionalConvention_outcome0": "De kolonisten ratificeren een grondwet die gelijke vertegenwoordiging garandeert. De besluitvorming vertraagt, maar het moreel stijgt naarmate elke stem wordt gehoord.",
+  "event_constitutionalConvention_outcome2": "Ingenieurs, wetenschappers en artsen vormen een regerende raad op basis van expertise. De efficiëntie verbetert, hoewel sommigen zich uitgesloten voelen van de macht.",
+  "event_militaryCoupThreat_outcome0": "Trouwe bemanningsleden verzamelen zich om zich tegen Vasquez te verzetten. De impasse eindigt met minimaal bloedvergieten, maar de veiligheidsdiensten zijn verzwakt en sommige kolonisten komen in het kruisvuur terecht.",
+  "event_militaryCoupThreat_outcome1": "Vasquez neemt de controle over de scheepsoperaties over. De orde wordt snel hersteld, maar dit gaat ten koste van de burgerlijke vrijheden. Gewapende patrouilles lopen nu door elke gang.",
+  "event_militaryCoupThreat_choice1": "Geef je over aan de eisen van de commandant",
+  "event_constitutionalConvention_choice2": "Vorm een ​​technocratische raad van specialisten",
+  "event_militaryCoupThreat_choice0": "Weersta de staatsgreep met loyale bemanningsleden",
+  "event_militaryCoupThreat_narrative": "Commandant Vasquez van de veiligheidsdienst van het schip heeft de wapenkamer in beslag genomen en een ultimatum gesteld: verleen militaire noodkrachten, anders worden alle dekken afgesloten. De situatie is onstabiel en de kolonisten kijken naar jou uit voor een reactie.",
+  "event_religiousAwakening_title": "Religieus ontwaken",
+  "event_militaryCoupThreat_title": "Dreiging van een militaire staatsgreep",
+  "event_militaryCoupThreat_outcome2": "Na gespannen onderhandelingen aanvaardt Vasquez tijdelijk gezag met toezicht. Een kwetsbaar compromis dat niemand volledig tevreden stelt, maar geweld voorkomt.",
+  "event_militaryCoupThreat_choice2": "Onderhandel over beperkte noodbevoegdheden met een zonsondergangsclausule",
+  "event_religiousAwakening_outcome0": "De beweging bloeit met officiële steun. Het moreel onder de gelovigen verbetert, en hun gemeenschapszin versterkt de sociale banden aan boord van het schip.",
+  "event_religiousAwakening_choice0": "Omarm de geloofsbeweging en zorg voor middelen",
+  "event_religiousAwakening_narrative": "Een charismatische prediker heeft honderden kolonisten tot een nieuwe geloofsbeweging getrokken. Ze verzamelen zich elke cyclus in de observatiekoepel, terwijl hun hymnes door de ventilatieschachten weerklinken. Sommige bemanningsleden maken zich zorgen over fanatisme; Anderen vinden echte troost in de leringen.",
+  "event_religiousAwakening_choice2": "Sta aanbidding toe, maar controleer de invloed ervan",
+  "event_religiousAwakening_choice1": "Dwing strikt secularisme af aan boord van het schip",
+  "event_religiousAwakening_outcome1": "Religieuze bijeenkomsten zijn beperkt tot privévertrekken. De beweging gaat ondergronds en kweekt wrok, maar het wetenschappelijk rationalisme blijft de officiële doctrine.",
+  "event_religiousAwakening_outcome2": "Het geloof is toegestaan, maar wordt gescheiden gehouden van het bestuur. Er wordt een kapelaan aangesteld om contact te onderhouden met het commando. Er blijft een ongemakkelijk evenwicht bestaan.",
+  "event_corporateTakeover_title": "Bedrijfsovername",
+  "event_corporateTakeover_choice2": "Implementeer gereguleerde markten met vangnetten",
+  "event_corporateTakeover_choice0": "Laat de principes van de vrije markt de hulpbronnen beheersen",
+  "event_corporateTakeover_choice1": "Nationaliseer alle hulpbronnen onder collectief eigendom",
+  "event_corporateTakeover_outcome0": "De bedrijfsfractie neemt het beheer van de hulpbronnen over. De efficiëntie verbetert dramatisch, maar de prijzen stijgen en de armste kolonisten hebben moeite om de basisbehoeften te betalen.",
+  "event_corporateTakeover_narrative": "De resourcemanagers van het schip hebben stilletjes de controle over de voedseldistributie, waterrecycling en energietoewijzing geconsolideerd. Ze stellen nu voor om hun autoriteit te formaliseren in een bedrijfsstructuur die de economie van de toekomstige kolonie zou beheren.",
+  "event_corporateTakeover_outcome2": "Er ontstaat een gemengde economie met prijscontroles en welzijnsprogramma's. Geen van beide facties is volledig tevreden, maar aan de basisbehoeften wordt voldaan terwijl er toch enige ondernemingszin mogelijk is.",
+  "event_corporateTakeover_outcome1": "Hulpbronnen worden in beslag genomen en onder gemeenschappelijke controle geplaatst. De bedrijfsfractie wordt ontmanteld, maar de innovatie stagneert zonder winstprikkels.",
+  "event_successionCrisis_title": "Successiecrisis",
+  "event_successionCrisis_outcome2": "De oudste en meest ervaren kolonisten vormen een bestuursraad. Hun wijsheid leidt het schip, hoewel sommige jongere bemanningsleden zich gemarginaliseerd voelen door de gerontocratie.",
+  "event_successionCrisis_narrative": "De kapitein van het schip is in hun slaap overleden, waardoor er geen opvolger is aangewezen. Drie facties strijden onmiddellijk om controle: de burgerraad eist verkiezingen, de veiligheidschef claimt krijgsgezag en de oudere kolonisten beroepen zich op traditionele leiderschapsrituelen.",
+  "event_successionCrisis_outcome1": "Het hoofd van de beveiliging stapt in de stoel van de kapitein. De discipline wordt onmiddellijk hersteld, maar de burgerbemanning kijkt met groeiend ongemak naar de gewapende bewakers.",
+  "event_successionCrisis_outcome0": "Een chaotische maar pittige verkiezing levert een nieuwe kapitein op, gekozen door middel van volksstemming. Het proces is rommelig, maar de kolonisten voelen zich eigenaar van hun leiderschap.",
+  "event_successionCrisis_choice2": "Roep een raad van oudsten bijeen",
+  "event_successionCrisis_choice1": "Laat het leger het bevel overnemen",
+  "event_successionCrisis_choice0": "Houd een noodverkiezing",
+  "event_nativeSovereignty_title": "Inheemse soevereiniteit",
+  "event_nativeSovereignty_choice2": "Stel een gedeeld bestuur van de planeet voor",
+  "event_nativeSovereignty_choice1": "Beweer de koloniale suprematie en bereid je voor op verzet",
+  "event_nativeSovereignty_narrative": "Langeafstandsscans bevestigen intelligent leven op de doelplaneet. Onderschepte communicatie onthult een geavanceerde beschaving die jouw nadering heeft opgemerkt. Ze zenden een formele eis uit: erkennen hun territoriale soevereiniteit of krijgen bij aankomst te maken met weerstand.",
+  "event_nativeSovereignty_outcome1": "U zendt uw voornemen uit om hoe dan ook een schikking te treffen. De bemanning begint met wapenoefeningen en het plannen van fortificaties. De inboorlingen zwijgen, wat op de een of andere manier angstaanjagender is dan bedreigingen.",
+  "event_nativeSovereignty_choice0": "Erken de inheemse soevereiniteit en vraag toestemming om zich te vestigen",
+  "event_nativeSovereignty_outcome0": "U geeft een formele erkenning van inheemse rechten door. De reacties zijn voorzichtig maar positief. Toekomstige relaties zullen beginnen op basis van wederzijds respect, ook al zijn de landingsplaatsen beperkt.",
+  "event_nativeSovereignty_outcome2": "U biedt een raamwerk voor co-existentie en het delen van hulpbronnen. De inboorlingen zijn geïntrigeerd maar op hun hoede. De onderhandelingen zullen complex zijn, maar de mogelijkheid van vrede bestaat.",
+  "event_laborStrike_title": "Arbeidsstaking",
+  "event_laborStrike_choice1": "Onderdruk de staking en dwing verplichte arbeid af",
+  "event_laborStrike_choice2": "Bied een gedeeltelijk compromis over de belangrijkste eisen",
+  "event_laborStrike_choice0": "Voldoe volledig aan de eisen van de arbeiders",
+  "event_laborStrike_outcome1": "Veiligheidstroepen begeleiden de arbeiders onder schot terug naar hun posten. De motoren zoemen weer, maar de haat sluimert op de benedendekken. Verschillende werknemers zijn opgesloten in wijken.",
+  "event_laborStrike_narrative": "De technische bemanning heeft haar baan opgezegd en eist kortere diensten, betere voedselrantsoenen en een stem in navigatiebeslissingen. Kritieke systemen draaien op geautomatiseerde back-ups, maar die zullen niet lang meegaan. De rest van de kolonisten kijkt zenuwachtig toe.",
+  "event_laborStrike_outcome2": "Na marathononderhandelingen wordt een deal gesloten: betere rantsoenen en advies, maar geen verkorting van de dienstduur. Geen van beide partijen is enthousiast, maar de motoren blijven draaien.",
+  "event_laborStrike_outcome0": "De staking eindigt onmiddellijk. Werknemers keren onder betere omstandigheden terug naar hun posten. De productiviteit daalt licht naarmate de kortere diensten van kracht worden, maar de loyaliteit is onwrikbaar.",
+  "event_censorshipDebate_choice0": "Garandeer gratis toegang tot alle informatie",
+  "event_censorshipDebate_choice1": "Implementeer volledige informatiecontrole",
+  "event_censorshipDebate_narrative": "Een uitgelekt document onthult de ware toestand van de falende systemen van het schip. De paniek verspreidt zich door de lagere dekken. De communicatiefunctionaris stelt voor om de toegang tot informatie te beperken om verdere onrust te voorkomen. Voorstanders van burgerlijke vrijheden zijn verontwaardigd.",
+  "event_censorshipDebate_outcome0": "Er is sprake van volledige transparantie. De aanvankelijke paniek neemt af als kolonisten zich verenigen om de problemen op te lossen die ze nu begrijpen. Het vertrouwen in leiderschap groeit, ook al veroorzaakt bepaalde informatie onrust.",
+  "event_censorshipDebate_choice2": "Filter alleen beveiligingsgevoelige informatie",
+  "event_censorshipDebate_title": "Censuurdebat",
+  "event_colonialCharter_choice0": "Een progressief handvest dat de nadruk legt op individuele rechten",
+  "event_colonialCharter_choice1": "Een conservatief handvest dat de tradities van de aarde bewaart",
+  "event_censorshipDebate_outcome1": "Alle communicatie wordt nu gefilterd via commando's. De paniek houdt op en maakt plaats voor een griezelige kalmte. Maar geruchten vullen de leegte die door de gecensureerde waarheid wordt achtergelaten, en ze zijn vaak erger dan de werkelijkheid.",
+  "event_censorshipDebate_outcome2": "Er wordt een classificatiesysteem opgezet. De meeste informatie stroomt vrijelijk, maar militaire en kritieke systeemgegevens vereisen goedkeuring. Een werkbare middenweg die grotendeels voldoet.",
+  "event_colonialCharter_choice2": "Een pragmatisch handvest gericht op overleven en groei",
+  "event_colonialCharter_outcome2": "Het handvest geeft prioriteit aan hulpbronnenbeheer, technisch onderwijs en economische ontwikkeling. Het mist poëzie, maar zorgt ervoor dat de kolonie efficiënt en goed georganiseerd zal zijn.",
+  "event_separatistMovement_narrative": "Een factie kolonisten heeft zich onafhankelijk verklaard van het scheepsbestuur. Ze hebben zich in het achterste gedeelte gebarricadeerd en eisen het recht op om na de landing hun eigen nederzetting te stichten. Ze controleren 15% van de voedselreserves van het schip en een back-up navigatie-array.",
+  "event_separatistMovement_title": "Separatistische beweging",
+  "event_colonialCharter_title": "Koloniaal Handvest",
+  "event_colonialCharter_outcome1": "Het handvest codificeert traditionele waarden, gezinsstructuren en religieuze naleving. Velen vinden troost in vertrouwde gewoonten; Anderen voelen zich verstikt door het gewicht van het ouderwetse denken.",
+  "event_colonialCharter_narrative": "Nu de planeetval nadert, moeten de kolonisten fundamentele wetten opstellen voor hun nieuwe samenleving. Er zijn drie filosofische kampen ontstaan, die elk een andere visie verdedigen op wat de kolonie zou moeten worden. Het debat is verhit en zeer persoonlijk.",
+  "event_colonialCharter_outcome0": "Het handvest verankert persoonlijke vrijheden, gelijkheid en sociale mobiliteit. Kunstenaars en denkers vieren feest; traditionalisten waarschuwen dat ongecontroleerde vrijheid tot chaos leidt.",
+  "event_separatistMovement_choice0": "Regionale autonomie verlenen binnen een federaal kader",
+  "event_warCouncil_narrative": "Nu er potentiële bedreigingen worden gedetecteerd in nabijgelegen systemen, roept de leiding van het schip een oorlogsraad bijeen. De vraag: hoeveel van de beperkte middelen van de kolonie moeten worden besteed aan militaire paraatheid versus civiele infrastructuur?",
+  "event_separatistMovement_outcome0": "De separatisten aanvaarden een deal: een eigen district met lokaal bestuur, onder een losse federale paraplu. Het precedent van fragmentatie baart sommigen zorgen, maar de vrede blijft gehandhaafd.",
+  "event_separatistMovement_choice1": "Bestorm de barricades en forceer hereniging",
+  "event_separatistMovement_choice2": "Pak de fundamentele grieven aan die de beweging aandrijven",
+  "event_warCouncil_choice0": "Volledige bewapening: smeed wapens en train soldaten",
+  "event_warCouncil_choice1": "Ontwapening: smelt wapens tot gereedschap",
+  "event_separatistMovement_outcome1": "Beveiligingsteams doorbreken het achterste gedeelte. De separatisten verzetten zich hevig. De orde wordt hersteld, maar tegen verschrikkelijke kosten. Het schip is verenigd in lichaam, zo niet in geest.",
+  "event_warCouncil_title": "Oorlogsraad",
+  "event_separatistMovement_outcome2": "Bemiddelaars proberen te begrijpen wat de factie wegduwde. Hervormingen in de distributie en vertegenwoordiging van hulpbronnen brengen de separatisten langzaamaan weer in de gelederen. Genezing kost tijd.",
+  "event_tradeFederation_title": "Handelsfederatie",
+  "event_tradeFederation_narrative": "Terwijl de kolonie de levensvatbaarheid nadert, debatteren facties over de manier waarop ze de economie moeten structureren. De vraag gaat verder dan louter overleven; het zal het soort samenleving definiëren dat wortel schiet op vreemde bodem. Kooplieden, communisten en bureaucraten maken allemaal hun standpunt kenbaar.",
+  "event_warCouncil_choice2": "Alleen defensieve houding: schilden en muren, geen zwaarden",
+  "event_warCouncil_outcome0": "Werkplaatsen worden opnieuw ingericht voor wapenproductie. Elke gezonde kolonist krijgt gevechtstraining. Het schip barst van de wapens, maar het budget voor landbouwuitrusting krimpt.",
+  "event_warCouncil_outcome2": "De middelen gaan naar vestingwerken, schilden en systemen voor vroegtijdige waarschuwing. Er worden geen aanvalswapens geproduceerd. Een evenwichtige aanpak die opties open houdt zonder potentiële buren te provoceren.",
+  "event_warCouncil_outcome1": "Het arsenaal wordt geleegd en de inhoud ervan wordt gerecycled tot bouwmaterialen. De kolonie zal bouwen met ploegscharen, niet met zwaarden. Pacifisten verheugen zich; Realisten maken zich zorgen over wat er in het donker op de loer ligt.",
+  "event_tradeFederation_choice1": "Implementeer het gemeenschappelijk delen van alle bronnen",
+  "event_tradeFederation_choice2": "Creëer een door de staat beheerd handelssysteem",
+  "event_tradeFederation_choice0": "Vestig vrijhandelszones met minimale regelgeving",
+  "event_tradeFederation_outcome0": "In elke habitatmodule ontstaan ​​markten. Innovatie bloeit terwijl handelaren concurreren. De ongelijkheid in rijkdom groeit, maar dat geldt ook voor de totale hoeveelheid middelen die voor de kolonie beschikbaar zijn.",
+  "event_tradeFederation_outcome1": "Privé-eigendom wordt afgeschaft. Alles is van iedereen. Niemand lijdt honger, maar niemand heeft de prikkel om meer te produceren dan het minimum. Middelmatigheid is comfortabel.",
+  "event_faithVsScience_narrative": "De telescoop van het schip heeft beelden vastgelegd van een kosmisch fenomeen dat rechtstreeks in tegenspraak is met het centrale principe van de dominante geloofsbeweging. De hoofdwetenschapper wil de bevindingen publiceren; de religieuze leider houdt vol dat ze de gemeenschap zullen verscheuren.",
+  "event_tradeFederation_outcome2": "De overheid controleert alle handel, stelt prijzen vast en wijst middelen toe. Het systeem is eerlijk, maar inflexibel. Zwarte markten ontstaan ​​in de onderhoudscorridors.",
+  "event_faithVsScience_choice0": "Publiceer de wetenschappelijke bevindingen volledig",
+  "event_faithVsScience_choice1": "Onderdruk de bevindingen om de sociale harmonie te behouden",
+  "event_faithVsScience_title": "Geloof versus wetenschap",
+  "event_faithVsScience_outcome0": "De waarheid prevaleert boven comfort. De gegevens worden vrijgegeven en de religieuze beweging breekt. Sommige gelovigen passen hun geloof aan; anderen verliezen het volledig. Kennis gaat vooruit.",
+  "event_surveillanceState_title": "Toezicht staat",
+  "event_faithVsScience_outcome2": "Wetenschappers en theologen werken samen om de bevindingen te herinterpreteren. Er ontstaat een nieuwe synthese die zowel het begrip als het geloof vergroot. Niet iedereen is overtuigd, maar de dialoog is gezond.",
+  "event_faithVsScience_choice2": "Roep een gezamenlijk panel bijeen om harmonie tussen beide standpunten te vinden",
+  "event_faithVsScience_outcome1": "De gegevens zijn geclassificeerd. De religieuze gemeenschap blijft stabiel, maar het wetenschapsteam is gedemoraliseerd. Uitgestelde waarheid betekent niet dat de waarheid wordt ontkend, maar zo voelt het wel.",
+  "event_surveillanceState_choice2": "Installeer beperkte monitoring alleen in kritieke gebieden",
+  "event_nativeAlliance_title": "Inheemse Alliantie",
+  "event_surveillanceState_outcome0": "De privacy blijft behouden. De saboteur blijft op vrije voeten, maar de kolonisten slapen gemakkelijker omdat ze weten dat ze niet in de gaten worden gehouden. Het onderzoek wordt voortgezet met traditionele middelen.",
+  "event_surveillanceState_choice1": "Implementeer volledige bewaking over het hele schip",
+  "event_surveillanceState_choice0": "Wijs het surveillancevoorstel volledig af",
+  "event_surveillanceState_narrative": "Na een reeks sabotage-incidenten stelt de veiligheidschef voor om in elk compartiment van het schip monitoringsystemen te installeren. Camera's, microfoons en biometrische scanners zouden de bewegingen van elke kolonist volgen. Voorstanders van privacy zijn geschokt.",
+  "event_surveillanceState_outcome1": "Elke hoek van het schip wordt bewaakt. De saboteur wordt binnen enkele dagen gepakt. Maar de camera's blijven, en het hoofd van de beveiliging toont geen interesse om ze uit te zetten. Ooit.",
+  "event_surveillanceState_outcome2": "Camera's bestrijken de machinekamer, de wapenkamer en de brug. Woonvertrekken blijven privé. De saboteur wordt uiteindelijk geïdentificeerd door middel van patroonanalyse. Een afgemeten reactie.",
+  "event_nativeAlliance_narrative": "De inheemse beschaving heeft een formeel verdrag voorgesteld. Hun ambassadeur arriveert per shuttle, een elegant wezen dat spreekt via een vertaalapparaat van verbazingwekkende verfijning. Ze bieden drie relatievormen, elk met verschillende implicaties voor de toekomst van de kolonie.",
+  "event_nativeAlliance_choice2": "Een handelspartnerschap tot stand brengen dat gericht is op wederzijds voordeel",
+  "event_nativeAlliance_choice0": "Teken een gelijkwaardig alliantieverdrag",
+  "event_nativeAlliance_outcome0": "Het verdrag regelt wederzijdse verdediging, gedeeld onderzoek en gelijke territoriale rechten. Beide beschavingen zullen samen groeien. De inboorlingen delen landbouwkennis die de vooruitzichten voor uw kolonie verandert.",
+  "event_nativeAlliance_choice1": "Onderhandel vanuit een positie van koloniale dominantie",
+  "event_nativeAlliance_outcome2": "Handel overbrugt de kloof tussen soorten. Native materialen stromen naar uw workshops; jouw technologie verbetert hun medicijn. Vriendschap groeit uit wederzijds voordeel.",
+  "event_nativeAlliance_outcome1": "U maakt gebruik van uw geavanceerde technologie om gunstige voorwaarden te garanderen. De inboorlingen staan ​​grondgebied en hulpbronnen af. Ze tekenen met trillende handen. De geschiedenis heeft dit eerder gezien en het eindigt zelden goed."
 }

@@ -9,9 +9,6 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appTitle => 'Tín Hiệu Tinh Cầu';
-
-  @override
   String get ui_title_stellar => 'TINH CẦU';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'KHỞI HÀNH';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'Mã hạt giống không hợp lệ. Chỉ sử dụng A–Z và 0–9.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -197,6 +198,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ui_scan_statRadiation => 'BỨC XẠ';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'ĐẦU DÒ: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'SỰ KHÔNG CHẮC CHẮN: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'PHÂN TÍCH HÀNH TINH';
 
   @override
@@ -294,22 +305,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ui_landing_statLandingSys => 'Hệ Thống Hạ Cánh';
 
   @override
-  String get ui_landingSequence_phase1 => 'GIAI ĐOẠN 1: CAM KẾT QUỸ ĐẠO';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Cửa sổ hạ cánh đã mở. Cam kết tiến nhập.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'GIAI ĐOẠN 2: LỬA KHÍ QUYỂN';
-
-  @override
-  String get ui_landingSequence_title => 'TRÌNH TỰ HẠ CÁNH';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'XEM BÁO CÁO THUỘC ĐỊA';
-
-  @override
   String get ui_ending_colonyEstablished => 'THUỘC ĐỊA ĐÃ THIẾT LẬP';
 
   @override
@@ -335,6 +330,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'THÁCH ĐẤU BẠN BÈ';
+
+  @override
+  String get ui_ending_shareCard => 'THẺ CHIA SẺ';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Chia sẻ hành trình của bạn';
+
+  @override
+  String get ui_ending_shareCardShare => 'CHIA SẺ';
+
+  @override
+  String get ui_ending_shareCardCancel => 'HỦY BỎ';
 
   @override
   String get ui_ending_copySeed => 'SAO CHÉP MÃ';
@@ -469,6 +476,15 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Mặc định hệ thống';
+
+  @override
+  String get ui_settings_statsPosition => 'Số liệu thống kê & vị trí nút';
+
+  @override
+  String get ui_settings_statsLeft => 'BÊN TRÁI';
+
+  @override
+  String get ui_settings_statsRight => 'PHẢI';
 
   @override
   String get ui_legacy_title => 'DI SẢN';
@@ -770,6 +786,36 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'Thực Vật Dược Liệu';
+
+  @override
+  String get planet_featurePerpetualAurora => 'Cực quang vĩnh cửu';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Megaflora hóa đá';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Sông ngầm';
+
+  @override
+  String get planet_featureObsidianPlains => 'Đồng bằng Obsidian';
+
+  @override
+  String get planet_featureSaltFlats => 'Cánh đồng muối';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Hệ thực vật ăn thịt';
+
+  @override
+  String get planet_featureGhostCities => 'Thành phố ma';
+
+  @override
+  String get planet_featureArchiveVaults => 'Kho lưu trữ';
+
+  @override
+  String get planet_featureSinkholeFields => 'Cánh đồng hố sụt';
+
+  @override
+  String get planet_featureApexPredator => 'Động vật ăn thịt đỉnh cao';
 
   @override
   String get ui_monthJan => 'TH1';
@@ -4235,18 +4281,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Khí Quyển';
 
   @override
-  String get ending_scoreLabel_gravity => 'Trọng Lực';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Nhiệt Độ';
-
-  @override
-  String get ending_scoreLabel_water => 'Nước';
-
-  @override
-  String get ending_scoreLabel_resources => 'Tài Nguyên';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Quan Hệ Bản Địa';
 
   @override
@@ -4355,19 +4389,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Hội Đồng Bộ Lạc';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Thần quyền';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'Hội đồng quân sự';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Đầu sỏ doanh nghiệp';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Nhà nước phát xít';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Xã';
 
   @override
   String get ending_cultureRenaissance => 'Phục Hưng';
@@ -4421,10 +4455,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ending_nativesConflict => 'Xung Đột';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'liên minh';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'chinh phục';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4463,66 +4497,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'Áp suất khí quyển thấp nguy hiểm — cần môi trường kín thiết yếu. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Mặt trăng lấp lánh, sọc khoáng sản thống trị bầu trời đêm, bề mặt kim loại phản chiếu ánh sao khắp phong cảnh. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Mặt trăng nứt vỡ lơ lửng phía trên, bề mặt đổ nát kéo theo vành mảnh vụn mờ — lời nhắc nhở thường trực về nguy cơ bắn phá bên dưới. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Mặt trăng nhợt nhạt, cằn cỗi mọc lên trên chân trời, bề mặt đầy hố là lính canh thầm lặng trên thuộc địa. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'Hành tinh quay nhanh — ngày chỉ kéo dài vài giờ, và gió Coriolis quật ngã bất cứ thứ gì đứng cao. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'Hành tinh quay chậm đến đau đớn. Bán cầu hướng mặt trời thiêu đốt trong khi phía tối đóng băng, và chỉ dải chạng vạng giữa hai bên cho chỗ trú. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Dãy núi lửa xẻ đôi chân trời, sườn núi vằn vện sông dung nham. Không khí có vị lưu huỳnh và mặt đất rung chuyển dưới chân. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'Vỏ hành tinh nứt vỡ và bất ổn — khe nứt mới mở không cảnh báo, phơi bày mạch khoáng lấp lánh giữa đám mây bụi. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Sét vạch liên tục trên bầu trời, biến đêm thành ngày và tràn ngập không khí mùi ozone. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Đám mây bào tử phát quang trôi trên mỗi cơn gió, đẹp và chí mạng — dân di cư cần môi trường kín hoặc mặt nạ lọc để sống ngoài trời. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'Hành tinh phần lớn là đại dương — vùng nước rộng lớn, tối tăm trải đến mọi chân trời, chỉ quần đảo rải rác phá vỡ bề mặt. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Miệng phun địa nhiệt xuyên qua vỏ, phun cột hơi giàu khoáng chất làm ấm phong cảnh xung quanh và nuôi dưỡng ốc đảo sự sống. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Từ trường mạnh bao bọc hành tinh, lệch hướng bức xạ sao nhưng gây rối điện tử không được che chắn. La bàn quay vô dụng. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Không có từ trường mạnh, gió sao bào mòn tầng khí quyển trên. Cực quang ngoạn mục tuôn trào trên bầu trời ở mọi vĩ độ. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Sinh vật khổng lồ di chuyển qua phong cảnh — một số lớn như tòa nhà, bước chân cảm nhận được cách hàng kilômét. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'Sinh quyển hoạt động như mạng lưới cộng sinh đan xen: mọi sinh vật phụ thuộc và duy trì lẫn nhau trong cân bằng thanh nhã, mong manh. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4569,27 +4543,27 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Một hội đồng thần quyền hướng dẫn $planetName, rút ​​ra sự khôn ngoan từ đức tin đã duy trì những người thuộc địa vượt qua khoảng trống.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'Một cơ cấu chỉ huy quân sự quản lý $planetName, kỷ luật đã cứu họ trong không gian giờ đây đã xác định nền văn minh của họ.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Một nhóm các nhà quản lý tài nguyên dẫn đầu $planetName, sự nhạy bén về kinh tế của họ đã được chứng minh là cần thiết cho sự sống còn.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Một chế độ độc tài kiểm soát $planetName bằng nắm đấm sắt, các quyền tự do dân sự bị hy sinh vì trật tự trong thế giới mới.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'Người dân $planetName tự quản lý tập thể, chia sẻ tài nguyên và quyết định một cách bình đẳng giữa tất cả những người thuộc địa.';
   }
 
   @override
@@ -4629,10 +4603,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Mặt trăng bất ổn trên quỹ đạo suy giảm trút mảnh vụn xuống thuộc địa, tàn phá cơ sở hạ tầng và phá hủy công nghệ không thể thay thế trong các đợt bắn phá thiên thạch định kỳ.';
-
-  @override
-  String get ending_moonBarren =>
-      'Mặt trăng cằn cỗi treo trên bầu trời xa lạ, người bạn đồng hành hoang vắng chẳng ban phát gì cho dân di cư ngoài cảnh quen thuộc để ngắm trong đêm dài.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4721,12 +4691,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Một liên minh chính thức gắn kết những người thực dân và nền văn minh bản địa của $planetName, sự kết hợp kiến ​​thức của họ sẽ xây dựng nên thứ gì đó lớn lao hơn những gì một trong hai có thể làm được.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'Người dân bản địa $planetName sống dưới sự cai trị của thực dân, nền văn hóa của họ bị đàn áp khi thực dân áp đặt trật tự của riêng họ.';
   }
 
   @override
@@ -4764,26 +4734,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'VỆ TINH';
-
-  @override
-  String get ui_rings => 'VÀNH ĐAI';
-
-  @override
   String get ui_landing_landOnMoon => 'HẠ CÁNH LÊN VỆ TINH';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Vệ tinh: $moonPercent% so với Hành tinh: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'Trọng lực thấp hơn — hạ cánh dễ hơn';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'Hệ Vành Đai $type';
-  }
 
   @override
   String get moon_barren => 'Cằn cỗi';
@@ -4811,60 +4762,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Kim loại';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Một vệ tinh đơn độc treo lơ lửng trên bầu trời thuộc địa.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count vệ tinh quay quanh phía trên, phủ những bóng đổ luân chuyển khắp cảnh quan.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Giữa chúng, một thế giới có thể sinh sống vẫy gọi — viên ngọc xanh mở ra biên cương thứ hai.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Một vệ tinh băng giá lấp lánh với trữ lượng băng khổng lồ, hồ chứa đang chờ được khai thác.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'Băng khai thác từ vệ tinh đóng băng bổ sung nguồn nước của thuộc địa, biến thế giới cằn cỗi thành nơi đáng sống.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'Thuộc địa được thiết lập không phải trên hành tinh, mà trên vệ tinh hứa hẹn nhất — thế giới nhỏ hơn với trọng lực nhẹ nhàng và tiềm năng lớn hơn.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Vành đai bụi mờ nhạt vắt ngang bầu trời, thêm vẻ đẹp huyền ảo cho mỗi bình minh.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Vành đai băng rực rỡ hứng ánh sao, vẽ lên bầu trời ngọn lửa lăng kính.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Vành đai đá dày đặc bao quanh hành tinh, nguồn vật liệu xây dựng từ từ rơi xuống.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Vành đai kim loại lấp lánh phía trên, giàu quặng nuôi sống nền công nghiệp thuộc địa.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Một vệ tinh có thể sinh sống mở ra cơ hội thứ hai cho việc khai hoang.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'Băng khai thác từ vệ tinh đóng băng bổ sung nguồn nước của thuộc địa.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'Thuộc địa quay dưới $count vệ tinh.';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'Độc Thoại Của AI';
@@ -5386,6 +5283,30 @@ class AppLocalizationsVi extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'NHẤN ĐỂ BỎ QUA';
+
+  @override
+  String get ui_common_tapRingToChoose => 'NHẤN VÀO MỘT VÒNG ĐỂ CHỌN';
+
+  @override
+  String get ui_common_tapToContinue => 'NHẤN ĐỂ TIẾP TỤC';
+
+  @override
+  String get ui_tooltip_back => 'Mặt sau';
+
+  @override
+  String get ui_tooltip_codex => 'Codex';
+
+  @override
+  String get ui_tooltip_settings => 'Cài đặt';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Bảng xếp hạng';
+
+  @override
+  String get ui_tooltip_bugReport => 'Báo cáo lỗi';
+
+  @override
   String get event_pulsarLighthouse_title => 'Ngọn Hải Đăng Pulsar';
 
   @override
@@ -5406,6 +5327,14 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'Chúng ta giữ khoảng cách rộng với pulsar, đốt thêm nhiên liệu để duy trì quỹ đạo an toàn. Phi hành đoàn ngắm chùm tia quét qua cửa sổ lọc ánh sáng — đẹp, nhưng xa vời.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Rút lui trước khi cuộc càn quét đến với chúng ta';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'Chúng tôi quay đi khi bị bỏng khẩn cấp trước khi chùm tia tiếp theo đi qua. Tín hiệu của sao xung mờ dần phía sau chúng tôi - không thu được dữ liệu, không bị tổn hại, tốn một ít nhiên liệu cho lực đẩy né tránh.';
 
   @override
   String get event_alienNursery_title => 'Vườn Ươm Ngoài Hành Tinh';
@@ -5494,4 +5423,466 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'Thuốc kháng nấm thực nghiệm ban đầu cho thấy triển vọng, nhưng một chủng kháng thuốc đột phá. Đến khi chúng ta chuyển sang thanh tẩy toàn diện, dịch đã lan sang đường dinh dưỡng buồng đông lạnh. Thiệt hại tệ hơn so với nếu chúng ta hành động quyết đoán ngay từ đầu.';
+
+  @override
+  String get event_constitutionalConvention_title => 'Công ước Hiến pháp';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'Dân số của tàu thuộc địa ngày càng tăng không ngừng nghỉ nếu không có sự quản lý chính thức. Các đại biểu từ mỗi boong tập trung tại hầm hàng để soạn thảo một điều lệ xác định cách cai trị thuộc địa trong tương lai. Ba phe phái đưa ra những tầm nhìn cạnh tranh nhau cho chính phủ mới.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Soạn thảo hiến chương dân chủ với quyền bầu cử phổ thông';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'Những người thực dân phê chuẩn một hiến pháp đảm bảo sự đại diện bình đẳng. Việc ra quyết định chậm lại nhưng tinh thần lại tăng cao khi mọi tiếng nói đều được lắng nghe.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Thành lập một cơ quan điều hành mạnh mẽ với quyền lực khẩn cấp';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Một nhà lãnh đạo duy nhất được bổ nhiệm với quyền lực sâu rộng. Các quyết định được đưa ra nhanh chóng nhưng những người bất đồng chính kiến ​​thì thầm về sự chuyên chế ở tầng dưới.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Thành lập hội đồng chuyên gia kỹ trị';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Các kỹ sư, nhà khoa học và bác sĩ thành lập một hội đồng cai trị dựa trên chuyên môn. Hiệu quả được cải thiện, mặc dù một số người cảm thấy bị loại khỏi quyền lực.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'Đe dọa đảo chính quân sự';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'Chỉ huy Vasquez phụ trách chi tiết an ninh của con tàu đã chiếm giữ kho vũ khí và đưa ra tối hậu thư: cấp quyền lực quân sự khẩn cấp hoặc phải đối mặt với việc khóa tất cả các boong. Tình hình rất bất ổn và những người thực dân đang tìm kiếm phản hồi từ bạn.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Chống lại cuộc đảo chính với các thuyền viên trung thành';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'Phi hành đoàn trung thành tập hợp để chống lại Vasquez. Cuộc xung đột kết thúc với sự đổ máu tối thiểu, nhưng lực lượng an ninh bị suy yếu và một số người dân thuộc địa bị vướng vào làn đạn.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Tuân theo yêu cầu của người chỉ huy';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vasquez đảm nhận quyền kiểm soát hoạt động của tàu. Trật tự được lập lại nhanh chóng nhưng phải trả giá bằng quyền tự do dân sự. Đội tuần tra có vũ trang bây giờ đi khắp mọi hành lang.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Đàm phán quyền hạn khẩn cấp có giới hạn với điều khoản hoàng hôn';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'Sau những cuộc đàm phán căng thẳng, Vasquez tạm thời chấp nhận quyền giám sát. Một sự thỏa hiệp mong manh không làm hài lòng ai hoàn toàn, nhưng ngăn ngừa bạo lực.';
+
+  @override
+  String get event_religiousAwakening_title => 'Thức tỉnh tôn giáo';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Một nhà truyền giáo có sức lôi cuốn đã thu hút hàng trăm người dân thuộc địa tham gia vào một phong trào đức tin mới. Họ tụ tập trong mái vòm quan sát mỗi chu kỳ, những bài thánh ca của họ vang vọng qua các trục thông gió. Một số thuyền viên lo lắng về sự cuồng tín; những người khác tìm thấy niềm an ủi thực sự trong giáo lý.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'Nắm bắt phong trào đức tin và cung cấp nguồn lực';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'Phong trào phát triển mạnh mẽ với sự hỗ trợ chính thức. Tinh thần được cải thiện giữa các tín đồ và tinh thần chung của họ củng cố mối quan hệ xã hội trên con tàu.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Thực thi chủ nghĩa thế tục nghiêm ngặt trên tàu';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Các cuộc tụ họp tôn giáo bị hạn chế ở các khu vực riêng tư. Phong trào diễn ra ngầm, gây phẫn nộ, nhưng chủ nghĩa duy lý khoa học vẫn là học thuyết chính thức.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'Cho phép thờ cúng nhưng điều chỉnh ảnh hưởng của nó';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'Đức tin được cho phép nhưng phải tách biệt khỏi sự quản lý. Một tuyên úy được bổ nhiệm để liên lạc với lệnh. Một sự cân bằng khó chịu được duy trì.';
+
+  @override
+  String get event_corporateTakeover_title => 'Tiếp quản doanh nghiệp';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'Các nhà quản lý tài nguyên của con tàu đã âm thầm củng cố quyền kiểm soát việc phân phối thực phẩm, tái chế nước và phân bổ năng lượng. Bây giờ họ đề xuất chính thức hóa quyền lực của mình thành một cơ cấu công ty có thể quản lý nền kinh tế của thuộc địa trong tương lai.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Cho phép các nguyên tắc thị trường tự do quản lý tài nguyên';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'Phe công ty tiếp quản việc quản lý tài nguyên. Hiệu quả được cải thiện đáng kể, nhưng giá cả tăng cao và những người dân thuộc địa nghèo nhất phải vật lộn để đủ khả năng chi trả cho những nhu cầu cơ bản.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Quốc hữu hóa mọi tài nguyên thuộc sở hữu tập thể';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Tài nguyên bị tịch thu và đặt dưới sự kiểm soát của cộng đồng. Phe công ty bị giải tán, nhưng sự đổi mới bị đình trệ mà không có động cơ lợi nhuận.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Triển khai thị trường được quản lý bằng mạng lưới an toàn';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Một nền kinh tế hỗn hợp được thiết lập với các biện pháp kiểm soát giá cả và các chương trình phúc lợi. Cả hai phe đều không hoàn toàn hài lòng, nhưng các nhu cầu cơ bản vẫn được đáp ứng đồng thời cho phép một số hoạt động kinh doanh.';
+
+  @override
+  String get event_successionCrisis_title => 'Khủng hoảng kế nhiệm';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'Thuyền trưởng của con tàu đã chết trong giấc ngủ, không để lại người kế vị được chỉ định. Ba phe phái ngay lập tức tranh giành quyền kiểm soát: hội đồng dân sự yêu cầu bầu cử, người đứng đầu an ninh tuyên bố có quyền lực, và những người thực dân lớn tuổi áp dụng các nghi thức lãnh đạo truyền thống.';
+
+  @override
+  String get event_successionCrisis_choice0 => 'Tổ chức bầu cử khẩn cấp';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'Một cuộc bầu cử hỗn loạn nhưng đầy tinh thần đã tạo ra một đội trưởng mới được bầu chọn bằng phiếu phổ thông. Quá trình này rất lộn xộn, nhưng những người thuộc địa cảm thấy mình có quyền làm chủ quyền lãnh đạo của mình.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Hãy để quân đội nắm quyền chỉ huy';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'Trưởng phòng an ninh bước vào ghế thuyền trưởng. Kỷ luật được khôi phục ngay lập tức, nhưng phi hành đoàn dân sự để mắt đến những người bảo vệ có vũ trang với sự lo lắng ngày càng tăng.';
+
+  @override
+  String get event_successionCrisis_choice2 => 'Triệu tập hội đồng trưởng lão';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'Những thực dân lớn tuổi nhất và giàu kinh nghiệm nhất thành lập một hội đồng quản lý. Sự khôn ngoan của họ dẫn dắt con tàu, mặc dù một số thủy thủ đoàn trẻ hơn cảm thấy bị chế độ lão thành gạt ra ngoài lề xã hội.';
+
+  @override
+  String get event_nativeSovereignty_title => 'chủ quyền bản địa';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Quét tầm xa xác nhận sự sống thông minh trên hành tinh mục tiêu. Thông tin liên lạc bị chặn tiết lộ một nền văn minh tinh vi đã phát hiện ra cách tiếp cận của bạn. Họ truyền đi một yêu cầu chính thức: công nhận chủ quyền lãnh thổ của mình hoặc đối mặt với sự kháng cự khi đến nơi.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Công nhận chủ quyền bản địa và xin phép giải quyết';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'Bạn truyền đạt sự công nhận chính thức về quyền bản địa. Phản ứng là thận trọng nhưng tích cực. Các mối quan hệ trong tương lai sẽ bắt đầu trên nền tảng tôn trọng lẫn nhau, mặc dù địa điểm hạ cánh có thể bị hạn chế.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Khẳng định quyền lực tối cao của thuộc địa và chuẩn bị kháng chiến';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'Bạn truyền đi ý định giải quyết của mình bất chấp điều đó. Phi hành đoàn bắt đầu diễn tập vũ khí và lập kế hoạch củng cố. Những người bản xứ im lặng, điều này phần nào còn đáng sợ hơn cả những lời đe dọa.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Đề xuất quản trị chung hành tinh';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'Bạn đưa ra một khuôn khổ để cùng tồn tại và chia sẻ tài nguyên. Người bản xứ tò mò nhưng cảnh giác. Các cuộc đàm phán sẽ phức tạp, nhưng khả năng hòa bình vẫn tồn tại.';
+
+  @override
+  String get event_laborStrike_title => 'đình công lao động';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'Đội ngũ kỹ thuật đã nghỉ việc, yêu cầu ca làm việc ngắn hơn, khẩu phần ăn tốt hơn và có tiếng nói trong các quyết định điều hướng. Các hệ thống quan trọng đang chạy trên cơ chế sao lưu tự động nhưng chúng sẽ không tồn tại được lâu. Những người thuộc địa còn lại lo lắng theo dõi.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'Đáp ứng đầy đủ nhu cầu của người lao động';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'Cuộc đình công kết thúc ngay lập tức. Công nhân trở lại vị trí của họ với điều kiện được cải thiện. Năng suất giảm nhẹ khi ca làm việc ngắn hơn có hiệu lực, nhưng lòng trung thành là không thể lay chuyển.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Đàn áp đình công và cưỡng chế lao động cưỡng bức';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Lực lượng an ninh hộ tống các công nhân trở về trạm của họ trước họng súng. Động cơ lại kêu vo vo, nhưng lòng căm thù vẫn sôi sục ở các tầng dưới. Một số công nhân bị giới hạn trong khu.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Đưa ra sự thỏa hiệp một phần đối với các yêu cầu chính';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'Sau các cuộc đàm phán kéo dài, một thỏa thuận đã đạt được: khẩu phần ăn tốt hơn và ý kiến ​​tư vấn đầu vào, nhưng không giảm thời gian làm ca. Không bên nào vui mừng, nhưng động cơ vẫn tiếp tục chạy.';
+
+  @override
+  String get event_censorshipDebate_title => 'Tranh luận về kiểm duyệt';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Một tài liệu bị rò rỉ tiết lộ tình trạng thực sự của hệ thống hỏng hóc của con tàu. Sự hoảng loạn lan khắp các tầng dưới. Nhân viên truyền thông đề xuất hạn chế quyền truy cập thông tin để ngăn chặn tình trạng bất ổn tiếp theo. Những người ủng hộ quyền tự do dân sự đang phẫn nộ.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Đảm bảo quyền truy cập miễn phí vào tất cả các thông tin';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Sự minh bạch hoàn toàn được thiết lập. Sự hoảng loạn ban đầu giảm bớt khi những người dân thuộc địa tập hợp lại để giúp khắc phục những vấn đề mà giờ đây họ đã hiểu. Niềm tin vào sự lãnh đạo ngày càng tăng, mặc dù một số thông tin gây ra lo lắng.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'Thực hiện kiểm soát thông tin đầy đủ';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Tất cả thông tin liên lạc hiện được lọc thông qua lệnh. Sự hoảng loạn dừng lại, thay vào đó là sự bình tĩnh kỳ lạ. Nhưng tin đồn lấp đầy khoảng trống do sự thật bị kiểm duyệt để lại, và chúng thường tệ hơn thực tế.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Chỉ lọc thông tin nhạy cảm về bảo mật';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Một hệ thống phân loại được thiết lập. Hầu hết thông tin đều được lưu chuyển tự do, nhưng dữ liệu hệ thống quân sự và quan trọng cần được cấp phép. Một nền tảng trung bình khả thi mà hầu hết đáp ứng.';
+
+  @override
+  String get event_colonialCharter_title => 'Hiến chương thuộc địa';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'Khi hành tinh sắp sụp đổ, những người thực dân phải soạn thảo những luật cơ bản cho xã hội mới của họ. Ba trường phái triết học đã xuất hiện, mỗi trường phái ủng hộ một tầm nhìn khác nhau về hình ảnh thuộc địa sẽ trở thành. Cuộc tranh luận sôi nổi và mang tính cá nhân sâu sắc.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Một điều lệ tiến bộ nhấn mạnh đến quyền cá nhân';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'Hiến chương quy định các quyền tự do cá nhân, bình đẳng và di chuyển xã hội. Các nghệ sĩ và nhà tư tưởng ăn mừng; những người theo chủ nghĩa truyền thống cảnh báo rằng quyền tự do không được kiểm soát sẽ dẫn đến hỗn loạn.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Một hiến chương bảo thủ bảo tồn truyền thống của Trái đất';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'Hiến chương quy định các giá trị truyền thống, cấu trúc gia đình và việc tuân thủ tôn giáo. Nhiều người tìm thấy niềm an ủi trong những phong tục quen thuộc; những người khác cảm thấy ngột ngạt trước sức nặng của lối suy nghĩ cũ kỹ.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Một điều lệ thực dụng tập trung vào sự tồn tại và phát triển';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'Điều lệ ưu tiên quản lý tài nguyên, giáo dục kỹ thuật và phát triển kinh tế. Nó thiếu chất thơ nhưng đảm bảo thuộc địa sẽ hoạt động hiệu quả và được tổ chức tốt.';
+
+  @override
+  String get event_separatistMovement_title => 'Phong trào ly khai';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Một nhóm thực dân đã tuyên bố độc lập khỏi việc quản lý tàu thuyền. Họ đã rào chắn ở khu vực phía sau, đòi quyền thành lập khu định cư của riêng mình khi hạ cánh. Họ kiểm soát 15% lượng lương thực dự trữ của con tàu và dàn dẫn đường dự phòng.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Trao quyền tự chủ khu vực trong khuôn khổ liên bang';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'Những người ly khai chấp nhận một thỏa thuận: quận riêng của họ có chính quyền địa phương, dưới sự bảo trợ lỏng lẻo của liên bang. Tiền lệ chia cắt khiến một số người lo lắng, nhưng hòa bình vẫn được duy trì.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Bão các chướng ngại vật và thống nhất lực lượng';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Đội an ninh đột nhập vào khu vực phía sau. Phe ly khai chống trả quyết liệt. Trật tự được lập lại nhưng phải trả giá đắt. Con tàu thống nhất về thể xác, nếu không phải về tinh thần.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Giải quyết những bất bình gốc rễ thúc đẩy phong trào';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Những người hòa giải làm việc để hiểu điều gì đã đẩy phe phái ra đi. Những cải cách trong việc phân phối và đại diện tài nguyên dần dần đưa những người ly khai trở lại thế trận. Chữa bệnh cần có thời gian.';
+
+  @override
+  String get event_warCouncil_title => 'Hội đồng chiến tranh';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'Khi các mối đe dọa tiềm tàng được phát hiện trong các hệ thống gần đó, lãnh đạo con tàu triệu tập một hội đồng chiến tranh. Câu hỏi: bao nhiêu nguồn lực hạn chế của thuộc địa nên được dành cho việc chuẩn bị quân sự so với cơ sở hạ tầng dân sự?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Vũ khí đầy đủ: rèn vũ khí và huấn luyện binh lính';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Các xưởng được trang bị lại để sản xuất vũ khí. Mọi người dân thuộc địa khỏe mạnh đều được huấn luyện chiến đấu. Con tàu được trang bị vũ khí nhưng ngân sách dành cho thiết bị nông nghiệp lại bị thu hẹp.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Giải trừ vũ khí: nấu chảy vũ khí thành công cụ';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'Kho vũ khí được làm trống và nội dung của nó được tái chế thành vật liệu xây dựng. Thuộc địa sẽ xây dựng bằng lưỡi cày chứ không phải bằng kiếm. Những người theo chủ nghĩa hòa bình vui mừng; những người thực tế lo lắng về những gì ẩn giấu trong bóng tối.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Chỉ tư thế phòng thủ: khiên và tường, không dùng kiếm';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'Nguồn lực được chuyển đến các công sự, lá chắn và hệ thống cảnh báo sớm. Không có vũ khí tấn công nào được sản xuất. Một cách tiếp cận cân bằng giúp duy trì các lựa chọn mở mà không gây khó chịu cho những người hàng xóm tiềm năng.';
+
+  @override
+  String get event_tradeFederation_title => 'Liên đoàn Thương mại';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'Khi thuộc địa sắp có khả năng tồn tại, các phe phái tranh luận về cách cấu trúc nền kinh tế của nó. Câu hỏi vượt xa sự sống còn đơn thuần - nó sẽ xác định kiểu xã hội bắt nguồn từ vùng đất xa lạ. Các thương gia, những người theo chủ nghĩa xã hội và các quan chức đều đưa ra lý lẽ của mình.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Thiết lập các khu vực thương mại tự do với quy định tối thiểu';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'Thị trường mọc lên ở mọi mô-đun môi trường sống. Sự đổi mới phát triển mạnh mẽ khi các nhà giao dịch cạnh tranh. Bất bình đẳng giàu nghèo ngày càng tăng, nhưng tổng nguồn tài nguyên sẵn có cho thuộc địa cũng tăng theo.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Thực hiện chia sẻ chung tất cả các tài nguyên';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Sở hữu tư nhân bị bãi bỏ. Mọi thứ đều thuộc về mọi người. Không ai bị đói, nhưng không ai có động cơ để sản xuất nhiều hơn mức tối thiểu. Sự tầm thường là thoải mái.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Tạo ra một hệ thống thương mại do nhà nước quản lý';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'Chính phủ kiểm soát mọi hoạt động thương mại, định giá và phân bổ nguồn lực. Hệ thống này công bằng nhưng không linh hoạt. Chợ đen xuất hiện ở các hành lang bảo trì.';
+
+  @override
+  String get event_faithVsScience_title => 'Đức tin vs Khoa học';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'Kính viễn vọng của con tàu đã chụp được những hình ảnh về một hiện tượng vũ trụ mâu thuẫn trực tiếp với nguyên lý trung tâm của phong trào đức tin thống trị. Nhà khoa học đứng đầu muốn công bố những phát hiện này; nhà lãnh đạo tôn giáo khẳng định họ sẽ chia rẽ cộng đồng.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Công bố đầy đủ các kết quả khoa học';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'Sự thật chiếm ưu thế hơn sự thoải mái. Dữ liệu được công bố và phong trào tôn giáo bị rạn nứt. Một số tín đồ điều chỉnh đức tin của họ; những người khác mất nó hoàn toàn. Kiến thức tiến bộ.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Ngăn chặn những phát hiện để duy trì sự hài hòa xã hội';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'Dữ liệu được phân loại. Cộng đồng tôn giáo vẫn ổn định, nhưng đội ngũ khoa học mất tinh thần. Sự thật bị trì hoãn không phải là sự thật bị phủ nhận, nhưng nó có cảm giác như vậy.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Triệu tập một hội đồng chung để tìm sự hài hòa giữa cả hai quan điểm';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Các nhà khoa học và nhà thần học làm việc cùng nhau để giải thích lại những phát hiện này. Một sự tổng hợp mới xuất hiện nhằm mở rộng cả sự hiểu biết lẫn niềm tin. Không phải ai cũng bị thuyết phục, nhưng cuộc đối thoại vẫn lành mạnh.';
+
+  @override
+  String get event_surveillanceState_title => 'Trạng thái giám sát';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'Sau hàng loạt sự cố phá hoại, người đứng đầu an ninh đề xuất lắp đặt hệ thống giám sát ở mọi khoang trên tàu. Máy ảnh, micrô và máy quét sinh trắc học sẽ theo dõi mọi chuyển động của người dân thuộc địa. Những người ủng hộ quyền riêng tư đang kinh hoàng.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Từ chối hoàn toàn đề xuất giám sát';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'Quyền riêng tư được bảo tồn. Kẻ phá hoại vẫn chưa bị bắt, nhưng những người dân thuộc địa dễ ngủ hơn khi biết rằng họ không bị theo dõi. Cuộc điều tra tiếp tục thông qua các phương tiện truyền thống.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Thực hiện giám sát toàn diện trên tàu';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Mọi ngóc ngách của con tàu đều được giám sát. Kẻ phá hoại bị bắt trong vòng vài ngày. Nhưng các camera vẫn còn và giám đốc an ninh tỏ ra không quan tâm đến việc tắt chúng đi. Bao giờ.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Chỉ cài đặt giám sát hạn chế ở những khu vực quan trọng';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Camera bao phủ phòng máy, kho vũ khí và cầu. Khu nhà ở vẫn riêng tư. Kẻ phá hoại cuối cùng được xác định thông qua phân tích mẫu. Một phản ứng đo lường.';
+
+  @override
+  String get event_nativeAlliance_title => 'Liên minh bản địa';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'Nền văn minh bản địa đã đề xuất một hiệp ước chính thức. Đại sứ của họ đến bằng tàu con thoi, một người thanh lịch nói chuyện qua một thiết bị phiên dịch có độ tinh vi đáng kinh ngạc. Họ đưa ra ba hình thức quan hệ, mỗi hình thức có ý nghĩa khác nhau đối với tương lai của thuộc địa.';
+
+  @override
+  String get event_nativeAlliance_choice0 => 'Ký hiệp ước liên minh bình đẳng';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'Hiệp ước thiết lập phòng thủ chung, nghiên cứu chung và quyền lãnh thổ bình đẳng. Cả hai nền văn minh sẽ cùng nhau phát triển. Người bản xứ chia sẻ kiến ​​thức nông nghiệp giúp thay đổi triển vọng thuộc địa của bạn.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Đàm phán từ vị thế thống trị thuộc địa';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'Bạn tận dụng công nghệ tiên tiến của mình để đảm bảo các điều khoản có lợi. Người bản địa nhượng lại lãnh thổ và tài nguyên. Họ ký với đôi tay run rẩy. Lịch sử đã chứng kiến ​​điều này trước đây và nó hiếm khi kết thúc tốt đẹp.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Thiết lập quan hệ đối tác thương mại tập trung vào lợi ích chung';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'Thương mại thu hẹp khoảng cách giữa các loài. Nguyên liệu gốc chảy vào xưởng của bạn; công nghệ của bạn cải thiện thuốc của họ. Tình bạn phát triển từ lợi ích chung.';
 }

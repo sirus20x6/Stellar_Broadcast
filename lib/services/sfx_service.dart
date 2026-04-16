@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flame_audio/flame_audio.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
@@ -17,12 +20,9 @@ class GameSfx {
   static const introLogo = 'IntroLogo.ogg';
   static const scanningPlanet = 'ScanningPlanet.ogg';
   static const scanLineReveal = 'LineofScanDataRevealed.ogg';
-  static const scanFailure = 'TemporarySystemDownForMaitenance.ogg';
   static const warpEngine = 'AtWarpEngineHum.ogg';
   static const minorDamage = 'MinorScannerDamage.ogg';
-  static const systemFullLoss = 'SystemFullLoss.ogg';
   static const systemRepair = 'SystemRepair.ogg';
-  static const systemDown = 'TemporarySystemDownForMaitenance.ogg';
   static const interestingFind = 'InterestingFind.ogg';
   static const spaceWhales = 'SpaceWhales.ogg';
   static const alienEden = 'AlienEdenPlanet.ogg';
@@ -71,35 +71,119 @@ class GameSfx {
 
   /// Active long-audio players (paused/resumed with app lifecycle).
   final List<AudioPlayer> _longPlayers = [];
+  /// Completion subscriptions for each active player — cancelled on cleanup
+  /// so disposed players don't leak their onPlayerComplete listener.
+  final Map<AudioPlayer, StreamSubscription<void>> _longSubs = {};
 
   /// Play a longer sound effect (>5s) using mediaPlayer mode.
+  ///
+  /// Replacement semantics: any currently-playing long audio is stopped first,
+  /// and the normal looping bg music is ducked (paused) so the encounter track
+  /// owns the music slot. `stopAllLongAudio()` brings bg music back.
+  ///
+  /// Without this, navigating rapidly between encounter screens (each of
+  /// which calls playLong in initState) leaves multiple ~30-60s tracks playing
+  /// simultaneously on top of bg music and stacking into a cacophony.
   Future<void> playLong(String filename, {double volume = 1.0}) async {
+    await _disposeAllLongPlayers();
+    await _pauseBgm();
     final sfx = SfxPlayer();
     if (!sfx.enabled) return;
     try {
       final player = await FlameAudio.playLongAudio(filename, volume: volume * sfx.volume);
       _longPlayers.add(player);
-      // Remove from list when playback completes.
-      player.onPlayerComplete.listen((_) {
+      // Remove from list when playback completes. Store the subscription
+      // so we can cancel it if the player is disposed early.
+      late final StreamSubscription<void> sub;
+      sub = player.onPlayerComplete.listen((_) {
         _longPlayers.remove(player);
+        _longSubs.remove(player);
+        sub.cancel();
         player.dispose();
+        // Last long player finished naturally — bring bg music back so
+        // the screen isn't silent after the encounter track fades out.
+        if (_longPlayers.isEmpty) {
+          _resumeBgm();
+        }
       });
+      _longSubs[player] = sub;
     } catch (e) {
       QaLogger.audio.warning('Failed to play long SFX "$filename": $e');
+    }
+  }
+
+  /// Stop and dispose every active long-audio player. By default also
+  /// resumes the normal looping bg music so plain HUD screens (voyage,
+  /// title, ending) aren't silent after the encounter track is cancelled.
+  ///
+  /// Pass `resumeBgMusic: false` from screens that are taking over the
+  /// music slot themselves (e.g. game over wants dramatic silence and
+  /// controls bg music separately via `GameMusic().stop()`).
+  Future<void> stopAllLongAudio({bool resumeBgMusic = true}) async {
+    await _disposeAllLongPlayers();
+    if (resumeBgMusic) {
+      await _resumeBgm();
+    }
+  }
+
+  /// Stop and dispose the tracked long players without touching bg music.
+  /// Internal helper for playLong (which handles bgm separately) and
+  /// stopAllLongAudio (which resumes bgm afterwards).
+  Future<void> _disposeAllLongPlayers() async {
+    // Copy the list because player.stop/dispose mutates it via the complete
+    // listener, and we don't want to iterate a list that's being modified.
+    final players = List<AudioPlayer>.from(_longPlayers);
+    _longPlayers.clear();
+    for (final p in players) {
+      try {
+        final sub = _longSubs.remove(p);
+        await sub?.cancel();
+        await p.stop();
+        await p.dispose();
+      } catch (e) {
+        QaLogger.audio.fine('_disposeAllLongPlayers: $e');
+      }
+    }
+  }
+
+  /// Pause the FlameAudio BGM stream. No-op if nothing is playing on it.
+  /// Accessing FlameAudio.bgm directly rather than going through GameMusic
+  /// avoids a circular import (GameMusic already imports this file).
+  Future<void> _pauseBgm() async {
+    try {
+      await FlameAudio.bgm.pause();
+    } catch (e) {
+      QaLogger.audio.fine('_pauseBgm: $e');
+    }
+  }
+
+  Future<void> _resumeBgm() async {
+    try {
+      await FlameAudio.bgm.resume();
+    } catch (e) {
+      QaLogger.audio.fine('_resumeBgm: $e');
     }
   }
 
   /// Pause all active long-audio players (app backgrounded).
   void pauseLongAudio() {
     for (final p in _longPlayers) {
-      try { p.pause(); } catch (_) {}
+      try {
+        p.pause();
+      } catch (e) {
+        QaLogger.audio.fine('pauseLongAudio: $e');
+      }
     }
   }
 
   /// Resume all active long-audio players (app foregrounded).
   void resumeLongAudio() {
     for (final p in _longPlayers) {
-      try { p.resume(); } catch (_) {}
+      try {
+        p.resume();
+      } catch (e) {
+        QaLogger.audio.fine('resumeLongAudio: $e');
+      }
     }
   }
 
@@ -126,9 +210,25 @@ class GameSfx {
     }
   }
 
+  final _random = Random();
+
   /// Play with slight pitch variation (for repeated sounds like clicks).
   Future<void> playVaried(String filename, {double volume = 1.0}) async {
-    await play(filename, volume: volume);
+    final sfx = SfxPlayer();
+    if (!sfx.enabled) return;
+    try {
+      final player = AudioPlayer();
+      // Set random pitch/speed between 0.9 and 1.1.
+      final pitch = 0.9 + _random.nextDouble() * 0.2;
+      await player.setPlaybackRate(pitch);
+      await player.setSourceAsset(filename);
+      await player.setVolume(volume * sfx.volume);
+      await player.resume();
+      // Dispose when finished.
+      player.onPlayerComplete.listen((_) => player.dispose());
+    } catch (e) {
+      QaLogger.audio.warning('Failed to play varied SFX "$filename": $e');
+    }
   }
 
   // ── Engine hum (looping SFX) ──────────────────────────────────────────

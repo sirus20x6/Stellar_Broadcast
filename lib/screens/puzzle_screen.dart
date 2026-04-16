@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -15,16 +16,17 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 
 Color _accentFor(AlienSpecies species) {
   switch (species) {
     case AlienSpecies.synthetic:
       return const Color(0xFF00FF41); // matrix green
     case AlienSpecies.geometric:
-      return const Color(0xFF00E5FF); // cyan
+      return SpaceColors.cyan; // cyan
     case AlienSpecies.crystalline:
       return const Color(0xFF8B5CF6); // purple
   }
@@ -84,9 +86,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -120,7 +123,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   }
 
   void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (
+      timer,
+    ) {
       if (_charIndex >= widget.puzzle.narrative.length) {
         timer.cancel();
         if (mounted) setState(() => _typewriterDone = true);
@@ -159,19 +164,25 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     if (correct) {
       GameSfx().play(GameSfx.systemRepair, volume: 0.8);
       HapticService().success();
-      ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.reward, isCorrect: true);
+      ref
+          .read(voyageProvider.notifier)
+          .handlePuzzleResult(widget.puzzle.reward, isCorrect: true);
     } else {
       GameSfx().play(GameSfx.minorDamage, volume: 0.8);
       HapticService().error();
       _shakeController.forward();
       if (widget.puzzle.penalty != null) {
-        ref.read(voyageProvider.notifier).handlePuzzleResult(widget.puzzle.penalty!, isCorrect: false);
+        ref
+            .read(voyageProvider.notifier)
+            .handlePuzzleResult(widget.puzzle.penalty!, isCorrect: false);
       } else {
         // Still increment encounter even with no penalty.
-        ref.read(voyageProvider.notifier).handlePuzzleResult(
-          EventChoice(text: '', outcome: ''),
-          isCorrect: false,
-        );
+        ref
+            .read(voyageProvider.notifier)
+            .handlePuzzleResult(
+              EventChoice(text: '', outcome: ''),
+              isCorrect: false,
+            );
       }
     }
 
@@ -207,14 +218,20 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
         event.logicalKey == LogicalKeyboardKey.arrowLeft) {
       setState(() {
-        _focusedAnswerIndex = (_focusedAnswerIndex - 1).clamp(0, answerCount - 1);
+        _focusedAnswerIndex = (_focusedAnswerIndex - 1).clamp(
+          0,
+          answerCount - 1,
+        );
       });
       return KeyEventResult.handled;
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
         event.logicalKey == LogicalKeyboardKey.arrowRight) {
       setState(() {
-        _focusedAnswerIndex = (_focusedAnswerIndex + 1).clamp(0, answerCount - 1);
+        _focusedAnswerIndex = (_focusedAnswerIndex + 1).clamp(
+          0,
+          answerCount - 1,
+        );
       });
       return KeyEventResult.handled;
     }
@@ -227,10 +244,14 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     }
     // Number keys 1-9 select answers directly.
     final digitKeys = {
-      LogicalKeyboardKey.digit1: 0, LogicalKeyboardKey.digit2: 1,
-      LogicalKeyboardKey.digit3: 2, LogicalKeyboardKey.digit4: 3,
-      LogicalKeyboardKey.digit5: 4, LogicalKeyboardKey.digit6: 5,
-      LogicalKeyboardKey.digit7: 6, LogicalKeyboardKey.digit8: 7,
+      LogicalKeyboardKey.digit1: 0,
+      LogicalKeyboardKey.digit2: 1,
+      LogicalKeyboardKey.digit3: 2,
+      LogicalKeyboardKey.digit4: 3,
+      LogicalKeyboardKey.digit5: 4,
+      LogicalKeyboardKey.digit6: 5,
+      LogicalKeyboardKey.digit7: 6,
+      LogicalKeyboardKey.digit8: 7,
       LogicalKeyboardKey.digit9: 8,
     };
     final idx = digitKeys[event.logicalKey];
@@ -315,11 +336,11 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: (_isCorrect ? Colors.green : Colors.red)
-            .withValues(alpha: 0.1),
+        color: (_isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.1),
         border: Border.all(
-          color: (_isCorrect ? Colors.green : Colors.red)
-              .withValues(alpha: 0.4),
+          color: (_isCorrect ? Colors.green : Colors.red).withValues(
+            alpha: 0.4,
+          ),
         ),
       ),
       child: Text(
@@ -413,7 +434,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   Widget _buildTapHint() {
     if (_typewriterDone) return const SizedBox.shrink();
     return Text(
-      'TAP TO SKIP',
+      context.l10n.ui_common_tapToSkip,
       style: TextStyle(
         color: _accent.withValues(alpha: 0.5),
         fontSize: 12,
@@ -426,14 +447,6 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     return PremiumAdGate(child: AdaptiveBannerAd());
   }
 
-  bool get _isCanvasType {
-    final t = widget.puzzle.sequenceType;
-    return t == SequenceType.spectralId ||
-        t == SequenceType.starCluster ||
-        t == SequenceType.chirality ||
-        t == SequenceType.signalFilter;
-  }
-
   // ── Portrait layout ─────────────────────────────────────────────────────
 
   Widget _buildPortrait() {
@@ -442,24 +455,30 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       children: [
         Expanded(
           child: ResponsiveContent(
-            child: Column(
-              children: [
-                const SizedBox(height: 32),
-                _buildTitle(),
-                const SizedBox(height: 20),
-                _buildNarrativeCard(),
-                _buildOutcomeCard(),
-                SizedBox(height: puzzle.sequenceType == SequenceType.spectralId ? 12 : 24),
-                _buildPuzzleVisual(),
-                if (_showEffects) ...[
-                  const SizedBox(height: 16),
-                  _buildEffectChips(),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Column(
+                children: [
+                  const SizedBox(height: 32),
+                  _buildTitle(),
+                  const SizedBox(height: 20),
+                  _buildNarrativeCard(),
+                  _buildOutcomeCard(),
+                  SizedBox(
+                    height: puzzle.sequenceType == SequenceType.spectralId
+                        ? 12
+                        : 24,
+                  ),
+                  _buildPuzzleVisual(),
+                  if (_showEffects) ...[
+                    const SizedBox(height: 16),
+                    _buildEffectChips(),
+                  ],
+                  const SizedBox(height: 20),
+                  _buildContinueButton(),
+                  _buildTapHint(),
                 ],
-                if (!_isCanvasType) const Spacer(),
-                _buildContinueButton(),
-                _buildTapHint(),
-                const SizedBox(height: 12),
-              ],
+              ),
             ),
           ),
         ),
@@ -540,25 +559,11 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
         body: Stack(
           children: [
             // Star field.
-            Positioned.fill(
-              child: RepaintBoundary(
-                child: AnimatedBuilder(
-                  animation: _starController,
-                  builder: (_, __) => CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 80,
-                      midStarCount: 30,
-                      nearStarCount: 10,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            EventStarField(controller: _starController),
 
             // Content.
             SafeArea(
-            bottom: false,
+              bottom: false,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _typewriterDone ? null : _skipTypewriter,
@@ -580,105 +585,105 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
         final dx = _resolved && !_isCorrect
             ? sin(_shakeAnim.value * pi * 4) * 8
             : 0.0;
-        return Transform.translate(
-          offset: Offset(dx, 0),
-          child: child,
-        );
+        return Transform.translate(offset: Offset(dx, 0), child: child);
       },
       child: Wrap(
         alignment: WrapAlignment.center,
         spacing: 6,
         runSpacing: 6,
-          children: List.generate(puzzle.displayedSequence.length, (i) {
-            final isBlank = i == puzzle.blankIndex;
-            final value = puzzle.displayedSequence[i];
+        children: List.generate(puzzle.displayedSequence.length, (i) {
+          final isBlank = i == puzzle.blankIndex;
+          final value = puzzle.displayedSequence[i];
 
-            // After resolution, show the correct answer in the blank.
-            String displayValue;
-            if (isBlank && _resolved) {
-              displayValue = _selectedAnswer ?? '?';
-            } else {
-              displayValue = value;
-            }
+          // After resolution, show the correct answer in the blank.
+          String displayValue;
+          if (isBlank && _resolved) {
+            displayValue = _selectedAnswer ?? '?';
+          } else {
+            displayValue = value;
+          }
 
-            Color tileBg;
-            Color tileBorder;
-            if (isBlank && _resolved) {
-              tileBg = (_isCorrect ? Colors.green : Colors.red)
-                  .withValues(alpha: 0.2);
-              tileBorder = _isCorrect ? Colors.green : Colors.red;
-            } else if (isBlank) {
-              tileBg = _accent.withValues(alpha: 0.1);
-              tileBorder = _accent;
-            } else {
-              tileBg = Colors.white.withValues(alpha: 0.05);
-              tileBorder = Colors.white.withValues(alpha: 0.2);
-            }
+          Color tileBg;
+          Color tileBorder;
+          if (isBlank && _resolved) {
+            tileBg = (_isCorrect ? Colors.green : Colors.red).withValues(
+              alpha: 0.2,
+            );
+            tileBorder = _isCorrect ? Colors.green : Colors.red;
+          } else if (isBlank) {
+            tileBg = _accent.withValues(alpha: 0.1);
+            tileBorder = _accent;
+          } else {
+            tileBg = Colors.white.withValues(alpha: 0.05);
+            tileBorder = Colors.white.withValues(alpha: 0.2);
+          }
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: AnimatedBuilder(
-                animation: _pulseAnim,
-                builder: (_, child) {
-                  final glow = isBlank && !_resolved ? _pulseAnim.value : 0.0;
-                  return Container(
-                    constraints: BoxConstraints(
-                      minWidth: displayValue.startsWith('Z:') ? 56 : 48,
-                      minHeight: displayValue.startsWith('Z:') ? 56 : 48,
-                    ),
-                    padding: EdgeInsets.all(
-                      displayValue.startsWith('Z:') ? 2 : 8,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: tileBg,
-                      border: Border.all(
-                        color: tileBorder.withValues(alpha: isBlank && !_resolved
-                            ? 0.4 + glow * 0.6
-                            : 0.4),
-                        width: isBlank ? 2 : 1,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: AnimatedBuilder(
+              animation: _pulseAnim,
+              builder: (_, child) {
+                final glow = isBlank && !_resolved ? _pulseAnim.value : 0.0;
+                return Container(
+                  constraints: BoxConstraints(
+                    minWidth: displayValue.startsWith('Z:') ? 56 : 48,
+                    minHeight: displayValue.startsWith('Z:') ? 56 : 48,
+                  ),
+                  padding: EdgeInsets.all(
+                    displayValue.startsWith('Z:') ? 2 : 8,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: tileBg,
+                    border: Border.all(
+                      color: tileBorder.withValues(
+                        alpha: isBlank && !_resolved ? 0.4 + glow * 0.6 : 0.4,
                       ),
-                      boxShadow: isBlank && !_resolved
-                          ? [
-                              BoxShadow(
-                                color: _accent.withValues(alpha: glow * 0.3),
-                                blurRadius: 12,
-                              ),
-                            ]
-                          : null,
+                      width: isBlank ? 2 : 1,
                     ),
-                    child: displayValue.startsWith('Z:')
-                        ? SizedBox(
-                            width: 48,
-                            height: 48,
-                            child: CustomPaint(
-                              painter: _AtomPainter(
-                                atomicNumber: int.tryParse(displayValue.substring(2)) ?? 0,
-                                color: isBlank && !_resolved
-                                    ? _accent
-                                    : Colors.white.withValues(alpha: 0.9),
-                              ),
+                    boxShadow: isBlank && !_resolved
+                        ? [
+                            BoxShadow(
+                              color: _accent.withValues(alpha: glow * 0.3),
+                              blurRadius: 12,
                             ),
-                          )
-                        : Text(
-                            displayValue,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
+                          ]
+                        : null,
+                  ),
+                  child: displayValue.startsWith('Z:')
+                      ? SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: CustomPaint(
+                            painter: _AtomPainter(
+                              atomicNumber:
+                                  int.tryParse(displayValue.substring(2)) ?? 0,
                               color: isBlank && !_resolved
                                   ? _accent
                                   : Colors.white.withValues(alpha: 0.9),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: widget.puzzle.species == AlienSpecies.synthetic
-                                  ? 'monospace'
-                                  : null,
                             ),
                           ),
-                  );
-                },
-              ),
-            );
-          }),
+                        )
+                      : Text(
+                          displayValue,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: isBlank && !_resolved
+                                ? _accent
+                                : Colors.white.withValues(alpha: 0.9),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            fontFamily:
+                                widget.puzzle.species == AlienSpecies.synthetic
+                                ? 'monospace'
+                                : null,
+                          ),
+                        ),
+                );
+              },
+            ),
+          );
+        }),
       ),
     );
   }
@@ -701,37 +706,39 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     gates.shuffle(); // Already shuffled by generator, but defensive.
 
     const gateSymbols = {
-      'AND': '&', 'OR': '|', 'XOR': '^',
-      'NAND': '~&', 'NOR': '~|', 'XNOR': '~^',
+      'AND': '&',
+      'OR': '|',
+      'XOR': '^',
+      'NAND': '~&',
+      'NOR': '~|',
+      'XNOR': '~^',
     };
 
-    return Expanded(
-      child: Column(
-        children: [
-          // Signal visualization
-          Expanded(
-            flex: 3,
-            child: AnimatedBuilder(
-              animation: _starController,
-              builder: (_, __) => CustomPaint(
-                size: Size.infinite,
-                painter: _SignalFilterPainter(
-                  inputA: inputA,
-                  inputB: inputB,
-                  target: target,
-                  animationValue: _starController.value,
-                  resolved: _resolved,
-                  isCorrect: _isCorrect,
-                  accent: _accent,
-                ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Signal visualization — fixed height so it works inside a scrollable.
+        SizedBox(
+          height: 200,
+          child: AnimatedBuilder(
+            animation: _starController,
+            builder: (_, __) => CustomPaint(
+              size: Size.infinite,
+              painter: _SignalFilterPainter(
+                inputA: inputA,
+                inputB: inputB,
+                target: target,
+                animationValue: _starController.value,
+                resolved: _resolved,
+                isCorrect: _isCorrect,
+                accent: _accent,
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          // Gate option buttons
-          Expanded(
-            flex: 2,
-            child: Wrap(
+        ),
+        const SizedBox(height: 16),
+        // Gate option buttons — natural height Wrap.
+        Wrap(
               spacing: 10,
               runSpacing: 10,
               alignment: WrapAlignment.center,
@@ -742,7 +749,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                 Color bg;
                 Color border;
                 if (_resolved && isSelected) {
-                  bg = (_isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.2);
+                  bg = (_isCorrect ? Colors.green : Colors.red).withValues(
+                    alpha: 0.2,
+                  );
                   border = _isCorrect ? Colors.green : Colors.red;
                 } else if (_resolved && isCorrectGate) {
                   bg = Colors.green.withValues(alpha: 0.1);
@@ -756,17 +765,26 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                   onTap: _resolved ? null : () => _onAnswerTapped(gate),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
                       color: bg,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: border, width: isSelected ? 2 : 1),
+                      border: Border.all(
+                        color: border,
+                        width: isSelected ? 2 : 1,
+                      ),
                       boxShadow: isSelected && _resolved
-                          ? [BoxShadow(
-                              color: (_isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              spreadRadius: 2,
-                            )]
+                          ? [
+                              BoxShadow(
+                                color: (_isCorrect ? Colors.green : Colors.red)
+                                    .withValues(alpha: 0.3),
+                                blurRadius: 12,
+                                spreadRadius: 2,
+                              ),
+                            ]
                           : null,
                     ),
                     child: Column(
@@ -796,11 +814,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                     ),
                   ),
                 );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -814,30 +830,31 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       return MapEntry(key, wls);
     }).toList();
 
-    return Expanded(
-      child: Column(
-        children: entries.map((entry) {
-          final key = entry.key;
-          final wls = entry.value;
-          final isSelected = _selectedAnswer == key;
-          final isCorrectChoice = key == puzzle.correctAnswer;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: entries.map((entry) {
+        final key = entry.key;
+        final wls = entry.value;
+        final isSelected = _selectedAnswer == key;
+        final isCorrectChoice = key == puzzle.correctAnswer;
 
-          Color borderColor;
-          Color? glowColor;
-          if (_resolved && isSelected) {
-            borderColor = _isCorrect ? Colors.green : Colors.red;
-            glowColor = borderColor.withValues(alpha: 0.3);
-          } else if (_resolved && isCorrectChoice) {
-            borderColor = Colors.green.withValues(alpha: 0.5);
-            glowColor = Colors.green.withValues(alpha: 0.15);
-          } else {
-            borderColor = _accent.withValues(alpha: 0.3);
-          }
+        Color borderColor;
+        Color? glowColor;
+        if (_resolved && isSelected) {
+          borderColor = _isCorrect ? Colors.green : Colors.red;
+          glowColor = borderColor.withValues(alpha: 0.3);
+        } else if (_resolved && isCorrectChoice) {
+          borderColor = Colors.green.withValues(alpha: 0.5);
+          glowColor = Colors.green.withValues(alpha: 0.15);
+        } else {
+          borderColor = _accent.withValues(alpha: 0.3);
+        }
 
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: GestureDetector(
+        return SizedBox(
+          height: 88,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: GestureDetector(
                 onTap: _resolved ? null : () => _onAnswerTapped(key),
                 child: Container(
                   width: double.infinity,
@@ -846,10 +863,18 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                     color: Colors.black,
                     border: Border.all(
                       color: borderColor,
-                      width: (_resolved && (isSelected || isCorrectChoice)) ? 2 : 1,
+                      width: (_resolved && (isSelected || isCorrectChoice))
+                          ? 2
+                          : 1,
                     ),
                     boxShadow: glowColor != null
-                        ? [BoxShadow(color: glowColor, blurRadius: 12, spreadRadius: 2)]
+                        ? [
+                            BoxShadow(
+                              color: glowColor,
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
                         : null,
                   ),
                   child: ClipRRect(
@@ -865,12 +890,11 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                       ),
                     ),
                   ),
-                ),
               ),
             ),
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -892,7 +916,8 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       return MapEntry(cls, stars);
     }).toList();
 
-    return Expanded(
+    return SizedBox(
+      height: 340,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: LayoutBuilder(
@@ -900,35 +925,37 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
             return AnimatedBuilder(
               animation: _pulseController,
               builder: (_, __) => GestureDetector(
-                onTapDown: _resolved ? null : (details) {
-                  final w = constraints.maxWidth;
-                  final h = constraints.maxHeight;
-                  final tap = details.localPosition;
-                  String? closest;
-                  var closestDist = double.infinity;
+                onTapDown: _resolved
+                    ? null
+                    : (details) {
+                        final w = constraints.maxWidth;
+                        final h = constraints.maxHeight;
+                        final tap = details.localPosition;
+                        String? closest;
+                        var closestDist = double.infinity;
 
-                  for (final group in groups) {
-                    for (final star in group.value) {
-                      final isMs = group.key.length == 1;
-                      final spread = isMs ? w * 0.11 : w * 0.06;
-                      final perpSpread = isMs ? w * 0.07 : w * 0.06;
-                      final cx = _hrX(group.key) * w;
-                      final cy = _hrY(group.key) * h;
-                      final along = (star.x - 0.5) * spread * 2;
-                      final perp = (star.y - 0.5) * perpSpread * 2;
-                      final sx = cx + along * 0.7 + perp * 0.7;
-                      final sy = cy + along * 0.7 - perp * 0.7;
-                      final dist = (Offset(sx, sy) - tap).distance;
-                      if (dist < closestDist) {
-                        closestDist = dist;
-                        closest = group.key;
-                      }
-                    }
-                  }
-                  if (closest != null && closestDist < 40) {
-                    _onAnswerTapped(closest);
-                  }
-                },
+                        for (final group in groups) {
+                          for (final star in group.value) {
+                            final isMs = group.key.length == 1;
+                            final spread = isMs ? w * 0.11 : w * 0.06;
+                            final perpSpread = isMs ? w * 0.07 : w * 0.06;
+                            final cx = _hrX(group.key) * w;
+                            final cy = _hrY(group.key) * h;
+                            final along = (star.x - 0.5) * spread * 2;
+                            final perp = (star.y - 0.5) * perpSpread * 2;
+                            final sx = cx + along * 0.7 + perp * 0.7;
+                            final sy = cy + along * 0.7 - perp * 0.7;
+                            final dist = (Offset(sx, sy) - tap).distance;
+                            if (dist < closestDist) {
+                              closestDist = dist;
+                              closest = group.key;
+                            }
+                          }
+                        }
+                        if (closest != null && closestDist < 40) {
+                          _onAnswerTapped(closest);
+                        }
+                      },
                 child: CustomPaint(
                   size: Size(constraints.maxWidth, constraints.maxHeight),
                   painter: _HRDiagramPainter(
@@ -961,7 +988,8 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       return MapEntry(parts[0], int.parse(parts[1]));
     }).toList();
 
-    return Expanded(
+    return SizedBox(
+      height: 280,
       child: Row(
         children: entries.map((entry) {
           final hand = entry.key;
@@ -992,10 +1020,18 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                     color: const Color(0x88050510),
                     border: Border.all(
                       color: borderColor,
-                      width: (_resolved && (isSelected || isCorrectChoice)) ? 2 : 1,
+                      width: (_resolved && (isSelected || isCorrectChoice))
+                          ? 2
+                          : 1,
                     ),
                     boxShadow: glowColor != null
-                        ? [BoxShadow(color: glowColor, blurRadius: 12, spreadRadius: 2)]
+                        ? [
+                            BoxShadow(
+                              color: glowColor,
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
                         : null,
                   ),
                   child: ClipRRect(
@@ -1031,7 +1067,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       crossAxisCount: crossAxisCount,
       mainAxisSpacing: 6,
       crossAxisSpacing: 6,
-      childAspectRatio: widget.puzzle.species == AlienSpecies.crystalline ? 1.3 : 2.2,
+      childAspectRatio: widget.puzzle.species == AlienSpecies.crystalline
+          ? 1.3
+          : 2.2,
       children: _shuffledAnswers.map((answer) {
         return Material(
           color: Colors.transparent,
@@ -1055,7 +1093,8 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                           height: s,
                           child: CustomPaint(
                             painter: _AtomPainter(
-                              atomicNumber: int.tryParse(answer.substring(2)) ?? 0,
+                              atomicNumber:
+                                  int.tryParse(answer.substring(2)) ?? 0,
                               color: _accent,
                             ),
                           ),
@@ -1063,16 +1102,17 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                       },
                     )
                   : Text(
-                answer,
-                style: TextStyle(
-                  color: _accent,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: widget.puzzle.species == AlienSpecies.synthetic
-                      ? 'monospace'
-                      : null,
-                ),
-              ),
+                      answer,
+                      style: TextStyle(
+                        color: _accent,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontFamily:
+                            widget.puzzle.species == AlienSpecies.synthetic
+                            ? 'monospace'
+                            : null,
+                      ),
+                    ),
             ),
           ),
         );
@@ -1085,7 +1125,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     if (choice == null) {
       return Text(
         'No effect',
-        style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -1096,48 +1139,58 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
       final isPositive = entry.value > 0;
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: isPositive,
-        accent: _accent,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: isPositive,
+          accent: _accent,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-        accent: _accent,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+          accent: _accent,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-        accent: _accent,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+          accent: _accent,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-        accent: _accent,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+          accent: _accent,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(_EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-        accent: _accent,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+          accent: _accent,
+        ),
+      );
     }
 
     return Wrap(
@@ -1186,7 +1239,10 @@ class _EffectChip extends StatelessWidget {
 
 /// Paints emission spectral lines on a dark background with animated ripple.
 class _SpectralPainter extends CustomPainter {
-  const _SpectralPainter({required this.wavelengths, this.animationValue = 0.0});
+  const _SpectralPainter({
+    required this.wavelengths,
+    this.animationValue = 0.0,
+  });
 
   final List<double> wavelengths;
   final double animationValue;
@@ -1194,7 +1250,8 @@ class _SpectralPainter extends CustomPainter {
   static const _minWl = 200.0;
   static const _maxWl = 900.0;
 
-  double _frac(double wl) => ((wl - _minWl) / (_maxWl - _minWl)).clamp(0.0, 1.0);
+  double _frac(double wl) =>
+      ((wl - _minWl) / (_maxWl - _minWl)).clamp(0.0, 1.0);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1260,32 +1317,66 @@ class _SpectralPainter extends CustomPainter {
         final spacing = size.height * spacings[layer];
         final bandHeight = spacing * 0.5;
         final offset = offsets[layer] * size.height + i * size.height * 0.23;
-        final scroll = (animationValue * size.height * speed + offset) % (spacing + bandHeight);
+        final scroll =
+            (animationValue * size.height * speed + offset) %
+            (spacing + bandHeight);
 
-        for (var y = -spacing + scroll; y < size.height + spacing; y += spacing + bandHeight) {
+        for (
+          var y = -spacing + scroll;
+          y < size.height + spacing;
+          y += spacing + bandHeight
+        ) {
           canvas.drawLine(Offset(x, y), Offset(x, y + bandHeight), darkBand);
         }
       }
     }
-
   }
 
   /// Maps a wavelength to an approximate visible color for the glow.
   static Color _wavelengthToColor(double wl) {
     if (wl < 380) return const Color(0xFF7F00FF); // UV → violet
-    if (wl < 450) return Color.lerp(const Color(0xFF7F00FF), const Color(0xFF0000FF), (wl - 380) / 70)!;
-    if (wl < 490) return Color.lerp(const Color(0xFF0000FF), const Color(0xFF00FF00), (wl - 450) / 40)!;
-    if (wl < 570) return Color.lerp(const Color(0xFF00FF00), const Color(0xFFFFFF00), (wl - 490) / 80)!;
-    if (wl < 590) return Color.lerp(const Color(0xFFFFFF00), const Color(0xFFFF7F00), (wl - 570) / 20)!;
-    if (wl < 640) return Color.lerp(const Color(0xFFFF7F00), const Color(0xFFFF0000), (wl - 590) / 50)!;
+    if (wl < 450) {
+      return Color.lerp(
+        const Color(0xFF7F00FF),
+        const Color(0xFF0000FF),
+        (wl - 380) / 70,
+      )!;
+    }
+    if (wl < 490) {
+      return Color.lerp(
+        const Color(0xFF0000FF),
+        const Color(0xFF00FF00),
+        (wl - 450) / 40,
+      )!;
+    }
+    if (wl < 570) {
+      return Color.lerp(
+        const Color(0xFF00FF00),
+        const Color(0xFFFFFF00),
+        (wl - 490) / 80,
+      )!;
+    }
+    if (wl < 590) {
+      return Color.lerp(
+        const Color(0xFFFFFF00),
+        const Color(0xFFFF7F00),
+        (wl - 570) / 20,
+      )!;
+    }
+    if (wl < 640) {
+      return Color.lerp(
+        const Color(0xFFFF7F00),
+        const Color(0xFFFF0000),
+        (wl - 590) / 50,
+      )!;
+    }
     if (wl < 750) return const Color(0xFFFF0000);
     return const Color(0xFF800000); // near-IR → deep red
   }
 
   @override
   bool shouldRepaint(covariant _SpectralPainter old) =>
-      animationValue != old.animationValue ||
-      wavelengths != old.wavelengths;
+      animationValue != old.animationValue || wavelengths != old.wavelengths;
 }
 
 /// Draws an HR diagram with main sequence line and star groups.
@@ -1329,7 +1420,13 @@ class _HRDiagramPainter extends CustomPainter {
   static double _hrX(String cls) {
     const p = <String, double>{
       // Main sequence — pronounced S-curve with snaking
-      'O': 0.05, 'B': 0.12, 'A': 0.28, 'F': 0.40, 'G': 0.50, 'K': 0.68, 'M': 0.92,
+      'O': 0.05,
+      'B': 0.12,
+      'A': 0.28,
+      'F': 0.40,
+      'G': 0.50,
+      'K': 0.68,
+      'M': 0.92,
       // Giants: same temperature column, higher luminosity
       'gG': 0.50, 'gK': 0.68, 'gM': 0.92,
       // Supergiants: top of diagram
@@ -1343,7 +1440,13 @@ class _HRDiagramPainter extends CustomPainter {
   static double _hrY(String cls) {
     const p = <String, double>{
       // Main sequence — steep at hot end, flattens in F/G, steepens again in K/M
-      'O': 0.08, 'B': 0.16, 'A': 0.30, 'F': 0.44, 'G': 0.50, 'K': 0.64, 'M': 0.78,
+      'O': 0.08,
+      'B': 0.16,
+      'A': 0.30,
+      'F': 0.44,
+      'G': 0.50,
+      'K': 0.64,
+      'M': 0.78,
       // Giants: above main sequence
       'gG': 0.28, 'gK': 0.32, 'gM': 0.38,
       // Supergiants: top of diagram
@@ -1362,7 +1465,6 @@ class _HRDiagramPainter extends CustomPainter {
       RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(4)),
       bgPaint,
     );
-
 
     // Draw selection ring if resolved.
     if (isResolved && selectedClass != null) {
@@ -1432,12 +1534,14 @@ class _HRDiagramPainter extends CustomPainter {
         canvas.drawCircle(Offset(sx, sy), radius * 1.5, inner);
 
         // Core.
-        final core = Paint()..color = color.withValues(alpha: 0.8 + 0.2 * brightness);
+        final core = Paint()
+          ..color = color.withValues(alpha: 0.8 + 0.2 * brightness);
         canvas.drawCircle(Offset(sx, sy), radius, core);
 
         // White-hot center.
         if (s.r > 2.0) {
-          final white = Paint()..color = Colors.white.withValues(alpha: 0.5 * brightness);
+          final white = Paint()
+            ..color = Colors.white.withValues(alpha: 0.5 * brightness);
           canvas.drawCircle(Offset(sx, sy), radius * 0.4, white);
         }
         starIdx++;
@@ -1527,7 +1631,6 @@ class _AtomPainter extends CustomPainter {
       canvas.drawPath(path, nucleusStroke);
     }
 
-
     // Draw electrons as dots on each orbital ring.
     final electronPaint = Paint()..color = color;
     final electronRadius = 2.5;
@@ -1591,7 +1694,7 @@ class _AlaninePainter extends CustomPainter {
     // L-alanine: NH₂ left (3), H right (1).
     // D-alanine: NH₂ right (1), H left (3).
     final labels = [
-      isL ? 'COOH' : 'HOOC',  // pos 0: top — reversed label for mirror
+      isL ? 'COOH' : 'HOOC', // pos 0: top — reversed label for mirror
       isL ? 'H' : 'NH\u2082', // pos 1: right
       isL ? 'CH\u2083' : 'H\u2083C', // pos 2: bottom
       isL ? 'NH\u2082' : 'H', // pos 3: left
@@ -1647,7 +1750,10 @@ class _AlaninePainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    cPainter.paint(canvas, Offset(cx - cPainter.width / 2, cy - cPainter.height / 2));
+    cPainter.paint(
+      canvas,
+      Offset(cx - cPainter.width / 2, cy - cPainter.height / 2),
+    );
 
     // Draw substituent labels.
     for (var i = 0; i < 4; i++) {
@@ -1706,11 +1812,21 @@ class _AlaninePainter extends CustomPainter {
     }
   }
 
-  void _drawBond(Canvas canvas, Offset from, Offset to, int type, Color accent) {
+  void _drawBond(
+    Canvas canvas,
+    Offset from,
+    Offset to,
+    int type,
+    Color accent,
+  ) {
     // Direction vector.
     final dx = to.dx - from.dx;
     final dy = to.dy - from.dy;
     final len = sqrt(dx * dx + dy * dy);
+    // Two atoms at the same position would produce a zero-length bond and
+    // crash the perpendicular calculation. Skip drawing in that degenerate
+    // case rather than dividing by zero.
+    if (len < 0.001) return;
     final nx = -dy / len; // perpendicular
     final ny = dx / len;
 
@@ -1768,7 +1884,9 @@ class _AlaninePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _AlaninePainter old) =>
-      old.isL != isL || old.rotationDeg != rotationDeg || old.pulseValue != pulseValue;
+      old.isL != isL ||
+      old.rotationDeg != rotationDeg ||
+      old.pulseValue != pulseValue;
 }
 
 // ─── Signal filter painter ─────────────────────────────────────────────────
@@ -1850,7 +1968,10 @@ class _SignalFilterPainter extends CustomPainter {
       )..layout();
       labelPainter.paint(
         canvas,
-        Offset(lineStartX - 12 - labelPainter.width, cy - labelPainter.height / 2),
+        Offset(
+          lineStartX - 12 - labelPainter.width,
+          cy - labelPainter.height / 2,
+        ),
       );
 
       // Signal line.
@@ -1878,8 +1999,11 @@ class _SignalFilterPainter extends CustomPainter {
           // Inner bright spot.
           final spotPaint = Paint()
             ..color = Colors.white.withValues(alpha: 0.6);
-          canvas.drawCircle(Offset(cx - circleR * 0.25, cy - circleR * 0.25),
-              circleR * 0.3, spotPaint);
+          canvas.drawCircle(
+            Offset(cx - circleR * 0.25, cy - circleR * 0.25),
+            circleR * 0.3,
+            spotPaint,
+          );
         } else {
           // Dim outline.
           final outlinePaint = Paint()
@@ -1889,8 +2013,7 @@ class _SignalFilterPainter extends CustomPainter {
           canvas.drawCircle(Offset(cx, cy), circleR, outlinePaint);
 
           // Tiny dim center.
-          final dimPaint = Paint()
-            ..color = row.color.withValues(alpha: 0.08);
+          final dimPaint = Paint()..color = row.color.withValues(alpha: 0.08);
           canvas.drawCircle(Offset(cx, cy), circleR * 0.4, dimPaint);
         }
 
@@ -1928,10 +2051,16 @@ class _SignalFilterPainter extends CustomPainter {
     if (resolved) {
       final outCy = rowH * 2.8;
       final overlayPaint = Paint()
-        ..color = (isCorrect ? Colors.green : Colors.red).withValues(alpha: 0.08)
+        ..color = (isCorrect ? Colors.green : Colors.red).withValues(
+          alpha: 0.08,
+        )
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
       canvas.drawRect(
-        Rect.fromCenter(center: Offset(w / 2, outCy), width: w, height: rowH * 0.8),
+        Rect.fromCenter(
+          center: Offset(w / 2, outCy),
+          width: w,
+          height: rowH * 0.8,
+        ),
         overlayPaint,
       );
     }

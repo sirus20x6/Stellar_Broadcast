@@ -8,9 +8,10 @@ import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 
 /// Effect-key to human-readable label mapping.
 const _effectLabels = {
@@ -26,6 +27,22 @@ const _effectLabels = {
   'landing': 'Landing',
 };
 
+/// Category-grouped codex entries, computed once at module load and reused
+/// across every build. The source `codexEntries` is const, so the partition
+/// result is stable for the lifetime of the app.
+final _surfaceEntries = <String, CodexEntry>{
+  for (final e in codexEntries.entries)
+    if (e.value.category == 'surface') e.key: e.value,
+};
+final _moonEntries = <String, CodexEntry>{
+  for (final e in codexEntries.entries)
+    if (e.value.category == 'moon') e.key: e.value,
+};
+final _ringEntries = <String, CodexEntry>{
+  for (final e in codexEntries.entries)
+    if (e.value.category == 'ring') e.key: e.value,
+};
+
 class CodexScreen extends ConsumerWidget {
   const CodexScreen({super.key});
 
@@ -33,171 +50,175 @@ class CodexScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final legacy = ref.watch(legacyProvider);
     final discovered = legacy.discoveredFeatures;
-    final allEntries = codexEntries;
-    final total = allEntries.length;
-    final discoveredCount =
-        allEntries.keys.where((k) => discovered.contains(k)).length;
+    final total = codexEntries.length;
+    final discoveredCount = codexEntries.keys
+        .where((k) => discovered.contains(k))
+        .length;
     final progress = total > 0 ? discoveredCount / total : 0.0;
 
-    // Group entries by category.
-    final surfaceEntries = <String, CodexEntry>{};
-    final moonEntries = <String, CodexEntry>{};
-    final ringEntries = <String, CodexEntry>{};
-
-    for (final entry in allEntries.entries) {
-      switch (entry.value.category) {
-        case 'surface':
-          surfaceEntries[entry.key] = entry.value;
-        case 'moon':
-          moonEntries[entry.key] = entry.value;
-        case 'ring':
-          ringEntries[entry.key] = entry.value;
-      }
-    }
+    // Category-grouped entries are computed once at module load time in
+    // _surfaceEntries / _moonEntries / _ringEntries above.
+    final surfaceEntries = _surfaceEntries;
+    final moonEntries = _moonEntries;
+    final ringEntries = _ringEntries;
 
     return Scaffold(
       backgroundColor: _kBgColor,
       body: Stack(
         children: [
           // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: _AnimatedStarField(),
-            ),
-          ),
+          Positioned.fill(child: RepaintBoundary(child: _AnimatedStarField())),
 
           // Content.
           SafeArea(
             child: ResponsiveContent(
-            child: Column(
-              children: [
-                // Header.
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        tooltip: 'Back',
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: _kAccent,
-                          size: 22,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          context.l10n.ui_codex_title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: ScreenInfo.of(context).scaledFontSize(24),
-                            fontWeight: FontWeight.bold,
+              child: Column(
+                children: [
+                  // Header.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: context.l10n.ui_tooltip_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
                             color: _kAccent,
-                            letterSpacing: 4,
-                            fontFamily: 'monospace',
+                            size: 22,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 48),
-                    ],
-                  ),
-                ),
-
-                // Progress.
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                  child: Column(
-                    children: [
-                      Text(
-                        context.l10n
-                            .ui_codex_discovered(discoveredCount, total),
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: _kAccent.withValues(alpha: 0.7),
-                          letterSpacing: 2,
+                        Expanded(
+                          child: Text(
+                            context.l10n.ui_codex_title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: ScreenInfo.of(
+                                context,
+                              ).scaledFontSize(24),
+                              fontWeight: FontWeight.bold,
+                              color: _kAccent,
+                              letterSpacing: 4,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 3,
-                          backgroundColor: Colors.white.withValues(alpha: 0.1),
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(_kAccent),
-                        ),
-                      ),
-                    ],
+                        const SizedBox(width: 48),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Decorative line.
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 4),
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          _kAccent.withValues(alpha: 0.5),
-                          Colors.transparent,
-                        ],
+                  // Progress.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 12,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          context.l10n.ui_codex_discovered(
+                            discoveredCount,
+                            total,
+                          ),
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: _kAccent.withValues(alpha: 0.7),
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 3,
+                            backgroundColor: Colors.white.withValues(
+                              alpha: 0.1,
+                            ),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              _kAccent,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Decorative line.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 4,
+                    ),
+                    child: Container(
+                      height: 1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            _kAccent.withValues(alpha: 0.5),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Scrollable sections.
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    children: [
-                      const SizedBox(height: 16),
+                  // Scrollable sections.
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      children: [
+                        const SizedBox(height: 16),
 
-                      // Surface features.
-                      _SectionTitle(
-                          title: context.l10n.ui_codex_surfaceFeatures),
-                      const SizedBox(height: 12),
-                      ...surfaceEntries.entries.map((e) => _CodexEntryCard(
+                        // Surface features.
+                        _SectionTitle(
+                          title: context.l10n.ui_codex_surfaceFeatures,
+                        ),
+                        const SizedBox(height: 12),
+                        ...surfaceEntries.entries.map(
+                          (e) => _CodexEntryCard(
                             entryKey: e.key,
                             entry: e.value,
                             discovered: discovered.contains(e.key),
-                          )),
+                          ),
+                        ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                      // Moon types.
-                      _SectionTitle(title: context.l10n.ui_codex_moonTypes),
-                      const SizedBox(height: 12),
-                      ...moonEntries.entries.map((e) => _CodexEntryCard(
+                        // Moon types.
+                        _SectionTitle(title: context.l10n.ui_codex_moonTypes),
+                        const SizedBox(height: 12),
+                        ...moonEntries.entries.map(
+                          (e) => _CodexEntryCard(
                             entryKey: e.key,
                             entry: e.value,
                             discovered: discovered.contains(e.key),
-                          )),
+                          ),
+                        ),
 
-                      const SizedBox(height: 24),
+                        const SizedBox(height: 24),
 
-                      // Ring types.
-                      _SectionTitle(title: context.l10n.ui_codex_ringTypes),
-                      const SizedBox(height: 12),
-                      ...ringEntries.entries.map((e) => _CodexEntryCard(
+                        // Ring types.
+                        _SectionTitle(title: context.l10n.ui_codex_ringTypes),
+                        const SizedBox(height: 12),
+                        ...ringEntries.entries.map(
+                          (e) => _CodexEntryCard(
                             entryKey: e.key,
                             entry: e.value,
                             discovered: discovered.contains(e.key),
-                          )),
+                          ),
+                        ),
 
-                      const SizedBox(height: 40),
-                    ],
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
           ),
         ],
@@ -270,8 +291,7 @@ class _SectionTitle extends StatelessWidget {
             color: _kAccent,
             borderRadius: BorderRadius.circular(2),
             boxShadow: [
-              BoxShadow(
-                  color: _kAccent.withValues(alpha: 0.5), blurRadius: 6),
+              BoxShadow(color: _kAccent.withValues(alpha: 0.5), blurRadius: 6),
             ],
           ),
         ),
@@ -320,50 +340,31 @@ class _CodexEntryCard extends StatelessWidget {
   }
 
   String _moonLabel(BuildContext context, String key) {
-    // Fallback to capitalized key if no l10n match.
-    try {
-      switch (key) {
-        case 'barren':
-          return context.l10n.moon_barren;
-        case 'metal_rich':
-          return context.l10n.moon_metalRich;
-        case 'metalRich':
-          return context.l10n.moon_metalRich;
-        case 'unstable':
-          return context.l10n.moon_unstable;
-        case 'habitable':
-          return context.l10n.moon_habitable;
-        case 'ice':
-          return context.l10n.moon_ice;
-        default:
-          return _capitalize(key);
-      }
-    } catch (_) {
-      return _capitalize(key);
-    }
+    // Generated l10n getters never throw — the default branch already
+    // handles unknown keys, so no try/catch is needed.
+    return switch (key) {
+      'barren' => context.l10n.moon_barren,
+      'metal_rich' || 'metalRich' => context.l10n.moon_metalRich,
+      'unstable' => context.l10n.moon_unstable,
+      'habitable' => context.l10n.moon_habitable,
+      'ice' => context.l10n.moon_ice,
+      _ => _capitalize(key),
+    };
   }
 
   String _ringLabel(BuildContext context, String key) {
-    try {
-      switch (key) {
-        case 'dust':
-          return context.l10n.ring_dust;
-        case 'ice':
-          return context.l10n.ring_ice;
-        case 'metallic':
-          return context.l10n.ring_metallic;
-        case 'rocky':
-          return context.l10n.ring_rocky;
-        default:
-          return _capitalize(key);
-      }
-    } catch (_) {
-      return _capitalize(key);
-    }
+    return switch (key) {
+      'dust' => context.l10n.ring_dust,
+      'ice' => context.l10n.ring_ice,
+      'metallic' => context.l10n.ring_metallic,
+      'rocky' => context.l10n.ring_rocky,
+      _ => _capitalize(key),
+    };
   }
 
-  static String _capitalize(String s) =>
-      s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}'.replaceAll('_', ' ');
+  static String _capitalize(String s) => s.isEmpty
+      ? s
+      : '${s[0].toUpperCase()}${s.substring(1)}'.replaceAll('_', ' ');
 
   @override
   Widget build(BuildContext context) {
@@ -373,10 +374,7 @@ class _CodexEntryCard extends StatelessWidget {
       return _LockedCard(name: name);
     }
 
-    return _DiscoveredCard(
-      name: name,
-      entry: entry,
-    );
+    return _DiscoveredCard(name: name, entry: entry);
   }
 }
 
@@ -407,90 +405,98 @@ class _DiscoveredCard extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-      decoration: BoxDecoration(
-        color: _kBgColor.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(10),
-          bottomRight: Radius.circular(10),
-        ),
-        border: Border.all(color: _kAccent.withValues(alpha: 0.3)),
-      ),
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Feature name.
-          Text(
-            name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Effect chips.
-          if (entry.effects.isNotEmpty)
-            Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              children: entry.effects.entries.map((e) {
-                final label = _effectLabels[e.key] ?? _capitalize(e.key);
-                final value = e.value;
-                final isPositive = value > 0;
-                final sign = isPositive ? '+' : '';
-                final color = isPositive
-                    ? const Color(0xFF4CAF50)
-                    : const Color(0xFFEF5350);
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: color.withValues(alpha: 0.3)),
+              decoration: BoxDecoration(
+                color: _kBgColor.withValues(alpha: 0.85),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+                border: Border.all(color: _kAccent.withValues(alpha: 0.3)),
+              ),
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Feature name.
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
                   ),
-                  child: Text(
-                    '$sign${value.toStringAsFixed(1)} $label',
+                  const SizedBox(height: 8),
+
+                  // Effect chips.
+                  if (entry.effects.isNotEmpty)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: entry.effects.entries.map((e) {
+                        final label =
+                            _effectLabels[e.key] ?? _capitalize(e.key);
+                        final value = e.value;
+                        final isPositive = value > 0;
+                        final sign = isPositive ? '+' : '';
+                        final color = isPositive
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFEF5350);
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: color.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Text(
+                            '$sign${value.toStringAsFixed(1)} $label',
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: color,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+
+                  const SizedBox(height: 6),
+
+                  // Synergy line.
+                  Text(
+                    entry.synergies.isNotEmpty
+                        ? context.l10n.ui_codex_synergy(
+                            entry.synergies.join(', '),
+                          )
+                        : context.l10n.ui_codex_noSynergy,
                     style: TextStyle(
                       fontFamily: 'monospace',
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: color,
+                      color: entry.synergies.isNotEmpty
+                          ? _kAccent.withValues(alpha: 0.8)
+                          : Colors.white.withValues(alpha: 0.3),
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
-                );
-              }).toList(),
+                ],
+              ),
             ),
-
-          const SizedBox(height: 6),
-
-          // Synergy line.
-          Text(
-            entry.synergies.isNotEmpty
-                ? context.l10n.ui_codex_synergy(entry.synergies.join(', '))
-                : context.l10n.ui_codex_noSynergy,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-              color: entry.synergies.isNotEmpty
-                  ? _kAccent.withValues(alpha: 0.8)
-                  : Colors.white.withValues(alpha: 0.3),
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ],
-      ),
-    ),
           ),
         ],
       ),
     );
   }
 
-  static String _capitalize(String s) =>
-      s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}'.replaceAll('_', ' ');
+  static String _capitalize(String s) => s.isEmpty
+      ? s
+      : '${s[0].toUpperCase()}${s.substring(1)}'.replaceAll('_', ' ');
 }
 
 // ── Locked card ──────────────────────────────────────────────────────────────

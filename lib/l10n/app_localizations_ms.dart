@@ -9,9 +9,6 @@ class AppLocalizationsMs extends AppLocalizations {
   AppLocalizationsMs([String locale = 'ms']) : super(locale);
 
   @override
-  String get appTitle => 'Siaran Bintang';
-
-  @override
   String get ui_title_stellar => 'SIARAN';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'MULAKAN PELAYARAN';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'Kod benih tidak sah. Gunakan hanya A–Z dan 0–9.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -198,6 +199,16 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ui_scan_statRadiation => 'RADIASI';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'PROB: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'KETIDAKTENTIAN: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'ANALISIS PLANET';
 
   @override
@@ -295,22 +306,6 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ui_landing_statLandingSys => 'Sis Pendaratan';
 
   @override
-  String get ui_landingSequence_phase1 => 'FASA 1: KOMIT ORBIT';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Tetingkap penurunan terbuka. Berkomit kepada kemasukan.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'FASA 2: API ATMOSFERA';
-
-  @override
-  String get ui_landingSequence_title => 'URUTAN PENDARATAN';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'LIHAT LAPORAN KOLONI';
-
-  @override
   String get ui_ending_colonyEstablished => 'KOLONI DITUBUHKAN';
 
   @override
@@ -336,6 +331,18 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'CABAR RAKAN';
+
+  @override
+  String get ui_ending_shareCard => 'KONGSI KAD';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Kongsi Pelayaran Anda';
+
+  @override
+  String get ui_ending_shareCardShare => 'KONGSI';
+
+  @override
+  String get ui_ending_shareCardCancel => 'BATALKAN';
 
   @override
   String get ui_ending_copySeed => 'SALIN BENIH';
@@ -470,6 +477,15 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Lalai sistem';
+
+  @override
+  String get ui_settings_statsPosition => 'Kedudukan statistik & butang';
+
+  @override
+  String get ui_settings_statsLeft => 'KIRI';
+
+  @override
+  String get ui_settings_statsRight => 'BETUL';
 
   @override
   String get ui_legacy_title => 'HAB WARISAN';
@@ -771,6 +787,36 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'Flora Perubatan';
+
+  @override
+  String get planet_featurePerpetualAurora => 'Aurora kekal';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Megaflora yang membatu';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Sungai Bawah Tanah';
+
+  @override
+  String get planet_featureObsidianPlains => 'Dataran Obsidian';
+
+  @override
+  String get planet_featureSaltFlats => 'Rumah Pangsa Garam';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Flora Karnivor';
+
+  @override
+  String get planet_featureGhostCities => 'Bandar Hantu';
+
+  @override
+  String get planet_featureArchiveVaults => 'Arkib Bilik Kebal';
+
+  @override
+  String get planet_featureSinkholeFields => 'Padang Lubang Tenggelam';
+
+  @override
+  String get planet_featureApexPredator => 'Pemangsa Apex';
 
   @override
   String get ui_monthJan => 'JAN';
@@ -4254,18 +4300,6 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Atmosfera';
 
   @override
-  String get ending_scoreLabel_gravity => 'Graviti';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Suhu';
-
-  @override
-  String get ending_scoreLabel_water => 'Air';
-
-  @override
-  String get ending_scoreLabel_resources => 'Sumber';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Hubungan Peribumi';
 
   @override
@@ -4374,19 +4408,19 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Majlis Suku';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Teokrasi';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'Junta Tentera';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Oligarki Korporat';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Negara Fasis';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Komune';
 
   @override
   String get ending_cultureRenaissance => 'Kebangkitan';
@@ -4440,10 +4474,10 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ending_nativesConflict => 'Konflik';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'Perikatan';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'Penaklukan';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4484,66 +4518,6 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'Tekanan atmosfera sangat rendah secara berbahaya — habitat tertutup amat diperlukan. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Bulan berkilat yang berjalur mineral mendominasi langit malam, permukaan logamnya memantulkan cahaya bintang merentasi landskap. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Bulan yang retak menjulang di atas, permukaan runtuhnya mengekor gelang serpihan samar — peringatan tetap tentang bombardiran yang mengancam di bawah. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Bulan pucat dan tandus naik di atas ufuk, permukaan berlubangnya pengawal senyap ke atas koloni. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'Planet berputar dengan pantas — siang hanya berlangsung beberapa jam, dan angin Coriolis menyebat apa sahaja yang berdiri tinggi. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'Planet berputar dengan kelambatan yang menyeksa. Hemisfera yang menghadap matahari terbakar manakala bahagian gelap membeku, dan hanya jalur senja di antara menawarkan perlindungan. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Banjaran gunung berapi membelah ufuk, lerengnya berjalur sungai batu cair. Udara berbau sulfur dan tanah bergetar di bawah kaki. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'Kerak bumi retak dan gelisah — rekahan segar terbuka tanpa amaran, mendedahkan urat mineral berkilat di antara awan debu. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Kilat menyambar merentasi langit dalam kepingan berterusan, menukarkan malam menjadi siang dan memenuhi udara dengan bau ozon. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Awan spora bercahaya hanyut pada setiap angin, indah dan mematikan — kolonis memerlukan habitat tertutup atau topeng penapisan untuk bertahan di luar. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'Planet ini kebanyakannya lautan — perairan luas dan gelap membentang ke setiap ufuk, dengan hanya kepulauan bertaburan memecah permukaan. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Lubang geoterma menembusi kerak, memuntahkan lajur wap kaya mineral yang memanaskan landskap sekeliling dan mengekalkan oasis kehidupan. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Medan magnet yang kuat menyelubungi planet, memesongkan radiasi bintang tetapi mengacaukan elektronik yang tidak berperisai. Kompas berputar tanpa guna. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Tanpa medan magnet yang kuat, angin bintang mengikis atmosfera atas. Aurora yang menakjubkan bergulung merentasi langit pada semua latitud. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Makhluk raksasa bergerak merentasi landskap — ada yang sebesar bangunan, langkah kaki mereka dirasai berkilometer jauh. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'Biosfera beroperasi sebagai jaring simbiosis yang saling berkait: setiap organisma bergantung dan mengekalkan jirannya dalam keseimbangan yang elegan dan rapuh. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4590,27 +4564,27 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Sebuah majlis teokratik membimbing $planetName, menarik kebijaksanaan daripada iman yang mengekalkan penjajah melalui kekosongan.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'Struktur perintah tentera mengawal $planetName, disiplin yang menyelamatkan mereka di angkasa lepas kini mentakrifkan tamadun mereka.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Konsortium pengurus sumber mengetuai $planetName, kepintaran ekonomi mereka telah terbukti penting untuk terus hidup.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Rejim autoritarian mengawal $planetName dengan kuku besi, kebebasan awam yang dikorbankan untuk ketertiban di dunia baharu.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'Penduduk $planetName mentadbir diri mereka secara kolektif, berkongsi sumber dan keputusan secara sama rata di kalangan semua penjajah.';
   }
 
   @override
@@ -4650,10 +4624,6 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Bulan tidak stabil dalam orbit yang merosot menghujani koloni dengan serpihan, memusnahkan infrastruktur dan menghancurkan teknologi yang tidak boleh diganti dalam bombardiran meteor berkala.';
-
-  @override
-  String get ending_moonBarren =>
-      'Bulan tandus tergantung di langit asing, teman sunyi yang tidak menawarkan kolonis apa-apa selain pemandangan yang biasa untuk diren dalam malam yang panjang.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4742,12 +4712,12 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Perikatan rasmi mengikat penjajah dan tamadun asli $planetName, gabungan pengetahuan mereka membina sesuatu yang lebih hebat daripada yang boleh dilakukan sendirian.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'Penduduk asli $planetName hidup di bawah pemerintahan kolonial, budaya mereka ditindas kerana penjajah memaksakan perintah mereka sendiri.';
   }
 
   @override
@@ -4785,27 +4755,7 @@ class AppLocalizationsMs extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'BULAN';
-
-  @override
-  String get ui_rings => 'GELANG';
-
-  @override
   String get ui_landing_landOnMoon => 'MENDARAT DI BULAN';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Bulan: $moonPercent% vs Planet: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity =>
-      'Graviti lebih rendah — pendaratan lebih mudah';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'Sistem Gelang $type';
-  }
 
   @override
   String get moon_barren => 'Tandus';
@@ -4833,60 +4783,6 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Berlogam';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Sebiji bulan tergantung di langit di atas koloni.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count bulan mengorbit di atas, melemparkan bayang-bayang berubah merentasi landskap.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Di antaranya, sebuah dunia boleh didiami memanggil — permata hijau yang menawarkan sempadan kedua.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Sebuah bulan beku berkilauan dengan simpanan ais yang luas, takungan yang menunggu untuk dimanfaatkan.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'Ais yang dituai dari bulan beku menambah bekalan air koloni, mengubah dunia tandus menjadi sesuatu yang boleh didiami.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'Koloni didirikan bukan di planet itu sendiri, tetapi di bulannya yang paling menjanjikan — dunia yang lebih kecil dengan graviti yang lebih lembut dan janji yang lebih besar.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Gelang debu samar melengkung merentasi langit, menambah keindahan halus pada setiap matahari terbit.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Gelang ais yang mempesonakan menangkap cahaya bintang, melukis langit dengan api prismatik.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Gelang batu yang padat mengelilingi planet, sumber bahan binaan yang perlahan-lahan jatuh ke dalam.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Gelang logam berkilauan di atas, kaya dengan bijih yang memacu industri koloni.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Bulan yang boleh didiami menawarkan peluang kedua untuk penjajahan.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'Ais yang dituai dari bulan beku menambah bekalan air koloni.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'Koloni mengorbit di bawah $count bulan.';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'Monolog AI';
@@ -5412,6 +5308,30 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'KETIK UNTUK MELANGKAH';
+
+  @override
+  String get ui_common_tapRingToChoose => 'KETIK CINCIN UNTUK MEMILIH';
+
+  @override
+  String get ui_common_tapToContinue => 'KETIK UNTUK MENERUSKAN';
+
+  @override
+  String get ui_tooltip_back => 'belakang';
+
+  @override
+  String get ui_tooltip_codex => 'Codex';
+
+  @override
+  String get ui_tooltip_settings => 'tetapan';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Papan pendahulu';
+
+  @override
+  String get ui_tooltip_bugReport => 'Laporkan pepijat';
+
+  @override
   String get event_pulsarLighthouse_title => 'Rumah Api Pulsar';
 
   @override
@@ -5433,6 +5353,14 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'Kita memberi jarak yang luas kepada pulsar, membakar bahan api tambahan untuk mengekalkan trajektori selamat. Kru memerhati pancaran yang menyapu melalui tingkap bertapis — indah, tetapi jauh.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Berundur sebelum sapuan sampai kepada kita';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'Kami menghayunkan diri pada kebakaran kecemasan sebelum pancaran seterusnya. Isyarat pulsar memudar di belakang kami — tiada data diperoleh, tiada bahaya yang diambil, sedikit bahan api dibelanjakan untuk tujahan mengelak.';
 
   @override
   String get event_alienNursery_title => 'Nurseri Alien';
@@ -5521,4 +5449,469 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'Antikulat eksperimen menunjukkan harapan pada mulanya, tetapi strain yang tahan berjaya menembusi. Menjelang kita memilih pembersihan penuh, wabak telah merebak ke talian nutrien kriopod. Kerosakan lebih teruk berbanding sekiranya kita bertindak tegas dari awal.';
+
+  @override
+  String get event_constitutionalConvention_title => 'Konvensyen Perlembagaan';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'Penduduk kapal jajahan semakin resah tanpa tadbir urus rasmi. Perwakilan dari setiap geladak berkumpul di tempat simpanan kargo untuk merangka piagam yang akan menentukan bagaimana koloni masa depan diperintah. Tiga puak membentangkan visi bersaing untuk kerajaan baharu.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Draf piagam demokrasi dengan hak mengundi sejagat';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'Penjajah meratifikasi perlembagaan yang menjamin perwakilan yang sama. Membuat keputusan perlahan tetapi semangat melonjak apabila setiap suara didengari.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Menubuhkan eksekutif yang kuat dengan kuasa kecemasan';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Seorang pemimpin tunggal dilantik dengan kuasa yang menyeluruh. Keputusan datang pantas tetapi pencacai membisikkan kezaliman di dek bawah.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Membentuk majlis pakar teknokratik';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Jurutera, saintis dan doktor membentuk majlis pemerintah berdasarkan kepakaran. Kecekapan bertambah baik, walaupun ada yang merasa dikecualikan daripada kuasa.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'Ancaman Rampasan kuasa Tentera';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'Komander Vasquez dari perincian keselamatan kapal telah merampas gudang senjata dan mengeluarkan kata dua: berikan kuasa tentera kecemasan atau hadapi penutupan semua dek. Keadaan tidak menentu dan penjajah mencari jawapan kepada anda.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Lawan rampasan kuasa dengan anak kapal yang setia';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'Anak kapal yang setia berhimpun untuk menentang Vasquez. Kebuntuan berakhir dengan pertumpahan darah yang minimum, tetapi perincian keselamatan menjadi lemah dan beberapa penjajah terperangkap dalam pertempuran silang.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Tunduk kepada tuntutan komander';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vasquez mengambil alih kawalan operasi kapal. Ketenteraman dipulihkan dengan pantas, tetapi dengan mengorbankan kebebasan awam. Peronda bersenjata kini berjalan di setiap koridor.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Rundingkan kuasa kecemasan terhad dengan klausa matahari terbenam';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'Selepas rundingan tegang, Vasquez menerima kuasa sementara dengan pengawasan. Kompromi rapuh yang tidak memuaskan hati sesiapa pun sepenuhnya, tetapi menghalang keganasan.';
+
+  @override
+  String get event_religiousAwakening_title => 'Kebangkitan Agama';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Seorang pendakwah yang berkarisma telah menarik ratusan penjajah ke dalam gerakan agama baru. Mereka berkumpul di kubah pemerhatian setiap kitaran, lagu pujian mereka bergema melalui aci pengudaraan. Sesetengah anak kapal bimbang tentang fanatik; yang lain mendapat keselesaan yang tulen dalam ajaran.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'Merangkul gerakan iman dan menyediakan sumber';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'Pergerakan berkembang dengan sokongan rasmi. Moral bertambah baik di kalangan orang yang beriman, dan semangat perkauman mereka mengukuhkan ikatan sosial di seluruh kapal.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Menguatkuasakan sekularisme yang ketat di atas kapal';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Perhimpunan agama dihadkan kepada tempat persendirian. Pergerakan ini berjalan di bawah tanah, menimbulkan kebencian, tetapi rasionalisme saintifik kekal sebagai doktrin rasmi.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'Benarkan ibadah tetapi kawal pengaruhnya';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'Iman itu dibenarkan tetapi dipisahkan daripada pemerintahan. Seorang pendeta dilantik untuk berhubung dengan perintah. Keseimbangan yang tidak selesa dikekalkan.';
+
+  @override
+  String get event_corporateTakeover_title => 'Pengambilalihan Korporat';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'Pengurus sumber kapal telah secara senyap-senyap menyatukan kawalan ke atas pengedaran makanan, kitar semula air, dan peruntukan kuasa. Mereka kini mencadangkan untuk memformalkan kuasa mereka ke dalam struktur korporat yang akan menguruskan ekonomi koloni masa depan.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Membenarkan prinsip pasaran bebas untuk mengawal sumber';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'Puak korporat mengambil alih pengurusan sumber. Kecekapan meningkat secara mendadak, tetapi harga meningkat dan penjajah termiskin berjuang untuk membeli keperluan asas.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Nasionalkan semua sumber di bawah pemilikan kolektif';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Sumber dirampas dan diletakkan di bawah kawalan komunal. Puak korporat dibongkar, tetapi inovasi terhenti tanpa insentif keuntungan.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Melaksanakan pasaran terkawal dengan jaring keselamatan';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Ekonomi campuran diwujudkan dengan kawalan harga dan program kebajikan. Kedua-dua puak tidak berpuas hati sepenuhnya, tetapi keperluan asas dipenuhi sambil membenarkan beberapa perusahaan.';
+
+  @override
+  String get event_successionCrisis_title => 'Krisis Penggantian';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'Kapten kapal telah meninggal dunia dalam tidur mereka, tanpa meninggalkan pengganti yang ditetapkan. Tiga puak segera bersaing untuk mendapatkan kawalan: majlis awam menuntut pilihan raya, ketua keselamatan menuntut pihak berkuasa tentera, dan penjajah yang lebih tua menggunakan upacara kepimpinan tradisional.';
+
+  @override
+  String get event_successionCrisis_choice0 =>
+      'Mengadakan pilihan raya tergempar';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'Pilihan raya yang huru-hara tetapi bersemangat menghasilkan kapten baharu yang dipilih melalui undi popular. Prosesnya tidak kemas, tetapi penjajah merasakan pemilikan kepimpinan mereka.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Biarkan tentera mengambil alih perintah';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'Ketua keselamatan melangkah ke kerusi kapten. Disiplin dipulihkan serta-merta, tetapi kru awam memandang pengawal bersenjata dengan rasa tidak senang.';
+
+  @override
+  String get event_successionCrisis_choice2 =>
+      'Mengadakan majlis orang-orang tua';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'Penjajah tertua dan paling berpengalaman membentuk majlis pemerintahan. Kebijaksanaan mereka membimbing kapal, walaupun beberapa anak kapal yang lebih muda merasa terpinggir oleh gerontokrasi.';
+
+  @override
+  String get event_nativeSovereignty_title => 'Kedaulatan Anak Negeri';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Imbasan jarak jauh mengesahkan kehidupan pintar di planet sasaran. Komunikasi yang dipintas mendedahkan tamadun canggih yang telah mengesan pendekatan anda. Mereka menghantar permintaan rasmi: mengiktiraf kedaulatan wilayah mereka atau menghadapi tentangan semasa ketibaan.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Mengiktiraf kedaulatan anak negeri dan meminta kebenaran untuk menyelesaikannya';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'Anda menghantar pengiktirafan rasmi hak orang asli. Responsnya berhati-hati tetapi positif. Hubungan masa depan akan bermula atas dasar saling menghormati, walaupun tapak pendaratan mungkin terhad.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Tegaskan ketuanan kolonial dan bersedia untuk penentangan';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'Anda menyiarkan niat anda untuk menyelesaikan tanpa mengira. Krew memulakan latihan senjata dan perancangan benteng. Orang asli menjadi senyap, yang entah bagaimana lebih menakutkan daripada ancaman.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Cadangkan tadbir urus bersama planet ini';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'Anda menawarkan rangka kerja untuk kewujudan bersama dan perkongsian sumber. Orang asli tertarik tetapi berhati-hati. Rundingan akan menjadi rumit, tetapi kemungkinan keamanan wujud.';
+
+  @override
+  String get event_laborStrike_title => 'Mogok Buruh';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'Krew kejuruteraan telah meninggalkan kerja, menuntut syif yang lebih pendek, catuan makanan yang lebih baik dan suara dalam keputusan navigasi. Sistem kritikal berjalan pada sandaran automatik, tetapi ia tidak akan bertahan lama. Penjajah yang lain menonton dengan gugup.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'Memenuhi permintaan pekerja sepenuhnya';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'Mogok tamat serta-merta. Pekerja kembali ke jawatan mereka dengan keadaan yang lebih baik. Produktiviti menurun sedikit apabila anjakan yang lebih pendek berkuat kuasa, tetapi kesetiaan tidak boleh digoyahkan.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Hentikan mogok dan kuatkuasakan buruh wajib';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Pasukan keselamatan mengiringi pekerja kembali ke balai mereka dengan todongan senjata. Enjin berdengung lagi, tetapi kebencian memuncak di geladak bawah. Beberapa pekerja terkurung di kuarters.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Tawarkan kompromi separa pada tuntutan utama';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'Selepas rundingan maraton, kesepakatan dicapai: catuan dan input nasihat yang lebih baik, tetapi tiada pengurangan dalam tempoh syif. Kedua-dua pihak tidak teruja, tetapi enjin terus berjalan.';
+
+  @override
+  String get event_censorshipDebate_title => 'Perbahasan Penapisan';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Dokumen yang bocor mendedahkan keadaan sebenar sistem kapal yang gagal. Panik merebak melalui dek bawah. Pegawai komunikasi mencadangkan menyekat akses maklumat untuk mengelakkan kekacauan selanjutnya. Penyokong kebebasan awam marah.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Menjamin akses percuma kepada semua maklumat';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Ketelusan penuh diwujudkan. Kepanikan awal reda apabila penjajah berhimpun untuk membantu menyelesaikan masalah yang mereka fahami. Kepercayaan terhadap kepimpinan bertambah, walaupun sesetengah maklumat menyebabkan kesusahan.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'Melaksanakan kawalan maklumat penuh';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Semua komunikasi kini ditapis melalui arahan. Panik berhenti, digantikan dengan ketenangan yang ngeri. Tetapi khabar angin mengisi kekosongan yang ditinggalkan oleh kebenaran yang ditapis, dan ia selalunya lebih buruk daripada realiti.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Tapis hanya maklumat sensitif keselamatan';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Sistem klasifikasi diwujudkan. Kebanyakan maklumat mengalir dengan bebas, tetapi data sistem ketenteraan dan kritikal memerlukan penjelasan. Jalan tengah yang boleh dilaksanakan yang kebanyakannya memuaskan.';
+
+  @override
+  String get event_colonialCharter_title => 'Piagam Kolonial';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'Dengan kejatuhan planet semakin hampir, penjajah mesti merangka undang-undang asas untuk masyarakat baharu mereka. Tiga kem falsafah telah muncul, masing-masing memperjuangkan visi yang berbeza untuk apa yang sepatutnya menjadi tanah jajahan. Perdebatan hangat dan sangat peribadi.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Piagam progresif yang menekankan hak individu';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'Piagam itu mengabadikan kebebasan peribadi, kesaksamaan, dan mobiliti sosial. Seniman dan pemikir meraikan; tradisionalis memberi amaran bahawa kebebasan yang tidak dikawal membawa kepada huru-hara.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Piagam konservatif yang memelihara tradisi Bumi';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'Piagam itu mengkodifikasikan nilai tradisional, struktur keluarga, dan pematuhan agama. Ramai mendapat keselesaan dalam adat biasa; yang lain berasa terbantut oleh berat pemikiran dunia lama.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Piagam pragmatik memberi tumpuan kepada kelangsungan hidup dan pertumbuhan';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'Piagam ini mengutamakan pengurusan sumber, pendidikan teknikal, dan pembangunan ekonomi. Ia tidak mempunyai puisi tetapi memastikan jajahan akan cekap dan teratur.';
+
+  @override
+  String get event_separatistMovement_title => 'Gerakan Pemisah';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Satu puak penjajah telah mengisytiharkan kemerdekaan daripada tadbir urus kapal. Mereka telah menghalang diri mereka di bahagian belakang, menuntut hak untuk menubuhkan penempatan mereka sendiri apabila mendarat. Mereka mengawal 15% daripada rizab makanan kapal dan susunan navigasi sandaran.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Berikan autonomi wilayah dalam rangka kerja persekutuan';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'Pemisah menerima perjanjian: daerah mereka sendiri dengan tadbir urus tempatan, di bawah payung persekutuan yang longgar. Preseden perpecahan membimbangkan sesetengah pihak, tetapi keamanan dikekalkan.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Serbu sekatan dan paksa penyatuan semula';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Pasukan keselamatan melanggar bahagian belakang. Pemisah menentang keras. Pesanan dipulihkan, tetapi pada kos yang teruk. Kapal itu bersatu dalam tubuh, jika tidak dalam roh.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Tangani akar rungutan yang mendorong pergerakan itu';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Pengantara berusaha untuk memahami apa yang menolak puak itu. Pembaharuan dalam pengagihan dan perwakilan sumber perlahan-lahan membawa pemisah kembali ke dalam kumpulan. Penyembuhan memerlukan masa.';
+
+  @override
+  String get event_warCouncil_title => 'Majlis Perang';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'Dengan potensi ancaman dikesan dalam sistem berdekatan, kepimpinan kapal mengadakan majlis perang. Persoalannya: berapa banyak sumber terhad tanah jajahan harus ditumpukan kepada persediaan ketenteraan berbanding infrastruktur awam?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Persenjataan penuh: memalsukan senjata dan melatih askar';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Bengkel dilengkapkan semula untuk pengeluaran senjata. Setiap penjajah yang berkemampuan menerima latihan tempur. Kapal itu berbulu dengan senjata, tetapi bajet untuk peralatan pertanian menyusut.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Perlucutan senjata: mencairkan senjata menjadi alat';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'Gudang senjata itu dikosongkan dan kandungannya dikitar semula menjadi bahan binaan. Tanah jajahan akan membina dengan mata bajak, bukan pedang. Pacifis bergembira; realis bimbang tentang apa yang bersembunyi dalam kegelapan.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Postur pertahanan sahaja: perisai dan dinding, bukan pedang';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'Sumber pergi ke kubu, perisai dan sistem amaran awal. Tiada senjata penyerang dihasilkan. Pendekatan seimbang yang memastikan pilihan terbuka tanpa menimbulkan potensi jiran.';
+
+  @override
+  String get event_tradeFederation_title => 'Persekutuan Perdagangan';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'Apabila koloni menghampiri daya maju, puak membahaskan cara menstrukturkan ekonominya. Persoalannya menjangkaui kelangsungan hidup semata-mata - ia akan menentukan jenis masyarakat yang berakar di tanah asing. Pedagang, komunalis dan birokrat semuanya membuat kes mereka.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Wujudkan zon perdagangan bebas dengan peraturan minimum';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'Pasaran muncul dalam setiap modul habitat. Inovasi berkembang apabila peniaga bersaing. Ketidaksamaan kekayaan bertambah, tetapi begitu juga jumlah sumber yang tersedia untuk tanah jajahan.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Melaksanakan perkongsian komunal semua sumber';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Harta persendirian dimansuhkan. Semuanya milik semua orang. Tiada siapa yang kelaparan, tetapi tiada siapa yang mempunyai insentif untuk menghasilkan lebih daripada minimum. Kebiasaan itu selesa.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Wujudkan sistem perdagangan yang diuruskan oleh negara';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'Kerajaan mengawal semua perdagangan, menetapkan harga dan memperuntukkan sumber. Sistem ini adil tetapi tidak fleksibel. Pasaran gelap muncul di koridor penyelenggaraan.';
+
+  @override
+  String get event_faithVsScience_title => 'Iman vs Sains';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'Teleskop kapal telah menangkap imej fenomena kosmik yang secara langsung bercanggah dengan prinsip utama pergerakan iman yang dominan. Ketua saintis mahu menerbitkan penemuan; ketua agama menegaskan mereka akan memecahbelahkan masyarakat.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Terbitkan penemuan saintifik sepenuhnya';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'Kebenaran mengatasi keselesaan. Data dikeluarkan dan pergerakan agama pecah. Sesetengah orang beriman menyesuaikan iman mereka; yang lain kehilangannya sepenuhnya. Kemajuan ilmu.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Menindas penemuan untuk mengekalkan keharmonian sosial';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'Data dikelaskan. Masyarakat agama tetap stabil, tetapi pasukan sains lemah semangat. Kebenaran yang ditangguhkan bukanlah kebenaran yang dinafikan, tetapi rasanya seperti itu.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Mengadakan panel bersama untuk mencari keharmonian antara kedua-dua pandangan';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Para saintis dan ahli teologi bekerjasama untuk mentafsir semula penemuan. Sintesis baru muncul yang meluaskan pemahaman dan iman. Tidak semua orang yakin, tetapi dialog itu sihat.';
+
+  @override
+  String get event_surveillanceState_title => 'Negeri Pengawasan';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'Selepas beberapa siri insiden sabotaj, ketua keselamatan mencadangkan pemasangan sistem pemantauan di setiap petak kapal. Kamera, mikrofon dan pengimbas biometrik akan menjejaki setiap pergerakan penjajah. Penyokong privasi berasa ngeri.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Tolak cadangan pengawasan sepenuhnya';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'Privasi terpelihara. Pensabotur masih bebas, tetapi penjajah lebih mudah tidur kerana mengetahui mereka tidak diperhatikan. Siasatan diteruskan melalui kaedah tradisional.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Laksanakan pengawasan penuh di seluruh kapal';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Setiap sudut kapal dipantau. Pensabotaj ditangkap dalam beberapa hari. Tetapi kamera kekal, dan ketua keselamatan tidak menunjukkan minat untuk mematikannya. Pernah.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Pasang pemantauan terhad di kawasan kritikal sahaja';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Kamera menutupi bilik enjin, gudang senjata dan jambatan. Tempat tinggal kekal peribadi. Pensabotaj akhirnya dikenal pasti melalui analisis corak. Satu tindak balas yang diukur.';
+
+  @override
+  String get event_nativeAlliance_title => 'Perikatan Asli';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'Tamadun asli telah mencadangkan satu perjanjian rasmi. Duta mereka tiba melalui pengangkutan ulang-alik, makhluk elegan yang bercakap melalui peranti penterjemah dengan kecanggihan yang menakjubkan. Mereka menawarkan tiga bentuk hubungan, masing-masing dengan implikasi yang berbeza untuk masa depan tanah jajahan.';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'Menandatangani perjanjian perikatan sama rata';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'Perjanjian itu menetapkan pertahanan bersama, penyelidikan bersama, dan hak wilayah yang sama. Kedua-dua tamadun akan berkembang bersama. Orang asli berkongsi pengetahuan pertanian yang mengubah prospek tanah jajahan anda.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Berunding daripada kedudukan penguasaan penjajah';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'Anda memanfaatkan teknologi canggih anda untuk mendapatkan syarat yang menguntungkan. Orang asli menyerahkan wilayah dan sumber. Mereka menandatangani dengan tangan yang menggeletar. Sejarah telah melihat perkara ini sebelum ini, dan ia jarang berakhir dengan baik.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Wujudkan perkongsian perdagangan yang tertumpu pada manfaat bersama';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'Perdagangan merapatkan jurang antara spesies. Bahan asli mengalir ke bengkel anda; teknologi anda menambah baik perubatan mereka. Persahabatan tumbuh dari keuntungan bersama.';
 }

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/app.dart' show routeObserver;
@@ -9,9 +12,11 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, seedToCode;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 /// The main voyage HUD screen displaying ship systems, encounter progress,
 /// and action buttons.
@@ -24,22 +29,20 @@ class VoyageScreen extends ConsumerStatefulWidget {
 
 class _VoyageScreenState extends ConsumerState<VoyageScreen>
     with TickerProviderStateMixin, RouteAware {
-  static const _background = Color(0xFF0B1426);
-  static const _accent = Color(0xFF00E5FF);
+  static const _background = SpaceColors.deepSpace;
+  static const _accent = SpaceColors.cyan;
 
-  late final AnimationController _starController;
   late final AnimationController _warningController;
   bool _wasCritical = false;
-  int _adRefreshCount = 0;
+
+  // Cached per-locale label maps. Rebuilt only when AppLocalizations changes.
+  AppLocalizations? _cachedLabelsL10n;
+  late Map<String, String> _cachedCoreLabels;
+  late Map<String, String> _cachedScannerLabels;
 
   @override
   void initState() {
     super.initState();
-
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 90),
-    )..repeat();
 
     _warningController = AnimationController(
       vsync: this,
@@ -54,12 +57,33 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(context)!);
+    final l10n = context.l10n;
+    if (!identical(l10n, _cachedLabelsL10n)) {
+      _cachedLabelsL10n = l10n;
+      _cachedCoreLabels = {
+        'hull': l10n.ui_voyage_systemHull,
+        'nav': l10n.ui_voyage_systemNav,
+        'cryopods': l10n.ui_voyage_systemCryopods,
+        'culture': l10n.ui_voyage_systemCulture,
+        'tech': l10n.ui_voyage_systemTech,
+        'constructors': l10n.ui_voyage_systemConstruct,
+        'shields': l10n.ui_voyage_systemShields,
+        'landingSystem': l10n.ui_voyage_systemLanding,
+      };
+      _cachedScannerLabels = {
+        'atmosphericScanner': l10n.ui_voyage_scannerAtmo,
+        'gravimetricScanner': l10n.ui_voyage_scannerGrav,
+        'mineralScanner': l10n.ui_voyage_scannerMineral,
+        'lifeSignsScanner': l10n.ui_voyage_scannerLife,
+        'temperatureScanner': l10n.ui_voyage_scannerTemp,
+        'waterScanner': l10n.ui_voyage_scannerWater,
+      };
+    }
   }
 
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
-    _starController.dispose();
     _warningController.dispose();
     super.dispose();
   }
@@ -67,8 +91,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   @override
   void didPopNext() {
     // A child screen (scan, event, puzzle, etc.) popped back to us.
-    // Refresh the banner ad so AdMob counts a new impression.
-    setState(() => _adRefreshCount++);
+    // Stop any long audio the child screen started — playLong itself has
+    // replacement semantics for forward nav, but returning to voyage means
+    // nothing will call playLong again, so clear it explicitly.
+    GameSfx().stopAllLongAudio();
   }
 
   /// Returns true when any ship system is critically low (<20 %).
@@ -81,16 +107,23 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     // Use select() to avoid rebuilding on unrelated state changes (e.g. log
     // updates shouldn't rebuild the HUD).
     final ship = ref.watch(voyageProvider.select((v) => v.ship));
-    final encounterCount = ref.watch(voyageProvider.select((v) => v.encounterCount));
+    final encounterCount = ref.watch(
+      voyageProvider.select((v) => v.encounterCount),
+    );
     final probes = ref.watch(voyageProvider.select((v) => v.probes));
     final fuel = ref.watch(voyageProvider.select((v) => v.fuel));
     final energy = ref.watch(voyageProvider.select((v) => v.energy));
     final colonists = ref.watch(voyageProvider.select((v) => v.colonists));
     final seed = ref.watch(voyageProvider.select((v) => v.seed));
     final pendingPlanetModifiers = ref.watch(
-        voyageProvider.select((v) => v.pendingPlanetModifiers));
+      voyageProvider.select((v) => v.pendingPlanetModifiers),
+    );
+    // Watch the two fields canScanPlanet depends on so the button updates
+    // as soon as the encounter counter catches up to the next planet mark.
+    final canScan = ref.watch(
+      voyageProvider.select((v) => v.encounterCount >= v.nextPlanetEncounter),
+    );
     final isCritical = _hasCritical(ship);
-    final canScan = ref.read(voyageProvider.notifier).canScanPlanet;
 
     // Fire critical haptic when entering critical state (deferred to avoid side effect in build).
     if (isCritical && !_wasCritical) {
@@ -105,28 +138,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
       body: Stack(
         children: [
           // Background star field (slow drift).
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (context, _) {
-                  return Semantics(
-                    label: 'Animated star field background',
-                    excludeSemantics: true,
-                    child: CustomPaint(
-                      painter: StarFieldPainter(
-                        animationValue: _starController.value,
-                        farStarCount: 80,
-                        midStarCount: 30,
-                        nearStarCount: 10,
-                      ),
-                      size: Size.infinite,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          const EventStarField(duration: Duration(seconds: 90)),
 
           // Critical-warning overlay.
           if (isCritical)
@@ -192,14 +204,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.only(right: 12),
+                padding: const EdgeInsetsDirectional.only(end: 12),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PremiumAdGate(
-                      child: AdaptiveNativeAd(
-                        size: QaNativeAdSize.medium,
-                      ),
+                      child: AdaptiveNativeAd(size: QaNativeAdSize.medium),
                     ),
                   ],
                 ),
@@ -209,7 +219,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
             Expanded(
               flex: 3,
               child: Padding(
-                padding: const EdgeInsets.only(left: 12),
+                padding: const EdgeInsetsDirectional.only(start: 12),
                 child: _buildHudPortrait(
                   ship: ship,
                   isCritical: isCritical,
@@ -251,7 +261,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
           ),
         ),
         PremiumAdGate(
-          child: AdaptiveBannerAd(key: ValueKey('voyage_banner_$_adRefreshCount')),
+          child: AdaptiveBannerAd(key: const ValueKey('voyage_banner')),
         ),
       ],
     );
@@ -323,6 +333,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     required Map<String, double> pendingPlanetModifiers,
   }) {
     // Portrait / phone layout only (landscape is handled by _buildLayout).
+    final compact = ScreenInfo.of(context).isCompact;
     return Column(
       children: [
         _buildHeader(
@@ -332,13 +343,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
           energy: energy,
           colonists: colonists,
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: compact ? 10 : 16),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 _buildSystemsPanel(ship, isCritical),
-                const SizedBox(height: 20),
+                SizedBox(height: compact ? 12 : 20),
                 _buildNarrative(
                   encounterCount: encounterCount,
                   pendingPlanetModifiers: pendingPlanetModifiers,
@@ -347,9 +358,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: compact ? 10 : 16),
         _buildActions(canScan),
-        const SizedBox(height: 8),
+        SizedBox(height: compact ? 4 : 8),
         Text(
           context.l10n.ui_voyage_seed(seedToCode(seed)),
           style: TextStyle(
@@ -363,85 +374,82 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     );
   }
 
-  Map<String, String> _coreLabels(l10n) => {
-    'hull': l10n.ui_voyage_systemHull,
-    'nav': l10n.ui_voyage_systemNav,
-    'cryopods': l10n.ui_voyage_systemCryopods,
-    'culture': l10n.ui_voyage_systemCulture,
-    'tech': l10n.ui_voyage_systemTech,
-    'constructors': l10n.ui_voyage_systemConstruct,
-    'shields': l10n.ui_voyage_systemShields,
-    'landingSystem': l10n.ui_voyage_systemLanding,
-  };
-
-  Map<String, String> _scannerLabels(l10n) => {
-    'atmosphericScanner': l10n.ui_voyage_scannerAtmo,
-    'gravimetricScanner': l10n.ui_voyage_scannerGrav,
-    'mineralScanner': l10n.ui_voyage_scannerMineral,
-    'lifeSignsScanner': l10n.ui_voyage_scannerLife,
-    'temperatureScanner': l10n.ui_voyage_scannerTemp,
-    'waterScanner': l10n.ui_voyage_scannerWater,
-  };
+  static const _coreNames = <String>[
+    'hull',
+    'nav',
+    'cryopods',
+    'culture',
+    'tech',
+    'constructors',
+    'shields',
+    'landingSystem',
+  ];
 
   /// Landscape version of the systems panel with 2-column grid.
   Widget _buildSystemsPanelLandscape(ShipSystems ship, bool isCritical) {
-    final coreLabels = _coreLabels(context.l10n);
-    final scannerLabels = _scannerLabels(context.l10n);
+    final coreLabels = _cachedCoreLabels;
+    final scannerLabels = _cachedScannerLabels;
 
-    final coreNames = [
-      'hull', 'nav', 'cryopods', 'culture',
-      'tech', 'constructors', 'shields', 'landingSystem',
-    ];
-    final scannerNames = ShipSystems.scannerSubsystemNames.toList();
+    const coreNames = _coreNames;
+    const scannerNames = ShipSystems.scannerSubsystemNames;
 
     // Interleave into 2-column pairs for core systems.
     final coreWidgets = <Widget>[];
     for (var i = 0; i < coreNames.length; i += 2) {
-      coreWidgets.add(Row(
-        children: [
-          Expanded(
-            child: SystemBar(
-              label: coreLabels[coreNames[i]] ?? coreNames[i],
-              value: ship.getSystem(coreNames[i]),
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (i + 1 < coreNames.length)
+      coreWidgets.add(
+        Row(
+          children: [
             Expanded(
               child: SystemBar(
-                label: coreLabels[coreNames[i + 1]] ?? coreNames[i + 1],
-                value: ship.getSystem(coreNames[i + 1]),
+                label: coreLabels[coreNames[i]] ?? coreNames[i],
+                value: ship.getSystem(coreNames[i]),
+                labelWidth: 80,
               ),
-            )
-          else
-            const Expanded(child: SizedBox.shrink()),
-        ],
-      ));
+            ),
+            const SizedBox(width: 8),
+            if (i + 1 < coreNames.length)
+              Expanded(
+                child: SystemBar(
+                  label: coreLabels[coreNames[i + 1]] ?? coreNames[i + 1],
+                  value: ship.getSystem(coreNames[i + 1]),
+                  labelWidth: 80,
+                ),
+              )
+            else
+              const Expanded(child: SizedBox.shrink()),
+          ],
+        ),
+      );
     }
 
     // Interleave into 2-column pairs for scanner systems.
     final scannerWidgets = <Widget>[];
     for (var i = 0; i < scannerNames.length; i += 2) {
-      scannerWidgets.add(Row(
-        children: [
-          Expanded(
-            child: SystemBar(
-              label: scannerLabels[scannerNames[i]] ?? scannerNames[i],
-              value: ship.getSystem(scannerNames[i]),
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (i + 1 < scannerNames.length)
+      scannerWidgets.add(
+        Row(
+          children: [
             Expanded(
               child: SystemBar(
-                label: scannerLabels[scannerNames[i + 1]] ?? scannerNames[i + 1],
-                value: ship.getSystem(scannerNames[i + 1]),
+                label: scannerLabels[scannerNames[i]] ?? scannerNames[i],
+                value: ship.getSystem(scannerNames[i]),
+                labelWidth: 80,
               ),
-            )
-          else
-            const Expanded(child: SizedBox.shrink()),
-        ],
-      ));
+            ),
+            const SizedBox(width: 8),
+            if (i + 1 < scannerNames.length)
+              Expanded(
+                child: SystemBar(
+                  label:
+                      scannerLabels[scannerNames[i + 1]] ?? scannerNames[i + 1],
+                  value: ship.getSystem(scannerNames[i + 1]),
+                  labelWidth: 80,
+                ),
+              )
+            else
+              const Expanded(child: SizedBox.shrink()),
+          ],
+        ),
+      );
     }
 
     return Container(
@@ -539,11 +547,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   }
 
   Widget _buildSystemsPanel(ShipSystems ship, bool isCritical) {
-    final coreLabels = _coreLabels(context.l10n);
-    final scannerLabels = _scannerLabels(context.l10n);
+    final coreLabels = _cachedCoreLabels;
+    final scannerLabels = _cachedScannerLabels;
+    final compact = ScreenInfo.of(context).isCompact;
+    // 80 dp fits "Temperature" (11 chars) at fontSize 9 monospace without
+    // wrapping. 64 dp default is tight for scanner labels.
+    const labelWidth = 80.0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: compact ? 6 : 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white.withValues(alpha: 0.03),
@@ -557,22 +569,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Core systems + shields.
-          ...[
-            'hull',
-            'nav',
-            'cryopods',
-            'culture',
-            'tech',
-            'constructors',
-            'shields',
-            'landingSystem',
-          ].map((name) {
+          ..._coreNames.map((name) {
             final value = ship.getSystem(name);
-            return SystemBar(label: coreLabels[name] ?? name, value: value);
+            return SystemBar(
+              label: coreLabels[name] ?? name,
+              value: value,
+              labelWidth: labelWidth,
+              compact: compact,
+            );
           }),
           // Divider.
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3),
+            padding: EdgeInsets.symmetric(vertical: compact ? 2 : 3),
             child: Row(
               children: [
                 Text(
@@ -597,7 +605,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
           // Scanner subsystems.
           ...ShipSystems.scannerSubsystemNames.map((name) {
             final value = ship.getSystem(name);
-            return SystemBar(label: scannerLabels[name] ?? name, value: value);
+            return SystemBar(
+              label: scannerLabels[name] ?? name,
+              value: value,
+              labelWidth: labelWidth,
+              compact: compact,
+            );
           }),
         ],
       ),
@@ -639,8 +652,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
       message = phrases[sector % phrases.length];
     }
 
+    final compact = ScreenInfo.of(context).isCompact;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: compact ? 10 : 14,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: Colors.white.withValues(alpha: 0.03),
@@ -652,7 +669,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         style: TextStyle(
           fontFamily: 'monospace',
           fontSize: 13,
-          height: 1.5,
+          height: 1.4,
           letterSpacing: 0.5,
           color: Colors.white.withValues(alpha: 0.7),
         ),
@@ -663,12 +680,16 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   Widget _buildActions(bool canScan) {
     final notifier = ref.read(voyageProvider.notifier);
     final hasEnergy = notifier.canScanEnergy;
+    final compact = ScreenInfo.of(context).isCompact;
     return Column(
       children: [
         if (canScan)
           HolographicButton(
-            label: hasEnergy ? context.l10n.ui_voyage_scanPlanet : context.l10n.ui_voyage_noEnergy,
+            label: hasEnergy
+                ? context.l10n.ui_voyage_scanPlanet
+                : context.l10n.ui_voyage_noEnergy,
             autofocus: true,
+            compact: compact,
             onPressed: hasEnergy
                 ? () {
                     HapticService().medium();
@@ -677,16 +698,24 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                     // Generate planet after navigation so the scan animation
                     // plays while ONNX inference runs on the next frame.
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      notifier.scanPlanet();
+                      unawaited(
+                        notifier.scanPlanet().catchError((
+                          Object e,
+                          StackTrace st,
+                        ) {
+                          QaLogger.app.warning('scanPlanet failed', e, st);
+                        }),
+                      );
                     });
                   }
                 : null,
           ),
-        if (canScan) const SizedBox(height: 12),
+        if (canScan) SizedBox(height: compact ? 8 : 12),
         HolographicButton(
           label: context.l10n.ui_voyage_pressOn,
           isPrimary: !canScan,
           autofocus: !canScan,
+          compact: compact,
           onPressed: () {
             GameSfx().play(GameSfx.buttonClick);
             final notifier2 = ref.read(voyageProvider.notifier);

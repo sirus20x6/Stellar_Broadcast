@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:yaml/yaml.dart';
 
 import 'package:stellar_broadcast/models/event.dart';
@@ -27,15 +28,24 @@ class EventLoader {
   ) {
     final doc = loadYaml(yamlString);
     if (doc is! YamlMap || doc['events'] is! YamlList) {
-      return const []; // Malformed YAML — return empty pool rather than crash
+      QaLogger.app.warning(
+        'Event YAML is malformed — expected top-level "events:" list, got ${doc.runtimeType}. '
+        'Returning empty event pool.',
+      );
+      return const [];
     }
     final eventList = doc['events'] as YamlList;
     final events = <GameEvent>[];
     for (final e in eventList) {
       try {
         events.add(_parseEvent(e as YamlMap, resolve));
-      } catch (_) {
-        // Skip malformed events rather than crash
+      } catch (err, st) {
+        final id = (e is YamlMap ? e['id']?.toString() : null) ?? '<unknown>';
+        QaLogger.app.warning(
+          'Failed to parse event "$id" — skipping. YAML author should check required fields.',
+          err,
+          st,
+        );
       }
     }
     return events;

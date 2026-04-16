@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' show Locale;
@@ -5,6 +6,7 @@ import 'dart:ui' show Locale;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
+import 'package:quickapps_iap/quickapps_iap.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
 
@@ -39,13 +41,32 @@ enum TradeResource { probes, fuel, energy, colonists, culture, tech }
 // ═══════════════════════════════════════════════════════════════════════════
 
 final interstitialAdProvider = Provider<AdLifecycleManager>((ref) {
+  // Watch premium so the provider rebuilds when the user upgrades mid-session.
+  // Without this, an existing AdMob handle would keep firing interstitials
+  // even after a refund-eligible purchase, since `QaAdConfig.adapter` is only
+  // read here once at construction time.
+  final isPremium = ref.watch(isPremiumProvider);
   final adapter = QaAdConfig.adapter;
   final adUnitId = QaAdConfig.resolveAdUnitId(QaAdFormat.interstitial);
   late final QaInterstitialAdHandle handle;
-  if (adapter == null || adUnitId == null) {
+  if (isPremium || adapter == null || adUnitId == null) {
     handle = noOpInterstitialHandle();
   } else {
-    handle = adapter.createInterstitialAd(adUnitId: adUnitId);
+    // Wire telemetry into every event the handle emits — without this,
+    // none of the ad_requested / ad_loaded / ad_impression / ad_clicked
+    // events ever reached Firebase Analytics for interstitials. The other
+    // ad widgets (banner, native) merge telemetry inside their own
+    // wrapper, but this provider creates a handle directly.
+    final telemetryCallbacks = QaAdConfig.telemetry?.defaultCallbacks;
+    handle = adapter.createInterstitialAd(
+      adUnitId: adUnitId,
+      // The game already rate-limits interstitials to once per 3 Press On
+      // clicks, so we don't want the handle layering a second time-based
+      // cooldown on top — a fast player could easily clear 3 planets in
+      // under the default 3 minutes and silently miss an interstitial.
+      cooldown: Duration.zero,
+      callbacks: telemetryCallbacks,
+    );
   }
   final manager = AdLifecycleManager(handle: handle);
   ref.onDispose(manager.dispose);
@@ -59,7 +80,10 @@ final interstitialAdProvider = Provider<AdLifecycleManager>((ref) {
 String seedToCode(int seed) =>
     (seed.abs() % 2176782336).toRadixString(36).toUpperCase().padLeft(6, '0');
 
-int codeToSeed(String code) => int.parse(code.trim().toUpperCase(), radix: 36);
+/// Decodes a 6-character base-36 seed code. Returns `null` if the input
+/// contains characters outside `[0-9A-Z]`.
+int? codeToSeed(String code) =>
+    int.tryParse(code.trim().toUpperCase(), radix: 36);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Daily seed
@@ -71,8 +95,24 @@ String _todayUtc() {
   return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 }
 
+/// Deterministic seed for a UTC date string in YYYY-MM-DD format.
+///
+/// Do not use [String.hashCode] here: Dart does not promise a stable
+/// cross-runtime hash, and daily voyages must match across mobile, desktop,
+/// and web builds. FNV-1a is tiny, deterministic, and good enough for turning
+/// a date label into a shareable game seed.
+int dailySeedForDate(String date) {
+  const fnvPrime = 0x01000193;
+  var hash = 0x811c9dc5;
+  for (final unit in date.codeUnits) {
+    hash ^= unit;
+    hash = (hash * fnvPrime) & 0xffffffff;
+  }
+  return hash % 2176782336;
+}
+
 /// Deterministic seed for today's daily voyage, derived from UTC date.
-int dailySeed() => _todayUtc().hashCode.abs() % 2176782336;
+int dailySeed() => dailySeedForDate(_todayUtc());
 
 /// 6-char code for today's daily seed.
 String dailySeedCode() => seedToCode(dailySeed());
@@ -408,6 +448,13 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     state = state.copyWith(ship: state.ship.degrade(system, amount));
   }
 
+  /// QA helper — sets a sample game over reason without triggering the
+  /// actual game over state transition. Used by the debug deep-link path
+  /// to make the gameover screen's Phase 2 box populated in screenshots.
+  void debugSetGameOverReason(String reason) {
+    state = state.copyWith(gameOverReason: reason);
+  }
+
   /// Generates potentially inaccurate scanner readings based on scanner health.
   /// Scanners can fail (return null) based on health — lower health = higher failure chance.
   Map<String, double?> _generateScannerReadings(
@@ -542,7 +589,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   Future<void> handleEvent(EventChoice choice) async {
     // Note: weighted outcomes should be resolved by the caller before passing
     // here, so the choice's outcome/effects are already finalized.
-    state = EventEngine.applyChoice(state, choice, _random);
+    final eventId = state.seenEventIds.isNotEmpty ? state.seenEventIds.last : null;
+    state = EventEngine.applyChoice(state, choice, _random, triggeredEventId: eventId);
 
     if (choice.opensPlanetScreen) {
       await _openImmediatePlanet(
@@ -585,7 +633,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 
   /// Applies puzzle result (reward or penalty) and advances the encounter.
   void handlePuzzleResult(EventChoice choice, {bool isCorrect = true}) {
-    state = EventEngine.applyChoice(state, choice, _random);
+    state = EventEngine.applyChoice(state, choice, _random, triggeredEventId: 'puzzle_encounter');
     state = state.copyWith(encounterCount: state.encounterCount + 1);
 
     AnalyticsService().logEvent(
@@ -616,17 +664,17 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       state.pendingPlanetModifiers,
     );
     Planet? bestPlanet;
-    Map<String, double?>? bestReadings;
     var bestScore = -1.0;
 
     for (int i = 0; i < 24; i++) {
-      // Yield every iteration — ONNX name inference is heavy.
+      // Yield every iteration — stat rolling and modifier logic is light,
+      // but we yield so the UI doesn't hitch if many planets are evaluated.
       await Future.delayed(Duration.zero);
 
       var candidate = await PlanetGenerator.generate(
         _random,
         scannerLevels: state.scannerLevels,
-        nameService: _nameService,
+        nameService: null, // Defer naming to the winner
       );
 
       if (deferredModifiers.isNotEmpty) {
@@ -636,33 +684,51 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       final score = candidate.habitabilityScore;
       if (score > bestScore) {
         bestPlanet = candidate;
-        bestReadings = _generateScannerReadings(candidate, state.ship);
         bestScore = score;
       }
 
       if (score >= minHabitability) {
         bestPlanet = candidate;
-        bestReadings = _generateScannerReadings(candidate, state.ship);
         break;
       }
     }
 
-    if (bestPlanet == null || bestReadings == null) {
+    if (bestPlanet == null) {
       QaLogger.app.warning(
         '_openImmediatePlanet: no suitable planet found after 24 candidates (minHabitability=$minHabitability)',
       );
       return;
     }
 
+    // Name the winner.
+    var finalPlanet = bestPlanet;
+    if (_nameService != null && _nameService.isReady) {
+      final name = await _nameService.generateName(
+        atmosphere: finalPlanet.atmosphere,
+        gravity: finalPlanet.gravity,
+        resources: finalPlanet.resources,
+        biodiversity: finalPlanet.biodiversity,
+        temperature: finalPlanet.temperature,
+        water: finalPlanet.water,
+        radiation: 1.0 - finalPlanet.radiation,
+        random: _random,
+      );
+      if (name.isNotEmpty) {
+        finalPlanet = finalPlanet.copyWith(name: name);
+      }
+    }
+
+    final readings = _generateScannerReadings(finalPlanet, state.ship);
+
     state = state.copyWith(
-      currentPlanet: bestPlanet,
+      currentPlanet: finalPlanet,
       probedStats: const {},
-      scannerReadings: bestReadings,
+      scannerReadings: readings,
       planetsScanned: state.planetsScanned + 1,
       pendingScannerUpgrade: (state.planetsScanned + 1) % 3 == 0,
       pendingPlanetModifiers: const {},
       log: List<String>.of(state.log)
-        ..add('Guided to ${bestPlanet.name} by alien sentinels.'),
+        ..add('Guided to ${finalPlanet.name} by alien sentinels.'),
     );
   }
 
@@ -714,7 +780,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       },
     );
 
-    VoyageSaveService.clear();
+    _clearSavedVoyageInBackground();
     return result;
   }
 
@@ -730,12 +796,12 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     final fuelCost = 5 + _random.nextInt(6);
     final newFuel = (state.fuel - fuelCost).clamp(0, 200);
 
-    // Trace damage: each of 15 ship systems has 25% chance of 0.10–0.20 damage.
+    // Trace damage: each ship system has a small chance to degrade.
     var ship = state.ship;
     var totalDmg = 0.0;
     for (final sys in ShipSystems.systemNames) {
-      if (_random.nextDouble() < 0.25) {
-        final dmg = 0.10 + _random.nextDouble() * 0.10;
+      if (_random.nextDouble() < 0.15) {
+        final dmg = 0.05 + _random.nextDouble() * 0.10;
         ship = ship.degrade(sys, dmg);
         totalDmg += dmg;
       }
@@ -817,7 +883,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       );
     }
     if (!wasDead && state.isGameOver) {
-      VoyageSaveService.clear();
+      _clearSavedVoyageInBackground();
       AnalyticsService().logEvent(
         name: QaEvents.gameOver,
         parameters: {
@@ -939,6 +1005,16 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   }
 
   /// Restores a previously saved voyage. Returns true if restored.
+  ///
+  /// Note on determinism: the RNG is reseeded with `saved.seed +
+  /// saved.encounterCount`, which approximates "RNG state at encounter N"
+  /// without replaying. This means a *resumed* voyage will diverge from a
+  /// *continuously-played* voyage with the same starting seed, even after the
+  /// resume point. Achieving exact equivalence would require either tracking
+  /// the precise PRNG call sequence (Dart's `Random` doesn't expose state) or
+  /// switching to a serialisable PRNG. This is acceptable for shareable seeds
+  /// (which are always replayed from scratch) but means save-scumming cannot
+  /// be used to "reroll" identical events.
   Future<bool> restoreState(AppLocalizations l10n) async {
     final saved = await VoyageSaveService.load();
     if (saved == null) return false;
@@ -968,9 +1044,20 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   /// Clears any saved voyage from storage.
   static Future<void> clearSave() => VoyageSaveService.clear();
 
+  /// Fire-and-forget helper that clears the saved voyage and logs any storage
+  /// failure instead of dropping it. Use this whenever the voyage ends or
+  /// resets so a failed clear doesn't haunt the next launch.
+  void _clearSavedVoyageInBackground() {
+    unawaited(
+      VoyageSaveService.clear().catchError((Object e, StackTrace st) {
+        QaLogger.app.warning('Failed to clear saved voyage', e, st);
+      }),
+    );
+  }
+
   /// Resets the voyage to the initial state.
   void reset() {
-    VoyageSaveService.clear();
+    _clearSavedVoyageInBackground();
     state = const VoyageState();
   }
 }
@@ -984,19 +1071,89 @@ final legacyProvider = StateNotifierProvider<LegacyNotifier, LegacyData>((ref) {
 });
 
 /// Whether today's daily voyage has already been played.
+///
+/// Two sources of truth, checked in order:
+///   1. An explicit `daily_played_date` marker written when a daily starts
+///      and again when it completes.
+///   2. An in-progress voyage save with `isDaily == true` and a start
+///      timestamp from today — covers the race window between daily start
+///      and marker persistence if the app force-closes in between.
 final dailyPlayedProvider = FutureProvider<bool>((ref) async {
   final settings = SettingsRepository();
+  final today = _todayUtc();
   final stored = await settings.getString('daily_played_date');
-  return stored == _todayUtc();
+  if (stored == today) return true;
+
+  // Fallback: a saved voyage marked as daily from today means the player
+  // already started it, even if the marker write raced and was lost.
+  final saved = await VoyageSaveService.load();
+  if (saved != null && saved.isDaily && saved.voyageStartTime != null) {
+    final voyageDate = saved.voyageStartTime!
+        .toUtc()
+        .toIso8601String()
+        .substring(0, 10);
+    if (voyageDate == today) return true;
+  }
+  return false;
 });
 
 class LegacyNotifier extends StateNotifier<LegacyData> {
   LegacyNotifier(this._ref) : super(const LegacyData()) {
-    _loadFromStorage();
+    _loadFuture = _loadFromStorage();
   }
 
   final Ref _ref;
   final _settings = SettingsRepository();
+
+  /// Resolves when the initial load from Hive has finished (success or
+  /// silent failure). Every save awaits this first so a mutation that fires
+  /// before the box has been opened can't persist the default `LegacyData()`
+  /// over a real on-disk total. Without this gate, a cold-launch
+  /// finalizeVoyage (common on first-of-the-day daily runs) can overwrite
+  /// the player's saved legacyPoints with the post-race value.
+  Future<void>? _loadFuture;
+
+  /// When > 0, [_saveToStorage] is a no-op so multiple state mutations can
+  /// be batched and persisted as a single atomic write at the end of the
+  /// batch. Decremented by [finalizeVoyage] which then performs one save.
+  /// Prevents partially-committed legacy state if the app crashes between
+  /// individual mutation calls.
+  int _saveSuppressCount = 0;
+
+  // Daily marker is queued during a write batch and only flushed AFTER the
+  // legacy state save completes, so a crash mid-finalize cannot leave the
+  // "today is played" marker on disk without a matching score row.
+  String? _pendingDailyMarker;
+
+  /// Apply a completed voyage's results to the legacy state in a single
+  /// batched operation: the voyage log, discoveries, and any newly unlocked
+  /// achievements are all persisted together. A crash mid-batch leaves the
+  /// previous legacy state untouched; a completed batch is written atomically
+  /// by the wrapped save service. Returns the list of newly unlocked
+  /// achievements (pushed to Play Games / Game Center inside the batch).
+  List<String> finalizeVoyage({
+    required VoyageLogEntry entry,
+    required List<String> discoveries,
+    required int score,
+    required VoyageState voyage,
+    bool isDaily = false,
+  }) {
+    _saveSuppressCount++;
+    List<String> newlyUnlocked;
+    try {
+      addVoyageResult(entry, isDaily: isDaily);
+      recordDiscoveries(discoveries);
+      newlyUnlocked = checkAchievements(score: score, voyage: voyage);
+    } finally {
+      _saveSuppressCount--;
+    }
+    // One save writes the bundled result: voyage log + discoveries +
+    // achievements + any score/points mutations. Once the save resolves we
+    // flush any deferred daily marker so the on-disk ordering is
+    // legacy-state-then-marker (never the other way around).
+    unawaited(_saveToStorage().then((_) => _flushPendingDailyMarker()));
+    return newlyUnlocked;
+  }
 
   Future<void> _loadFromStorage() async {
     try {
@@ -1066,6 +1223,21 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   }
 
   Future<void> _saveToStorage() async {
+    // Honor batched writes — see [_saveSuppressCount] and [finalizeVoyage].
+    if (_saveSuppressCount > 0) return;
+    // Block until the initial load has resolved. If a save fires before
+    // _loadFromStorage has populated state from disk, we'd be persisting
+    // `const LegacyData()` (legacyPoints=0) with whatever delta was just
+    // applied — wiping the real saved total. Awaiting the loadFuture makes
+    // every save consistent with the on-disk baseline.
+    if (_loadFuture != null) {
+      try {
+        await _loadFuture;
+      } catch (_) {
+        // Load errors are already logged inside _loadFromStorage; we
+        // continue so saves aren't permanently blocked on a corrupt box.
+      }
+    }
     try {
       final map = {
         'totalVoyages': state.totalVoyages,
@@ -1087,18 +1259,29 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   }
 
   /// Parse voyage logs from storage, handling both legacy strings and structured entries.
+  /// A single malformed entry is logged and skipped rather than aborting the
+  /// whole load — otherwise one corrupt voyage log would blank the player's
+  /// entire legacy profile (including legacyPoints) on the next launch.
   static List<VoyageLogEntry> _parseVoyageLogs(List<dynamic> raw) {
-    return raw.map<VoyageLogEntry>((item) {
-      if (item is String) return VoyageLogEntry.fromLegacyString(item);
-      if (item is Map<String, dynamic>) return VoyageLogEntry.fromJson(item);
-      if (item is Map) {
-        return VoyageLogEntry.fromJson(Map<String, dynamic>.from(item));
+    final result = <VoyageLogEntry>[];
+    for (final item in raw) {
+      try {
+        if (item is String) {
+          result.add(VoyageLogEntry.fromLegacyString(item));
+        } else if (item is Map<String, dynamic>) {
+          result.add(VoyageLogEntry.fromJson(item));
+        } else if (item is Map) {
+          result.add(VoyageLogEntry.fromJson(Map<String, dynamic>.from(item)));
+        }
+      } catch (parseErr) {
+        QaLogger.app.warning('Skipping malformed voyage log entry: $parseErr');
       }
-      return const VoyageLogEntry();
-    }).toList();
+    }
+    return result;
   }
 
-  void addVoyageResult(VoyageLogEntry entry, {bool isDaily = false}) {
+  void addVoyageResult(VoyageLogEntry entry, {bool isDaily = false}) async {
+    await _loadFuture;
     final score = entry.score;
     final seed = entry.seed;
     final points = (score / 8000).ceil();
@@ -1124,7 +1307,10 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
       ..sort((a, b) => b.score.compareTo(a.score));
     final capped = scores.length > 10 ? scores.sublist(0, 10) : scores;
 
-    // If daily voyage, also add to daily scores and mark as played.
+    // If daily voyage, also add to daily scores and queue the played marker.
+    // The marker is NOT written here — it's deferred via _pendingDailyMarker
+    // and flushed only after _saveToStorage resolves, so a crash between the
+    // two writes can never leave the marker set without a matching score row.
     var dailyScores = state.dailyScores;
     if (isDaily) {
       final dailyEntry = HighScoreEntry(
@@ -1137,8 +1323,7 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
         ..sort((a, b) => b.score.compareTo(a.score));
       // Cap daily scores at 30 entries.
       if (dailyScores.length > 30) dailyScores = dailyScores.sublist(0, 30);
-      _settings.setString('daily_played_date', today);
-      _ref.invalidate(dailyPlayedProvider);
+      _pendingDailyMarker = today;
     }
 
     state = state.copyWith(
@@ -1149,18 +1334,34 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
       highScores: capped,
       dailyScores: dailyScores,
     );
-    _saveToStorage();
+    // Outside a finalizeVoyage batch (e.g. game-over flow), flush the marker
+    // ourselves once the legacy state save resolves.
+    if (_saveSuppressCount == 0) {
+      unawaited(_saveToStorage().then((_) => _flushPendingDailyMarker()));
+    } else {
+      _saveToStorage();
+    }
+  }
+
+  void _flushPendingDailyMarker() {
+    final marker = _pendingDailyMarker;
+    if (marker == null) return;
+    _pendingDailyMarker = null;
+    _settings.setString('daily_played_date', marker);
+    _ref.invalidate(dailyPlayedProvider);
   }
 
   /// Records newly discovered planet features into the legacy codex.
-  void recordDiscoveries(List<String> features) {
+  void recordDiscoveries(List<String> features) async {
+    await _loadFuture;
     final updated = {...state.discoveredFeatures, ...features};
     if (updated.length == state.discoveredFeatures.length) return;
     state = state.copyWith(discoveredFeatures: updated);
     _saveToStorage();
   }
 
-  void unlockAchievement(String achievement) {
+  void unlockAchievement(String achievement) async {
+    await _loadFuture;
     if (state.achievements.contains(achievement)) return;
     state = state.copyWith(
       achievements: [...state.achievements, achievement],
@@ -1176,7 +1377,8 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     }
   }
 
-  bool purchaseUpgrade(String upgrade, {int cost = 10}) {
+  Future<bool> purchaseUpgrade(String upgrade, {int cost = 10}) async {
+    await _loadFuture;
     if (state.upgrades[upgrade] == true) return false;
     if (state.legacyPoints < cost) return false;
 
@@ -1194,6 +1396,8 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     required int score,
     required VoyageState voyage,
   }) {
+    // Note: checkAchievements is synchronous because it's usually called
+    // inside finalizeVoyage which already awaits _loadFuture.
     final newlyUnlocked = <String>[];
 
     void checkAchievement(String id, bool condition) {
@@ -1245,7 +1449,8 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     return newlyUnlocked;
   }
 
-  bool spendPoints(int amount) {
+  Future<bool> spendPoints(int amount) async {
+    await _loadFuture;
     if (state.legacyPoints < amount) return false;
     state = state.copyWith(legacyPoints: state.legacyPoints - amount);
     _saveToStorage();
@@ -1263,11 +1468,12 @@ final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
 
 class LocaleNotifier extends StateNotifier<Locale?> {
   LocaleNotifier() : super(null) {
-    _load();
+    _loadFuture = _load();
   }
 
   static const _key = 'locale_override';
   final _settings = SettingsRepository();
+  Future<void>? _loadFuture;
 
   Future<void> _load() async {
     final code = await _settings.getString(_key);
@@ -1276,7 +1482,8 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     }
   }
 
-  void set(Locale? locale) {
+  void set(Locale? locale) async {
+    await _loadFuture;
     state = locale;
     if (locale == null) {
       _settings.remove(_key);
@@ -1303,18 +1510,20 @@ final statsOnLeftProvider = StateNotifierProvider<StatsOnLeftNotifier, bool>(
 
 class StatsOnLeftNotifier extends StateNotifier<bool> {
   StatsOnLeftNotifier() : super(true) {
-    _load();
+    _loadFuture = _load();
   }
 
   static const _key = 'stats_on_left';
   final _settings = SettingsRepository();
+  Future<void>? _loadFuture;
 
   Future<void> _load() async {
     final val = await _settings.getBool(_key, defaultValue: true);
     state = val;
   }
 
-  void toggle() {
+  void toggle() async {
+    await _loadFuture;
     state = !state;
     _settings.setBool(_key, state);
   }

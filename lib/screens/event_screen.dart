@@ -15,11 +15,12 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 /// Theme constants.
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 
 /// Displays a narrative event with player choices and a typewriter text effect.
 class EventScreen extends ConsumerStatefulWidget {
@@ -33,9 +34,6 @@ class EventScreen extends ConsumerStatefulWidget {
 
 class _EventScreenState extends ConsumerState<EventScreen>
     with TickerProviderStateMixin {
-  // Star field animation.
-  late final AnimationController _starController;
-
   // Typewriter state.
   String _displayedText = '';
   int _charIndex = 0;
@@ -61,11 +59,6 @@ class _EventScreenState extends ConsumerState<EventScreen>
   @override
   void initState() {
     super.initState();
-
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
 
     _titleGlow = AnimationController(
       vsync: this,
@@ -148,7 +141,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
     });
   }
 
-  void _onChoiceSelected(int index) {
+  Future<void> _onChoiceSelected(int index) async {
     if (_showingOutcome) return;
     final choice = widget.event.choices[index];
 
@@ -162,7 +155,10 @@ class _EventScreenState extends ConsumerState<EventScreen>
     GameSfx().playVaried(GameSfx.buttonClick);
 
     // Resolve weighted outcomes (no-op for single-outcome choices).
-    final resolved = EventEngine.resolveOutcome(choice, ref.read(voyageProvider.notifier).seededRandom);
+    final resolved = EventEngine.resolveOutcome(
+      choice,
+      ref.read(voyageProvider.notifier).seededRandom,
+    );
 
     setState(() {
       _selectedChoiceIndex = index;
@@ -175,11 +171,13 @@ class _EventScreenState extends ConsumerState<EventScreen>
       if (mounted) setState(() => _showEffectChips = true);
     });
 
-    // Apply effects via provider (uses the already-resolved choice).
-    ref.read(voyageProvider.notifier).handleEvent(resolved);
-
-    // Play outcome SFX and haptics based on effects.
+    // Play outcome SFX synchronously so audio feedback is immediate.
     _playOutcomeSfx(resolved);
+
+    // Apply effects via provider. Must await — handleEvent triggers async
+    // planet generation for choices with opensPlanetScreen, and the continue
+    // button at line ~393 reads currentPlanet to decide navigation.
+    await ref.read(voyageProvider.notifier).handleEvent(resolved);
   }
 
   void _playOutcomeSfx(EventChoice choice) {
@@ -217,7 +215,8 @@ class _EventScreenState extends ConsumerState<EventScreen>
       // Enter/Space triggers continue.
       if (event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.space) {
-        final selectedChoice = _resolvedChoice ??
+        final selectedChoice =
+            _resolvedChoice ??
             (_selectedChoiceIndex != null
                 ? widget.event.choices[_selectedChoiceIndex!]
                 : null);
@@ -237,14 +236,20 @@ class _EventScreenState extends ConsumerState<EventScreen>
     if (event.logicalKey == LogicalKeyboardKey.arrowUp ||
         event.logicalKey == LogicalKeyboardKey.arrowLeft) {
       setState(() {
-        _focusedChoiceIndex = (_focusedChoiceIndex - 1).clamp(0, choiceCount - 1);
+        _focusedChoiceIndex = (_focusedChoiceIndex - 1).clamp(
+          0,
+          choiceCount - 1,
+        );
       });
       return KeyEventResult.handled;
     }
     if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
         event.logicalKey == LogicalKeyboardKey.arrowRight) {
       setState(() {
-        _focusedChoiceIndex = (_focusedChoiceIndex + 1).clamp(0, choiceCount - 1);
+        _focusedChoiceIndex = (_focusedChoiceIndex + 1).clamp(
+          0,
+          choiceCount - 1,
+        );
       });
       return KeyEventResult.handled;
     }
@@ -252,14 +257,14 @@ class _EventScreenState extends ConsumerState<EventScreen>
     if (event.logicalKey == LogicalKeyboardKey.enter ||
         event.logicalKey == LogicalKeyboardKey.space) {
       if (_focusedChoiceIndex < choiceCount) {
-        _onChoiceSelected(_focusedChoiceIndex);
+        unawaited(_onChoiceSelected(_focusedChoiceIndex));
       }
       return KeyEventResult.handled;
     }
     // Number keys 1-9 select choices directly.
     final digit = _digitFromKey(event.logicalKey);
     if (digit != null && digit >= 1 && digit <= choiceCount) {
-      _onChoiceSelected(digit - 1);
+      unawaited(_onChoiceSelected(digit - 1));
       return KeyEventResult.handled;
     }
 
@@ -268,10 +273,14 @@ class _EventScreenState extends ConsumerState<EventScreen>
 
   int? _digitFromKey(LogicalKeyboardKey key) {
     final digitKeys = {
-      LogicalKeyboardKey.digit1: 1, LogicalKeyboardKey.digit2: 2,
-      LogicalKeyboardKey.digit3: 3, LogicalKeyboardKey.digit4: 4,
-      LogicalKeyboardKey.digit5: 5, LogicalKeyboardKey.digit6: 6,
-      LogicalKeyboardKey.digit7: 7, LogicalKeyboardKey.digit8: 8,
+      LogicalKeyboardKey.digit1: 1,
+      LogicalKeyboardKey.digit2: 2,
+      LogicalKeyboardKey.digit3: 3,
+      LogicalKeyboardKey.digit4: 4,
+      LogicalKeyboardKey.digit5: 5,
+      LogicalKeyboardKey.digit6: 6,
+      LogicalKeyboardKey.digit7: 7,
+      LogicalKeyboardKey.digit8: 8,
       LogicalKeyboardKey.digit9: 9,
     };
     return digitKeys[key];
@@ -280,7 +289,6 @@ class _EventScreenState extends ConsumerState<EventScreen>
   @override
   void dispose() {
     _typewriterTimer?.cancel();
-    _starController.dispose();
     _titleGlow.dispose();
     _keyboardFocusNode.dispose();
     super.dispose();
@@ -364,20 +372,31 @@ class _EventScreenState extends ConsumerState<EventScreen>
 
   List<Widget> _buildChoiceButtons() {
     final event = widget.event;
-    final voyage = ref.watch(voyageProvider);
+    // Watch only fields that guards commonly reference. Avoids rebuilding
+    // on unrelated voyage state changes (log entries, scanner readings, etc.).
+    ref.watch(voyageProvider.select((v) => v.ship));
+    ref.watch(voyageProvider.select((v) => v.probes));
+    ref.watch(voyageProvider.select((v) => v.fuel));
+    ref.watch(voyageProvider.select((v) => v.energy));
+    ref.watch(voyageProvider.select((v) => v.colonists));
+    ref.watch(voyageProvider.select((v) => v.encounterCount));
+    ref.watch(voyageProvider.select((v) => v.planetsScanned));
+    final voyage = ref.read(voyageProvider);
     final probes = voyage.probes;
     return event.choices.asMap().entries.map((entry) {
       final choice = entry.value;
       final hasProbes = probes >= choice.probeCost;
       final guardPasses = GuardEvaluator.evaluate(choice.guard, voyage);
-      final disabled =
-          (choice.probeCost > 0 && !hasProbes) || !guardPasses;
+      final disabled = (choice.probeCost > 0 && !hasProbes) || !guardPasses;
       return _ChoiceButton(
         text: choice.text,
         probeCost: choice.probeCost,
         disabled: disabled,
         guardFailed: !guardPasses,
-        isFocused: _focusedChoiceIndex == entry.key && _typewriterDone && !_showingOutcome,
+        isFocused:
+            _focusedChoiceIndex == entry.key &&
+            _typewriterDone &&
+            !_showingOutcome,
         onTap: disabled ? null : () => _onChoiceSelected(entry.key),
       );
     }).toList();
@@ -392,7 +411,8 @@ class _EventScreenState extends ConsumerState<EventScreen>
         child: InkWell(
           onTap: () {
             GameSfx().playVaried(GameSfx.buttonClick);
-            final selectedChoice = _resolvedChoice ??
+            final selectedChoice =
+                _resolvedChoice ??
                 (_selectedChoiceIndex != null
                     ? event.choices[_selectedChoiceIndex!]
                     : null);
@@ -465,16 +485,20 @@ class _EventScreenState extends ConsumerState<EventScreen>
   // ── Portrait layout ─────────────────────────────────────────────────────
 
   Widget _buildPortrait() {
+    final compact = ScreenInfo.of(context).isCompact;
     return ResponsiveContent(
       child: Column(
         children: [
-          const SizedBox(height: 32),
+          // Push the title toward the very top on compact phones — with ads
+          // eating the bottom, every vertical dp saved here goes to the
+          // narrative text box which otherwise clips outcome text/rewards.
+          SizedBox(height: compact ? 4 : 32),
           _buildTitle(),
-          const SizedBox(height: 32),
+          SizedBox(height: compact ? 12 : 32),
           _buildNarrativeCard(),
-          const SizedBox(height: 24),
+          SizedBox(height: compact ? 14 : 24),
           ..._buildActions(),
-          const SizedBox(height: 12),
+          SizedBox(height: compact ? 6 : 12),
         ],
       ),
     );
@@ -510,10 +534,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
             padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ..._buildActions(),
-                const SizedBox(height: 8),
-              ],
+              children: [..._buildActions(), const SizedBox(height: 8)],
             ),
           ),
         ),
@@ -529,50 +550,39 @@ class _EventScreenState extends ConsumerState<EventScreen>
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Focus(
-      focusNode: _keyboardFocusNode,
-      autofocus: true,
-      onKeyEvent: _handleKeyEvent,
-      child: Scaffold(
-        backgroundColor: _kBgColor,
-        body: Stack(
-          children: [
-            // Star field background.
-            Positioned.fill(
-              child: RepaintBoundary(
-                child: AnimatedBuilder(
-                  animation: _starController,
-                  builder: (_, __) => CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 80,
-                      midStarCount: 30,
-                      nearStarCount: 10,
-                    ),
+    return EventPopScope(
+      resolved: _showingOutcome,
+      child: Focus(
+        focusNode: _keyboardFocusNode,
+        autofocus: true,
+        onKeyEvent: _handleKeyEvent,
+        child: Scaffold(
+          backgroundColor: _kBgColor,
+          body: Stack(
+            children: [
+              // Star field background.
+              const EventStarField(),
+
+              // Content.
+              SafeArea(
+                bottom: false,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _typewriterDone ? null : _skipTypewriter,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: isLandscape
+                            ? _buildLandscape()
+                            : _buildPortrait(),
+                      ),
+                      _buildAdBanner(),
+                    ],
                   ),
                 ),
               ),
-            ),
-
-            // Content.
-            SafeArea(
-              bottom: false,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: _typewriterDone ? null : _skipTypewriter,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: isLandscape
-                          ? _buildLandscape()
-                          : _buildPortrait(),
-                    ),
-                    _buildAdBanner(),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -596,11 +606,12 @@ class _NarrativeCard extends StatelessWidget {
 
   /// Builds the list of effect chip data from the choice.
   List<_EffectChipData> _buildEffectChips(BuildContext context) {
-    if (choice == null) return [];
+    final c = choice;
+    if (c == null) return [];
     final chips = <_EffectChipData>[];
 
     // Ship system effects.
-    for (final entry in choice!.shipEffects.entries) {
+    for (final entry in c.shipEffects.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
@@ -614,20 +625,20 @@ class _NarrativeCard extends StatelessWidget {
     }
 
     // Colonist delta.
-    if (choice!.colonistDelta != 0) {
-      final sign = choice!.colonistDelta > 0 ? '+' : '';
+    if (c.colonistDelta != 0) {
+      final sign = c.colonistDelta > 0 ? '+' : '';
       chips.add(
         _EffectChipData(
           label: context.l10n.ui_event_colonists,
-          delta: '$sign${choice!.colonistDelta}',
-          isPositive: choice!.colonistDelta > 0,
+          delta: '$sign${c.colonistDelta}',
+          isPositive: c.colonistDelta > 0,
           color: Colors.orange,
         ),
       );
     }
 
     // Planet modifiers.
-    for (final entry in choice!.planetModifiers.entries) {
+    for (final entry in c.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
@@ -636,7 +647,7 @@ class _NarrativeCard extends StatelessWidget {
           label: entry.key.toUpperCase(),
           delta: '$sign$pct%',
           isPositive: entry.value > 0,
-          color: const Color(0xFF00E5FF),
+          color: SpaceColors.cyan,
         ),
       );
     }
@@ -668,10 +679,14 @@ class _NarrativeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chips = _buildEffectChips(context);
+    final compact = ScreenInfo.of(context).isCompact;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 16 : 24,
+        vertical: compact ? 14 : 24,
+      ),
       decoration: BoxDecoration(
         color: _kBgColor.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(12),
@@ -875,8 +890,8 @@ class _ChoiceButtonState extends State<_ChoiceButton>
     final borderColor = isDisabled
         ? Colors.grey.withValues(alpha: 0.3)
         : isFocused
-            ? _kAccent
-            : _kAccent.withValues(alpha: 0.6);
+        ? _kAccent
+        : _kAccent.withValues(alpha: 0.6);
     final textColor = isDisabled
         ? Colors.grey.withValues(alpha: 0.4)
         : _kAccent;
@@ -895,102 +910,111 @@ class _ChoiceButtonState extends State<_ChoiceButton>
               child: InkWell(
                 onTap: widget.onTap,
                 borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 20,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: borderColor,
-                    width: isFocused ? 2.0 : 1.0,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 20,
                   ),
-                  gradient: isDisabled
-                      ? null
-                      : LinearGradient(
-                          colors: [
-                            _kAccent.withValues(alpha: isFocused ? 0.12 : 0.05),
-                            _kAccent.withValues(alpha: shimmerAlpha),
-                            _kAccent.withValues(alpha: isFocused ? 0.12 : 0.05),
-                          ],
-                          stops: [0.0, _shimmer.value, 1.0],
-                        ),
-                  boxShadow: isFocused
-                      ? [BoxShadow(color: _kAccent.withValues(alpha: 0.3), blurRadius: 12)]
-                      : null,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        widget.text,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: borderColor,
+                      width: isFocused ? 2.0 : 1.0,
                     ),
-                    if (widget.guardFailed)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Icon(
-                          Icons.lock_outline,
-                          size: 16,
-                          color: Colors.grey.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    if (widget.probeCost > 0)
-                      Container(
-                        margin: const EdgeInsets.only(left: 8),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: isDisabled
-                              ? Colors.grey.withValues(alpha: 0.1)
-                              : Colors.orange.withValues(alpha: 0.2),
-                          border: Border.all(
-                            color: isDisabled
-                                ? Colors.grey.withValues(alpha: 0.3)
-                                : Colors.orange.withValues(alpha: 0.5),
+                    gradient: isDisabled
+                        ? null
+                        : LinearGradient(
+                            colors: [
+                              _kAccent.withValues(
+                                alpha: isFocused ? 0.12 : 0.05,
+                              ),
+                              _kAccent.withValues(alpha: shimmerAlpha),
+                              _kAccent.withValues(
+                                alpha: isFocused ? 0.12 : 0.05,
+                              ),
+                            ],
+                            stops: [0.0, _shimmer.value, 1.0],
+                          ),
+                    boxShadow: isFocused
+                        ? [
+                            BoxShadow(
+                              color: _kAccent.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.text,
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.satellite_alt,
-                              size: 12,
+                      ),
+                      if (widget.guardFailed)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Icon(
+                            Icons.lock_outline,
+                            size: 16,
+                            color: Colors.grey.withValues(alpha: 0.4),
+                          ),
+                        ),
+                      if (widget.probeCost > 0)
+                        Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: isDisabled
+                                ? Colors.grey.withValues(alpha: 0.1)
+                                : Colors.orange.withValues(alpha: 0.2),
+                            border: Border.all(
                               color: isDisabled
-                                  ? Colors.grey.withValues(alpha: 0.4)
-                                  : Colors.orange,
+                                  ? Colors.grey.withValues(alpha: 0.3)
+                                  : Colors.orange.withValues(alpha: 0.5),
                             ),
-                            const SizedBox(width: 3),
-                            Text(
-                              '${widget.probeCost}',
-                              style: TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.satellite_alt,
+                                size: 12,
                                 color: isDisabled
                                     ? Colors.grey.withValues(alpha: 0.4)
                                     : Colors.orange,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 3),
+                              Text(
+                                '${widget.probeCost}',
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDisabled
+                                      ? Colors.grey.withValues(alpha: 0.4)
+                                      : Colors.orange,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
           },
         ),
       ),

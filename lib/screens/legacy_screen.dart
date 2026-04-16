@@ -14,10 +14,11 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
     show legacyProvider, dailySeedCode, dailyPlayedProvider;
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 const _kDailyAccent = Color(0xFFFFD740);
 
 /// Defers building [child] until the slot is scrolled into the viewport.
@@ -84,19 +85,8 @@ class LegacyScreen extends ConsumerStatefulWidget {
   ConsumerState<LegacyScreen> createState() => _LegacyScreenState();
 }
 
-class _LegacyScreenState extends ConsumerState<LegacyScreen>
-    with SingleTickerProviderStateMixin, RouteAware {
-  late final AnimationController _starController;
-  int _adRefreshCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-  }
+class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
+  bool _leaderboardsInFlight = false;
 
   @override
   void didChangeDependencies() {
@@ -107,29 +97,34 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
   @override
   void dispose() {
     routeObserver.unsubscribe(this);
-    _starController.dispose();
     super.dispose();
-  }
-
-  @override
-  void didPopNext() {
-    setState(() => _adRefreshCount++);
   }
 
   Widget _buildLeaderboardsButton(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        AnalyticsService().logEvent(name: QaEvents.leaderboardViewed);
-        final shown = await PlayGamesService.showAllLeaderboards();
-        if (!shown && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Play Games unavailable. View leaderboards at stellarbroadcast.org'),
-              duration: Duration(seconds: 4),
-            ),
-          );
-        }
-      },
+      onTap: _leaderboardsInFlight
+          ? null
+          : () async {
+              setState(() => _leaderboardsInFlight = true);
+              try {
+                AnalyticsService().logEvent(name: QaEvents.leaderboardViewed);
+                final shown = await PlayGamesService.showAllLeaderboards();
+                if (!shown && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Play Games unavailable. View leaderboards at stellarbroadcast.org',
+                      ),
+                      duration: Duration(seconds: 4),
+                    ),
+                  );
+                }
+              } finally {
+                if (mounted) {
+                  setState(() => _leaderboardsInFlight = false);
+                }
+              }
+            },
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 14),
@@ -158,8 +153,14 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
     );
   }
 
-  Widget _buildSections(BuildContext context, ScreenInfo screen, LegacyData legacy, List<VoyageLogEntry> voyageLogs) {
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+  Widget _buildSections(
+    BuildContext context,
+    ScreenInfo screen,
+    LegacyData legacy,
+    List<VoyageLogEntry> voyageLogs,
+  ) {
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     if (isLandscape) {
       return Row(
@@ -182,7 +183,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                 _UpgradesGrid(
                   legacy: legacy,
                   onPurchase: (id, cost) {
-                    ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
+                    ref
+                        .read(legacyProvider.notifier)
+                        .purchaseUpgrade(id, cost: cost);
                     AnalyticsService().logEvent(
                       name: QaEvents.legacyUpgradePurchased,
                       parameters: {'upgrade_id': id, 'cost': cost},
@@ -192,15 +195,18 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
                 const SizedBox(height: 28),
                 _LazyAdSlot(
                   height: 300,
-                  builder: (_) => PremiumAdGate(child: AdaptiveNativeAd(
-                    fallback: AdaptiveBannerAd(
-                      size: QaBannerSize.mrec,
-                      fallback: AdFallbackBanner(
-                        height: 250,
-                        onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+                  builder: (_) => PremiumAdGate(
+                    child: AdaptiveNativeAd(
+                      fallback: AdaptiveBannerAd(
+                        size: QaBannerSize.mrec,
+                        fallback: AdFallbackBanner(
+                          height: 250,
+                          onRemoveAds: () =>
+                              Navigator.pushNamed(context, '/settings'),
+                        ),
                       ),
                     ),
-                  )),
+                  ),
                 ),
                 const SizedBox(height: 28),
                 _SectionTitle(title: context.l10n.ui_legacy_achievements),
@@ -271,9 +277,7 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
         _UpgradesGrid(
           legacy: legacy,
           onPurchase: (id, cost) {
-            ref
-                .read(legacyProvider.notifier)
-                .purchaseUpgrade(id, cost: cost);
+            ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
             AnalyticsService().logEvent(
               name: QaEvents.legacyUpgradePurchased,
               parameters: {'upgrade_id': id, 'cost': cost},
@@ -286,15 +290,17 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
         // Native ad between sections (lazy-loaded on scroll).
         _LazyAdSlot(
           height: 300,
-          builder: (_) => PremiumAdGate(child: AdaptiveNativeAd(
-            fallback: AdaptiveBannerAd(
-              size: QaBannerSize.mrec,
-              fallback: AdFallbackBanner(
-                height: 250,
-                onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+          builder: (_) => PremiumAdGate(
+            child: AdaptiveNativeAd(
+              fallback: AdaptiveBannerAd(
+                size: QaBannerSize.mrec,
+                fallback: AdFallbackBanner(
+                  height: 250,
+                  onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+                ),
               ),
             ),
-          )),
+          ),
         ),
 
         const SizedBox(height: 28),
@@ -338,24 +344,10 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
       body: Stack(
         children: [
           // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => Semantics(
-                  label: 'Animated star field background',
-                  excludeSemantics: true,
-                  child: CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 60,
-                      midStarCount: 20,
-                      nearStarCount: 8,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          const EventStarField(
+            farStarCount: 60,
+            midStarCount: 20,
+            nearStarCount: 8,
           ),
 
           // Content.
@@ -363,69 +355,71 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen>
             bottom: false,
             child: ResponsiveContent(
               child: Column(
-              children: [
-                // Header.
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        tooltip: 'Back',
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: _kAccent,
-                          size: 22,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          context.l10n.ui_legacy_title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: screen.scaledFontSize(24),
-                            fontWeight: FontWeight.bold,
+                children: [
+                  // Header.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          tooltip: context.l10n.ui_tooltip_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
                             color: _kAccent,
-                            letterSpacing: 4,
+                            size: 22,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 48), // Balance back button.
-                    ],
+                        Expanded(
+                          child: Text(
+                            context.l10n.ui_legacy_title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: screen.scaledFontSize(24),
+                              fontWeight: FontWeight.bold,
+                              color: _kAccent,
+                              letterSpacing: 4,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48), // Balance back button.
+                      ],
+                    ),
                   ),
-                ),
 
-                // Decorative line.
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 8,
-                  ),
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          _kAccent.withValues(alpha: 0.5),
-                          Colors.transparent,
-                        ],
+                  // Decorative line.
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 8,
+                    ),
+                    child: Container(
+                      height: 1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            _kAccent.withValues(alpha: 0.5),
+                            Colors.transparent,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                // Scrollable sections.
-                Expanded(
-                  child: _buildSections(context, screen, legacy, voyageLogs),
-                ),
+                  // Scrollable sections.
+                  Expanded(
+                    child: _buildSections(context, screen, legacy, voyageLogs),
+                  ),
 
-                // Banner ad.
-                PremiumAdGate(
-                  child: AdaptiveBannerAd(key: ValueKey('legacy_banner_$_adRefreshCount')),
-                ),
-              ],
-            ),
+                  // Banner ad.
+                  PremiumAdGate(
+                    child: AdaptiveBannerAd(
+                      key: const ValueKey('legacy_banner'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -490,9 +484,15 @@ class _StatsOverview extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatColumn(label: context.l10n.ui_legacy_voyages, value: '${legacy.totalVoyages}'),
+          _StatColumn(
+            label: context.l10n.ui_legacy_voyages,
+            value: '${legacy.totalVoyages}',
+          ),
           _StatDivider(),
-          _StatColumn(label: context.l10n.ui_legacy_bestScore, value: '${legacy.bestScore}'),
+          _StatColumn(
+            label: context.l10n.ui_legacy_bestScore,
+            value: '${legacy.bestScore}',
+          ),
           _StatDivider(),
           _StatColumn(
             label: context.l10n.ui_legacy_legacyPts,
@@ -990,30 +990,38 @@ class _UpgradesGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screen = ScreenInfo.of(context);
-    final crossAxisCount = (screen.width / 200).floor().clamp(2, 4);
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: crossAxisCount > 2 ? 0.95 : 0.85,
-      ),
-      itemCount: _upgrades.length,
-      itemBuilder: (context, index) {
-        final upgrade = _upgrades[index];
-        final purchased = legacy.upgrades[upgrade.id] == true;
-        final canAfford = legacy.legacyPoints >= upgrade.cost;
+    // LayoutBuilder instead of ScreenInfo.width — on tablet landscape the
+    // upgrades grid lives inside a half-width Expanded, so the full screen
+    // width overestimated the available column space by 2×, squeezing 4
+    // columns into ~600 dp and making icons/labels spill their cells.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availWidth = constraints.maxWidth;
+        final crossAxisCount = (availWidth / 200).floor().clamp(2, 4);
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: crossAxisCount > 2 ? 0.95 : 0.85,
+          ),
+          itemCount: _upgrades.length,
+          itemBuilder: (context, index) {
+            final upgrade = _upgrades[index];
+            final purchased = legacy.upgrades[upgrade.id] == true;
+            final canAfford = legacy.legacyPoints >= upgrade.cost;
 
-        return _UpgradeCard(
-          upgrade: upgrade,
-          purchased: purchased,
-          canAfford: canAfford,
-          onTap: purchased || !canAfford
-              ? null
-              : () => onPurchase(upgrade.id, upgrade.cost),
+            return _UpgradeCard(
+              upgrade: upgrade,
+              purchased: purchased,
+              canAfford: canAfford,
+              onTap: purchased || !canAfford
+                  ? null
+                  : () => onPurchase(upgrade.id, upgrade.cost),
+            );
+          },
         );
       },
     );
@@ -1065,34 +1073,40 @@ class _UpgradeCard extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   upgrade.icon,
                   color: purchased ? _kAccent : Colors.white54,
-                  size: 28,
+                  size: 24,
                 ),
+                const SizedBox(width: 6),
                 if (purchased)
-                  const Icon(Icons.check_circle, color: _kAccent, size: 20)
+                  const Icon(Icons.check_circle, color: _kAccent, size: 18)
                 else
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: canAfford
-                          ? _kAccent.withValues(alpha: 0.15)
-                          : Colors.white.withValues(alpha: 0.05),
-                    ),
-                    child: Text(
-                      '${upgrade.cost} LP',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
                         color: canAfford
-                            ? _kAccent
-                            : Colors.white.withValues(alpha: 0.3),
+                            ? _kAccent.withValues(alpha: 0.15)
+                            : Colors.white.withValues(alpha: 0.05),
+                      ),
+                      child: Text(
+                        '${upgrade.cost} LP',
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: canAfford
+                              ? _kAccent
+                              : Colors.white.withValues(alpha: 0.3),
+                        ),
                       ),
                     ),
                   ),
@@ -1101,18 +1115,24 @@ class _UpgradeCard extends StatelessWidget {
             const Spacer(),
             Text(
               upgrade.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: purchased ? _kAccent : Colors.white,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
+                height: 1.2,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               upgrade.description,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.5),
-                fontSize: 12,
+                fontSize: 11,
+                height: 1.25,
               ),
             ),
           ],
@@ -1306,7 +1326,7 @@ class _VoyageLogState extends State<_VoyageLog> {
   final _expanded = <int>{};
 
   static const _tierColors = <String, Color>{
-    'Paradise': Color(0xFF00E5FF),
+    'Paradise': SpaceColors.cyan,
     'Garden World': Color(0xFF66BB6A),
     'Temperate': Color(0xFF81C784),
     'Marginal': Color(0xFFFFB74D),
@@ -1383,7 +1403,9 @@ class _VoyageLogState extends State<_VoyageLog> {
                       // Voyage number badge.
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: tierColor.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(4),
@@ -1405,8 +1427,8 @@ class _VoyageLogState extends State<_VoyageLog> {
                           entry.isGameOver
                               ? 'SHIP LOST'
                               : entry.planetName.isNotEmpty
-                                  ? entry.planetName
-                                  : 'Unknown',
+                              ? entry.planetName
+                              : 'Unknown',
                           style: TextStyle(
                             color: entry.isGameOver
                                 ? const Color(0xFFFF1744)
@@ -1430,9 +1452,7 @@ class _VoyageLogState extends State<_VoyageLog> {
                         ),
                       const SizedBox(width: 8),
                       Icon(
-                        isExpanded
-                            ? Icons.expand_less
-                            : Icons.expand_more,
+                        isExpanded ? Icons.expand_less : Icons.expand_more,
                         color: Colors.white.withValues(alpha: 0.3),
                         size: 20,
                       ),
@@ -1441,7 +1461,10 @@ class _VoyageLogState extends State<_VoyageLog> {
                   // Tier + seed subtitle.
                   if (!entry.isGameOver && entry.tier.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(left: 50, top: 2),
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 50,
+                        top: 2,
+                      ),
                       child: Text(
                         entry.tier,
                         style: TextStyle(
@@ -1456,7 +1479,10 @@ class _VoyageLogState extends State<_VoyageLog> {
                       entry.gameOverReason != null &&
                       entry.gameOverReason!.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(left: 50, top: 2),
+                      padding: const EdgeInsetsDirectional.only(
+                        start: 50,
+                        top: 2,
+                      ),
                       child: Text(
                         entry.gameOverReason!,
                         style: TextStyle(
@@ -1470,7 +1496,9 @@ class _VoyageLogState extends State<_VoyageLog> {
                   if (isExpanded) ...[
                     const SizedBox(height: 12),
                     Divider(
-                        color: tierColor.withValues(alpha: 0.15), height: 1),
+                      color: tierColor.withValues(alpha: 0.15),
+                      height: 1,
+                    ),
                     const SizedBox(height: 12),
                     // Stats grid.
                     _StatRow(
@@ -1497,17 +1525,20 @@ class _VoyageLogState extends State<_VoyageLog> {
                       const SizedBox(height: 6),
                       _StatRow(
                         left: 'Damage taken',
-                        leftValue:
-                            '${(entry.totalDamageTaken * 100).round()}%',
+                        leftValue: '${(entry.totalDamageTaken * 100).round()}%',
                         right: '',
                         rightValue: '',
                       ),
                     ],
 
                     // Planet details.
-                    if (!entry.isGameOver && entry.surfaceFeatures.isNotEmpty) ...[
+                    if (!entry.isGameOver &&
+                        entry.surfaceFeatures.isNotEmpty) ...[
                       const SizedBox(height: 10),
-                      Divider(color: tierColor.withValues(alpha: 0.10), height: 1),
+                      Divider(
+                        color: tierColor.withValues(alpha: 0.10),
+                        height: 1,
+                      ),
                       const SizedBox(height: 10),
                       // Landscape.
                       if (entry.landscapeDescription != null &&
@@ -1536,7 +1567,8 @@ class _VoyageLogState extends State<_VoyageLog> {
                           !entry.nativeDescription!.contains('No intelligent'))
                         _DetailChip(label: entry.nativeRelations!),
                       // Moons & rings.
-                      if (entry.moonTypes.isNotEmpty || entry.ringType != null) ...[
+                      if (entry.moonTypes.isNotEmpty ||
+                          entry.ringType != null) ...[
                         const SizedBox(height: 6),
                         Wrap(
                           spacing: 6,
@@ -1585,22 +1617,23 @@ class _VoyageLogState extends State<_VoyageLog> {
                       GestureDetector(
                         onTap: () {
                           Clipboard.setData(
-                              ClipboardData(text: entry.seedCode));
+                            ClipboardData(text: entry.seedCode),
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                  'Seed ${entry.seedCode} copied'),
+                              content: Text('Seed ${entry.seedCode} copied'),
                               duration: const Duration(seconds: 1),
-                              backgroundColor:
-                                  _kAccent.withValues(alpha: 0.9),
+                              backgroundColor: _kAccent.withValues(alpha: 0.9),
                             ),
                           );
                         },
                         child: Row(
                           children: [
-                            Icon(Icons.copy,
-                                color: _kAccent.withValues(alpha: 0.5),
-                                size: 14),
+                            Icon(
+                              Icons.copy,
+                              color: _kAccent.withValues(alpha: 0.5),
+                              size: 14,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'SEED: ${entry.seedCode}',
@@ -1616,15 +1649,15 @@ class _VoyageLogState extends State<_VoyageLog> {
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: _kDailyAccent
-                                      .withValues(alpha: 0.15),
-                                  borderRadius:
-                                      BorderRadius.circular(4),
+                                  color: _kDailyAccent.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(4),
                                   border: Border.all(
-                                      color: _kDailyAccent
-                                          .withValues(alpha: 0.3)),
+                                    color: _kDailyAccent.withValues(alpha: 0.3),
+                                  ),
                                 ),
                                 child: const Text(
                                   'DAILY',
@@ -1733,8 +1766,11 @@ class _DetailChip extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Icon(Icons.arrow_right,
-              color: _kAccent.withValues(alpha: 0.3), size: 14),
+          Icon(
+            Icons.arrow_right,
+            color: _kAccent.withValues(alpha: 0.3),
+            size: 14,
+          ),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
@@ -1869,8 +1905,7 @@ class _CodexCard extends StatelessWidget {
                       value: progress,
                       minHeight: 3,
                       backgroundColor: Colors.white.withValues(alpha: 0.1),
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(_kAccent),
+                      valueColor: const AlwaysStoppedAnimation<Color>(_kAccent),
                     ),
                   ),
                 ],

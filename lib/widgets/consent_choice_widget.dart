@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 enum _ConsentOption { personalized, adFree, limited }
 
@@ -384,14 +385,17 @@ class _ConsentChoiceWidgetState extends State<ConsentChoiceWidget>
           break;
 
         case _ConsentOption.limited:
+          await QaConsentManager.showConsentForm();
           AnalyticsService().logEvent(
             name: QaEvents.featureUsed,
             parameters: {'feature': 'consent_limited'},
           );
           break;
       }
-    } catch (_) {
-      // Don't block onboarding completion on errors.
+    } catch (e, st) {
+      // Onboarding completion must not be blocked by analytics/IAP failures,
+      // but log so we can spot regressions in those subsystems.
+      QaLogger.app.warning('Consent choice handler failed', e, st);
     }
 
     if (mounted) {

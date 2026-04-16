@@ -9,9 +9,6 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'Yıldız Yayını';
-
-  @override
   String get ui_title_stellar => 'YILDIZ';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'YOLCULUĞU BAŞLAT';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'Geçersiz tohum kodu. Yalnızca A–Z ve 0–9\'u kullanın.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -198,6 +199,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ui_scan_statRadiation => 'RADYASYON';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'PROBLAR: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'BELİRSİZLİK: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'GEZEGEN ANALİZİ';
 
   @override
@@ -295,22 +306,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ui_landing_statLandingSys => 'İniş Sis.';
 
   @override
-  String get ui_landingSequence_phase1 => 'FAZ 1: YÖRÜNGE KARARI';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'Alçalma penceresi açık. Girişe geçiliyor.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'FAZ 2: ATMOSFERİK ATEŞ';
-
-  @override
-  String get ui_landingSequence_title => 'İNİŞ SEKÂNSI';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'KOLONİ RAPORUNU GÖRÜNTÜLE';
-
-  @override
   String get ui_ending_colonyEstablished => 'KOLONİ KURULDU';
 
   @override
@@ -336,6 +331,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'ARKADAŞINA MEYDAN OKU';
+
+  @override
+  String get ui_ending_shareCard => 'PAYLAŞ KARTI';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'Yolculuğunuzu Paylaşın';
+
+  @override
+  String get ui_ending_shareCardShare => 'PAYLAŞMAK';
+
+  @override
+  String get ui_ending_shareCardCancel => 'İPTAL ETMEK';
 
   @override
   String get ui_ending_copySeed => 'TOHUMU KOPYALA';
@@ -469,6 +476,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'Sistem varsayılanı';
+
+  @override
+  String get ui_settings_statsPosition => 'İstatistikler ve düğmelerin konumu';
+
+  @override
+  String get ui_settings_statsLeft => 'SOL';
+
+  @override
+  String get ui_settings_statsRight => 'SAĞ';
 
   @override
   String get ui_legacy_title => 'MİRAS MERKEZİ';
@@ -772,6 +788,36 @@ class AppLocalizationsTr extends AppLocalizations {
   String get planet_featureMedicinalFlora => 'Şifalı Flora';
 
   @override
+  String get planet_featurePerpetualAurora => 'Sürekli Aurora';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Taşlaşmış Megaflora';
+
+  @override
+  String get planet_featureUndergroundRivers => 'Yeraltı Nehirleri';
+
+  @override
+  String get planet_featureObsidianPlains => 'Obsidyen Ovaları';
+
+  @override
+  String get planet_featureSaltFlats => 'Tuz Daireleri';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'Etobur Flora';
+
+  @override
+  String get planet_featureGhostCities => 'Hayalet Şehirler';
+
+  @override
+  String get planet_featureArchiveVaults => 'Arşiv Kasaları';
+
+  @override
+  String get planet_featureSinkholeFields => 'Düden Alanları';
+
+  @override
+  String get planet_featureApexPredator => 'Apex Yırtıcısı';
+
+  @override
   String get ui_monthJan => 'OCA';
 
   @override
@@ -784,7 +830,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ui_monthApr => 'NİS';
 
   @override
-  String get ui_monthMay => 'MAY';
+  String get ui_monthMay => 'MAYIS';
 
   @override
   String get ui_monthJun => 'HAZ';
@@ -4235,18 +4281,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'Atmosfer';
 
   @override
-  String get ending_scoreLabel_gravity => 'Kütle Çekimi';
-
-  @override
-  String get ending_scoreLabel_temperature => 'Sıcaklık';
-
-  @override
-  String get ending_scoreLabel_water => 'Su';
-
-  @override
-  String get ending_scoreLabel_resources => 'Kaynaklar';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'Yerli İlişkileri';
 
   @override
@@ -4355,19 +4389,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'Kabile Konseyi';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'Teokrasi';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'Askeri Cunta';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'Kurumsal Oligarşi';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'Faşist Devlet';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'Komün';
 
   @override
   String get ending_cultureRenaissance => 'Rönesans';
@@ -4421,10 +4455,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ending_nativesConflict => 'Çatışma';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'İttifak';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'boyun eğdirme';
 
   @override
   String get ending_landscapeGravityHigh =>
@@ -4465,66 +4499,6 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'Atmosferik basınç tehlikeli ölçüde düşük — mühürlü yaşam alanları şart. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'Parlayan, mineral çizgili bir uydu gece gökyüzüne hâkim, metalik yüzeyi yıldız ışığını peyzaja yansıtıyor. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'Çatlamış bir uydu tepede beliriyor, ufalanan yüzeyi zayıf bir döküntü halkası sürüklüyor — aşağıyı tehdit eden bombardımanın sürekli hatırlatıcısı. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'Solgun, çorak bir uydu ufkun üzerine yükseliyor, kraterli yüzeyi koloninin üzerinde sessiz bir nöbetçi. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'Gezegen hızla dönüyor — günler yalnızca saatler sürüyor ve Coriolis rüzgârları dik duran her şeyi dövüyor. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'Gezegen can yakıcı bir yavaşlıkla dönüyor. Güneş tarafı kavruluyor, karanlık taraf donuyor ve yalnızca aradaki alacakaranlık kuşağı soluk sunuyor. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'Volkanik sıralar ufku yarıyor, yamaçları erimiş kaya nehirleriyle çizgilenmiş. Hava kükürt tadında ve zemin ayak altında titriyor. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'Kabuk kırık ve huzursuz — taze yarıklar uyarısız açılıyor, toz bulutları arasında pırıldayan mineral damarlarını açığa çıkarıyor. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'Şimşekler sürekli tabakalarda gökyüzünü yayarak geceyi gündüze çeviriyor ve havayı ozon kokusuyla dolduruyor. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'Parlak sporlardan oluşan bulutlar her meltemde süzülüyor, güzel ve öldürücü — kolonistler açık havada hayatta kalmak için mühürlü yaşam alanlarına veya filtrasyon maskelerine ihtiyaç duyacak. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'Gezegen çoğunlukla okyanus — engin, karanlık sular her ufka uzanıyor, yüzeyi yalnızca dağınık takımadalar kırıyor. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'Jeotermal bacalar kabuktan fırlıyor, çevredeki peyzajı ısıtan ve yaşam vahaları sürdüren mineral zengini buhar sütunları boşaltıyor. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'Güçlü bir manyetik alan gezegeni sarıyor, yıldız radyasyonunu saptırıyor ama korumasız elektroniklerde kaosa neden oluyor. Pusulalar işe yaramaz biçimde dönüyor. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'Güçlü bir manyetik alan olmadan yıldız rüzgârı üst atmosferi soyuyor. Muhteşem kutup ışıkları tüm enlemlerde gökyüzüne dökülüyor. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'Devasa yaratıklar peyzajda hareket ediyor — bazıları binalar kadar büyük, ayak sesleri kilometrelerce öteden hissediliyor. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'Biyosfer birbirine kenetlenmiş bir simbiyoz ağı olarak işliyor: her organizma komşularına bağımlı ve onları sürdürüyor, zarif ve kırılgan bir denge içinde. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4571,27 +4545,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'Teokratik bir konsey, sömürgecileri boşlukta ayakta tutan inançtan bilgelik alarak $planetName\'a rehberlik ediyor.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return '$planetName askeri bir komuta yapısı tarafından yönetiliyor; onları uzayda kurtaran disiplin artık medeniyetlerini tanımlıyor.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'Kaynak yöneticilerinden oluşan bir konsorsiyum $planetName\'a liderlik ediyor; ekonomik zekalarının hayatta kalmak için gerekli olduğu kanıtlandı.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'Otoriter bir rejim $planetName\'ı demir yumrukla kontrol ediyor, yeni dünyada düzen uğruna sivil özgürlükler feda ediliyor.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return '$planetName halkı, kaynakları ve kararları tüm sömürgeciler arasında eşit olarak paylaşarak kendilerini kolektif olarak yönetir.';
   }
 
   @override
@@ -4631,10 +4605,6 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'Çürüyen yörüngede kararsız bir uydu koloninin üzerine döküntü yağdırarak altyapıyı harap etti ve periyodik meteor bombardımanlarında yeri doldurulamaz teknolojiyi yok etti.';
-
-  @override
-  String get ending_moonBarren =>
-      'Uzaylı gökyüzünde çorak bir uydu asılı durdu; kolonistlere uzun gecelerde bakacak tanıdık bir manzaradan başka hiçbir şey sunmayan ıssız bir yoldaş.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4723,12 +4693,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'Resmi bir ittifak, sömürgecileri ve $planetName yerli uygarlığını birbirine bağlıyor; onların birleşik bilgileri, her ikisinin de tek başına yapabileceğinden daha büyük bir şey inşa ediyor.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return '$planetName\'ın yerli nüfusu sömürge yönetimi altında yaşıyor; sömürgeciler kendi düzenlerini empoze ederken kültürleri bastırılıyor.';
   }
 
   @override
@@ -4766,27 +4736,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'UYDU';
-
-  @override
-  String get ui_rings => 'HALKALAR';
-
-  @override
   String get ui_landing_landOnMoon => 'UYDUYA İN';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'Uydu: $moonPercent% — Gezegen: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity =>
-      'Daha düşük yerçekimi — iniş daha kolay';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return '$type Halka Sistemi';
-  }
 
   @override
   String get moon_barren => 'Çorak';
@@ -4814,60 +4764,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get ring_metallic => 'Metalik';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'Koloninin üzerinde tek bir uydu gökyüzünde asılı duruyor.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count uydu başın üstünde yörüngede dönüyor; değişen gölgelerini arazinin üzerine seriyor.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'Aralarında yaşanabilir bir dünya el sallıyor — ikinci bir sınır vaat eden yeşil bir mücevher.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'Donmuş bir uydu, devasa buz birikintileriyle parıldıyor; kullanılmayı bekleyen bir hazine.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'Donmuş uydudan çıkarılan buz, koloninin su kaynağını destekleyerek çorak bir dünyayı yaşanabilir bir yurda dönüştürdü.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'Koloni gezegenin kendisinde değil, en umut verici uydusunda kuruldu — daha yumuşak yerçekimi ve daha büyük vaatler sunan küçük bir dünya.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'Soluk bir toz halkası gökyüzünde kavis çiziyor; her gün doğuşuna ruhani bir güzellik katıyor.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'Göz kamaştırıcı bir buz halkası yıldız ışığını yakalıyor; gökyüzünü prizmatik alevlerle boyuyor.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'Yoğun bir kayalık halka gezegeni kuşatıyor; yavaşça içe doğru yağan yapı malzemesi kaynağı.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'Metalik bir halka tepede parıldıyor; koloninin sanayisini besleyen cevherlerle dolu.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'Yaşanabilir bir uydu, kolonizasyon için ikinci bir şans sunuyor.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'Donmuş uydudan çıkarılan buz, koloninin su kaynağını destekliyor.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'Koloni, $count uydunun altında yörüngesinde dönüyor.';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'YZ\'nin İç Sesi';
@@ -5390,6 +5286,30 @@ class AppLocalizationsTr extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'ATLAMAK İÇİN DOKUNUN';
+
+  @override
+  String get ui_common_tapRingToChoose => 'SEÇMEK İÇİN BİR YÜZÜĞE DOKUNUN';
+
+  @override
+  String get ui_common_tapToContinue => 'DEVAM ETMEK İÇİN DOKUNUN';
+
+  @override
+  String get ui_tooltip_back => 'Geri';
+
+  @override
+  String get ui_tooltip_codex => 'Kodeks';
+
+  @override
+  String get ui_tooltip_settings => 'Ayarlar';
+
+  @override
+  String get ui_tooltip_leaderboards => 'Skor tabloları';
+
+  @override
+  String get ui_tooltip_bugReport => 'Hata bildir';
+
+  @override
   String get event_pulsarLighthouse_title => 'Pulsar Deniz Feneri';
 
   @override
@@ -5411,6 +5331,14 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'Pulsardan geniş bir mesafe bırakıyoruz, güvenli bir yörünge için fazladan yakıt yakıyoruz. Mürettebat, süzülen ışını filtrelenmiş gözlem pencerelerinden izliyor — güzel ama uzak.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'Tarama bize ulaşmadan geri çekilin';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'Bir sonraki ışın geçişinden önce acil durum yanmasında savruluruz. Pulsarın sinyali arkamızda zayıflıyor; hiçbir veri elde edilmiyor, hiçbir hasar alınmıyor, kaçma itişi için biraz yakıt harcanıyor.';
 
   @override
   String get event_alienNursery_title => 'Uzaylı Kuluçka Yuvası';
@@ -5499,4 +5427,465 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'Deneysel antifungal başlangıçta umut vaat ediyor, ancak dirençli bir suş aşıyor. Tam temizliğe başvurduğumuzda veba kriyopod besin hatlarına yayılmış durumda. Hasar, en başından kararlı davransaydık olacağından daha kötü.';
+
+  @override
+  String get event_constitutionalConvention_title => 'Anayasa Konvansiyonu';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'Koloni gemisinin nüfusu, resmi yönetim olmadan huzursuz bir şekilde büyüdü. Her güverteden delegeler, gelecekteki koloninin nasıl yönetileceğini tanımlayacak bir sözleşme taslağı hazırlamak için kargo ambarında toplanır. Üç grup yeni hükümet için birbiriyle yarışan vizyonlar sunuyor.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'Genel oy hakkına sahip bir demokratik anayasa taslağı hazırlayın';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'Sömürgeciler eşit temsili garanti eden bir anayasayı onayladılar. Karar verme süreci yavaşlıyor ancak herkesin sesi duyuldukça moral artıyor.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'Acil durum yetkilerine sahip güçlü bir yönetici oluşturun';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'Geniş yetkiye sahip tek bir lider atanır. Kararlar çabuk alınıyor ama muhalifler alt güvertelerde tiranlığın fısıldıyor.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'Teknokratik bir uzman konseyi oluşturun';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'Mühendisler, bilim adamları ve doktorlar uzmanlığa dayalı bir yönetim konseyi oluştururlar. Verimlilik artıyor, ancak bazıları güçten dışlanmış hissediyor.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'Askeri Darbe Tehdidi';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'Geminin güvenlik ekibinden Komutan Vasquez cephaneliğe el koydu ve bir ültimatom yayınladı: Acil askeri yetkiler verin veya tüm güvertelerin kapatılmasıyla karşı karşıya kalın. Durum değişken ve sömürgeciler bir yanıt için sizden bekliyor.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'Sadık mürettebat üyeleriyle darbeye direnin';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'Sadık mürettebat Vasquez\'e karşı çıkmak için toplanır. Çatışma minimum düzeyde kan dökülmesiyle sona eriyor, ancak güvenlik ayrıntıları zayıflıyor ve bazı sömürgeciler çapraz ateşin ortasında kalıyor.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 =>
+      'Komutanın taleplerini yerine getirin';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'Vasquez gemi operasyonlarının kontrolünü devraldı. Düzen hızla yeniden sağlanır, ancak bu, sivil özgürlüklerin pahasına olur. Silahlı devriyeler artık her koridorda yürüyor.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'Sınırlı acil durum yetkilerini sona erdirme maddesiyle müzakere edin';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'Gergin müzakerelerin ardından Vasquez, gözetimli geçici yetkiyi kabul eder. Kimseyi tam olarak tatmin etmeyen ama şiddeti önleyen kırılgan bir uzlaşma.';
+
+  @override
+  String get event_religiousAwakening_title => 'Dini Uyanış';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'Karizmatik bir vaiz, yüzlerce sömürgeciyi yeni bir inanç hareketine çekti. Her döngüde gözlem kubbesinde toplanırlar, ilahileri havalandırma bacalarında yankılanır. Bazı mürettebat üyeleri fanatizm konusunda endişeleniyor; diğerleri öğretilerde gerçek teselli buluyor.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'İnanç hareketini benimseyin ve kaynak sağlayın';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'Hareket resmi destekle gelişiyor. İnananlar arasında moral gelişiyor ve onların ortak ruhu, gemideki sosyal bağları güçlendiriyor.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'Gemide katı laikliği uygulayın';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'Dini toplantılar özel alanlarla sınırlıdır. Hareket yer altına inerek kırgınlıkları besliyor, ancak bilimsel rasyonalizm resmi doktrin olmaya devam ediyor.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'İbadete izin verin ancak etkisini düzenleyin';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'İnanca izin verilir ancak yönetimden ayrı tutulur. Komutayla irtibat kurmak üzere bir papaz atanır. Huzursuz bir denge korunur.';
+
+  @override
+  String get event_corporateTakeover_title => 'Kurumsal Devralma';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'Geminin kaynak yöneticileri gıda dağıtımı, su geri dönüşümü ve enerji tahsisi üzerindeki kontrolü sessizce sağlamlaştırıyor. Şimdi yetkilerini gelecekteki koloninin ekonomisini yönetecek kurumsal bir yapıya dönüştürmeyi öneriyorlar.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'Serbest piyasa ilkelerinin kaynakları yönetmesine izin verin';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'Kurumsal grup kaynak yönetimini devralır. Verimlilik önemli ölçüde artıyor, ancak fiyatlar artıyor ve en yoksul sömürgeciler temel ihtiyaçları karşılamakta zorlanıyor.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'Tüm kaynakların kolektif mülkiyet altında millileştirilmesi';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'Kaynaklara el konuluyor ve toplumsal kontrol altına alınıyor. Kurumsal hizip dağıldı, ancak kâr teşvikleri olmadan inovasyon duraklıyor.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'Düzenlenmiş piyasaları güvenlik ağlarıyla hayata geçirin';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'Fiyat kontrolleri ve refah programlarıyla karma bir ekonomi kuruluyor. Her iki taraf da tam olarak memnun değil, ancak bazı girişimlere izin verilirken temel ihtiyaçlar karşılanıyor.';
+
+  @override
+  String get event_successionCrisis_title => 'Veraset Krizi';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'Geminin kaptanı uykusunda öldü ve geride belirlenmiş bir halef kalmadı. Üç grup kontrol için hemen yarışıyor: Sivil konsey seçim talep ediyor, güvenlik şefi askeri otorite talep ediyor ve yaşlı sömürgeciler geleneksel liderlik törenlerine başvuruyor.';
+
+  @override
+  String get event_successionCrisis_choice0 => 'Acil seçim yapılması';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'Kaotik ama heyecanlı bir seçim, halk oylamasıyla seçilen yeni bir kaptanın ortaya çıkmasını sağlar. Süreç karmaşık ama sömürgeciler kendi liderliklerinin sahibi olduklarını hissediyorlar.';
+
+  @override
+  String get event_successionCrisis_choice1 =>
+      'Ordunun komutayı devralmasına izin verin';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'Güvenlik şefi kaptan koltuğuna oturuyor. Disiplin derhal yeniden sağlanıyor, ancak sivil mürettebat silahlı muhafızlara giderek artan bir rahatsızlıkla bakıyor.';
+
+  @override
+  String get event_successionCrisis_choice2 => 'Yaşlılar konseyini toplayın';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'En yaşlı ve en deneyimli sömürgeciler bir yönetim konseyi oluşturur. Onların bilgeliği gemiye rehberlik ediyor, ancak bazı genç mürettebat gerontokrasi tarafından dışlanmış hissediyor.';
+
+  @override
+  String get event_nativeSovereignty_title => 'Yerli Egemenlik';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'Uzun menzilli taramalar hedef gezegende akıllı yaşamın olduğunu doğruluyor. Ele geçirilen iletişimler, yaklaşımınızı tespit eden gelişmiş bir medeniyeti ortaya çıkarıyor. Resmi bir talepte bulunuyorlar: Ya bölgesel egemenliklerini tanıyacaklar ya da vardıklarında direnişle karşılaşacaklar.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'Yerel egemenliği tanıyın ve yerleşmek için izin isteyin';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'Yerli hakların resmi olarak tanınmasını iletiyorsunuz. Yanıt temkinli ama olumlu. İniş alanları sınırlı olsa da gelecekteki ilişkiler karşılıklı saygı temelinde başlayacak.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'Sömürge üstünlüğünü iddia edin ve direnişe hazırlanın';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'Ne olursa olsun uzlaşma niyetinizi yayınlıyorsunuz. Mürettebat silah tatbikatlarına ve tahkimat planlamasına başlar. Yerliler sessizleşiyor ve bu bir şekilde tehditlerden daha korkutucu.';
+
+  @override
+  String get event_nativeSovereignty_choice2 =>
+      'Gezegenin ortak yönetimini önerin';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'Birlikte yaşama ve kaynak paylaşımı için bir çerçeve sunuyorsunuz. Yerliler meraklı ama ihtiyatlı. Müzakereler karmaşık olacak ancak barış olasılığı mevcut.';
+
+  @override
+  String get event_laborStrike_title => 'İşçi Grevi';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'Mühendislik ekibi, daha kısa vardiyalar, daha iyi yiyecek tayınları ve navigasyon kararlarında söz hakkı talep ederek işten ayrıldı. Kritik sistemler otomatik yedeklemelerle çalışıyor ancak uzun ömürlü olmayacaklar. Kolonistlerin geri kalanı endişeyle izliyor.';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'İşçilerin taleplerini tam olarak karşılayın';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'Grev hemen sona erer. İşçiler iyileştirilmiş koşullarla görevlerine dönüyor. Vardiyalar kısaldıkça üretkenlik biraz düşer, ancak sadakat sarsılmazdır.';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'Grevi bastırın ve zorunlu çalışmayı zorunlu kılın';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'Güvenlik güçleri işçilere silah zoruyla istasyonlarına kadar eşlik ediyor. Motorlar yeniden uğultu yapıyor ama alt güvertelerde nefret kaynıyor. Birçok işçi kamaralara hapsedildi.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'Temel talepler konusunda kısmi bir uzlaşma önerin';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'Maraton niteliğindeki müzakerelerin ardından bir anlaşmaya varıldı: Daha iyi tayınlar ve tavsiye niteliğinde girdiler, ancak vardiya süresinde herhangi bir azalma yok. Her iki taraf da heyecanlanmıyor ama motorlar çalışmaya devam ediyor.';
+
+  @override
+  String get event_censorshipDebate_title => 'Sansür Tartışması';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'Sızan bir belge, geminin arızalı sistemlerinin gerçek durumunu ortaya koyuyor. Panik alt güvertelere yayılıyor. İletişim görevlisi daha fazla huzursuzluğu önlemek için bilgiye erişimin kısıtlanmasını öneriyor. Sivil özgürlükler savunucuları öfkeli.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'Tüm bilgilere ücretsiz erişim garantisi';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'Tam şeffaflık sağlanmıştır. Sömürgeciler artık anladıkları sorunların çözümüne yardımcı olmak için harekete geçtikçe ilk panik azalır. Bazı bilgiler sıkıntı yaratmasına rağmen liderliğe olan güven artıyor.';
+
+  @override
+  String get event_censorshipDebate_choice1 => 'Tam bilgi kontrolünü uygulayın';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'Artık tüm iletişimler komut yoluyla filtreleniyor. Panik sona eriyor, yerini ürkütücü bir sakinlik alıyor. Ancak sansürlenmiş gerçeğin bıraktığı boşluğu söylentiler dolduruyor ve çoğu zaman gerçeklikten daha kötüler.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'Yalnızca güvenlik açısından hassas bilgileri filtreleyin';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'Bir sınıflandırma sistemi oluşturulmuştur. Bilgilerin çoğu serbestçe akıyor ancak askeri ve kritik sistem verilerinin açıklanması gerekiyor. Çoğunlukla tatmin edici, uygulanabilir bir orta yol.';
+
+  @override
+  String get event_colonialCharter_title => 'Sömürge Şartı';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'Gezegenin çöküşü yaklaşırken koloniciler, yeni toplumları için temel yasaları hazırlamak zorundadır. Her biri koloninin ne olması gerektiğine dair farklı bir vizyonu savunan üç felsefi kamp ortaya çıktı. Tartışma hararetli ve son derece kişisel.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'Bireysel hakları vurgulayan ilerici bir sözleşme';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'Şart kişisel özgürlükleri, eşitliği ve sosyal hareketliliği koruma altına alıyor. Sanatçılar ve düşünürler kutlama yapıyor; Gelenekçiler kontrolsüz özgürlüğün kaosa yol açacağı konusunda uyarıyorlar.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'Dünyanın geleneklerini koruyan muhafazakar bir sözleşme';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'Şart, geleneksel değerleri, aile yapılarını ve dini ibadetleri düzenliyor. Birçoğu tanıdık geleneklerde teselli buluyor; diğerleri eski dünya düşüncesinin ağırlığı altında boğulmuş hissediyorlar.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'Hayatta kalma ve büyümeye odaklanan pragmatik bir sözleşme';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'Şart kaynak yönetimine, teknik eğitime ve ekonomik kalkınmaya öncelik veriyor. Şiirsellikten yoksundur ancak koloninin verimli ve iyi organize olmasını sağlar.';
+
+  @override
+  String get event_separatistMovement_title => 'Ayrılıkçı Hareket';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'Bir grup sömürgeci gemi yönetiminden bağımsızlığını ilan etti. Karaya çıktıktan sonra kendi yerleşim yerlerini kurma hakkını talep ederek kıç tarafta barikat kurdular. Geminin yiyecek rezervlerinin %15\'ini ve yedek navigasyon dizisini kontrol ediyorlar.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'Federal bir çerçeve içerisinde bölgesel özerklik verilmesi';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'Ayrılıkçılar bir anlaşmayı kabul ediyorlar: gevşek bir federal şemsiye altında yerel yönetime sahip kendi bölgeleri. Parçalanma örneği bazılarını endişelendiriyor ama barış korunuyor.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'Barikatları yıkın ve yeniden birleşmeyi zorlayın';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'Güvenlik ekipleri arka bölüme giriyor. Ayrılıkçılar şiddetle direniyor. Düzen yeniden sağlandı, ancak maliyeti çok yüksek oldu. Gemi ruhen olmasa bile bedenen birleşmiştir.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'Hareketi yönlendiren temel şikayetleri ele alın';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'Arabulucular, grubu uzaklaştıran şeyin ne olduğunu anlamaya çalışırlar. Kaynak dağıtımı ve temsilindeki reformlar, ayrılıkçıları yavaş yavaş yeniden saflara katıyor. İyileşme zaman alır.';
+
+  @override
+  String get event_warCouncil_title => 'Savaş Konseyi';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'Yakındaki sistemlerde potansiyel tehditlerin tespit edilmesi üzerine geminin liderliği bir savaş konseyi toplar. Soru şu: Koloninin sınırlı kaynaklarının ne kadarı sivil altyapıya karşı askeri hazırlığa ayrılmalı?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'Tam silahlanma: silahlar üretin ve askerleri eğitin';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'Atölyeler silah üretimi için yeniden donatıldı. Bedeni sağlam olan her sömürgeci savaş eğitimi alır. Gemi silahla dolu ama tarım ekipmanlarına ayrılan bütçe azalıyor.';
+
+  @override
+  String get event_warCouncil_choice1 =>
+      'Silahsızlanma: Silahları aletlere dönüştürün';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'Cephanelik boşaltılıyor ve içindekiler inşaat malzemelerine dönüştürülüyor. Koloni kılıçlarla değil saban demirleriyle inşa edilecek. Pasifistler seviniyor; Realistler karanlıkta neyin gizlendiği konusunda endişelenirler.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'Yalnızca savunma duruşu: kalkanlar ve duvarlar, kılıçlar değil';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'Kaynaklar tahkimatlara, kalkanlara ve erken uyarı sistemlerine gidiyor. Hiçbir saldırı silahı üretilmiyor. Potansiyel komşuları kışkırtmadan seçenekleri açık tutan dengeli bir yaklaşım.';
+
+  @override
+  String get event_tradeFederation_title => 'Ticaret Federasyonu';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'Koloni varlığını sürdürebilmeye yaklaşırken gruplar ekonomisini nasıl yapılandıracaklarını tartışıyor. Sorun hayatta kalmanın ötesine geçiyor; yabancı topraklarda kök salan toplum türünü tanımlayacak. Tüccarlar, toplumcular ve bürokratların hepsi kendi davasını ortaya koyuyor.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'Minimum düzenlemeyle serbest ticaret bölgeleri kurun';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'Her habitat modülünde pazarlar ortaya çıkar. Tüccarlar rekabet ettikçe inovasyon gelişir. Zenginlik eşitsizliği artıyor ancak koloninin kullanabileceği toplam kaynak havuzu da artıyor.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'Tüm kaynakların ortak paylaşımını uygulayın';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'Özel mülkiyet kaldırılmıştır. Her şey herkese aittir. Kimse aç kalmıyor ama kimsenin asgari miktardan fazlasını üretme dürtüsü de yok. Sıradanlık rahattır.';
+
+  @override
+  String get event_tradeFederation_choice2 =>
+      'Devlet tarafından yönetilen bir ticaret sistemi oluşturun';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'Hükümet tüm ticareti kontrol eder, fiyatları belirler ve kaynakları tahsis eder. Sistem adil ama esnek değil. Bakım koridorlarında karaborsalar ortaya çıkıyor.';
+
+  @override
+  String get event_faithVsScience_title => 'İnanç ve Bilim';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'Geminin teleskopu, baskın inanç hareketinin temel ilkesiyle doğrudan çelişen kozmik bir olgunun görüntülerini yakaladı. Baş bilim insanı bulguları yayınlamak istiyor; dini lider toplumu parçalayacakları konusunda ısrar ediyor.';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'Bilimsel bulguların tamamını yayınlayın';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'Gerçek, rahatlığa üstün gelir. Veriler açıklandı ve dini hareket parçalandı. Bazı müminler imanlarını uyarlarlar; diğerleri onu tamamen kaybeder. Bilgi ilerler.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'Sosyal uyumu korumak için bulguları bastırın';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'Veriler sınıflandırılır. Dini topluluk istikrarlı olmaya devam ediyor ancak bilim ekibinin morali bozuldu. Ertelenen gerçek, inkar edilen gerçek değildir, ancak öyle hissedilir.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'Her iki görüş arasındaki uyumu bulmak için ortak bir panel düzenleyin';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'Bilim adamları ve ilahiyatçılar bulguları yeniden yorumlamak için birlikte çalışıyorlar. Hem anlayışı hem de inancı genişleten yeni bir sentez ortaya çıkıyor. Herkes ikna olmuş değil ama diyalog sağlıklı.';
+
+  @override
+  String get event_surveillanceState_title => 'Gözetim Durumu';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'Bir dizi sabotaj olayının ardından güvenlik şefi, geminin her bölmesine izleme sistemleri kurmayı önerir. Kameralar, mikrofonlar ve biyometrik tarayıcılar her sömürgecinin hareketlerini takip edecek. Gizlilik savunucuları dehşete düşmüş durumda.';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'Gözetim teklifini tamamen reddet';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'Gizlilik korunur. Sabotajcı hâlâ serbest ama sömürgeciler izlenilmediklerini bildikleri için daha rahat uyuyorlar. Soruşturma geleneksel yöntemlerle devam ediyor.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'Gemi genelinde tam gözetim uygulayın';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'Geminin her köşesi izleniyor. Sabotajcı birkaç gün içinde yakalanır. Ancak kameralar duruyor ve güvenlik şefi onları kapatmakla ilgilenmiyor. Durmadan.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'Yalnızca kritik alanlarda sınırlı izleme kurun';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'Kameralar makine dairesini, cephaneliği ve köprüyü izliyor. Yaşam alanları özel kalır. Sabotajcı en sonunda model analizi yoluyla tanımlanır. Ölçülü bir yanıt.';
+
+  @override
+  String get event_nativeAlliance_title => 'Yerli İttifak';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'Yerli uygarlık resmi bir anlaşma önerdi. Büyükelçileri, şaşırtıcı derecede gelişmiş bir tercüman cihazı aracılığıyla konuşan zarif bir varlık olan mekik ile gelir. Her biri koloninin geleceği açısından farklı anlamlara sahip üç ilişki biçimi sunuyorlar.';
+
+  @override
+  String get event_nativeAlliance_choice0 => 'Eşit ittifak anlaşması imzalayın';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'Anlaşma karşılıklı savunmayı, ortak araştırmayı ve eşit toprak haklarını tesis ediyor. Her iki medeniyet birlikte büyüyecek. Yerliler, koloni beklentilerinizi dönüştüren tarımsal bilgileri paylaşıyor.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'Sömürge hakimiyeti konumundan müzakere yapın';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'Uygun koşulları güvence altına almak için ileri teknolojinizden yararlanırsınız. Yerliler topraklarını ve kaynaklarını bırakıyor. Titreyen ellerle imza atıyorlar. Tarih bunu daha önce de görmüştü ve sonu nadiren iyi bitmişti.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'Karşılıklı fayda odaklı bir ticaret ortaklığı kurmak';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'Ticaret türler arasındaki boşluğu doldurur. Yerel malzemeler atölyelerinize akıyor; teknolojiniz onların ilaçlarını geliştiriyor. Dostluk karşılıklı kazançtan doğar.';
 }

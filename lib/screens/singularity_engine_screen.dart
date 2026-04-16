@@ -11,15 +11,15 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
-import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFF7C4DFF);
 const _kContainment = Color(0xFFFFD54F);
 const _kEnergy = Color(0xFFE040FB);
 const _kLeftWindowColor = Color(0xFFFFD54F);
-const _kRightWindowColor = Color(0xFF00E5FF);
+const _kRightWindowColor = SpaceColors.cyan;
 
 class SingularityEngineScreen extends ConsumerStatefulWidget {
   const SingularityEngineScreen({super.key, required this.event});
@@ -33,20 +33,15 @@ class SingularityEngineScreen extends ConsumerStatefulWidget {
 
 class _SingularityEngineScreenState
     extends ConsumerState<SingularityEngineScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+    with
+        TickerProviderStateMixin,
+        EventTypewriterMixin<SingularityEngineScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnim;
   late final AnimationController _ringController;
   late final AnimationController _arcController;
-
-  // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedWindow;
@@ -57,18 +52,14 @@ class _SingularityEngineScreenState
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -88,39 +79,8 @@ class _SingularityEngineScreenState
       duration: const Duration(seconds: 2),
     )..repeat();
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int index) {
@@ -135,7 +95,11 @@ class _SingularityEngineScreenState
       _resolved = true;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -144,8 +108,7 @@ class _SingularityEngineScreenState
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _ringController.dispose();
@@ -167,90 +130,36 @@ class _SingularityEngineScreenState
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'SINGULARITY ENGINE',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(24),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 2,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'SINGULARITY ENGINE',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    letterSpacing: 2,
+  );
 
-  Widget _buildNarrativeCard() {
-    final event = widget.event;
-    if (!_resolved && event.narrative.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          _displayedText,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    if (_resolved && _selectedWindow != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: (_isPositiveOutcome ? Colors.green : Colors.red)
-              .withValues(alpha: 0.1),
-          border: Border.all(
-            color: (_isPositiveOutcome ? Colors.green : Colors.red)
-                .withValues(alpha: 0.4),
-          ),
-        ),
-        child: Text(
-          event.choices[_selectedWindow!].outcome,
-          style: TextStyle(
-            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildNarrativeCard() => EventNarrativeCard(
+    accentColor: _kAccent,
+    displayText: displayedText,
+    outcomeText: (_resolved && _selectedWindow != null)
+        ? widget.event.choices[_selectedWindow!].outcome
+        : null,
+    outcomeIsPositive: _isPositiveOutcome,
+  );
 
   Widget _buildVisualArea() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _resolved
               ? null
               : (details) => _handleTap(details, constraints),
           child: AnimatedBuilder(
-            animation: Listenable.merge(
-                [_ringController, _arcController, _pulseController]),
+            animation: Listenable.merge([
+              _ringController,
+              _arcController,
+              _pulseController,
+            ]),
             builder: (_, __) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _SingularityEnginePainter(
@@ -267,53 +176,15 @@ class _SingularityEngineScreenState
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text(
-        'TAP TO SKIP',
-        style: TextStyle(
-            color: _kAccent.withValues(alpha: 0.5),
-            fontSize: 12,
-            letterSpacing: 2),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -321,37 +192,30 @@ class _SingularityEngineScreenState
     final isLandscape =
         screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -363,22 +227,22 @@ class _SingularityEngineScreenState
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          Expanded(child: _buildVisualArea()),
-          if (!_typewriterDone) const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved || !_typewriterDone) ...[
-            const SizedBox(height: 12),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 12),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                Expanded(child: _buildVisualArea()),
+                if (!typewriterDone) const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved || !typewriterDone) ...[
+                  const SizedBox(height: 12),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -431,14 +295,14 @@ class _SingularityEngineScreenState
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) {
-      _skipTypewriter();
+    if (!typewriterDone) {
+      skipTypewriter();
       return;
     }
     final size = Size(constraints.maxWidth, constraints.maxHeight);
@@ -470,61 +334,75 @@ class _SingularityEngineScreenState
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
       final isPositive = entry.value > 0;
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: isPositive,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: isPositive,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
       return Text(
         'No effect',
         style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -591,10 +469,14 @@ class _SingularityEnginePainter extends CustomPainter {
 
   // Seeded random for stable particle/arc positions.
   static final _rng = Random(42);
-  static final List<_ParticleAnchor> _particles =
-      List.generate(13, (i) => _ParticleAnchor(_rng));
-  static final List<_ArcAnchor> _arcs =
-      List.generate(5, (i) => _ArcAnchor(_rng));
+  static final List<_ParticleAnchor> _particles = List.generate(
+    13,
+    (i) => _ParticleAnchor(_rng),
+  );
+  static final List<_ArcAnchor> _arcs = List.generate(
+    5,
+    (i) => _ArcAnchor(_rng),
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -619,7 +501,12 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   void _drawGravitationalLensing(
-      Canvas canvas, Size size, double cx, double cy, double singularityR) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double singularityR,
+  ) {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0
@@ -656,7 +543,12 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   void _drawContainmentRings(
-      Canvas canvas, Size size, double cx, double cy, double singularityR) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double singularityR,
+  ) {
     // Ring specs: [xRadiusFactor, yRadiusFactor, angleMultiplier, strokeWidth]
     final ringSpecs = [
       (3.2, 1.1, ringValue * 2 * pi, 2.5),
@@ -686,8 +578,15 @@ class _SingularityEnginePainter extends CustomPainter {
     }
   }
 
-  void _drawRotatedEllipse(Canvas canvas, double cx, double cy, double rx,
-      double ry, double rotation, Paint paint) {
+  void _drawRotatedEllipse(
+    Canvas canvas,
+    double cx,
+    double cy,
+    double rx,
+    double ry,
+    double rotation,
+    Paint paint,
+  ) {
     final path = Path();
     const steps = 60;
     for (int s = 0; s <= steps; s++) {
@@ -708,13 +607,15 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   /// Returns a point on the r-th containment ring at parametric angle t.
-  Offset _ringPoint(double cx, double cy, double singularityR, int ring,
-      double t, double ringAngle) {
-    final specs = [
-      (3.2, 1.1),
-      (2.5, 0.85),
-      (1.9, 0.65),
-    ];
+  Offset _ringPoint(
+    double cx,
+    double cy,
+    double singularityR,
+    int ring,
+    double t,
+    double ringAngle,
+  ) {
+    final specs = [(3.2, 1.1), (2.5, 0.85), (1.9, 0.65)];
     final (xF, yF) = specs[ring.clamp(0, 2)];
     final rx = singularityR * xF;
     final ry = singularityR * yF;
@@ -726,7 +627,12 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   void _drawEnergyArcs(
-      Canvas canvas, Size size, double cx, double cy, double singularityR) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double singularityR,
+  ) {
     final ringAngles = [
       ringValue * 2 * pi,
       ringValue * 2 * pi * -0.7,
@@ -735,7 +641,8 @@ class _SingularityEnginePainter extends CustomPainter {
 
     for (int a = 0; a < _arcs.length; a++) {
       final arc = _arcs[a];
-      final flicker = 0.4 + 0.6 * (0.5 + 0.5 * sin(arcValue * 2 * pi + a * 1.3));
+      final flicker =
+          0.4 + 0.6 * (0.5 + 0.5 * sin(arcValue * 2 * pi + a * 1.3));
 
       // Start on outer ring, end on middle ring.
       final p0 = _ringPoint(cx, cy, singularityR, 0, arc.t0, ringAngles[0]);
@@ -767,7 +674,12 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   void _drawOrbitingParticles(
-      Canvas canvas, Size size, double cx, double cy, double singularityR) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double singularityR,
+  ) {
     final ringAngles = [
       ringValue * 2 * pi,
       ringValue * 2 * pi * -0.7,
@@ -777,8 +689,14 @@ class _SingularityEnginePainter extends CustomPainter {
     for (int i = 0; i < _particles.length; i++) {
       final p = _particles[i];
       final t = p.baseT + ringValue * 2 * pi * p.speedMult;
-      final pos =
-          _ringPoint(cx, cy, singularityR, p.ringIndex, t, ringAngles[p.ringIndex]);
+      final pos = _ringPoint(
+        cx,
+        cy,
+        singularityR,
+        p.ringIndex,
+        t,
+        ringAngles[p.ringIndex],
+      );
 
       final brightness = 0.5 + 0.4 * pulseValue;
 
@@ -796,7 +714,11 @@ class _SingularityEnginePainter extends CustomPainter {
   }
 
   void _drawSingularityCore(
-      Canvas canvas, double cx, double cy, double singularityR) {
+    Canvas canvas,
+    double cx,
+    double cy,
+    double singularityR,
+  ) {
     final center = Offset(cx, cy);
 
     // Outermost violet glow.
@@ -890,17 +812,17 @@ class _SingularityEnginePainter extends CustomPainter {
 
     // Dark interior.
     final interiorPaint = Paint()
-      ..color = const Color(0xFF050510).withValues(alpha: isDimmed ? 0.3 : 0.82);
+      ..color = const Color(
+        0xFF050510,
+      ).withValues(alpha: isDimmed ? 0.3 : 0.82);
     canvas.drawCircle(center, radius, interiorPaint);
 
     // Energy texture inside — small sparks.
     if (!isDimmed) {
       final sparkRng = Random(windowIndex * 999 + 13);
       for (int i = 0; i < 8; i++) {
-        final sx =
-            center.dx + (sparkRng.nextDouble() - 0.5) * radius * 1.6;
-        final sy =
-            center.dy + (sparkRng.nextDouble() - 0.5) * radius * 1.6;
+        final sx = center.dx + (sparkRng.nextDouble() - 0.5) * radius * 1.6;
+        final sy = center.dy + (sparkRng.nextDouble() - 0.5) * radius * 1.6;
         if ((Offset(sx, sy) - center).distance > radius * 0.9) continue;
         final brightness = 0.3 + 0.5 * sparkRng.nextDouble() + 0.2 * pulseValue;
         final sparkColor = windowIndex == 0
@@ -908,12 +830,17 @@ class _SingularityEnginePainter extends CustomPainter {
             : Color.lerp(_kRightWindowColor, _kEnergy, sparkRng.nextDouble())!;
         final sparkPaint = Paint()
           ..color = sparkColor.withValues(alpha: brightness.clamp(0.0, 1.0));
-        canvas.drawCircle(Offset(sx, sy), 1.2 + sparkRng.nextDouble(), sparkPaint);
+        canvas.drawCircle(
+          Offset(sx, sy),
+          1.2 + sparkRng.nextDouble(),
+          sparkPaint,
+        );
       }
 
       // Central energy dot.
-      final centralColor =
-          windowIndex == 0 ? _kContainment : _kRightWindowColor;
+      final centralColor = windowIndex == 0
+          ? _kContainment
+          : _kRightWindowColor;
       final centralGlow = Paint()
         ..color = centralColor.withValues(alpha: 0.3 + 0.2 * pulseValue)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
@@ -947,10 +874,7 @@ class _SingularityEnginePainter extends CustomPainter {
 
     textPainter.paint(
       canvas,
-      Offset(
-        center.dx - textPainter.width / 2,
-        center.dy + radius + 8,
-      ),
+      Offset(center.dx - textPainter.width / 2, center.dy + radius + 8),
     );
   }
 
@@ -967,9 +891,9 @@ class _SingularityEnginePainter extends CustomPainter {
 
 class _ParticleAnchor {
   _ParticleAnchor(Random rng)
-      : ringIndex = rng.nextInt(3),
-        baseT = rng.nextDouble() * 2 * pi,
-        speedMult = 0.5 + rng.nextDouble();
+    : ringIndex = rng.nextInt(3),
+      baseT = rng.nextDouble() * 2 * pi,
+      speedMult = 0.5 + rng.nextDouble();
 
   final int ringIndex;
   final double baseT;
@@ -978,8 +902,8 @@ class _ParticleAnchor {
 
 class _ArcAnchor {
   _ArcAnchor(Random rng)
-      : t0 = rng.nextDouble() * 2 * pi,
-        t1 = rng.nextDouble() * 2 * pi;
+    : t0 = rng.nextDouble() * 2 * pi,
+      t1 = rng.nextDouble() * 2 * pi;
 
   final double t0;
   final double t1;

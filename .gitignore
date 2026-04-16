@@ -66,3 +66,12 @@ app.*.symbols
 
 # Custom for this project
 .env
+untranslated_messages.json
+
+# iOS signing certificates — NEVER commit
+ios/certs/
+*.p12
+*.key
+*.cer
+*.csr
+*.mobileprovision

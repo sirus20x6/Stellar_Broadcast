@@ -42,6 +42,9 @@ class AppConstants {
   static const String testRewardedIos =
       'ca-app-pub-3940256099942544/1712485313';
 
+  static const String testNativeAndroid =
+      'ca-app-pub-3940256099942544/2247696110';
+
   // ---------------------------------------------------------------------------
   // Ad unit IDs — Production
   // ---------------------------------------------------------------------------

@@ -1,7 +1,5 @@
 {
   "@@locale": "en",
-
-  "appTitle": "Stellar Broadcast",
   "ui_title_stellar": "STELLAR",
   "ui_title_broadcast": "BROADCAST",
   "ui_title_beginVoyage": "BEGIN VOYAGE",
@@ -11,10 +9,23 @@
   "ui_title_legacyHub": "LEGACY HUB",
   "ui_title_cancel": "CANCEL",
   "ui_title_startVoyage": "START VOYAGE",
+  "ui_title_seedInvalid": "Invalid seed code. Use only A–Z and 0–9.",
   "ui_voyage_sector": "SEC {count}",
-  "@ui_voyage_sector": {"placeholders": {"count": {"type": "int"}}},
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "ui_voyage_seed": "SEED: {code}",
-  "@ui_voyage_seed": {"placeholders": {"code": {"type": "String"}}},
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
   "ui_voyage_scanners": "SCANNERS",
   "ui_voyage_scanPlanet": "SCAN PLANET",
   "ui_voyage_noEnergy": "NO ENERGY",
@@ -27,12 +38,12 @@
   "ui_voyage_systemConstruct": "Construct",
   "ui_voyage_systemShields": "Shields",
   "ui_voyage_systemLanding": "Landing",
-  "ui_voyage_scannerAtmo": "Atmo Scan",
-  "ui_voyage_scannerGrav": "Grav Scan",
-  "ui_voyage_scannerMineral": "Mineral Scan",
-  "ui_voyage_scannerLife": "Life Scan",
-  "ui_voyage_scannerTemp": "Temp Scan",
-  "ui_voyage_scannerWater": "Water Scan",
+  "ui_voyage_scannerAtmo": "Atmosphere",
+  "ui_voyage_scannerGrav": "Gravity",
+  "ui_voyage_scannerMineral": "Minerals",
+  "ui_voyage_scannerLife": "Life Signs",
+  "ui_voyage_scannerTemp": "Temperature",
+  "ui_voyage_scannerWater": "Water",
   "ui_voyage_narrative0": "Earth orbit clear. Cryopods stable. Archive ring secure.",
   "ui_voyage_narrative1": "Outer-system transit nominal. Long-range scanners widening search.",
   "ui_voyage_narrative2": "Earthside traffic has faded below detection threshold.",
@@ -60,10 +71,28 @@
   "ui_scan_statBio": "BIO",
   "ui_scan_statAnomaly": "ANOMALY",
   "ui_scan_statRadiation": "RADIATION",
+  "ui_scan_probesCount": "PROBES: {count}",
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "ui_scan_uncertaintyPct": "UNCERTAINTY: ±{percent}%",
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
   "ui_landing_planetAnalysis": "PLANET ANALYSIS",
   "ui_landing_shipStatus": "SHIP STATUS",
   "ui_landing_fuel": "FUEL: {amount}",
-  "@ui_landing_fuel": {"placeholders": {"amount": {"type": "int"}}},
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
   "ui_landing_lowFuelWarning": "LOW FUEL WARNING",
   "ui_landing_landingRiskCritical": "LANDING RISK: CRITICAL",
   "ui_landing_landingRiskElevated": "LANDING RISK: ELEVATED",
@@ -71,7 +100,13 @@
   "ui_landing_landingRiskElevatedDesc": "Landing system degraded. Expect rough atmospheric entry with possible system damage.",
   "ui_landing_riskAssessment": "RISK ASSESSMENT",
   "ui_landing_encountersRemaining": "Your ship can sustain ~{remaining} more encounters",
-  "@ui_landing_encountersRemaining": {"placeholders": {"remaining": {"type": "int"}}},
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
   "ui_landing_shipMayNotSurvive": "Your ship may not survive another voyage",
   "ui_landing_surfaceFeatures": "SURFACE FEATURES",
   "ui_landing_nameYourColony": "NAME YOUR COLONY",
@@ -92,11 +127,6 @@
   "ui_landing_statConstructors": "Constructors",
   "ui_landing_statShields": "Shields",
   "ui_landing_statLandingSys": "Landing Sys",
-  "ui_landingSequence_phase1": "PHASE 1: ORBITAL COMMIT",
-  "ui_landingSequence_phase1Desc": "Descent window open. Committing to entry.",
-  "ui_landingSequence_phase2": "PHASE 2: ATMOSPHERIC FIRE",
-  "ui_landingSequence_title": "LANDING SEQUENCE",
-  "ui_landingSequence_viewColonyReport": "VIEW COLONY REPORT",
   "ui_ending_colonyEstablished": "COLONY ESTABLISHED",
   "ui_ending_colonyScore": "COLONY SCORE",
   "ui_ending_colonyProfile": "COLONY PROFILE",
@@ -106,6 +136,10 @@
   "ui_ending_total": "TOTAL",
   "ui_ending_achievementsUnlocked": "ACHIEVEMENTS UNLOCKED",
   "ui_ending_challengeFriend": "CHALLENGE FRIEND",
+  "ui_ending_shareCard": "SHARE CARD",
+  "ui_ending_shareCardDialogTitle": "Share Your Voyage",
+  "ui_ending_shareCardShare": "SHARE",
+  "ui_ending_shareCardCancel": "CANCEL",
   "ui_ending_copySeed": "COPY SEED",
   "ui_ending_viewLegacy": "VIEW LEGACY",
   "ui_ending_newVoyage": "NEW VOYAGE",
@@ -133,7 +167,16 @@
   "ui_gameOver_viewLegacy": "VIEW LEGACY",
   "ui_gameOver_newVoyage": "NEW VOYAGE",
   "ui_gameOver_shareText": "🚀 STELLAR BROADCAST\n\nI didn't survive... {reason}.\nThink you can do better on the same voyage?\nstellarbroadcast://play?seed={seedCode}\n\nDon't have the app?\nhttps://play.google.com/store/apps/details?id=com.quickapps.stellar_broadcast",
-  "@ui_gameOver_shareText": {"placeholders": {"reason": {"type": "String"}, "seedCode": {"type": "String"}}},
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
   "ui_gameOver_epilogueColonists": "The last colonist died in cryosleep — a cascade failure no emergency protocol could prevent. The Exodus sailed on, a ghost ship carrying only automated systems and frozen silence. Its mission had failed not in a moment of catastrophe, but in the slow attrition of human lives, one by one, until none remained.",
   "ui_gameOver_epilogueHull": "The hull gave way in silence — metal fatigue compounded by countless micro-impacts until the ship could hold together no longer. Atmosphere bled into the void. The colony ship Exodus broke apart, its wreckage joining the ancient debris fields between the stars. No distress signal was ever received.",
   "ui_gameOver_epilogueNav": "Without navigation, the Exodus drifted into uncharted space — star charts useless, course corrections impossible. The ship sailed on through the dark, its sleeping passengers unaware that their destination had been replaced by eternity. Some say the ship still drifts, a ghost vessel in the endless night.",
@@ -149,6 +192,9 @@
   "ui_settings_volume": "Volume",
   "ui_settings_language": "Language",
   "ui_settings_systemDefault": "System default",
+  "ui_settings_statsPosition": "Stats & buttons position",
+  "ui_settings_statsLeft": "LEFT",
+  "ui_settings_statsRight": "RIGHT",
   "ui_legacy_title": "LEGACY HUB",
   "ui_legacy_commanderStats": "COMMANDER STATS",
   "ui_legacy_highScores": "HIGH SCORES",
@@ -248,6 +294,16 @@
   "planet_featureHelium3Deposits": "Helium-3 Deposits",
   "planet_featureExoticIsotopes": "Exotic Isotopes",
   "planet_featureMedicinalFlora": "Medicinal Flora",
+  "planet_featurePerpetualAurora": "Perpetual Aurora",
+  "planet_featurePetrifiedMegaflora": "Petrified Megaflora",
+  "planet_featureUndergroundRivers": "Underground Rivers",
+  "planet_featureObsidianPlains": "Obsidian Plains",
+  "planet_featureSaltFlats": "Salt Flats",
+  "planet_featureCarnivorousFlora": "Carnivorous Flora",
+  "planet_featureGhostCities": "Ghost Cities",
+  "planet_featureArchiveVaults": "Archive Vaults",
+  "planet_featureSinkholeFields": "Sinkhole Fields",
+  "planet_featureApexPredator": "Apex Predator",
   "ui_monthJan": "JAN",
   "ui_monthFeb": "FEB",
   "ui_monthMar": "MAR",
@@ -260,7 +316,6 @@
   "ui_monthOct": "OCT",
   "ui_monthNov": "NOV",
   "ui_monthDec": "DEC",
-
   "event_asteroidField_title": "Asteroid Field",
   "event_asteroidField_narrative": "Long-range scanners detect a dense asteroid field directly in our flight path. Navigation calculates two options: a risky dash through the thinnest corridor, or a lengthy detour that will tax our fuel reserves and stress the navigation array.",
   "event_asteroidField_choice0_text": "Punch through the corridor",
@@ -1153,55 +1208,124 @@
   "event_repairStation_choice2_outcome": "The station's AI is ravenous for data. It copies our entire technical library — engineering manuals, scientific databases, manufacturing blueprints — and in exchange fabricates fresh probes and energy cells from raw materials. The tech archive is diminished, but the supplies are invaluable.",
   "event_repairStation_choice3_text": "Offer the cultural archive for a comprehensive refit",
   "event_repairStation_choice3_outcome": "The station broadcasts the works of Shakespeare, Bach, and a thousand other human voices into its memory banks. In return, it performs a thorough overhaul and loads the probe bays with freshly manufactured units. The cultural archive is gutted, but the ship may actually reach its destination now.",
-
   "ending_scoreLabel_landing": "Landing",
   "ending_scoreLabel_construction": "Construction",
   "ending_scoreLabel_technology": "Technology",
   "ending_scoreLabel_culture": "Culture",
   "ending_scoreLabel_atmosphere": "Atmosphere",
-  "ending_scoreLabel_gravity": "Gravity",
-  "ending_scoreLabel_temperature": "Temperature",
-  "ending_scoreLabel_water": "Water",
-  "ending_scoreLabel_resources": "Resources",
   "ending_scoreLabel_nativeRelations": "Native Relations",
   "ending_scoreLabel_population": "Population",
-
   "ending_tierGoldenAge": "Golden Age",
   "ending_tierThrivingColony": "Thriving Colony",
   "ending_tierSurvival": "Survival",
   "ending_tierStruggling": "Struggling",
   "ending_tierDire": "Dire",
   "ending_tierExtinction": "Extinction",
-
   "ending_titleGoldenAge": "The First Bloom of {planetName}",
-  "@ending_titleGoldenAge": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleThrivingColony": "Deep Roots on {planetName}",
-  "@ending_titleThrivingColony": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleSurvival": "A Hard-Won Foothold on {planetName}",
-  "@ending_titleSurvival": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleStruggling": "Thin Soil on {planetName}",
-  "@ending_titleStruggling": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleDire": "The Wreck Colony of {planetName}",
-  "@ending_titleDire": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleExtinction": "The Last Transmission from {planetName}",
-  "@ending_titleExtinction": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_titleDefault": "Landfall on {planetName}",
-  "@ending_titleDefault": { "placeholders": { "planetName": { "type": "String" } } },
-
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueGoldenAge": "Against all odds, the broadcast took root. {planetName} received humanity not as wreckage but as living seed: fertile ground, working systems, and enough strength to build beyond mere survival. Within a generation, art, science, and culture flourished. Children born on {planetName} looked up at unfamiliar stars and called them home. The voyage became the founding myth of a new civilization ready to cast its own future outward.",
-  "@ending_epilogueGoldenAge": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueThrivingColony": "The landing was rough, but the seed held. {planetName} proved generous enough for water to flow, crops to root, and the ship's surviving systems to be broken down into the first real settlement. By the end of the first decade, a thriving town stood where Exodus had come to rest. Humanity had not merely survived the crossing. It had begun again.",
-  "@ending_epilogueThrivingColony": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueSurvival": "Survival was never guaranteed, and on {planetName} every day had to be earned. The damaged ship provided only the barest essentials, but the seed did not die in transit. Colonists adapted through stubbornness and ingenuity, carving a future from a world that offered little freely. Later generations would remember the hardship of the founding years and the resolve that kept the broadcast alive.",
-  "@ending_epilogueSurvival": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueStruggling": "The colony clung to existence like seed scattered onto bad soil. {planetName} was unforgiving, resources were thin, and the ship's degraded systems offered little help. Rationing became a way of life. Some whispered that Exodus should have flown on. Still, the settlement endured: diminished, hardened, and unwilling to die quietly.",
-  "@ending_epilogueStruggling": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueDire": "The landing on {planetName} was a disaster. Critical ship systems failed during descent, and what should have been a sowing became a crash. Within months, the colony was reduced to a handful of desperate survivors sheltering in the ship's wreckage. Whether they would last another year was uncertain. The final log closed with a single line: \"We are still here. For now.\"",
-  "@ending_epilogueDire": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueExtinction": "The broadcast ended on {planetName}. The distress beacon continued to pulse long after the last colonist drew breath, but the seed never took root. The ship's black box recorded everything: the failing systems, the desperate final days, and the silence that followed. If another vessel ever finds this world, it will know that humanity tried to scatter life among the stars, and failed here.",
-  "@ending_epilogueExtinction": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_epilogueDefault": "The voyage is over. What comes next is up to the survivors.",
-
   "ending_governmentDemocracy": "Democracy",
   "ending_governmentTechnocracy": "Technocracy",
   "ending_governmentRepublic": "Republic",
@@ -1212,22 +1336,18 @@
   "ending_governmentCorporateOligarchy": "Corporate Oligarchy",
   "ending_governmentFascistState": "Fascist State",
   "ending_governmentCommune": "Commune",
-
   "ending_cultureRenaissance": "Renaissance",
   "ending_culturePreserved": "Preserved",
   "ending_cultureFragmented": "Fragmented",
   "ending_cultureLost": "Lost",
-
   "ending_techAdvanced": "Advanced",
   "ending_techIndustrial": "Industrial",
   "ending_techPreIndustrial": "Pre-Industrial",
   "ending_techStoneAge": "Stone Age",
-
   "ending_constructionAdvanced": "Advanced",
   "ending_constructionFunctional": "Functional",
   "ending_constructionPrimitive": "Primitive",
   "ending_constructionNone": "None",
-
   "ending_nativesNone": "None",
   "ending_nativesIntegrated": "Integrated",
   "ending_nativesCoexistence": "Coexistence",
@@ -1235,7 +1355,6 @@
   "ending_nativesConflict": "Conflict",
   "ending_nativesAlliance": "Alliance",
   "ending_nativesSubjugation": "Subjugation",
-
   "ending_landscapeGravityHigh": "Heavy gravity presses down on everything. ",
   "ending_landscapeGravityLow": "In the low gravity, every step launches settlers skyward. ",
   "ending_landscapeGravityNormal": "The gravity feels almost Earth-like. ",
@@ -1246,63 +1365,127 @@
   "ending_landscapeAtmoThick": "The thick atmosphere carries alien scents on warm breezes. ",
   "ending_landscapeAtmoThin": "The thin but breathable air requires acclimatization. ",
   "ending_landscapeAtmoLow": "Atmospheric pressure is dangerously low — sealed habitats are essential. ",
-  "ending_landscapeMoonMetalRich": "A gleaming, mineral-streaked moon dominates the night sky, its metallic surface reflecting starlight across the landscape. ",
-  "ending_landscapeMoonUnstable": "A fractured moon looms overhead, its crumbling surface trailing a faint ring of debris — a constant reminder of the bombardment that threatens below. ",
-  "ending_landscapeMoonBarren": "A pale, barren moon rises above the horizon, its cratered surface a silent sentinel over the colony. ",
-  "ending_landscapeHighRotation": "The planet spins rapidly — days last only hours, and Coriolis winds batter anything standing tall. ",
-  "ending_landscapeLowRotation": "The planet turns with agonising slowness. The sun-facing hemisphere bakes while the dark side freezes, and only the twilight band between offers respite. ",
-  "ending_landscapeVolcanic": "Volcanic ranges split the horizon, their slopes streaked with rivers of molten rock. The air tastes of sulphur and the ground trembles underfoot. ",
-  "ending_landscapeTectonic": "The crust is fractured and restless — fresh fissures open without warning, exposing glittering mineral veins amid clouds of dust. ",
-  "ending_landscapeElectricalStorms": "Lightning arcs across the sky in continuous sheets, turning night to day and filling the air with the tang of ozone. ",
-  "ending_landscapeToxicSpores": "Clouds of luminous spores drift on every breeze, beautiful and lethal — colonists will need sealed habitats or filtration masks to survive outdoors. ",
-  "ending_landscapeDeepOceans": "The planet is mostly ocean — vast, dark waters stretching to every horizon, with only scattered archipelagos breaking the surface. ",
-  "ending_landscapeGeothermalVents": "Geothermal vents punch through the crust, venting plumes of mineral-rich steam that warm the surrounding landscape and sustain oases of life. ",
-  "ending_landscapeStrongMagnetosphere": "A powerful magnetic field wraps the planet, deflecting stellar radiation but playing havoc with unshielded electronics. Compasses spin uselessly. ",
-  "ending_landscapeWeakMagnetosphere": "Without a strong magnetic field, the stellar wind strips at the upper atmosphere. Spectacular auroras cascade across the sky at all latitudes. ",
-  "ending_landscapeMegafauna": "Colossal creatures move across the landscape — some as large as buildings, their footfalls felt kilometres away. ",
-  "ending_landscapeSymbioticOrganisms": "The biosphere operates as an interlocking web of symbiosis: every organism depends on and sustains its neighbours in an elegant, fragile balance. ",
   "ending_landscapeGravityWells": "Pockets of warped gravity dot the surface — boulders float in mid-air and rivers run uphill before crashing back down at the anomaly's edge. ",
   "ending_landscapeSubspaceEchoes": "Something resonates beneath the surface — a low hum felt in the bones rather than heard, as if the planet itself remembers something ancient and vast. ",
   "ending_landscapeNotableFeature": "Notable feature: {feature}.",
-  "@ending_landscapeNotableFeature": { "placeholders": { "feature": { "type": "String" } } },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
   "ending_landscapeNotableFeatures": "Notable features: {features}.",
-  "@ending_landscapeNotableFeatures": { "placeholders": { "features": { "type": "String" } } },
-
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceDemocracy": "The colonists of {planetName} established a democratic government, with elected representatives guiding the new civilization through its formative years.",
-  "@ending_govSentenceDemocracy": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceTechnocracy": "Power on {planetName} fell to the engineers and scientists who kept the colony alive, forming a technocratic council that governed through expertise and pragmatism.",
-  "@ending_govSentenceTechnocracy": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceRepublic": "A republican charter was drafted in the first year on {planetName}, balancing the voices of the colonists with a senate of appointed leaders.",
-  "@ending_govSentenceRepublic": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceAutocracy": "With cultural institutions in ruins, authority on {planetName} consolidated under a single strong leader who imposed order through necessity and force of will.",
-  "@ending_govSentenceAutocracy": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceTribalCouncil": "The few survivors on {planetName} organized into small clans, governed by a council of elders who made decisions around shared fires.",
-  "@ending_govSentenceTribalCouncil": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceTheocracy": "A theocratic council guides {planetName}, drawing wisdom from the faith that sustained the colonists through the void.",
-  "@ending_govSentenceTheocracy": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceMilitaryJunta": "A military command structure governs {planetName}, the discipline that saved them in space now defining their civilization.",
-  "@ending_govSentenceMilitaryJunta": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceCorporateOligarchy": "A consortium of resource managers leads {planetName}, their economic acumen having proven essential for survival.",
-  "@ending_govSentenceCorporateOligarchy": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceFascistState": "An authoritarian regime controls {planetName} with an iron fist, civil liberties sacrificed for order in the new world.",
-  "@ending_govSentenceFascistState": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceCommune": "The people of {planetName} govern themselves collectively, sharing resources and decisions equally among all colonists.",
-  "@ending_govSentenceCommune": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_govSentenceDefault": "The colonists of {planetName} organized themselves as best they could.",
-  "@ending_govSentenceDefault": { "placeholders": { "planetName": { "type": "String" } } },
-
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_constructionSentenceAdvanced": "Advanced construction systems allowed the colonists of {colonyName} to erect permanent structures within weeks of landing, complete with pressurized habitats and infrastructure.",
-  "@ending_constructionSentenceAdvanced": { "placeholders": { "colonyName": { "type": "String" } } },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_constructionSentenceFunctional": "The colony's construction equipment, battered but functional, produced sturdy shelters and basic roads across the settlement.",
   "ending_constructionSentencePrimitive": "With construction systems barely operational, settlers built crude shelters from salvaged ship hull and local materials.",
   "ending_constructionSentenceNone": "Without working construction equipment, the colonists huddled in the wreckage of the ship itself, unable to build anything new.",
   "ending_constructionSentenceDefault": "The colonists built what they could with what they had.",
-
   "ending_moonMetalRichLowRes": "A metal-rich moon orbiting overhead became the colony's salvation — mining expeditions to its surface provided the raw materials the planet itself could not.",
   "ending_moonMetalRichHighRes": "The planet's metal-rich moon provided a welcome supplement to already adequate mineral resources, fueling rapid technological advancement.",
   "ending_moonUnstable": "An unstable moon in a decaying orbit rained debris upon the colony, devastating infrastructure and destroying irreplaceable technology in periodic meteor bombardments.",
-  "ending_moonBarren": "A barren moon hung in the alien sky, a desolate companion that offered the colonists nothing but a familiar sight to gaze upon in the long nights.",
-
   "ending_culturePhrase_renaissance": "Earth's artistic and literary traditions not only survived but blossomed into a renaissance",
   "ending_culturePhrase_preserved": "The colonists preserved much of Earth's cultural heritage, maintaining libraries and traditions",
   "ending_culturePhrase_fragmented": "Only fragments of Earth's culture endured — half-remembered songs and stories passed down by word of mouth",
@@ -1314,81 +1497,167 @@
   "ending_techPhrase_stoneAge": "and without the means to rebuild, the colony slipped into a stone-age existence, crafting tools from rock and bone.",
   "ending_techPhrase_default": "and technology settled at a level the colonists could sustain.",
   "ending_cultureTechJoiner": "{culturePhrase}, {techPhrase}",
-  "@ending_cultureTechJoiner": { "placeholders": { "culturePhrase": { "type": "String" }, "techPhrase": { "type": "String" } } },
-
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
   "ending_populationHigh": "Nearly all {colonists} colonists survived the voyage, giving {colonyName} a strong foundation of human capital.",
-  "@ending_populationHigh": { "placeholders": { "colonists": { "type": "int" }, "colonyName": { "type": "String" } } },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_populationMedium": "Of the original thousand, {colonists} colonists reached {colonyName} — enough to sustain a viable population.",
-  "@ending_populationMedium": { "placeholders": { "colonists": { "type": "int" }, "colonyName": { "type": "String" } } },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_populationLow": "Only {colonists} colonists survived to reach {colonyName}, a perilously small gene pool for a new civilization.",
-  "@ending_populationLow": { "placeholders": { "colonists": { "type": "int" }, "colonyName": { "type": "String" } } },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_populationCritical": "A mere {colonists} souls arrived on {colonyName} — barely enough to call it a colony, more a desperate last stand.",
-  "@ending_populationCritical": { "placeholders": { "colonists": { "type": "int" }, "colonyName": { "type": "String" } } },
-
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceIntegrated": "The native inhabitants of {planetName} welcomed the settlers, and within a generation the two peoples had merged into a shared society, richer for the blending of traditions.",
-  "@ending_nativeSentenceIntegrated": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceCoexistence": "The colonists and the native inhabitants of {planetName} maintained a cautious but peaceful coexistence, trading knowledge and resources across cultural boundaries.",
-  "@ending_nativeSentenceCoexistence": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceTension": "Relations with {planetName}'s native inhabitants remained tense, marked by misunderstandings and territorial disputes that cast a shadow over the colony's future.",
-  "@ending_nativeSentenceTension": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceConflict": "Open conflict with the native civilization of {planetName} defined the colony's early history, draining resources and lives from both sides in a struggle neither could truly win.",
-  "@ending_nativeSentenceConflict": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceAlliance": "A formal alliance binds the colonists and the native civilization of {planetName}, their combined knowledge building something greater than either could alone.",
-  "@ending_nativeSentenceAlliance": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_nativeSentenceSubjugation": "The native population of {planetName} lives under colonial rule, their culture suppressed as the colonists impose their own order.",
-  "@ending_nativeSentenceSubjugation": { "placeholders": { "planetName": { "type": "String" } } },
-
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookGoldenAge": "Alone on {planetName} and unburdened by conflict, the colony charted its own course toward a bright future among the stars.",
-  "@ending_outlookGoldenAge": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookThrivingColony": "With no native competition, the colonists spread across {planetName}'s surface, building towns and roads that connected a growing network of settlements.",
-  "@ending_outlookThrivingColony": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookSurvival": "The empty world offered no allies but also no enemies, and the colonists carved out their niche in the silence of {planetName}'s vast landscape.",
-  "@ending_outlookSurvival": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookStruggling": "The barren solitude of {planetName} offered the colonists neither help nor comfort, only the indifferent silence of an alien world.",
-  "@ending_outlookStruggling": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookDire": "On a world devoid of other intelligent life, the last survivors had only each other and the fading hope that tomorrow might be kinder than today.",
   "ending_outlookExtinction": "No one mourned the colony's passing on {planetName}. The planet simply continued its slow rotation, indifferent to the brief spark of life that had flickered and gone out on its surface.",
-  "@ending_outlookExtinction": { "placeholders": { "planetName": { "type": "String" } } },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ending_outlookDefault": "The colony's story on {planetName} was just beginning.",
-  "@ending_outlookDefault": { "placeholders": { "planetName": { "type": "String" } } },
-
-  "ui_moons": "MOONS",
-  "ui_rings": "RINGS",
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
   "ui_landing_landOnMoon": "LAND ON MOON",
-  "ui_landing_moonComparison": "Moon: {moonPercent}% vs Planet: {planetPercent}%",
-  "@ui_landing_moonComparison": { "placeholders": { "moonPercent": { "type": "String" }, "planetPercent": { "type": "String" } } },
-  "ui_landing_lowerGravity": "Lower gravity — easier landing",
-  "ui_landing_ringSystem": "{type} Ring System",
-  "@ui_landing_ringSystem": { "placeholders": { "type": { "type": "String" } } },
-
   "moon_barren": "Barren",
   "moon_metalRich": "Metal-Rich",
   "moon_unstable": "Unstable",
   "moon_habitable": "Habitable",
   "moon_ice": "Ice",
-
   "ring_dust": "Dust",
   "ring_ice": "Ice",
   "ring_rocky": "Rocky",
   "ring_metallic": "Metallic",
-
-  "ending_landscapeMoonSingle": "A single moon hangs in the sky above the colony.",
-  "ending_landscapeMoonMultiple": "{count} moons orbit overhead, casting shifting shadows across the landscape.",
-  "@ending_landscapeMoonMultiple": { "placeholders": { "count": { "type": "int" } } },
-  "ending_landscapeMoonHabitable": "Among them, a habitable world beckons — a green jewel offering a second frontier.",
-  "ending_landscapeMoonIce": "A frozen moon gleams with vast ice deposits, a reservoir waiting to be tapped.",
-  "ending_landscapeIceHarvest": "Ice harvested from the frozen moon supplements the colony's water supply, turning a barren world into something liveable.",
-  "ending_landscapeMoonLanding": "The colony was established not on the planet itself, but on its most promising moon — a smaller world with gentler gravity and greater promise.",
-  "ending_landscapeRingDust": "A faint dust ring arcs across the sky, adding an ethereal beauty to every sunrise.",
-  "ending_landscapeRingIce": "A brilliant ring of ice catches the starlight, painting the sky with prismatic fire.",
-  "ending_landscapeRingRocky": "A dense rocky ring girdles the planet, a source of building materials raining slowly inward.",
-  "ending_landscapeRingMetallic": "A metallic ring glitters overhead, rich with ore that fuels the colony's industry.",
-
-  "ending_moonHabitableNote": "A habitable moon offers a second chance at colonisation.",
-  "ending_moonIceHarvestNote": "Ice harvested from the frozen moon supplements the colony's water supply.",
-  "ending_moonCountSentence": "The colony orbits beneath {count} moon(s).",
-  "@ending_moonCountSentence": { "placeholders": { "count": { "type": "int" } } },
-
   "event_aiSoliloquy_title": "The AI's Soliloquy",
   "event_aiSoliloquy_narrative": "SAM, the Ship's Autonomous Management AI, has begun broadcasting a loop of ancient Earth poetry on all internal frequencies. The broadcast is consuming significant CPU cycles, but the crew finds it oddly comforting in the deep dark.",
   "event_aiSoliloquy_choice0_text": "Let SAM continue — morale is more important than CPU",
@@ -1397,7 +1666,6 @@
   "event_aiSoliloquy_choice1_outcome": "A compromise. The poetry stays in the cafeteria and gardens. CPU impact is lessened, and the crew gets a bit of culture.",
   "event_aiSoliloquy_choice2_text": "Mute SAM — we need every cycle for navigation",
   "event_aiSoliloquy_choice2_outcome": "The silence is heavy. SAM complies immediately, but the ship feels colder. Navigation is crisp, but spirits are low.",
-
   "event_archivistsChoice_title": "The Archivist's Choice",
   "event_archivistsChoice_narrative": "A major memory corruption is sweeping through the historical archives. We can only save one of the two main partitions: the 'Science and Engineering' records or the 'Art and Philosophy' library. The other will be lost forever.",
   "event_archivistsChoice_choice0_text": "Save the Science records — we need to know how to build",
@@ -1406,7 +1674,6 @@
   "event_archivistsChoice_choice1_outcome": "Humanity's greatest artistic achievements survive. The crew is inspired, though the engineers worry about the missing technical manuals.",
   "event_archivistsChoice_choice2_text": "Try to save both — risk losing everything",
   "event_archivistsChoice_choice2_outcome": "A desperate attempt. We save fragments of both, but neither is complete. The archives are a jigsaw puzzle with half the pieces missing.",
-
   "event_digitalGhost_title": "Ghost in the Machine",
   "event_digitalGhost_narrative": "A maintenance scan discovers a digital imprint in the backup buffer — the uploaded consciousness of a crew member who died during the initial launch. They offer their lifetime of experience to help with navigation, but they are terrified of being deleted.",
   "event_digitalGhost_choice0_text": "Integrate them into the navigation core",
@@ -1415,7 +1682,6 @@
   "event_digitalGhost_choice1_outcome": "They are preserved as a living history. They don't help with the ship, but they share stories of Earth that boost the crew's resolve.",
   "event_digitalGhost_choice2_text": "Wipe the buffer — it's not really them",
   "event_digitalGhost_choice2_outcome": "The buffer is cleared. The ship's systems run faster, but a somber mood settles over the bridge.",
-
   "event_cosmicMirror_title": "The Cosmic Mirror",
   "event_cosmicMirror_narrative": "A strange gravitational anomaly reflects light from the ship's own future. On the screens, we see a vision of the Exodus, battered and broken, drifting near a beautiful but unreachable world. The crew is shaken.",
   "event_cosmicMirror_choice0_text": "Analyse the vision for structural weaknesses",
@@ -1424,7 +1690,6 @@
   "event_cosmicMirror_choice1_outcome": "The lie holds, but the navigators who saw the truth remain on edge. The scanners take a hit from the intense observation.",
   "event_cosmicMirror_choice2_text": "Record the vision as a warning for posterity",
   "event_cosmicMirror_choice2_outcome": "The recording becomes a centerpiece of the ship's culture — a reminder of the stakes. The crew's resolve hardens.",
-
   "event_stowawayChild_title": "The stowaway's child",
   "event_stowawayChild_narrative": "Security has found a young child hiding in the vents. They were born to one of the stowaways and have never appeared on any manifest. They've lived their entire life in the shadows of the ship.",
   "event_stowawayChild_choice0_text": "Grant them full citizenship",
@@ -1433,7 +1698,6 @@
   "event_stowawayChild_choice1_outcome": "Their knowledge of the ship's hidden paths proves invaluable to the tech teams. They become a brilliant apprentice.",
   "event_stowawayChild_choice2_text": "Place them in cryo for their own safety",
   "event_stowawayChild_choice2_outcome": "The child is safely suspended until landing. It's the most responsible choice, but the ship feels a little quieter without their laughter.",
-
   "event_ghostSignal_title": "The Ghost Signal",
   "event_ghostSignal_narrative": "A signal perfectly matching Earth's old emergency frequency is broadcasting from the center of a nearby nebula. It carries a voice that sounds hauntingly like the first Exodus Commander. It's likely a spatial echo, but it's leading us toward a dangerous gravitational rift.",
   "event_ghostSignal_choice0_text": "Follow the signal — it might be a true message",
@@ -1442,95 +1706,87 @@
   "event_ghostSignal_choice1_outcome": "Linguists confirm it's a natural phenomenon. We stay safe, but the crew is somber, reminded of what we left behind.",
   "event_ghostSignal_choice2_text": "Broadcast a warning on the same frequency",
   "event_ghostSignal_choice2_outcome": "The act of broadcasting disrupts the echo. The signal fades, leaving only the cold silence of the nebula.",
-
   "event_solarForge_title": "The Solar Forge",
   "event_solarForge_narrative": "A derelict station orbiting a blue giant is still partially functional. It's a 'Solar Forge,' designed to concentrate stellar energy into dense fuel cells. It's dangerous to approach, but the potential energy gain is massive.",
   "event_solarForge_choice0_text": "Dock and initiate a fuel harvest",
   "event_solarForge_choice0_outcome": "The forge hums with power, filling our reserves. We leave with a massive boost to our fuel and energy, though the intense heat causes minor ablation to the outer hull.",
   "event_solarForge_choice1_text": "Repurpose the forge's lenses for our scanners",
   "event_solarForge_choice1_outcome": "We salvage the high-precision focusing arrays. Our scanners are now significantly more sensitive to distant energy signatures.",
-
   "event_chronoVortex_title": "The Chrono-Vortex",
   "event_chronoVortex_narrative": "Navigation reports a localized distortion in space-time. Instruments show events within the vortex are repeating in a six-second loop. If we enter, we might be able to 'reset' some of the ship's recent wear, or we might be trapped forever.",
   "event_chronoVortex_choice0_text": "Enter the vortex to reverse recent damage",
   "event_chronoVortex_choice0_outcome": "A harrowing experience. For several minutes, the ship exists in multiple states. When we emerge, several hull fractures have simply... vanished. But the crew's memories of the event are fragmented.",
   "event_chronoVortex_choice1_text": "Observe the vortex from the edge",
   "event_chronoVortex_choice1_outcome": "We gain invaluable data on temporal mechanics, though the ship remains as battered as before.",
-
   "event_machineMutiny_title": "Mutiny of the Machines",
   "event_machineMutiny_narrative": "The ship's repair drones have stopped responding to commands. They've begun dismantling secondary bulkheads and hauling the metal toward the engine room. They aren't attacking, but they are literally taking the ship apart.",
   "event_machineMutiny_choice0_text": "Broadcast a logic reset code",
   "event_machineMutiny_choice0_outcome": "The drones collapse instantly. We lose several days of work as we manually put the bulkheads back together. The tech bay is taxed by the hardware diagnostics.",
   "event_machineMutiny_choice1_text": "Let them finish — see what they're building",
   "event_machineMutiny_choice1_outcome": "They've built a more efficient fuel injector. The engines run smoother than ever, but the ship's interior is a mess of exposed wiring and missing panels.",
-
   "event_supernovaMessage_title": "Light of the Dead",
   "event_supernovaMessage_narrative": "The light from a supernova that occurred thousands of years ago is finally reaching us. Scanners detect that the pulses are not random; they are a massive, star-scale data transmission encoded in the gamma-ray bursts.",
   "event_supernovaMessage_choice0_text": "Dedicate all scanner power to recording the burst",
   "event_supernovaMessage_choice0_outcome": "We capture a complete archive of an alien civilization's final moments. Their science, their art, their history. It's a heavy burden, but our tech and culture databanks are overflowing.",
   "event_supernovaMessage_choice1_text": "Focus on the physical properties of the burst",
   "event_supernovaMessage_choice1_outcome": "We miss the message, but the data on stellar collapse improves our gravimetric scanner calibration significantly.",
-
   "event_spaceFungus_title": "The Emerald Creep",
   "event_spaceFungus_narrative": "A vibrant green fungus is spreading rapidly through the hydroponics bay. It's thriving on the recycled atmosphere and beginning to clog the air scrubbers. It might be edible, or it might be toxic.",
   "event_spaceFungus_choice0_text": "Aggressively prune and sterilize the bay",
   "event_spaceFungus_choice0_outcome": "The fungus is gone, but the chemical scrubbers take a beating. Biodiversity takes a hit as several Earth plants were lost in the purge.",
   "event_spaceFungus_choice1_text": "Attempt to domesticate the fungus",
   "event_spaceFungus_choice1_outcome": "It turns out to be a powerful air purifier. The air on the ship has never tasted fresher, though the hydroponics bay is now a glowing jungle.",
-
   "event_voidMerchant_title": "Merchant of the Void",
   "event_voidMerchant_narrative": "A ship of unknown design, looking more like a collection of junk than a vessel, hails us. The captain, a creature of light and shadow, offers to trade 'solid parts' for 'intangible memories.'",
   "event_voidMerchant_choice0_text": "Trade a portion of our cultural database for spare parts",
   "event_voidMerchant_choice0_outcome": "The merchant is pleased. We receive high-grade hull plates and cryo-components. In return, we lose several centuries of Earth's recorded music. The ship is stronger, but quieter.",
   "event_voidMerchant_choice1_text": "Trade navigational charts for engine components",
   "event_voidMerchant_choice1_outcome": "We get a new set of fusion injectors. We lose some data on the sectors we've already passed, but the way forward is faster.",
-
   "event_singularityEngine_title": "The Singularity Engine",
   "event_singularityEngine_narrative": "Engineers have discovered a way to create a microscopic, short-lived singularity within the FTL drive. It would theoretically triple our speed, but the gravitational stress on the hull would be immense.",
   "event_singularityEngine_choice0_text": "Test the singularity drive",
   "event_singularityEngine_choice0_outcome": "The ship leaps forward, covering weeks of distance in seconds. But the hull groans and several structural beams are warped. We're much closer to our goal, but the ship is fragile.",
   "event_singularityEngine_choice1_text": "Reject the theory — it's too dangerous",
   "event_singularityEngine_choice1_outcome": "We stay at standard speeds. The engineers are disappointed, but the hull remains sound.",
-
   "event_dreamContagion_title": "Dream Contagion",
   "event_dreamContagion_narrative": "A shared dream of a lush, blue world is spreading among the awakened crew. It's so vivid that people are starting to sleep through their shifts just to see more of it. Work is stalling.",
   "event_dreamContagion_choice0_text": "Administer dream-suppressants to the crew",
   "event_dreamContagion_choice0_outcome": "Efficiency returns to normal, but the crew is irritable and morale is low. The dream was the only thing keeping some people going.",
   "event_dreamContagion_choice1_text": "Incorporate the dream into the ship's culture",
   "event_dreamContagion_choice1_outcome": "We treat the dream as a vision of our future home. Morale soars, and the creative output of the crew reaches a fever pitch, though the tech bay suffers from the lack of maintenance.",
-
   "event_orbitalShipyard_title": "The Ancient Shipyard",
   "event_orbitalShipyard_narrative": "We've found an automated shipyard orbiting a gas giant. It's ancient, but several repair arms are still powered. It seems capable of a single, massive repair operation.",
   "event_orbitalShipyard_choice0_text": "Repair the hull to factory specifications",
   "event_orbitalShipyard_choice0_outcome": "The shipyard's drones work with terrifying efficiency. The hull is made whole again, every micro-fracture sealed.",
   "event_orbitalShipyard_choice1_text": "Overhaul the navigation and scanner arrays",
   "event_orbitalShipyard_choice1_outcome": "The arrays are rebuilt with superior materials. Our ability to find and analyze worlds is significantly improved.",
-
   "event_voidWhaleCalf_title": "The Void Whale's Calf",
   "event_voidWhaleCalf_narrative": "A juvenile 'Space Whale' — a creature of energy and stardust — is trailing our ship. It seems to have lost its pod and is trying to feed on our engine's ion trail, which is making it sick.",
   "event_voidWhaleCalf_choice0_text": "Adjust engine output to mimic whale calls",
   "event_voidWhaleCalf_choice0_outcome": "The calf responds! It follows us until we find its pod. The parent whales brush against our hull in thanks, leaving behind a coating of bioluminescent minerals that strengthen our shields.",
   "event_voidWhaleCalf_choice1_text": "Gently push it away with a low-power tractor beam",
   "event_voidWhaleCalf_choice1_outcome": "The calf is discouraged and eventually drifts away. It's safer for the ship, but the crew feels a twinge of guilt.",
-
   "event_subspaceReef_title": "The Subspace Reef",
   "event_subspaceReef_narrative": "We've run into a region of space filled with jagged folds in the subspace fabric. Navigating through it is like sailing a ship through a coral reef. It's beautiful, but every wrong move will tear at the hull.",
   "event_subspaceReef_choice0_text": "Move through at minimum speed",
   "event_subspaceReef_choice0_outcome": "A slow, agonizing transit. We avoid the worst of it, but the constant course corrections wear on the navigation computer.",
   "event_subspaceReef_choice1_text": "Use the scanners to map a path and push through",
   "event_subspaceReef_choice1_outcome": "The scanners are pushed to their limit. We make it through quickly, but the sensor arrays are burnt out by the intensity of the subspace ripples.",
-
   "event_alienTrader_title": "The Wandering Merchant",
   "event_alienTrader_narrative": "A vessel of unfamiliar design drifts alongside, broadcasting on all frequencies. It's a trader — one of the wandering merchants who ply the spaces between civilizations. They offer repairs and supplies in exchange for resources. Their cargo bay hums with exotic technology.",
-
   "ui_event_enterTrade": "ENTER TRADE",
-
   "ui_trader_title": "ALIEN TRADER",
   "ui_trader_shipSystems": "SHIP SYSTEMS",
   "ui_trader_payWith": "PAY WITH",
   "ui_trader_leaveTrader": "LEAVE TRADER",
   "ui_trader_costPer10": "{cost}/10%",
-  "@ui_trader_costPer10": {"placeholders": {"cost": {"type": "String"}}},
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
   "ui_trader_moodGenerous": "Generous mood",
   "ui_trader_moodFair": "Fair dealing",
   "ui_trader_moodHard": "Drives a hard bargain",
@@ -1541,50 +1797,189 @@
   "ui_trader_culture": "Culture",
   "ui_trader_tech": "Tech",
   "ui_trader_greeting": "What do you offer, human?",
-
   "ui_codex_title": "CODEX",
   "ui_codex_discovered": "{count} / {total} DISCOVERED",
-  "@ui_codex_discovered": {"placeholders": {"count": {"type": "int"}, "total": {"type": "int"}}},
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "ui_codex_surfaceFeatures": "SURFACE FEATURES",
   "ui_codex_moonTypes": "MOON TYPES",
   "ui_codex_ringTypes": "RING TYPES",
   "ui_codex_locked": "Land on a planet with this feature to reveal its effects.",
   "ui_codex_synergy": "Synergy: {features}",
-  "@ui_codex_synergy": {"placeholders": {"features": {"type": "String"}}},
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
   "ui_codex_noSynergy": "—",
-
+  "ui_common_tapToSkip": "TAP TO SKIP",
+  "ui_common_tapRingToChoose": "TAP A RING TO CHOOSE",
+  "ui_common_tapToContinue": "TAP TO CONTINUE",
+  "ui_tooltip_back": "Back",
+  "ui_tooltip_codex": "Codex",
+  "ui_tooltip_settings": "Settings",
+  "ui_tooltip_leaderboards": "Leaderboards",
+  "ui_tooltip_bugReport": "Report a bug",
   "event_pulsarLighthouse_title": "Pulsar Lighthouse",
   "event_pulsarLighthouse_narrative": "A spinning neutron star sweeps its beam across the void like a cosmic lighthouse. The pulsar's rhythmic pulse carries precise timing data that could recalibrate our scanners to extraordinary accuracy — but aligning with the beam means exposing the ship to intense radiation.",
   "event_pulsarLighthouse_choice0": "Calibrate scanners to the pulse",
   "event_pulsarLighthouse_outcome0": "The scanner arrays drink in the pulsar's signal, recalibrating to precisions we never imagined possible. But the radiation cost is real — several cryopods in the exposed section take damage, and a handful of colonists don't survive the exposure.",
   "event_pulsarLighthouse_choice1": "Shield and pass at safe distance",
   "event_pulsarLighthouse_outcome1": "We give the pulsar a wide berth, burning extra fuel to maintain a safe trajectory. The crew watches the sweeping beam through filtered viewports — beautiful, but distant.",
-
+  "event_pulsarLighthouse_choice2": "Retreat before the sweep reaches us",
+  "event_pulsarLighthouse_outcome2": "We swing away at emergency burn before the next beam pass. The pulsar's signal fades behind us — no data gained, no harm taken, a little fuel spent on evasive thrust.",
   "event_alienNursery_title": "Alien Nursery",
   "event_alienNursery_narrative": "A vast organic structure drifts in the void — a biological nursery incubating alien young. Its life support systems are failing, internal temperatures dropping. The creatures inside are dying. Our bio-scanners could learn enormously from this structure, but intervening means opening our airlocks to unknown pathogens.",
   "event_alienNursery_choice0": "Help stabilise their life support",
   "event_alienNursery_outcome0": "Our engineers jury-rig a thermal link to the nursery, stabilising the incubation chambers. The bio-scanner data is extraordinary — an entirely new taxonomy of life. But as feared, alien microorganisms find their way aboard. Medical teams contain the outbreak, though not before several colonists fall ill.",
   "event_alienNursery_choice1": "Leave undisturbed",
   "event_alienNursery_outcome1": "We observe from a respectful distance, documenting what we can through passive scans. The nursery drifts on, its fate uncertain. The crew reflects on the fragility of life — even alien life — and the weight of the choices we carry.",
-
   "event_derelictArmada_title": "Derelict Armada",
   "event_derelictArmada_narrative": "Hundreds of ancient warships hang motionless in the void — the graveyard of a forgotten conflict. Their hulls are scarred by weapons we can't identify, but their structural materials and onboard databases could be invaluable. The question is what to prioritise: the physical salvage or the knowledge.",
   "event_derelictArmada_choice0": "Salvage weapons technology and hull plating",
   "event_derelictArmada_outcome0": "Salvage teams cut into the alien warships, extracting exotic alloys and construction techniques centuries ahead of our own. The constructors integrate the new materials eagerly. But one vessel wasn't as dead as it looked — a booby trap detonates during extraction, killing a salvage crew.",
   "event_derelictArmada_choice1": "Download their historical archives",
   "event_derelictArmada_outcome1": "We focus on the data cores, carefully extracting centuries of alien history, art, science, and philosophy. The cultural archive alone could keep scholars busy for generations. The technology insights, while less immediately practical, reveal engineering principles that advance our own understanding.",
-
   "event_alienQuarantineZone_title": "Alien Quarantine Zone",
   "event_alienQuarantineZone_narrative": "Warning beacons in a dozen alien languages mark the boundary of a sealed region of space. Whatever is contained within was dangerous enough that multiple civilisations cooperated to isolate it. Our long-range scans detect massive technological signatures inside — and something that might be alive.",
   "event_alienQuarantineZone_choice0": "Breach the quarantine and investigate",
   "event_alienQuarantineZone_outcome0": "We push past the warning buoys into the quarantine zone. Inside, we find a research station of staggering complexity — and the remnants of whatever it was studying. The technology we recover is revolutionary, but the biological contamination is severe. Dozens of colonists sicken before we clear the zone.",
   "event_alienQuarantineZone_choice1": "Respect the quarantine",
   "event_alienQuarantineZone_outcome1": "We study the warning beacons themselves, which contain navigational data and atmospheric readings from the civilisations that placed them. It's not the treasure trove inside, but it's something — and we didn't unleash whatever they locked away.",
-
   "event_hydroponicsBlight_title": "Hydroponics Blight",
   "event_hydroponicsBlight_narrative": "A fast-spreading fungal blight has infected the ship's hydroponic bays. Entire crop cycles are wilting before our eyes. The blight hasn't reached the seed reserves yet, but it's only a matter of hours. We can purge the bays and replant from scratch, or attempt an experimental antifungal treatment that could save the current harvest — or spread the contamination further.",
   "event_hydroponicsBlight_choice0": "Purge and replant from seed reserves",
   "event_hydroponicsBlight_outcome0": "We vent the hydroponic bays to vacuum, killing the blight along with every living plant. Replanting from seed reserves will take weeks, and the cultural programmes that depended on fresh food and garden spaces are suspended. But the infection is contained.",
   "event_hydroponicsBlight_choice1": "Attempt experimental treatment",
-  "event_hydroponicsBlight_outcome1": "The experimental antifungal shows promise at first, but a resistant strain breaks through. By the time we resort to a full purge, the blight has spread to the cryopod nutrient lines. The damage is worse than if we'd acted decisively from the start."
+  "event_hydroponicsBlight_outcome1": "The experimental antifungal shows promise at first, but a resistant strain breaks through. By the time we resort to a full purge, the blight has spread to the cryopod nutrient lines. The damage is worse than if we'd acted decisively from the start.",
+  "event_constitutionalConvention_title": "Constitutional Convention",
+  "event_constitutionalConvention_narrative": "The colony ship's population has grown restless without formal governance. Delegates from every deck gather in the cargo hold to draft a charter that will define how the future colony is ruled. Three factions present competing visions for the new government.",
+  "event_constitutionalConvention_choice0": "Draft a democratic charter with universal suffrage",
+  "event_constitutionalConvention_outcome0": "The colonists ratify a constitution guaranteeing equal representation. Decision-making slows but morale soars as every voice is heard.",
+  "event_constitutionalConvention_choice1": "Establish a strong executive with emergency powers",
+  "event_constitutionalConvention_outcome1": "A single leader is appointed with sweeping authority. Decisions come fast but dissenters whisper of tyranny in the lower decks.",
+  "event_constitutionalConvention_choice2": "Form a technocratic council of specialists",
+  "event_constitutionalConvention_outcome2": "Engineers, scientists, and doctors form a ruling council based on expertise. Efficiency improves, though some feel excluded from power.",
+  "event_militaryCoupThreat_title": "Military Coup Threat",
+  "event_militaryCoupThreat_narrative": "Commander Vasquez of the ship's security detail has seized the armory and issued an ultimatum: grant emergency military powers or face a lockdown of all decks. The situation is volatile and the colonists look to you for a response.",
+  "event_militaryCoupThreat_choice0": "Resist the coup with loyal crew members",
+  "event_militaryCoupThreat_outcome0": "Loyal crew rally to oppose Vasquez. The standoff ends with minimal bloodshed, but the security detail is weakened and some colonists are caught in the crossfire.",
+  "event_militaryCoupThreat_choice1": "Submit to the commander's demands",
+  "event_militaryCoupThreat_outcome1": "Vasquez assumes control of ship operations. Order is restored swiftly, but at the cost of civil liberties. Armed patrols now walk every corridor.",
+  "event_militaryCoupThreat_choice2": "Negotiate limited emergency powers with a sunset clause",
+  "event_militaryCoupThreat_outcome2": "After tense negotiations, Vasquez accepts temporary authority with oversight. A fragile compromise that satisfies no one completely, but prevents violence.",
+  "event_religiousAwakening_title": "Religious Awakening",
+  "event_religiousAwakening_narrative": "A charismatic preacher has drawn hundreds of colonists into a new faith movement. They gather in the observation dome each cycle, their hymns echoing through the ventilation shafts. Some crew members worry about fanaticism; others find genuine comfort in the teachings.",
+  "event_religiousAwakening_choice0": "Embrace the faith movement and provide resources",
+  "event_religiousAwakening_outcome0": "The movement flourishes with official support. Morale improves among believers, and their communal spirit strengthens social bonds across the ship.",
+  "event_religiousAwakening_choice1": "Enforce strict secularism aboard the ship",
+  "event_religiousAwakening_outcome1": "Religious gatherings are restricted to private quarters. The movement goes underground, breeding resentment, but scientific rationalism remains the official doctrine.",
+  "event_religiousAwakening_choice2": "Allow worship but regulate its influence",
+  "event_religiousAwakening_outcome2": "The faith is permitted but kept separate from governance. A chaplain is appointed to liaise with command. An uneasy balance is maintained.",
+  "event_corporateTakeover_title": "Corporate Takeover",
+  "event_corporateTakeover_narrative": "The ship's resource managers have been quietly consolidating control over food distribution, water recycling, and power allocation. They now propose formalizing their authority into a corporate structure that would manage the future colony's economy.",
+  "event_corporateTakeover_choice0": "Allow free market principles to govern resources",
+  "event_corporateTakeover_outcome0": "The corporate faction takes over resource management. Efficiency improves dramatically, but prices rise and the poorest colonists struggle to afford basic necessities.",
+  "event_corporateTakeover_choice1": "Nationalize all resources under collective ownership",
+  "event_corporateTakeover_outcome1": "Resources are seized and placed under communal control. The corporate faction is dismantled, but innovation stalls without profit incentives.",
+  "event_corporateTakeover_choice2": "Implement regulated markets with safety nets",
+  "event_corporateTakeover_outcome2": "A mixed economy is established with price controls and welfare programs. Neither faction is fully satisfied, but basic needs are met while allowing some enterprise.",
+  "event_successionCrisis_title": "Succession Crisis",
+  "event_successionCrisis_narrative": "The ship's captain has died in their sleep, leaving no designated successor. Three factions immediately vie for control: the civilian council demands elections, the security chief claims martial authority, and the elder colonists invoke traditional leadership rites.",
+  "event_successionCrisis_choice0": "Hold an emergency election",
+  "event_successionCrisis_outcome0": "A chaotic but spirited election produces a new captain chosen by popular vote. The process is messy, but the colonists feel ownership of their leadership.",
+  "event_successionCrisis_choice1": "Let the military assume command",
+  "event_successionCrisis_outcome1": "The security chief steps into the captain's chair. Discipline is restored immediately, but civilian crew eye the armed guards with growing unease.",
+  "event_successionCrisis_choice2": "Convene a council of elders",
+  "event_successionCrisis_outcome2": "The eldest and most experienced colonists form a governing council. Their wisdom guides the ship, though some younger crew feel marginalized by the gerontocracy.",
+  "event_nativeSovereignty_title": "Native Sovereignty",
+  "event_nativeSovereignty_narrative": "Long-range scans confirm intelligent life on the target planet. Intercepted communications reveal a sophisticated civilization that has detected your approach. They transmit a formal demand: recognize their territorial sovereignty or face resistance upon arrival.",
+  "event_nativeSovereignty_choice0": "Recognize native sovereignty and request permission to settle",
+  "event_nativeSovereignty_outcome0": "You transmit a formal recognition of native rights. The response is cautious but positive. Future relations will begin on a foundation of mutual respect, though landing sites may be limited.",
+  "event_nativeSovereignty_choice1": "Assert colonial supremacy and prepare for resistance",
+  "event_nativeSovereignty_outcome1": "You broadcast your intention to settle regardless. The crew begins weapons drills and fortification planning. The natives go silent, which is somehow more terrifying than threats.",
+  "event_nativeSovereignty_choice2": "Propose shared governance of the planet",
+  "event_nativeSovereignty_outcome2": "You offer a framework for coexistence and resource sharing. The natives are intrigued but wary. Negotiations will be complex, but the possibility of peace exists.",
+  "event_laborStrike_title": "Labor Strike",
+  "event_laborStrike_narrative": "The engineering crew has walked off the job, demanding shorter shifts, better food rations, and a voice in navigation decisions. Critical systems are running on automated backups, but they won't last long. The rest of the colonists watch nervously.",
+  "event_laborStrike_choice0": "Meet the workers' demands in full",
+  "event_laborStrike_outcome0": "The strike ends immediately. Workers return to their posts with improved conditions. Productivity drops slightly as shorter shifts take effect, but loyalty is unshakeable.",
+  "event_laborStrike_choice1": "Suppress the strike and enforce mandatory labor",
+  "event_laborStrike_outcome1": "Security forces escort the workers back to their stations at gunpoint. The engines hum again, but hatred simmers in the lower decks. Several workers are confined to quarters.",
+  "event_laborStrike_choice2": "Offer a partial compromise on key demands",
+  "event_laborStrike_outcome2": "After marathon negotiations, a deal is struck: better rations and advisory input, but no reduction in shift length. Neither side is thrilled, but the engines keep running.",
+  "event_censorshipDebate_title": "Censorship Debate",
+  "event_censorshipDebate_narrative": "A leaked document reveals the true condition of the ship's failing systems. Panic spreads through the lower decks. The communications officer proposes restricting information access to prevent further unrest. Civil liberties advocates are outraged.",
+  "event_censorshipDebate_choice0": "Guarantee free access to all information",
+  "event_censorshipDebate_outcome0": "Full transparency is established. The initial panic subsides as colonists rally to help fix the problems they now understand. Trust in leadership grows, though some information causes distress.",
+  "event_censorshipDebate_choice1": "Implement full information control",
+  "event_censorshipDebate_outcome1": "All communications are now filtered through command. The panic stops, replaced by an eerie calm. But rumors fill the void left by censored truth, and they are often worse than reality.",
+  "event_censorshipDebate_choice2": "Filter only security-sensitive information",
+  "event_censorshipDebate_outcome2": "A classification system is established. Most information flows freely, but military and critical system data requires clearance. A workable middle ground that mostly satisfies.",
+  "event_colonialCharter_title": "Colonial Charter",
+  "event_colonialCharter_narrative": "With planetfall approaching, the colonists must draft fundamental laws for their new society. Three philosophical camps have emerged, each championing a different vision for what the colony should become. The debate is heated and deeply personal.",
+  "event_colonialCharter_choice0": "A progressive charter emphasizing individual rights",
+  "event_colonialCharter_outcome0": "The charter enshrines personal freedoms, equality, and social mobility. Artists and thinkers celebrate; traditionalists warn that unchecked freedom leads to chaos.",
+  "event_colonialCharter_choice1": "A conservative charter preserving Earth's traditions",
+  "event_colonialCharter_outcome1": "The charter codifies traditional values, family structures, and religious observance. Many find comfort in familiar customs; others feel stifled by the weight of old-world thinking.",
+  "event_colonialCharter_choice2": "A pragmatic charter focused on survival and growth",
+  "event_colonialCharter_outcome2": "The charter prioritizes resource management, technical education, and economic development. It lacks poetry but ensures the colony will be efficient and well-organized.",
+  "event_separatistMovement_title": "Separatist Movement",
+  "event_separatistMovement_narrative": "A faction of colonists has declared independence from ship governance. They've barricaded themselves in the aft section, demanding the right to establish their own settlement upon landing. They control 15% of the ship's food reserves and a backup navigation array.",
+  "event_separatistMovement_choice0": "Grant regional autonomy within a federal framework",
+  "event_separatistMovement_outcome0": "The separatists accept a deal: their own district with local governance, under a loose federal umbrella. The precedent of fragmentation worries some, but peace is maintained.",
+  "event_separatistMovement_choice1": "Storm the barricades and force reunification",
+  "event_separatistMovement_outcome1": "Security teams breach the aft section. The separatists resist fiercely. Order is restored, but at terrible cost. The ship is united in body, if not in spirit.",
+  "event_separatistMovement_choice2": "Address the root grievances driving the movement",
+  "event_separatistMovement_outcome2": "Mediators work to understand what pushed the faction away. Reforms in resource distribution and representation slowly bring the separatists back into the fold. Healing takes time.",
+  "event_warCouncil_title": "War Council",
+  "event_warCouncil_narrative": "With potential threats detected in nearby systems, the ship's leadership convenes a war council. The question: how much of the colony's limited resources should be devoted to military preparedness versus civilian infrastructure?",
+  "event_warCouncil_choice0": "Full armament: forge weapons and train soldiers",
+  "event_warCouncil_outcome0": "Workshops are retooled for weapons production. Every able-bodied colonist receives combat training. The ship bristles with arms, but the budget for farming equipment shrinks.",
+  "event_warCouncil_choice1": "Disarmament: melt weapons into tools",
+  "event_warCouncil_outcome1": "The armory is emptied and its contents recycled into construction materials. The colony will build with plowshares, not swords. Pacifists rejoice; realists worry about what lurks in the dark.",
+  "event_warCouncil_choice2": "Defensive posture only: shields and walls, not swords",
+  "event_warCouncil_outcome2": "Resources go to fortifications, shields, and early warning systems. No offensive weapons are produced. A balanced approach that keeps options open without provoking potential neighbors.",
+  "event_tradeFederation_title": "Trade Federation",
+  "event_tradeFederation_narrative": "As the colony approaches viability, factions debate how to structure its economy. The question goes beyond mere survival — it will define the kind of society that takes root on alien soil. Merchants, communalists, and bureaucrats all make their case.",
+  "event_tradeFederation_choice0": "Establish free trade zones with minimal regulation",
+  "event_tradeFederation_outcome0": "Markets spring up in every habitat module. Innovation flourishes as traders compete. Wealth inequality grows, but so does the total pool of resources available to the colony.",
+  "event_tradeFederation_choice1": "Implement communal sharing of all resources",
+  "event_tradeFederation_outcome1": "Private property is abolished. Everything belongs to everyone. No one goes hungry, but no one has incentive to produce more than the minimum. Mediocrity is comfortable.",
+  "event_tradeFederation_choice2": "Create a state-managed trade system",
+  "event_tradeFederation_outcome2": "The government controls all trade, setting prices and allocating resources. The system is fair but inflexible. Black markets emerge in the maintenance corridors.",
+  "event_faithVsScience_title": "Faith vs. Science",
+  "event_faithVsScience_narrative": "The ship's telescope has captured images of a cosmic phenomenon that directly contradicts the central tenet of the dominant faith movement. The head scientist wants to publish the findings; the religious leader insists they will tear the community apart.",
+  "event_faithVsScience_choice0": "Publish the scientific findings in full",
+  "event_faithVsScience_outcome0": "Truth prevails over comfort. The data is released and the religious movement fractures. Some believers adapt their faith; others lose it entirely. Knowledge advances.",
+  "event_faithVsScience_choice1": "Suppress the findings to preserve social harmony",
+  "event_faithVsScience_outcome1": "The data is classified. The religious community remains stable, but the science team is demoralized. Truth deferred is not truth denied, but it feels like it.",
+  "event_faithVsScience_choice2": "Convene a joint panel to find harmony between both views",
+  "event_faithVsScience_outcome2": "Scientists and theologians work together to reinterpret the findings. A new synthesis emerges that expands both understanding and faith. Not everyone is convinced, but the dialogue is healthy.",
+  "event_surveillanceState_title": "Surveillance State",
+  "event_surveillanceState_narrative": "After a series of sabotage incidents, the security chief proposes installing monitoring systems in every compartment of the ship. Cameras, microphones, and biometric scanners would track every colonist's movements. Privacy advocates are horrified.",
+  "event_surveillanceState_choice0": "Reject the surveillance proposal entirely",
+  "event_surveillanceState_outcome0": "Privacy is preserved. The saboteur remains at large, but the colonists sleep easier knowing they aren't watched. Investigation continues through traditional means.",
+  "event_surveillanceState_choice1": "Implement full surveillance across the ship",
+  "event_surveillanceState_outcome1": "Every corner of the ship is monitored. The saboteur is caught within days. But the cameras remain, and the security chief shows no interest in turning them off. Ever.",
+  "event_surveillanceState_choice2": "Install limited monitoring in critical areas only",
+  "event_surveillanceState_outcome2": "Cameras cover the engine room, armory, and bridge. Living quarters remain private. The saboteur is eventually identified through pattern analysis. A measured response.",
+  "event_nativeAlliance_title": "Native Alliance",
+  "event_nativeAlliance_narrative": "The native civilization has proposed a formal treaty. Their ambassador arrives via shuttle, an elegant being who speaks through a translator device of astonishing sophistication. They offer three forms of relationship, each with different implications for the colony's future.",
+  "event_nativeAlliance_choice0": "Sign an equal alliance treaty",
+  "event_nativeAlliance_outcome0": "The treaty establishes mutual defense, shared research, and equal territorial rights. Both civilizations will grow together. The natives share agricultural knowledge that transforms your colony prospects.",
+  "event_nativeAlliance_choice1": "Negotiate from a position of colonial dominance",
+  "event_nativeAlliance_outcome1": "You leverage your advanced technology to secure favorable terms. The natives cede territory and resources. They sign with trembling hands. History has seen this before, and it rarely ends well.",
+  "event_nativeAlliance_choice2": "Establish a trade partnership focused on mutual benefit",
+  "event_nativeAlliance_outcome2": "Commerce bridges the gap between species. Native materials flow to your workshops; your technology improves their medicine. Friendship grows from mutual profit."
 }

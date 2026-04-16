@@ -1,5 +1,7 @@
 import 'dart:math' show log, max;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
@@ -417,6 +419,14 @@ class EndingCalculator {
 
   /// Rarity-based bonus per surface feature (100–500).
   static double _surfaceFeatureRarity(String feature) {
+    // Debug-mode typo detection: flag any feature used at runtime that
+    // isn't in the canonical Planet.allSurfaceFeatures list.
+    if (kDebugMode && !Planet.allSurfaceFeatures.contains(feature)) {
+      QaLogger.app.warning(
+        'Unknown surface feature "$feature" in scoring — '
+        'not present in Planet.allSurfaceFeatures. Check for typos.',
+      );
+    }
     // Rare/exotic features are worth more.
     return switch (feature) {
       'singing_crystals' => 500.0,

@@ -12,14 +12,15 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFFFFB74D);
 const _kDiskStart = Color(0xFFFF6D00);
 const _kDiskEnd = Color(0xFFFFD54F);
 const _kLeftWindowColor = Color(0xFFFFB74D);
-const _kRightWindowColor = Color(0xFF00E5FF);
+const _kRightWindowColor = SpaceColors.cyan;
 
 class BlackHoleScreen extends ConsumerStatefulWidget {
   const BlackHoleScreen({super.key, required this.event});
@@ -31,8 +32,7 @@ class BlackHoleScreen extends ConsumerStatefulWidget {
 }
 
 class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _starController;
+    with TickerProviderStateMixin, EventTypewriterMixin<BlackHoleScreen> {
   late final AnimationController _titleGlow;
   late final Animation<double> _titleGlowAnim;
   late final AnimationController _pulseController;
@@ -40,10 +40,6 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
   late final AnimationController _diskController;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedWindow;
@@ -54,18 +50,14 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -80,39 +72,9 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
       duration: const Duration(seconds: 30),
     )..repeat();
 
-    if (widget.event.narrative.isEmpty) {
-      _typewriterDone = true;
-    } else {
-      _startTypewriter();
-    }
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer =
-        Timer.periodic(const Duration(milliseconds: 30), (timer) {
-      if (_charIndex >= widget.event.narrative.length) {
-        timer.cancel();
-        if (mounted) setState(() => _typewriterDone = true);
-        return;
-      }
-      if (mounted) {
-        setState(() {
-          _charIndex++;
-          _displayedText = widget.event.narrative.substring(0, _charIndex);
-        });
-      }
-    });
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceMade(int index) {
@@ -127,7 +89,11 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
       _resolved = true;
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(widget.event.choices[index]);
+    unawaited(
+      ref
+          .read(voyageProvider.notifier)
+          .handleEvent(widget.event.choices[index]),
+    );
 
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) setState(() => _showEffects = true);
@@ -136,8 +102,7 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _diskController.dispose();
@@ -158,84 +123,27 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'GRAVITATIONAL LENS',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(24),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 2,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value * 0.5),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'GRAVITATIONAL LENS',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    letterSpacing: 2,
+  );
 
-  Widget _buildNarrativeCard() {
-    final event = widget.event;
-    if (!_resolved && event.narrative.isNotEmpty) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white.withValues(alpha: 0.05),
-          border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
-        ),
-        child: Text(
-          _displayedText,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    if (_resolved && _selectedWindow != null) {
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: (_isPositiveOutcome ? Colors.green : Colors.red)
-              .withValues(alpha: 0.1),
-          border: Border.all(
-            color: (_isPositiveOutcome ? Colors.green : Colors.red)
-                .withValues(alpha: 0.4),
-          ),
-        ),
-        child: Text(
-          event.choices[_selectedWindow!].outcome,
-          style: TextStyle(
-            color: _isPositiveOutcome ? Colors.greenAccent : Colors.redAccent,
-            fontSize: 15,
-            height: 1.5,
-          ),
-        ),
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildNarrativeCard() => EventNarrativeCard(
+    accentColor: _kAccent,
+    displayText: displayedText,
+    outcomeText: (_resolved && _selectedWindow != null)
+        ? widget.event.choices[_selectedWindow!].outcome
+        : null,
+    outcomeIsPositive: _isPositiveOutcome,
+  );
 
   Widget _buildVisualArea() {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _resolved
               ? null
               : (details) => _handleTap(details, constraints),
@@ -256,83 +164,46 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
     );
   }
 
-  Widget _buildHintOrContinue() {
-    if (_resolved) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              GameSfx().playVaried(GameSfx.buttonClick);
-              Navigator.of(context).pop();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: _kAccent.withValues(alpha: 0.6)),
-                color: _kAccent.withValues(alpha: 0.08),
-              ),
-              child: Text(
-                'CONTINUE',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: _kAccent,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
-    }
-    return const SizedBox.shrink();
-  }
+  Widget _buildHintOrContinue() => EventHintOrContinue(
+    resolved: _resolved,
+    typewriterDone: typewriterDone,
+    accentColor: _kAccent,
+    onContinue: () {
+      GameSfx().playVaried(GameSfx.buttonClick);
+      Navigator.of(context).pop();
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _resolved,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field — owns its own controller.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -344,22 +215,22 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 20),
-          _buildNarrativeCard(),
-          const SizedBox(height: 12),
-          Expanded(child: _buildVisualArea()),
-          if (!_typewriterDone) const Spacer(),
-          if (_showEffects) ...[
-            const SizedBox(height: 8),
-            _buildEffectChips(),
-          ],
-          if (_resolved || !_typewriterDone) ...[
-            const SizedBox(height: 12),
-            _buildHintOrContinue(),
-          ],
-          const SizedBox(height: 12),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 20),
+                _buildNarrativeCard(),
+                const SizedBox(height: 12),
+                Expanded(child: _buildVisualArea()),
+                if (!typewriterDone) const Spacer(),
+                if (_showEffects) ...[
+                  const SizedBox(height: 8),
+                  _buildEffectChips(),
+                ],
+                if (_resolved || !typewriterDone) ...[
+                  const SizedBox(height: 12),
+                  _buildHintOrContinue(),
+                ],
+                const SizedBox(height: 12),
               ],
             ),
           ),
@@ -412,13 +283,16 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
 
   void _handleTap(TapDownDetails details, BoxConstraints constraints) {
-    if (!_typewriterDone) { _skipTypewriter(); return; }
+    if (!typewriterDone) {
+      skipTypewriter();
+      return;
+    }
     final size = Size(constraints.maxWidth, constraints.maxHeight);
     final tapPos = details.localPosition;
 
@@ -448,61 +322,75 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
       final isPositive = entry.value > 0;
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: isPositive,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: isPositive,
+        ),
+      );
     }
 
     for (final entry in choice.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
     if (choice.probeDelta != 0) {
       final sign = choice.probeDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Probes',
-        delta: '$sign${choice.probeDelta}',
-        isPositive: choice.probeDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Probes',
+          delta: '$sign${choice.probeDelta}',
+          isPositive: choice.probeDelta > 0,
+        ),
+      );
     }
     if (choice.fuelDelta != 0) {
       final sign = choice.fuelDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Fuel',
-        delta: '$sign${choice.fuelDelta}',
-        isPositive: choice.fuelDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Fuel',
+          delta: '$sign${choice.fuelDelta}',
+          isPositive: choice.fuelDelta > 0,
+        ),
+      );
     }
     if (choice.energyDelta != 0) {
       final sign = choice.energyDelta > 0 ? '+' : '';
-      chips.add(_EffectChip(
-        label: 'Energy',
-        delta: '$sign${choice.energyDelta}',
-        isPositive: choice.energyDelta > 0,
-      ));
+      chips.add(
+        _EffectChip(
+          label: 'Energy',
+          delta: '$sign${choice.energyDelta}',
+          isPositive: choice.energyDelta > 0,
+        ),
+      );
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
-      chips.add(const _EffectChip(
-        label: 'Nav Data',
-        delta: 'Acquired',
-        isPositive: true,
-      ));
+      chips.add(
+        const _EffectChip(
+          label: 'Nav Data',
+          delta: 'Acquired',
+          isPositive: true,
+        ),
+      );
     }
 
     if (chips.isEmpty) {
       return Text(
         'No effect',
-        style:
-            TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
       );
     }
 
@@ -581,22 +469,39 @@ class _BlackHolePainter extends CustomPainter {
     _drawLightRays(canvas, size, cx, cy, eventHorizonRadius);
 
     // 3. Accretion disk — back half (behind the black hole).
-    _drawAccretionDisk(canvas, size, cx, cy, eventHorizonRadius,
-        drawFrontHalf: false);
+    _drawAccretionDisk(
+      canvas,
+      size,
+      cx,
+      cy,
+      eventHorizonRadius,
+      drawFrontHalf: false,
+    );
 
     // 4. Event horizon (solid black).
     _drawEventHorizon(canvas, cx, cy, eventHorizonRadius);
 
     // 5. Accretion disk — front half (in front of the black hole).
-    _drawAccretionDisk(canvas, size, cx, cy, eventHorizonRadius,
-        drawFrontHalf: true);
+    _drawAccretionDisk(
+      canvas,
+      size,
+      cx,
+      cy,
+      eventHorizonRadius,
+      drawFrontHalf: true,
+    );
 
     // 7. Two magnified windows.
     _drawWindows(canvas, size);
   }
 
   void _drawLightRays(
-      Canvas canvas, Size size, double cx, double cy, double radius) {
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double radius,
+  ) {
     final rayPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
@@ -634,9 +539,14 @@ class _BlackHolePainter extends CustomPainter {
     }
   }
 
-  void _drawAccretionDisk(Canvas canvas, Size size, double cx, double cy,
-      double eventHorizonRadius,
-      {required bool drawFrontHalf}) {
+  void _drawAccretionDisk(
+    Canvas canvas,
+    Size size,
+    double cx,
+    double cy,
+    double eventHorizonRadius, {
+    required bool drawFrontHalf,
+  }) {
     final diskWidth = size.width * 0.42;
     final diskHeight = diskWidth * 0.22; // Flattened ellipse (~30deg view).
     final rotation = animationValue * 2 * pi;
@@ -672,9 +582,12 @@ class _BlackHolePainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = drawFrontHalf ? 6.0 - ring * 0.8 : 4.0 - ring * 0.5
         ..maskFilter = MaskFilter.blur(
-            BlurStyle.normal, drawFrontHalf ? 4.0 : 6.0)
+          BlurStyle.normal,
+          drawFrontHalf ? 4.0 : 6.0,
+        )
         ..color = color.withValues(
-            alpha: (opacity * (drawFrontHalf ? 0.9 : 0.5)));
+          alpha: (opacity * (drawFrontHalf ? 0.9 : 0.5)),
+        );
 
       final path = Path();
       // Draw arc segments.
@@ -712,11 +625,10 @@ class _BlackHolePainter extends CustomPainter {
     canvas.restore();
   }
 
-  void _drawEventHorizon(
-      Canvas canvas, double cx, double cy, double radius) {
+  void _drawEventHorizon(Canvas canvas, double cx, double cy, double radius) {
     // Outer shadow glow.
     final shadowPaint = Paint()
-      ..color = const Color(0xFF0B1426)
+      ..color = SpaceColors.deepSpace
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 16);
     canvas.drawCircle(Offset(cx, cy), radius * 1.15, shadowPaint);
 
@@ -735,9 +647,7 @@ class _BlackHolePainter extends CustomPainter {
           Colors.transparent,
         ],
         stops: const [0.0, 0.5, 1.0],
-      ).createShader(
-        Rect.fromCircle(center: Offset(cx, cy), radius: radius),
-      );
+      ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: radius));
     canvas.drawCircle(Offset(cx, cy), radius, rimPaint);
   }
 
@@ -822,7 +732,11 @@ class _BlackHolePainter extends CustomPainter {
 
       final starColor = windowIndex == 0
           ? Color.lerp(Colors.white, _kLeftWindowColor, starSeed.nextDouble())!
-          : Color.lerp(Colors.white, _kRightWindowColor, starSeed.nextDouble())!;
+          : Color.lerp(
+              Colors.white,
+              _kRightWindowColor,
+              starSeed.nextDouble(),
+            )!;
 
       final starPaint = Paint()
         ..color = starColor.withValues(alpha: brightness.clamp(0.0, 1.0));
@@ -839,7 +753,9 @@ class _BlackHolePainter extends CustomPainter {
 
     // A prominent central star/system in each window.
     if (!isDimmed) {
-      final centralColor = windowIndex == 0 ? _kLeftWindowColor : _kRightWindowColor;
+      final centralColor = windowIndex == 0
+          ? _kLeftWindowColor
+          : _kRightWindowColor;
       final centralGlow = Paint()
         ..color = centralColor.withValues(alpha: 0.3 + 0.2 * pulseValue)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
@@ -874,10 +790,7 @@ class _BlackHolePainter extends CustomPainter {
 
     textPainter.paint(
       canvas,
-      Offset(
-        center.dx - textPainter.width / 2,
-        center.dy + radius + 8,
-      ),
+      Offset(center.dx - textPainter.width / 2, center.dy + radius + 8),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,10 +13,11 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 /// Theme constants.
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFFB388FF);
 
 // Vortex palette.
@@ -40,9 +42,8 @@ class ChronoVortexScreen extends ConsumerStatefulWidget {
 }
 
 class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, EventTypewriterMixin<ChronoVortexScreen> {
   // Star field background.
-  late final AnimationController _starController;
 
   // Title glow.
   late final AnimationController _titleGlow;
@@ -55,10 +56,6 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   late final AnimationController _vortexController;
 
   // Typewriter state.
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
 
   // Choice state.
   int? _selectedChoiceIndex;
@@ -69,18 +66,14 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     _titleGlow = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -92,38 +85,10 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
       duration: const Duration(seconds: 6),
     )..repeat();
 
-    _startTypewriter();
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
 
     GameSfx().playLong(GameSfx.alienTech);
-  }
-
-  void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(
-      const Duration(milliseconds: 30),
-      (timer) {
-        if (_charIndex >= widget.event.narrative.length) {
-          timer.cancel();
-          if (mounted) setState(() => _typewriterDone = true);
-          return;
-        }
-        if (mounted) {
-          setState(() {
-            _charIndex++;
-            _displayedText = widget.event.narrative.substring(0, _charIndex);
-          });
-        }
-      },
-    );
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
   }
 
   void _onChoiceSelected(int index) {
@@ -145,17 +110,20 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
       if (mounted) setState(() => _showEffectChips = true);
     });
 
-    ref.read(voyageProvider.notifier).handleEvent(choice);
+    unawaited(ref.read(voyageProvider.notifier).handleEvent(choice));
   }
 
   Size? _paintSize;
 
   void _handleTapDown(TapDownDetails details) {
     if (_showingOutcome) return;
-    if (!_typewriterDone) _skipTypewriter();
+    if (!typewriterDone) skipTypewriter();
     if (widget.event.choices.length < 2) return;
     final size = _paintSize;
-    if (size == null) return;
+    if (size == null) {
+      debugPrint('ChronoVortex: tap before layout — ignoring');
+      return;
+    }
 
     final local = details.localPosition;
 
@@ -175,8 +143,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
 
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
-    _starController.dispose();
+    disposeTypewriter();
     _titleGlow.dispose();
     _pulseController.dispose();
     _vortexController.dispose();
@@ -185,39 +152,21 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
 
   // ── Shared widget builders ──────────────────────────────────────────
 
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'CHRONO-VORTEX',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screen.scaledFontSize(26),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 4,
-          shadows: [
-            Shadow(
-              color: _kAccent.withValues(alpha: _titleGlowAnim.value),
-              blurRadius: 20,
-            ),
-            Shadow(
-              color: _kVortexInner.withValues(alpha: _titleGlowAnim.value * 0.6),
-              blurRadius: 40,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'CHRONO-VORTEX',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    fontSize: 26,
+    secondaryGlowColor: _kVortexInner,
+    secondaryGlowAlphaScale: 0.6,
+  );
 
   Widget _buildNarrativeCard() {
     final resolvedChoice = _showingOutcome && _selectedChoiceIndex != null
         ? widget.event.choices[_selectedChoiceIndex!]
         : null;
     return _NarrativeCard(
-      text: resolvedChoice?.outcome ?? _displayedText,
+      text: resolvedChoice?.outcome ?? displayedText,
       isOutcome: _showingOutcome,
       choice: resolvedChoice,
       showEffectChips: _showEffectChips,
@@ -229,6 +178,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
       builder: (context, constraints) {
         _paintSize = Size(constraints.maxWidth, constraints.maxHeight);
         return GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTapDown: _handleTapDown,
           child: AnimatedBuilder(
             animation: Listenable.merge([_vortexController, _pulseController]),
@@ -282,8 +232,15 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
         ),
       );
     }
-    if (!_typewriterDone) {
-      return Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2));
+    if (!typewriterDone) {
+      return Text(
+        context.l10n.ui_common_tapToSkip,
+        style: TextStyle(
+          color: _kAccent.withValues(alpha: 0.5),
+          fontSize: 12,
+          letterSpacing: 2,
+        ),
+      );
     }
     return const SizedBox.shrink();
   }
@@ -291,39 +248,33 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _showingOutcome,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field background.
+            const EventStarField(
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: typewriterDone ? null : skipTypewriter,
+                child: isLandscape ? _buildLandscape() : _buildPortrait(),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _typewriterDone ? null : _skipTypewriter,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -335,14 +286,14 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 32),
-          _buildTitle(),
-          const SizedBox(height: 16),
-          _buildNarrativeCard(),
-          const SizedBox(height: 8),
-          Expanded(child: _buildVisualArea()),
-          const SizedBox(height: 8),
-          _buildHintOrContinue(),
+                const SizedBox(height: 32),
+                _buildTitle(),
+                const SizedBox(height: 16),
+                _buildNarrativeCard(),
+                const SizedBox(height: 8),
+                Expanded(child: _buildVisualArea()),
+                const SizedBox(height: 8),
+                _buildHintOrContinue(),
               ],
             ),
           ),
@@ -387,7 +338,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
             ],
           ),
         ),
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -409,40 +360,47 @@ class _NarrativeCard extends StatelessWidget {
   final bool showEffectChips;
 
   List<_EffectChipData> _buildChips() {
-    if (choice == null) return [];
+    final c = choice;
+    if (c == null) return [];
     final chips = <_EffectChipData>[];
 
-    for (final entry in choice!.shipEffects.entries) {
+    for (final entry in c.shipEffects.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
-    if (choice!.colonistDelta != 0) {
-      final sign = choice!.colonistDelta > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: 'COLONISTS',
-        delta: '$sign${choice!.colonistDelta}',
-        isPositive: choice!.colonistDelta > 0,
-        color: Colors.orange,
-      ));
+    if (c.colonistDelta != 0) {
+      final sign = c.colonistDelta > 0 ? '+' : '';
+      chips.add(
+        _EffectChipData(
+          label: 'COLONISTS',
+          delta: '$sign${c.colonistDelta}',
+          isPositive: c.colonistDelta > 0,
+          color: Colors.orange,
+        ),
+      );
     }
 
-    for (final entry in choice!.planetModifiers.entries) {
+    for (final entry in c.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-        color: const Color(0xFF00E5FF),
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+          color: SpaceColors.cyan,
+        ),
+      );
     }
 
     return chips;
@@ -454,60 +412,61 @@ class _NarrativeCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.3),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.3,
+      ),
       child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _kBgColor.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isOutcome
-              ? _kAccent.withValues(alpha: 0.8)
-              : _kAccent.withValues(alpha: 0.3),
-          width: isOutcome ? 2 : 1,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _kBgColor.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isOutcome
+                ? _kAccent.withValues(alpha: 0.8)
+                : _kAccent.withValues(alpha: 0.3),
+            width: isOutcome ? 2 : 1,
+          ),
+          boxShadow: isOutcome
+              ? [
+                  BoxShadow(
+                    color: _kAccent.withValues(alpha: 0.15),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ]
+              : null,
         ),
-        boxShadow: isOutcome
-            ? [
-                BoxShadow(
-                  color: _kAccent.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                ),
-              ]
-            : null,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child: Text(
-                text,
-                key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  height: 1.5,
-                  letterSpacing: 0.3,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: Text(
+                  text,
+                  key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    height: 1.5,
+                    letterSpacing: 0.3,
+                  ),
                 ),
               ),
-            ),
-            if (chips.isNotEmpty && showEffectChips) ...[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (var i = 0; i < chips.length; i++)
-                    _buildChip(chips[i]),
-                ],
-              ),
+              if (chips.isNotEmpty && showEffectChips) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var i = 0; i < chips.length; i++) _buildChip(chips[i]),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -567,7 +526,32 @@ class _ChronoVortexPainter extends CustomPainter {
   final bool isResolved;
 
   static const _spiralArms = 4;
-  static const _vortexColors = [_kVortexInner, _kVortexMid, _kVortexOuter, _kVortexEdge];
+  static const _vortexColors = [
+    _kVortexInner,
+    _kVortexMid,
+    _kVortexOuter,
+    _kVortexEdge,
+  ];
+
+  // Pre-laid-out zone labels. Static so TextPainter.layout() runs once per app
+  // lifetime instead of on every paint call.
+  static final _enterLabelPainter = _makeZoneLabel('ENTER', _kEnterZone);
+  static final _observeLabelPainter = _makeZoneLabel('OBSERVE', _kObserveZone);
+
+  static TextPainter _makeZoneLabel(String label, Color color) {
+    return TextPainter(
+      text: TextSpan(
+        text: label,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 2,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -600,7 +584,8 @@ class _ChronoVortexPainter extends CustomPainter {
 
         // Inner parts rotate faster — multiply animation by higher factor near center.
         final speedFactor = 1.0 + (1.0 - t) * 3.0;
-        final angle = armOffset +
+        final angle =
+            armOffset +
             t * 4 * pi + // base spiral winding
             animationValue * 2 * pi * speedFactor; // rotation
 
@@ -621,8 +606,8 @@ class _ChronoVortexPainter extends CustomPainter {
         final alphaFade = (t < 0.05)
             ? t / 0.05
             : (t > 0.9)
-                ? (1.0 - t) / 0.1
-                : 1.0;
+            ? (1.0 - t) / 0.1
+            : 1.0;
 
         // Pulsate the whole spiral subtly.
         final pulseAlpha = 0.35 + 0.25 * pulseValue;
@@ -668,7 +653,12 @@ class _ChronoVortexPainter extends CustomPainter {
     }
   }
 
-  void _drawGhostShip(Canvas canvas, Offset pos, double rotation, double alpha) {
+  void _drawGhostShip(
+    Canvas canvas,
+    Offset pos,
+    double rotation,
+    double alpha,
+  ) {
     final paint = Paint()
       ..color = _kGhostShip.withValues(alpha: alpha)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
@@ -740,8 +730,7 @@ class _ChronoVortexPainter extends CustomPainter {
       final dotAlpha = isActive ? 1.0 : 0.25;
       final dotRadius = isActive ? 4.0 : 2.5;
 
-      final paint = Paint()
-        ..color = _kAccent.withValues(alpha: dotAlpha);
+      final paint = Paint()..color = _kAccent.withValues(alpha: dotAlpha);
       canvas.drawCircle(pos, dotRadius, paint);
 
       if (isActive) {
@@ -759,7 +748,7 @@ class _ChronoVortexPainter extends CustomPainter {
     _drawZone(
       canvas,
       enterCenter,
-      'ENTER',
+      _enterLabelPainter,
       _kEnterZone,
       showInwardArrow: true,
     );
@@ -769,7 +758,7 @@ class _ChronoVortexPainter extends CustomPainter {
     _drawZone(
       canvas,
       observeCenter,
-      'OBSERVE',
+      _observeLabelPainter,
       _kObserveZone,
       showInwardArrow: false,
     );
@@ -778,7 +767,7 @@ class _ChronoVortexPainter extends CustomPainter {
   void _drawZone(
     Canvas canvas,
     Offset center,
-    String label,
+    TextPainter labelPainter,
     Color color, {
     required bool showInwardArrow,
   }) {
@@ -798,24 +787,12 @@ class _ChronoVortexPainter extends CustomPainter {
       ..strokeWidth = 1.5;
     canvas.drawCircle(center, radius, ringPaint);
 
-    // Label.
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: label,
-        style: TextStyle(
-          color: color,
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 2,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    textPainter.paint(
+    // Label (pre-laid-out at class level).
+    labelPainter.paint(
       canvas,
       Offset(
-        center.dx - textPainter.width / 2,
-        center.dy - textPainter.height / 2,
+        center.dx - labelPainter.width / 2,
+        center.dy - labelPainter.height / 2,
       ),
     );
 
@@ -880,8 +857,7 @@ class _ChronoVortexPainter extends CustomPainter {
         ..color = _kObserveZone.withValues(alpha: 0.1)
         ..strokeWidth = 0.8;
       for (int i = 0; i < 5; i++) {
-        final angle =
-            (animationValue * 2 * pi) + (i / 5) * pi * 0.8 - pi * 0.4;
+        final angle = (animationValue * 2 * pi) + (i / 5) * pi * 0.8 - pi * 0.4;
         final end = Offset(
           observePos.dx + cos(angle) * 80,
           observePos.dy + sin(angle) * 80,

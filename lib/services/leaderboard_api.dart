@@ -9,8 +9,17 @@ class LeaderboardApi {
   LeaderboardApi._();
 
   static const _baseUrl = 'https://stellarbroadcast.org/api';
+
+  /// API key for the leaderboard endpoint. Supplied at build time via
+  /// `--dart-define=LEADERBOARD_API_KEY=...`. Empty string when missing,
+  /// in which case the server will reject the submission and the call
+  /// silently fails (fire-and-forget design).
+  ///
+  /// This key is a basic throttle/identification token, not a secret — any
+  /// compiled binary can be decompiled to extract it. Real abuse protection
+  /// should live on the server (rate-limiting per IP/device).
   static const _apiKey =
-      'e4d6aacedf116502980f691f79db10d6ddc44b8bf8fc5ad498d505183d6e2a8c';
+      String.fromEnvironment('LEADERBOARD_API_KEY', defaultValue: '');
 
   /// Submit a score to the leaderboard. Fire-and-forget.
   static void submitScore({

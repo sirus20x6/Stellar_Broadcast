@@ -1302,7 +1302,6 @@
   "ui_trader_shipSystems": "舰船系统",
   "ui_trader_payWith": "支付方式",
   "ui_trader_leaveTrader": "离开商人",
-  "ui_trader_costPer10": "{cost}/10%",
   "ui_trader_moodGenerous": "慷慨情绪",
   "ui_trader_moodFair": "公平交易",
   "ui_trader_moodHard": "强硬议价",
@@ -1320,7 +1319,6 @@
   "ui_codex_ringTypes": "星环类型",
   "ui_codex_locked": "在拥有此特征的星球上着陆，即可揭示其效果。",
   "ui_codex_synergy": "协同效应：{features}",
-  "ui_codex_noSynergy": "—",
   "event_aiSoliloquy_title": "AI的独白",
   "event_aiSoliloquy_narrative": "舰船自主管理AI\"SAM\"开始在所有内部频道循环播放古代地球诗歌。广播占用了大量CPU周期，但乘员们在深邃的黑暗中却从中获得了一种奇异的慰藉。",
   "event_aiSoliloquy_choice0_text": "让SAM继续——士气比CPU更重要",
@@ -1437,39 +1435,529 @@
   "event_subspaceReef_choice1_outcome": "扫描仪被推至极限。我们迅速穿越，但亚空间涟漪的强度将传感器阵列烧毁了。",
   "event_alienTrader_title": "漂泊商人",
   "event_alienTrader_narrative": "一艘设计陌生的飞船漂浮在我们身旁，在所有频道广播呼叫。那是一位漂泊商人——往来于各文明之间的星际行商。他们以资源换取维修和补给，货舱中充溢着异域科技的嗡鸣。",
-
   "event_pulsarLighthouse_title": "脉冲星灯塔",
   "event_pulsarLighthouse_narrative": "一颗旋转的中子星如宇宙灯塔般用光束扫过虚空。脉冲星有节奏的脉动携带着精确的计时数据，能将我们的扫描仪重新校准到惊人的精度——但对准光束意味着将飞船暴露在强烈的辐射之下。",
   "event_pulsarLighthouse_choice0": "根据脉冲校准扫描仪",
   "event_pulsarLighthouse_outcome0": "扫描仪阵列吞噬了脉冲星的信号，重新校准到我们从未想象过的精度。但辐射的代价是真实的——暴露区的数个冷冻舱受损，少数殖民者未能在辐射中幸存。",
   "event_pulsarLighthouse_choice1": "启动护盾，保持安全距离通过",
   "event_pulsarLighthouse_outcome1": "我们与脉冲星保持了足够的距离，消耗额外燃料维持安全轨道。船员们透过滤光舷窗观赏那道扫过虚空的光束——美丽，但遥远。",
-
   "event_alienNursery_title": "外星育婴室",
   "event_alienNursery_narrative": "一个庞大的有机结构漂浮在虚空中——一座正在孵化外星幼体的生物育婴室。生命维持系统正在失效，内部温度持续下降。里面的生物正在死去。我们的生物扫描仪能从这个结构中获得大量知识，但介入意味着向未知病原体敞开气闸。",
   "event_alienNursery_choice0": "帮助稳定其生命维持系统",
   "event_alienNursery_outcome0": "工程师们临时搭建了一条通往育婴室的热力连接，稳住了孵化室。生物扫描数据令人惊叹——一套全新的生命分类体系。但正如所担忧的，外星微生物找到了进入飞船的途径。医疗队控制住了疫情，但在此之前已有数名殖民者染病。",
   "event_alienNursery_choice1": "不加干涉",
   "event_alienNursery_outcome1": "我们在尊重的距离外观察，通过被动扫描记录所能获取的一切。育婴室继续漂流，命运未卜。船员们思索着生命的脆弱——即便是外星生命——以及我们肩负的抉择之重。",
-
   "event_derelictArmada_title": "废弃舰队",
   "event_derelictArmada_narrative": "数百艘古老的战舰静止悬浮在虚空中——一场被遗忘的战争的坟场。它们的船体上刻满我们无法辨识的武器伤痕，但其结构材料和舰载数据库可能价值连城。问题是优先取什么：物理打捞还是知识。",
   "event_derelictArmada_choice0": "打捞武器技术和装甲板",
   "event_derelictArmada_outcome0": "打捞队切入外星战舰，提取出领先我们数个世纪的奇异合金和建造技术。建造组热切地整合了新材料。但有一艘飞船并非看起来那样已死——提取过程中诡雷引爆，一支打捞小组牺牲。",
   "event_derelictArmada_choice1": "下载其历史档案",
   "event_derelictArmada_outcome1": "我们专注于数据核心，仔细提取了数个世纪的外星历史、艺术、科学与哲学。仅文化档案就足以让学者忙碌数代人。技术洞见虽不像实物那样即刻实用，却揭示了推进我们自身理解的工程原理。",
-
   "event_alienQuarantineZone_title": "外星隔离区",
   "event_alienQuarantineZone_narrative": "十几种外星语言的警告信标标记着一片封印的太空区域边界。无论内部封锁着什么，它危险到让多个文明合作将其隔离。远程扫描在内部探测到巨大的技术信号——以及可能仍然活着的某物。",
   "event_alienQuarantineZone_choice0": "突破隔离进行调查",
   "event_alienQuarantineZone_outcome0": "我们越过警告浮标进入隔离区。内部是一座复杂得令人震惊的研究站——以及它研究对象的残骸。我们获取的技术具有革命性，但生物污染十分严重。离开该区域前，数十名殖民者染病。",
   "event_alienQuarantineZone_choice1": "尊重隔离",
   "event_alienQuarantineZone_outcome1": "我们研究了警告信标本身，其中包含放置它们的文明的导航数据和大气读数。这不是内部的宝藏，但总归有所收获——而且我们没有释放它们封锁的东西。",
-
   "event_hydroponicsBlight_title": "水培疫病",
   "event_hydroponicsBlight_narrative": "一种快速蔓延的真菌疫病感染了飞船的水培舱。整个作物周期在我们眼前枯萎。疫病尚未蔓延到种子储备，但只是几个小时的事。我们可以清洗舱室从头种植，或尝试一种可能挽救当前收成的实验性抗真菌处理——或者让污染进一步扩散。",
   "event_hydroponicsBlight_choice0": "清洗并用种子储备重新种植",
   "event_hydroponicsBlight_outcome0": "我们将水培舱排入真空，连同每株活着的植物一起杀灭了疫病。从种子储备重新种植需要数周，依赖新鲜食物和园艺空间的文化项目被暂停。但感染得到了控制。",
   "event_hydroponicsBlight_choice1": "尝试实验性治疗",
-  "event_hydroponicsBlight_outcome1": "实验性抗真菌剂起初显示出希望，但一种抗药性菌株突破了防线。等到我们决定全面清洗时，疫病已蔓延至冷冻舱的营养管线。造成的损害比一开始就果断行动更为严重。"
+  "event_hydroponicsBlight_outcome1": "实验性抗真菌剂起初显示出希望，但一种抗药性菌株突破了防线。等到我们决定全面清洗时，疫病已蔓延至冷冻舱的营养管线。造成的损害比一开始就果断行动更为严重。",
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_landing_fuel": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_landing_encountersRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_gameOver_shareText": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      },
+      "seedCode": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_titleDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueDire": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_epilogueExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeature": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_landscapeNotableFeatures": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDemocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTechnocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceRepublic": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceAutocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTribalCouncil": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_constructionSentenceAdvanced": {
+    "placeholders": {
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationHigh": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationMedium": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationLow": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_populationCritical": {
+    "placeholders": {
+      "colonists": {
+        "type": "int"
+      },
+      "colonyName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceIntegrated": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceCoexistence": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceTension": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceConflict": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookGoldenAge": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookThrivingColony": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookSurvival": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookStruggling": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookExtinction": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_outlookDefault": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_codex_discovered": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_codex_synergy": {
+    "placeholders": {
+      "features": {
+        "type": "String"
+      }
+    }
+  },
+  "ui_ending_shareCardShare": "分享",
+  "ui_ending_shareCardCancel": "取消",
+  "ui_ending_shareCard": "共享卡",
+  "ui_scan_probesCount": "探头：{count}",
+  "ui_scan_uncertaintyPct": "不确定度：±{percent}%",
+  "ui_settings_statsLeft": "左边",
+  "ui_settings_statsRight": "正确的",
+  "ui_title_seedInvalid": "种子代码无效。仅使用 A–Z 和 0–9。",
+  "ui_settings_statsPosition": "统计数据和按钮位置",
+  "planet_featureObsidianPlains": "黑曜石平原",
+  "planet_featureUndergroundRivers": "地下河",
+  "planet_featureSaltFlats": "盐滩",
+  "planet_featurePerpetualAurora": "永恒的极光",
+  "ui_ending_shareCardDialogTitle": "分享您的旅程",
+  "planet_featurePetrifiedMegaflora": "石化大植物群",
+  "planet_featureCarnivorousFlora": "食肉植物区系",
+  "ending_governmentMilitaryJunta": "军政府",
+  "planet_featureApexPredator": "顶级掠食者",
+  "ending_governmentFascistState": "法西斯国家",
+  "ending_governmentTheocracy": "神权政治",
+  "planet_featureSinkholeFields": "天坑区",
+  "planet_featureArchiveVaults": "档案库",
+  "ending_governmentCorporateOligarchy": "企业寡头政治",
+  "planet_featureGhostCities": "鬼城",
+  "ending_nativesSubjugation": "征服",
+  "ending_governmentCommune": "公社",
+  "ending_nativesAlliance": "联盟",
+  "ui_trader_costPer10": "{cost}/10%",
+  "ui_codex_noSynergy": "—",
+  "ending_govSentenceCorporateOligarchy": "{planetName} 是一个由资源管理者组成的联盟，事实证明他们的经济头脑对于生存至关重要。",
+  "ending_govSentenceFascistState": "独裁政权用铁拳控制{planetName}，为了新世界的秩序而牺牲了公民自由。",
+  "ending_govSentenceTheocracy": "一个神权委员会指导{planetName}，从支撑殖民者度过虚空的信仰中汲取智慧。",
+  "ending_nativeSentenceSubjugation": "{planetName} 的原住民生活在殖民统治之下，他们的文化因殖民者强加自己的秩序而受到压制。",
+  "ending_govSentenceCommune": "{planetName} 的人民实行集体自治，在所有殖民者之间平等分享资源和决策。",
+  "ending_govSentenceMilitaryJunta": "军事指挥结构管辖着{planetName}，这一纪律在太空中拯救了他们，现在定义了他们的文明。",
+  "ending_nativeSentenceAlliance": "正式的联盟将殖民者和 {planetName} 的本土文明联系在一起，他们的知识结合起来创造出了比任何一方单独都更伟大的东西。",
+  "ui_tooltip_settings": "设置",
+  "ui_tooltip_back": "后退",
+  "ui_tooltip_codex": "法典",
+  "ui_common_tapToSkip": "点击跳过",
+  "event_pulsarLighthouse_choice2": "在扫荡到达我们之前撤退",
+  "event_constitutionalConvention_title": "制宪会议",
+  "event_constitutionalConvention_narrative": "由于没有正式的治理，殖民船上的居民变得焦躁不安。来自各个甲板的代表聚集在货舱起草一份宪章，该宪章将定义如何统治未来的殖民地。三个派别对新政府提出了相互竞争的愿景。",
+  "event_pulsarLighthouse_outcome2": "在下一次光束通过之前，我们会在紧急燃烧时摆开。脉冲星的信号在我们身后逐渐消失——没有获得任何数据，没有受到任何伤害，在规避推力上消耗了一点燃料。",
+  "ui_common_tapRingToChoose": "点击戒指进行选择",
+  "ui_tooltip_bugReport": "报告错误",
+  "ui_tooltip_leaderboards": "排行榜",
+  "ui_common_tapToContinue": "点击继续",
+  "event_constitutionalConvention_choice0": "起草普选民主宪章",
+  "event_constitutionalConvention_choice1": "建立一个拥有紧急​​权力的强有力的行政人员",
+  "event_constitutionalConvention_outcome1": "单一领导人被任命为拥有全面权力的人。决策很快就出来了，但持不同政见者却私下议论下层的暴政。",
+  "event_constitutionalConvention_outcome0": "殖民者批准了保证平等代表权的宪法。决策过程会变慢，但当每个声音都被听到时，士气就会飙升。",
+  "event_constitutionalConvention_choice2": "组建专家技术委员会",
+  "event_constitutionalConvention_outcome2": "工程师、科学家和医生组成一个基于专业知识的执政委员会。效率提高了，尽管有些人感觉被排除在权力之外。",
+  "event_militaryCoupThreat_choice2": "通过日落条款谈判有限的紧急权力",
+  "event_militaryCoupThreat_title": "军事政变威胁",
+  "event_religiousAwakening_title": "宗教觉醒",
+  "event_militaryCoupThreat_outcome0": "忠诚的船员集会反对瓦斯奎兹。对峙以极少的流血结束，但安全细节被削弱，一些殖民者陷入交火中。",
+  "event_militaryCoupThreat_choice0": "与忠诚的船员一起抵抗政变",
+  "event_militaryCoupThreat_outcome1": "瓦斯奎兹接管了船舶运营的控制权。秩序迅速恢复，但代价是公民自由。现在，每条走廊都有武装巡逻人员巡逻。",
+  "event_militaryCoupThreat_choice1": "服从指挥官的要求",
+  "event_militaryCoupThreat_narrative": "船上安全部队指挥官瓦斯奎兹已经扣押了军械库，并发出最后通牒：授予紧急军事权力，否则将面临所有甲板的封锁。局势不稳定，殖民者期待你的回应。",
+  "event_militaryCoupThreat_outcome2": "经过紧张的谈判，瓦斯奎兹接受了有监督的临时权力。这是一种脆弱的妥协，无法让任何人完全满意，但可以防止暴力。",
+  "event_religiousAwakening_choice1": "在船上实行严格的世俗主义",
+  "event_religiousAwakening_narrative": "一位富有魅力的传教士吸引了数百名殖民者参加了一场新的信仰运动。他们每个周期都会聚集在观察穹顶，他们的赞美诗在通风井中回响。一些船员担心狂热情绪；其他人则在教义中找到真正的安慰。",
+  "event_religiousAwakening_choice0": "拥抱信仰运动并提供资源",
+  "event_religiousAwakening_choice2": "允许崇拜但规范其影响",
+  "event_corporateTakeover_choice1": "将集体所有的所有资源国有化",
+  "event_corporateTakeover_narrative": "船上的资源管理者一直在悄悄巩固对食物分配、水循环和电力分配的控制。他们现在提议将他们的权力正式化为一个公司结构，以管理未来殖民地的经济。",
+  "event_religiousAwakening_outcome1": "宗教集会仅限于私人场所。该运动转入地下，滋生怨恨，但科学理性主义仍然是官方信条。",
+  "event_religiousAwakening_outcome0": "该运动在官方支持下蓬勃发展。信徒的士气得到提高，他们的集体精神增强了全船的社会纽带。",
+  "event_corporateTakeover_outcome0": "公司派接管资源管理。效率大幅提高，但物价上涨，最贫穷的殖民者难以负担基本必需品。",
+  "event_religiousAwakening_outcome2": "信仰是允许的，但与治理分开。任命一名牧师与指挥部联络。维持着一种不稳定的平衡。",
+  "event_corporateTakeover_choice2": "通过安全网实施受监管的市场",
+  "event_corporateTakeover_choice0": "允许自由市场原则来管理资源",
+  "event_successionCrisis_choice0": "举行紧急选举",
+  "event_corporateTakeover_title": "公司收购",
+  "event_successionCrisis_title": "继任危机",
+  "event_corporateTakeover_outcome1": "资源被没收并置于公共控制之下。公司派被解散，但创新在没有利润激励的情况下陷入停滞。",
+  "event_corporateTakeover_outcome2": "通过价格控制和福利计划建立混合经济。两派都没有完全满足，但在允许一些企业的同时满足了基本需求。",
+  "event_successionCrisis_narrative": "这艘船的船长在睡梦中去世，没有留下指定的继任者。三个派别立即争夺控制权：民政委员会要求选举，安全首领要求军事权力，而年长的殖民者则援引传统的领导仪式。",
+  "event_successionCrisis_outcome0": "一场混乱但激烈的选举产生了一位由民众投票选出的新队长。这个过程很混乱，但殖民者感到自己拥有领导权。",
+  "event_successionCrisis_outcome1": "保安队长坐上船长的椅子。纪律立即恢复，但平民船员用越来越不安的目光注视着武装警卫。",
+  "event_nativeSovereignty_narrative": "远程扫描证实了目标星球上存在智慧生命。截获的通讯揭示了一个复杂的文明已经检测到了你的接近。他们提出正式要求：承认其领土主权，否则抵达时将面临抵抗。",
+  "event_nativeSovereignty_choice0": "承认原住民主权并请求定居许可",
+  "event_successionCrisis_outcome2": "最年长、最有经验的殖民者组成了一个管理委员会。他们的智慧指引着这艘船，尽管一些年轻的船员感到被老年人统治所边缘化。",
+  "event_nativeSovereignty_choice1": "维护殖民霸权并准备抵抗",
+  "event_nativeSovereignty_outcome1": "你表达了无论如何都要和解的意图。机组人员开始武器演习和防御工事规划。当地人保持沉默，这在某种程度上比威胁更可怕。",
+  "event_nativeSovereignty_choice2": "提出地球共同治理",
+  "event_successionCrisis_choice1": "让军队指挥",
+  "event_successionCrisis_choice2": "召开长老会议",
+  "event_nativeSovereignty_outcome0": "您传递对原住民权利的正式承认。反应谨慎但积极。未来的关系将在相互尊重的基础上开始，尽管登陆地点可能有限。",
+  "event_laborStrike_title": "劳工罢工",
+  "event_nativeSovereignty_title": "本土主权",
+  "event_laborStrike_choice0": "充分满足工人的诉求",
+  "event_nativeSovereignty_outcome2": "您提供了一个共存和资源共享的框架。当地人很感兴趣，但也很警惕。谈判将会很复杂，但和平的可能性是存在的。",
+  "event_laborStrike_outcome0": "罢工立即结束。工人们重返岗位，条件有所改善。随着轮班时间缩短，生产力略有下降，但忠诚度是不可动摇的。",
+  "event_laborStrike_narrative": "工程人员已经辞职，要求更短的轮班时间、更好的食物配给以及在航行决策中的发言权。关键系统在自动备份上运行，但它们不会持续很长时间。其余的殖民者紧张地看着。",
+  "event_laborStrike_choice1": "镇压罢工并强制劳动",
+  "event_laborStrike_outcome1": "安全部队持枪护送工人返回工作地点。引擎再次发出嗡嗡声，但仇恨在下层甲板上酝酿。几名工人被限制在宿舍内。",
+  "event_laborStrike_outcome2": "经过马拉松式的谈判后，达成了一项协议：提供更好的口粮和咨询意见，但不减少轮班时间。双方都没有兴奋，但引擎仍在运转。",
+  "event_censorshipDebate_choice2": "仅过滤安全敏感信息",
+  "event_laborStrike_choice2": "对关键要求做出部分妥协",
+  "event_censorshipDebate_outcome0": "建立了完全的透明度。随着殖民者集会帮助解决他们现在理解的问题，最初的恐慌逐渐消退。尽管有些信息会造成困扰，但对领导力的信任会增强。",
+  "event_censorshipDebate_choice1": "实施全程信息管控",
+  "event_censorshipDebate_choice0": "保证免费获取所有信息",
+  "event_censorshipDebate_narrative": "一份泄露的文件揭示了该船故障系统的真实状况。恐慌在下层甲板蔓延。通讯官员建议限制信息访问，以防止进一步的骚乱。公民自由倡导者感到愤怒。",
+  "event_censorshipDebate_outcome1": "所有通信现在都通过命令进行过滤。恐慌停止了，取而代之的是令人毛骨悚然的平静。但谣言填补了经过审查的真相留下的空白，而且它们往往比现实更糟糕。",
+  "event_censorshipDebate_title": "审查制度辩论",
+  "event_colonialCharter_choice1": "保护地球传统的保守宪章",
+  "event_colonialCharter_choice0": "强调个人权利的进步宪章",
+  "event_colonialCharter_choice2": "注重生存和发展的务实章程",
+  "event_colonialCharter_outcome2": "该宪章优先考虑资源管理、技术教育和经济发展。它缺乏诗意，但确保殖民地高效且组织良好。",
+  "event_censorshipDebate_outcome2": "建立了分类体系。大多数信息自由流动，但军事和关键系统数据需要许可。一个可行的中间立场，基本上令人满意。",
+  "event_colonialCharter_narrative": "随着行星陨落的临近，殖民者必须为他们的新社会起草基本法律。三个哲学阵营已经出现，每个阵营都对殖民地应该成为什么样子提出了不同的愿景。这场辩论非常激烈，而且非常个人化。",
+  "event_colonialCharter_outcome1": "该宪章将传统价值观、家庭结构和宗教仪式编入法典。许多人在熟悉的习俗中找到安慰；另一些人则因旧世界思想的重压而感到窒息。",
+  "event_colonialCharter_outcome0": "该宪章规定了个人自由、平等和社会流动性。艺术家和思想家庆祝；传统主义者警告说，不受约束的自由会导致混乱。",
+  "event_colonialCharter_title": "殖民地宪章",
+  "event_separatistMovement_title": "分离主义运动",
+  "event_separatistMovement_choice0": "在联邦框架内授予区域自治权",
+  "event_separatistMovement_outcome0": "分离主义者接受了一项协议：在松散的联邦保护伞下，他们自己的地区拥有地方治理。分裂的先例让一些人感到担忧，但和平得以维持。",
+  "event_separatistMovement_narrative": "一群殖民者宣布独立于船舶管理。他们把自己设在船尾，要求有权在登陆后建立自己的定居点。他们控制着船上 15% 的食物储备和备用导航阵列。",
+  "event_warCouncil_narrative": "随着附近系统检测到潜在威胁，飞船领导层召开了一个战争委员会。问题是：殖民地有限的资源中有多少应该用于军事准备，而不是民用基础设施？",
+  "event_warCouncil_choice0": "全副武装：锻造武器、训练士兵",
+  "event_separatistMovement_choice2": "解决推动运动的根本不满",
+  "event_warCouncil_outcome0": "车间进行了改造，用于武器生产。每个身体健全的殖民者都接受战斗训练。船上布满了武器，但农业设备的预算却在缩减。",
+  "event_separatistMovement_outcome1": "安全小组突破了船尾部分。分裂分子进行了激烈的抵抗。秩序得以恢复，但付出了惨重的代价。这艘船即使在精神上不是统一的，但在身体上是统一的。",
+  "event_separatistMovement_choice1": "冲破路障并统一部队",
+  "event_tradeFederation_narrative": "随着殖民地接近生存能力，各派争论如何构建其经济。这个问题不仅仅是生存——它将定义在异国土壤上扎根的社会类型。商人、地方自治主义者和官僚都提出了自己的观点。",
+  "event_warCouncil_choice2": "仅防御姿势：盾牌和墙壁，而不是剑",
+  "event_tradeFederation_title": "贸易联盟",
+  "event_separatistMovement_outcome2": "调解员努力了解是什么驱使该派别离开。资源分配和代表权方面的改革慢慢地让分离主义者重新回归。治愈需要时间。",
+  "event_warCouncil_title": "战争委员会",
+  "event_tradeFederation_choice0": "以最少的监管建立自由贸易区",
+  "event_warCouncil_choice1": "裁军：将武器熔化为工具",
+  "event_warCouncil_outcome1": "军械库被清空，其内容被回收为建筑材料。殖民地将用犁头而不是剑来建造。和平主义者欢欣鼓舞；现实主义者担心黑暗中潜藏的东西。",
+  "event_tradeFederation_outcome0": "每个栖息地模块中都出现了市场。随着交易者的竞争，创新蓬勃发展。财富不平等加剧，但殖民地可用的资源总量也在增加。",
+  "event_warCouncil_outcome2": "资源用于防御工事、防护罩和预警系统。不生产进攻性武器。这是一种平衡的方法，可以在不激怒潜在邻居的情况下保留选择余地。",
+  "event_faithVsScience_title": "信仰与科学",
+  "event_faithVsScience_narrative": "船上的望远镜捕捉到了一种宇宙现象的图像，这种现象与主流信仰运动的中心原则直接矛盾。首席科学家想要发表研究结果；宗教领袖坚称他们会分裂社区。",
+  "event_tradeFederation_choice1": "实现所有资源的公共共享",
+  "event_tradeFederation_choice2": "创建国家管理的贸易体系",
+  "event_faithVsScience_outcome0": "真理胜过安慰。数据公布后，宗教运动破裂。一些信徒调整他们的信仰；另一些则改变他们的信仰。其他人则完全失去了它。知识进步。",
+  "event_tradeFederation_outcome1": "私有财产被废除。一切都属于每个人。没有人挨饿，但没有人有动力生产超过最低限度的产量。平庸很舒服。",
+  "event_faithVsScience_choice0": "完整发表科学发现",
+  "event_tradeFederation_outcome2": "政府控制所有贸易、制定价格和分配资源。该制度是公平的，但缺乏灵活性。维修走廊出现黑市。",
+  "event_faithVsScience_choice2": "召开联合小组以寻求两种观点之间的和谐",
+  "event_faithVsScience_outcome2": "科学家和神学家共同努力重新解释这些发现。一种新的综合体出现，扩大了理解和信仰。并非所有人都相信，但对话是健康的。",
+  "event_surveillanceState_narrative": "在发生一系列破坏事件后，安全负责人建议在船上的每个舱室安装监控系统。摄像头、麦克风和生物识别扫描仪将跟踪每个殖民者的行动。隐私倡导者感到震惊。",
+  "event_faithVsScience_choice1": "压制调查结果以维护社会和谐",
+  "event_surveillanceState_choice0": "完全拒绝监视提议",
+  "event_surveillanceState_outcome0": "隐私得到保护。破坏者仍然逍遥法外，但殖民者知道自己没有被监视，所以睡得更安稳了。调查仍在通过传统手段继续进行。",
+  "event_surveillanceState_title": "监控状态",
+  "event_faithVsScience_outcome1": "数据已分类。宗教界保持稳定，但科学团队士气低落。推迟真相并不是否认真相，但感觉就是这样。",
+  "event_surveillanceState_choice2": "仅在关键区域安装有限的监控",
+  "event_nativeAlliance_narrative": "本土文明提出了正式条约。他们的大使乘坐航天飞机抵达，他是一位优雅的人，通过复杂程度惊人的翻译设备讲话。它们提供了三种形式的关系，每种形式对殖民地的未来都有不同的影响。",
+  "event_nativeAlliance_outcome0": "该条约确立了共同防御、共享研究和平等领土权利。两种文明将共同发展。当地人分享农业知识，改变您的殖民地前景。",
+  "event_surveillanceState_outcome1": "船上的每个角落都受到监控。破坏者在几天之内就被抓获。但摄像头仍然存在，安全负责人也没有兴趣将其关闭。曾经。",
+  "event_surveillanceState_choice1": "对全船实施全面监控",
+  "event_nativeAlliance_choice0": "签订平等同盟条约",
+  "event_nativeAlliance_choice1": "从殖民统治地位进行谈判",
+  "event_nativeAlliance_outcome2": "商业弥合了物种之间的差距。原生材料流向您的工作室；你的技术改善了他们的医学。友谊因互利而增长。",
+  "event_nativeAlliance_choice2": "建立互惠互利的贸易伙伴关系",
+  "event_nativeAlliance_outcome1": "您可以利用先进的技术来获得有利的条件。当地人割让领土和资源。他们用颤抖的双手签名。历史曾经见过这样的情况，而且很少有好的结局。",
+  "event_nativeAlliance_title": "本土联盟",
+  "event_surveillanceState_outcome2": "摄像机覆盖了机舱、军械库和舰桥。居住区保持私密。最终通过模式分析识别出破坏者。经过衡量的反应。"
 }

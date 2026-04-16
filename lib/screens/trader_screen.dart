@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 
 import 'package:stellar_broadcast/models/ship.dart';
+import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 /// The Alien Trader freeform shop screen.
 ///
@@ -21,12 +23,10 @@ class TraderScreen extends ConsumerStatefulWidget {
   ConsumerState<TraderScreen> createState() => _TraderScreenState();
 }
 
-class _TraderScreenState extends ConsumerState<TraderScreen>
-    with TickerProviderStateMixin {
-  static const _background = Color(0xFF0B1426);
-  static const _accent = Color(0xFF00E5FF);
+class _TraderScreenState extends ConsumerState<TraderScreen> {
+  static const _background = SpaceColors.deepSpace;
+  static const _accent = SpaceColors.cyan;
 
-  late final AnimationController _starController;
   late final double _markup;
   TradeResource _selectedResource = TradeResource.probes;
 
@@ -39,19 +39,10 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
   @override
   void initState() {
     super.initState();
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 90),
-    )..repeat();
 
     // Random markup 0.8 - 1.2 — seeded for reproducibility.
-    _markup = 0.8 + ref.read(voyageProvider.notifier).seededRandom.nextDouble() * 0.4;
-  }
-
-  @override
-  void dispose() {
-    _starController.dispose();
-    super.dispose();
+    _markup =
+        0.8 + ref.read(voyageProvider.notifier).seededRandom.nextDouble() * 0.4;
   }
 
   /// Base costs per 10 % repair — must stay in sync with VoyageNotifier.tradeRepair.
@@ -67,8 +58,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
     return baseCosts[resource]! * _markup;
   }
 
-  bool _canAfford(TradeResource resource) {
-    final voyage = ref.read(voyageProvider);
+  bool _canAfford(VoyageState voyage, TradeResource resource) {
     final cost = _costFor(resource);
     switch (resource) {
       case TradeResource.probes:
@@ -94,8 +84,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
     return '${cost.ceil()}';
   }
 
-  String _currentAmount(TradeResource resource) {
-    final voyage = ref.read(voyageProvider);
+  String _currentAmount(VoyageState voyage, TradeResource resource) {
     switch (resource) {
       case TradeResource.probes:
         return '${voyage.probes}';
@@ -194,7 +183,15 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
 
   @override
   Widget build(BuildContext context) {
-    final voyage = ref.watch(voyageProvider);
+    // Watch only the fields whose changes should trigger rebuild. Avoids
+    // rebuilding when unrelated voyage state (log entries, encounter count,
+    // etc.) mutates.
+    ref.watch(voyageProvider.select((v) => v.probes));
+    ref.watch(voyageProvider.select((v) => v.fuel));
+    ref.watch(voyageProvider.select((v) => v.energy));
+    ref.watch(voyageProvider.select((v) => v.colonists));
+    ref.watch(voyageProvider.select((v) => v.ship));
+    final voyage = ref.read(voyageProvider);
     final ship = voyage.ship;
 
     final coreLabels = {
@@ -233,28 +230,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
       body: Stack(
         children: [
           // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (context, _) {
-                  return Semantics(
-                    label: 'Animated star field background',
-                    excludeSemantics: true,
-                    child: CustomPaint(
-                      painter: StarFieldPainter(
-                        animationValue: _starController.value,
-                        farStarCount: 80,
-                        midStarCount: 30,
-                        nearStarCount: 10,
-                      ),
-                      size: Size.infinite,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          const EventStarField(duration: Duration(seconds: 90)),
 
           // Main content.
           SafeArea(
@@ -262,6 +238,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: _buildTraderContent(
+                  voyage: voyage,
                   ship: ship,
                   coreLabels: coreLabels,
                   scannerLabels: scannerLabels,
@@ -288,10 +265,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
             letterSpacing: 6,
             color: _accent,
             shadows: [
-              Shadow(
-                color: _accent.withValues(alpha: 0.8),
-                blurRadius: 16,
-              ),
+              Shadow(color: _accent.withValues(alpha: 0.8), blurRadius: 16),
             ],
           ),
         ),
@@ -312,6 +286,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
   }
 
   Widget _buildShipSystemsPanel({
+    required VoyageState voyage,
     required ShipSystems ship,
     required Map<String, String> coreLabels,
     required Map<String, String> scannerLabels,
@@ -323,7 +298,10 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
         _sectionLabel(context.l10n.ui_trader_shipSystems),
         const SizedBox(height: 6),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: ScreenInfo.of(context).isCompact ? 4 : 8,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white.withValues(alpha: 0.03),
@@ -332,10 +310,17 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
           child: Column(
             children: [
               ...coreSystems.map((name) {
-                return _buildSystemRow(name, coreLabels[name] ?? name, ship);
+                return _buildSystemRow(
+                  name,
+                  coreLabels[name] ?? name,
+                  ship,
+                  voyage,
+                );
               }),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
+                padding: EdgeInsets.symmetric(
+                  vertical: ScreenInfo.of(context).isCompact ? 1 : 3,
+                ),
                 child: Row(
                   children: [
                     Text(
@@ -359,7 +344,11 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
               ),
               ...ShipSystems.scannerSubsystemNames.map((name) {
                 return _buildSystemRow(
-                    name, scannerLabels[name] ?? name, ship);
+                  name,
+                  scannerLabels[name] ?? name,
+                  ship,
+                  voyage,
+                );
               }),
             ],
           ),
@@ -368,20 +357,21 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
     );
   }
 
-  Widget _buildPaymentSection() {
+  Widget _buildPaymentSection(VoyageState voyage) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionLabel(context.l10n.ui_trader_payWith),
         const SizedBox(height: 6),
         ...TradeResource.values.map((resource) {
-          return _buildPaymentOption(resource);
+          return _buildPaymentOption(voyage, resource);
         }),
       ],
     );
   }
 
   Widget _buildTraderContent({
+    required VoyageState voyage,
     required ShipSystems ship,
     required Map<String, String> coreLabels,
     required Map<String, String> scannerLabels,
@@ -405,6 +395,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
                   flex: 1,
                   child: SingleChildScrollView(
                     child: _buildShipSystemsPanel(
+                      voyage: voyage,
                       ship: ship,
                       coreLabels: coreLabels,
                       scannerLabels: scannerLabels,
@@ -417,7 +408,7 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
                 Expanded(
                   flex: 1,
                   child: SingleChildScrollView(
-                    child: _buildPaymentSection(),
+                    child: _buildPaymentSection(voyage),
                   ),
                 ),
               ],
@@ -445,13 +436,14 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildShipSystemsPanel(
+                  voyage: voyage,
                   ship: ship,
                   coreLabels: coreLabels,
                   scannerLabels: scannerLabels,
                   coreSystems: coreSystems,
                 ),
                 const SizedBox(height: 16),
-                _buildPaymentSection(),
+                _buildPaymentSection(voyage),
               ],
             ),
           ),
@@ -480,15 +472,33 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
     );
   }
 
-  Widget _buildSystemRow(String systemName, String label, ShipSystems ship) {
+  Widget _buildSystemRow(
+    String systemName,
+    String label,
+    ShipSystems ship,
+    VoyageState voyage,
+  ) {
     final value = ship.getSystem(systemName);
-    final canRepair = value < 1.0 && _canAfford(_selectedResource);
+    final canRepair = value < 1.0 && _canAfford(voyage, _selectedResource);
     final isFlashing = _flashSystem == systemName;
+    final compact = ScreenInfo.of(context).isCompact;
 
-    return Row(
-      children: [
-        // System bar (expanded).
-        Expanded(
+    // Full-row tap target: the whole row is the repair button on compact
+    // phones. A plain Icon (not IconButton) means row height is driven by
+    // the SystemBar's intrinsic height, not by a 48/28 dp SizedBox minimum.
+    // The row is wide enough that a short vertical span still gives a
+    // comfortable tap area.
+    return Semantics(
+      button: value < 1.0,
+      label: 'Repair $label',
+      enabled: canRepair,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: (value < 1.0 && canRepair)
+              ? () => _onRepair(systemName)
+              : null,
+          borderRadius: BorderRadius.circular(4),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             decoration: BoxDecoration(
@@ -497,39 +507,45 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
                   ? _accent.withValues(alpha: 0.12)
                   : Colors.transparent,
             ),
-            child: SystemBar(
-              label: label,
-              value: value,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: SystemBar(
+                    label: label,
+                    value: value,
+                    labelWidth: 80,
+                    compact: compact,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                // Plain Icon, not IconButton — IconButton enforces a 48 dp
+                // minimum tap-target constraint that inflates the row.
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: Icon(
+                    value < 1.0
+                        ? Icons.add_circle_outline
+                        : Icons.check_circle_outline,
+                    size: compact ? 16 : 22,
+                    color: value < 1.0
+                        ? (canRepair
+                            ? _accent
+                            : Colors.white.withValues(alpha: 0.15))
+                        : _accent.withValues(alpha: 0.4),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        // Repair button — minimum 48dp touch target for accessibility.
-        SizedBox(
-          width: 48,
-          height: 48,
-          child: value < 1.0
-              ? IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                  icon: Icon(
-                    Icons.add_circle_outline,
-                    size: 22,
-                    color: canRepair
-                        ? _accent
-                        : Colors.white.withValues(alpha: 0.15),
-                  ),
-                  onPressed: canRepair ? () => _onRepair(systemName) : null,
-                  tooltip: 'Repair $label',
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildPaymentOption(TradeResource resource) {
+  Widget _buildPaymentOption(VoyageState voyage, TradeResource resource) {
     final isSelected = _selectedResource == resource;
-    final affordable = _canAfford(resource);
+    final affordable = _canAfford(voyage, resource);
     final costText = context.l10n.ui_trader_costPer10(_costLabel(resource));
 
     return Padding(
@@ -542,90 +558,93 @@ class _TraderScreenState extends ConsumerState<TraderScreen>
         duration: const Duration(milliseconds: 400),
         builder: (context, shakeValue, child) {
           final offset = sin(shakeValue * pi * 4) * 6 * (1 - shakeValue);
-          return Transform.translate(
-            offset: Offset(offset, 0),
-            child: child,
-          );
+          return Transform.translate(offset: Offset(offset, 0), child: child);
         },
-        child: GestureDetector(
-          onTap: () => setState(() => _selectedResource = resource),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: isSelected
-                  ? _accent.withValues(alpha: 0.08)
-                  : Colors.white.withValues(alpha: 0.02),
-              border: Border.all(
+        child: Semantics(
+          button: true,
+          selected: isSelected,
+          enabled: affordable,
+          label: '${_resourceName(resource)} — $costText',
+          child: GestureDetector(
+            onTap: () => setState(() => _selectedResource = resource),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
                 color: isSelected
-                    ? _accent.withValues(alpha: 0.7)
-                    : Colors.white.withValues(alpha: 0.08),
-                width: isSelected ? 1.5 : 1.0,
-              ),
-            ),
-            child: Row(
-              children: [
-                // Icon (fixed).
-                Icon(
-                  _resourceIcon(resource),
-                  size: 16,
+                    ? _accent.withValues(alpha: 0.08)
+                    : Colors.white.withValues(alpha: 0.02),
+                border: Border.all(
                   color: isSelected
-                      ? _accent
-                      : Colors.white.withValues(alpha: 0.4),
+                      ? _accent.withValues(alpha: 0.7)
+                      : Colors.white.withValues(alpha: 0.08),
+                  width: isSelected ? 1.5 : 1.0,
                 ),
-                const SizedBox(width: 8),
-                // Name (fixed width).
-                SizedBox(
-                  width: 80,
-                  child: Text(
-                    _resourceName(resource),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
-                      color: isSelected
-                          ? _accent
-                          : Colors.white.withValues(alpha: 0.5),
+              ),
+              child: Row(
+                children: [
+                  // Icon (fixed).
+                  Icon(
+                    _resourceIcon(resource),
+                    size: 16,
+                    color: isSelected
+                        ? _accent
+                        : Colors.white.withValues(alpha: 0.4),
+                  ),
+                  const SizedBox(width: 8),
+                  // Name (fixed width).
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      _resourceName(resource),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                        color: isSelected
+                            ? _accent
+                            : Colors.white.withValues(alpha: 0.5),
+                      ),
                     ),
                   ),
-                ),
-                // Amount (fills middle, center-aligned).
-                Expanded(
-                  child: Text(
-                    _currentAmount(resource),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      color: affordable
-                          ? Colors.white.withValues(alpha: 0.7)
-                          : Colors.red.withValues(alpha: 0.6),
+                  // Amount (fills middle, center-aligned).
+                  Expanded(
+                    child: Text(
+                      _currentAmount(voyage, resource),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 11,
+                        color: affordable
+                            ? Colors.white.withValues(alpha: 0.7)
+                            : Colors.red.withValues(alpha: 0.6),
+                      ),
                     ),
                   ),
-                ),
-                // Cost per 10% (fixed width, right-aligned).
-                SizedBox(
-                  width: 56,
-                  child: Text(
-                    costText,
-                    textAlign: TextAlign.right,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 10,
-                      color: isSelected
-                          ? _accent.withValues(alpha: 0.7)
-                          : Colors.white.withValues(alpha: 0.3),
+                  // Cost per 10% (fixed width, right-aligned).
+                  SizedBox(
+                    width: 56,
+                    child: Text(
+                      costText,
+                      textAlign: TextAlign.right,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 10,
+                        color: isSelected
+                            ? _accent.withValues(alpha: 0.7)
+                            : Colors.white.withValues(alpha: 0.3),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

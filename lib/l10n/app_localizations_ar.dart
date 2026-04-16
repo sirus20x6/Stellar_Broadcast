@@ -9,9 +9,6 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'البث النجمي';
-
-  @override
   String get ui_title_stellar => 'نجمي';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'انطلق';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'رمز المصدر غير صالح. استخدم فقط A–Z و0–9.';
 
   @override
   String ui_voyage_sector(int count) {
@@ -197,6 +198,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ui_scan_statRadiation => 'الإشعاع';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'المجسات: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'عدم اليقين: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'تحليل الكوكب';
 
   @override
@@ -293,22 +304,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ui_landing_statLandingSys => 'نظام الهبوط';
 
   @override
-  String get ui_landingSequence_phase1 => 'المرحلة 1: الالتزام المداري';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'نافذة الهبوط مفتوحة. الالتزام بالدخول.';
-
-  @override
-  String get ui_landingSequence_phase2 => 'المرحلة 2: الاحتراق الجوي';
-
-  @override
-  String get ui_landingSequence_title => 'تسلسل الهبوط';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'عرض تقرير المستعمرة';
-
-  @override
   String get ui_ending_colonyEstablished => 'تأسست المستعمرة';
 
   @override
@@ -334,6 +329,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'تحدَّ صديقًا';
+
+  @override
+  String get ui_ending_shareCard => 'مشاركة البطاقة';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'شارك رحلتك';
+
+  @override
+  String get ui_ending_shareCardShare => 'يشارك';
+
+  @override
+  String get ui_ending_shareCardCancel => 'يلغي';
 
   @override
   String get ui_ending_copySeed => 'نسخ البذرة';
@@ -467,6 +474,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'الإعداد الافتراضي للنظام';
+
+  @override
+  String get ui_settings_statsPosition => 'الإحصائيات وموضع الأزرار';
+
+  @override
+  String get ui_settings_statsLeft => 'غادر';
+
+  @override
+  String get ui_settings_statsRight => 'يمين';
 
   @override
   String get ui_legacy_title => 'مركز الإرث';
@@ -767,6 +783,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'نباتات طبية';
+
+  @override
+  String get planet_featurePerpetualAurora => 'الشفق الدائم';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'النباتات الضخمة المتحجرة';
+
+  @override
+  String get planet_featureUndergroundRivers => 'الأنهار الجوفية';
+
+  @override
+  String get planet_featureObsidianPlains => 'سهول سبج';
+
+  @override
+  String get planet_featureSaltFlats => 'شقق الملح';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'النباتات آكلة اللحوم';
+
+  @override
+  String get planet_featureGhostCities => 'مدن الأشباح';
+
+  @override
+  String get planet_featureArchiveVaults => 'خزائن الأرشيف';
+
+  @override
+  String get planet_featureSinkholeFields => 'حقول المجرى';
+
+  @override
+  String get planet_featureApexPredator => 'قمة المفترس';
 
   @override
   String get ui_monthJan => 'يناير';
@@ -4167,18 +4213,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'الغلاف الجوي';
 
   @override
-  String get ending_scoreLabel_gravity => 'الجاذبية';
-
-  @override
-  String get ending_scoreLabel_temperature => 'الحرارة';
-
-  @override
-  String get ending_scoreLabel_water => 'الماء';
-
-  @override
-  String get ending_scoreLabel_resources => 'الموارد';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'علاقات السكان الأصليين';
 
   @override
@@ -4287,19 +4321,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'مجلس قبلي';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'الثيوقراطية';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'المجلس العسكري';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'الأوليغارشية الشركاتية';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'الدولة الفاشية';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'كومونة';
 
   @override
   String get ending_cultureRenaissance => 'نهضة';
@@ -4353,10 +4387,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ending_nativesConflict => 'صراع';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'تحالف';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'الخضوع';
 
   @override
   String get ending_landscapeGravityHigh => 'جاذبية ثقيلة تضغط على كل شيء. ';
@@ -4395,66 +4429,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'الضغط الجوي منخفض بشكل خطر — المساكن المغلقة ضرورية. ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'قمر لامع مخطط بالمعادن يهيمن على سماء الليل، سطحه المعدني يعكس ضوء النجوم عبر المشهد. ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'قمر متصدع يلوح في الأعلى، سطحه المتفتت يجر حلقة خافتة من الحطام — تذكير دائم بالقصف الذي يهدد الأسفل. ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'قمر شاحب قاحل يرتفع فوق الأفق، سطحه المحفر حارس صامت فوق المستعمرة. ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'الكوكب يدور بسرعة — الأيام تدوم ساعات فقط، ورياح كوريوليس تضرب كل شيء يقف طويلًا. ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'الكوكب يدور ببطء مؤلم. نصف الكرة المواجه للشمس يُشوى بينما الجانب المظلم يتجمد، ولا شريط الشفق بينهما وحده يوفر ملاذًا. ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'سلاسل بركانية تشق الأفق، منحدراتها مخططة بأنهار من الصخر المنصهر. الهواء يفوح بالكبريت والأرض ترتجف تحت الأقدام. ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'القشرة مكسورة وقلقة — شقوق جديدة تنفتح بلا إنذار، تكشف عروق معدنية لامعة وسط سحب الغبار. ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'البرق يقوس عبر السماء في صفائح مستمرة، يحوّل الليل نهارًا ويملأ الهواء بطعم الأوزون. ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'سحب من الأبواغ المتوهجة تنجرف مع كل نسمة، جميلة وقاتلة — سيحتاج المستوطنون مساكن مغلقة أو أقنعة ترشيح للبقاء خارجًا. ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'الكوكب محيطات في معظمه — مياه شاسعة ومظلمة تمتد لكل أفق، ومجموعات جزر متناثرة فقط تكسر السطح. ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'فوهات حرارية أرضية تخترق القشرة، تنفث أعمدة بخار غني بالمعادن يُدفئ المشهد المحيط ويدعم واحات حياة. ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'مجال مغناطيسي قوي يلف الكوكب، يصد الإشعاع النجمي لكنه يعبث بالإلكترونيات غير المحمية. البوصلات تدور بلا فائدة. ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'بدون مجال مغناطيسي قوي، الرياح النجمية تعرّي الغلاف الجوي العلوي. شفق مذهل يتساقط عبر السماء في كل خطوط العرض. ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'مخلوقات ضخمة تتحرك عبر المشهد — بعضها بحجم المباني، خطواتها تُحس على بعد كيلومترات. ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'المحيط الحيوي يعمل كشبكة تكافل متشابكة: كل كائن يعتمد على جيرانه ويدعمهم في توازن أنيق وهش. ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4501,27 +4475,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'يرشد المجلس الثيوقراطي $planetName، ويستمد الحكمة من الإيمان الذي دعم المستعمرين خلال الفراغ.';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'يحكم هيكل القيادة العسكرية $planetName، وهو الانضباط الذي أنقذهم في الفضاء والذي يحدد الآن حضارتهم.';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'يقود اتحاد من مديري الموارد $planetName، حيث أثبتت فطنتهم الاقتصادية أنها ضرورية للبقاء.';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'يسيطر النظام الاستبدادي على $planetName بقبضة من حديد، ويتم التضحية بالحريات المدنية من أجل النظام في العالم الجديد.';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'يحكم سكان $planetName أنفسهم بشكل جماعي، ويتقاسمون الموارد والقرارات بالتساوي بين جميع المستعمرين.';
   }
 
   @override
@@ -4561,10 +4535,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'أمطر قمر غير مستقر في مدار متحلل حطامًا على المستعمرة، مدمرًا البنية التحتية وتقنية لا يمكن استبدالها في قصف نيزكي دوري.';
-
-  @override
-  String get ending_moonBarren =>
-      'تعلّق قمر قاحل في السماء الغريبة، رفيق مقفر لم يقدّم للمستوطنين سوى مشهد مألوف يحدّقون فيه في الليالي الطويلة.';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4653,12 +4623,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'يربط تحالف رسمي بين المستعمرين والحضارة الأصلية لـ $planetName، حيث تقوم معرفتهم المشتركة ببناء شيء أعظم مما يستطيع أي منهما بمفرده.';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'يعيش السكان الأصليون لـ $planetName تحت الحكم الاستعماري، حيث يتم قمع ثقافتهم عندما يفرض المستعمرون نظامهم الخاص.';
   }
 
   @override
@@ -4696,26 +4666,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'الأقمار';
-
-  @override
-  String get ui_rings => 'الحلقات';
-
-  @override
   String get ui_landing_landOnMoon => 'الهبوط على القمر';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'القمر: $moonPercent% مقابل الكوكب: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'جاذبية أخف — هبوط أسهل';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'نظام حلقات $type';
-  }
 
   @override
   String get moon_barren => 'قاحل';
@@ -4743,60 +4694,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ring_metallic => 'معدني';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'قمر وحيد يتدلّى في السماء فوق المستعمرة.';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return '$count أقمار تدور في الأعالي، تلقي ظلالًا متراقصة عبر المشهد الممتد.';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'من بينها، عالم صالح للسكن يلوّح بالأمل — جوهرة خضراء تعرض حدودًا ثانية للاستيطان.';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'قمر متجمّد يتلألأ بمخزونات جليدية شاسعة، خزّان ينتظر من يستثمره.';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'الجليد المحصود من القمر المتجمّد يعزّز إمدادات المستعمرة المائية، محوّلًا عالمًا قاحلًا إلى مكان قابل للحياة.';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'لم تُقَم المستعمرة على الكوكب ذاته، بل على أكثر أقماره واعدية — عالم أصغر بجاذبية ألطف ووعود أعظم.';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'حلقة غبار خافتة تتقوّس عبر السماء، تضفي جمالًا أثيريًا على كل شروق.';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'حلقة جليدية متألقة تلتقط ضوء النجوم، ترسم في السماء نارًا موشورية بهيّة.';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'حلقة صخرية كثيفة تطوّق الكوكب، مصدر لمواد البناء تتساقط ببطء نحو السطح.';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'حلقة معدنية تتلألأ في الأعالي، غنية بالخام الذي يغذّي صناعة المستعمرة.';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'قمر صالح للسكن يمنح فرصة ثانية للاستيطان.';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'الجليد المحصود من القمر المتجمّد يعزّز إمدادات المستعمرة المائية.';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'تدور المستعمرة تحت $count قمر(أقمار).';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'مناجاة الذكاء الاصطناعي';
@@ -5313,6 +5210,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'انقر للتخطي';
+
+  @override
+  String get ui_common_tapRingToChoose => 'اضغط على حلقة للاختيار';
+
+  @override
+  String get ui_common_tapToContinue => 'انقر للمتابعة';
+
+  @override
+  String get ui_tooltip_back => 'خلف';
+
+  @override
+  String get ui_tooltip_codex => 'الدستور الغذائي';
+
+  @override
+  String get ui_tooltip_settings => 'إعدادات';
+
+  @override
+  String get ui_tooltip_leaderboards => 'المتصدرين';
+
+  @override
+  String get ui_tooltip_bugReport => 'الإبلاغ عن خطأ';
+
+  @override
   String get event_pulsarLighthouse_title => 'منارة النجم النابض';
 
   @override
@@ -5332,6 +5253,14 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'نبتعد عن النجم النابض بمسافة كبيرة، مستهلكين وقوداً إضافياً للحفاظ على مسار آمن. يراقب الطاقم الحزمة الكاسحة عبر منافذ مرشّحة — جميلة، لكنها بعيدة.';
+
+  @override
+  String get event_pulsarLighthouse_choice2 =>
+      'تراجع قبل أن تصل إلينا عملية الاجتياح';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'نحن نتأرجح بعيدًا عند الحرق الطارئ قبل مرور الشعاع التالي. تتلاشى إشارة النجم النابض خلفنا - لم يتم الحصول على أي بيانات، ولم يحدث أي ضرر، وتم إنفاق القليل من الوقود على الدفع المراوغ.';
 
   @override
   String get event_alienNursery_title => 'حضانة فضائية';
@@ -5417,4 +5346,457 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'يُظهر مضاد الفطريات التجريبي وعداً في البداية، لكن سلالة مقاومة تخترق. بحلول الوقت الذي نلجأ فيه إلى تطهير كامل، يكون الوباء قد انتشر إلى خطوط تغذية كبسولات التبريد. الضرر أسوأ مما لو تصرفنا بحسم منذ البداية.';
+
+  @override
+  String get event_constitutionalConvention_title => 'المؤتمر الدستوري';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'لقد أصبح سكان سفينة المستعمرة مضطربين بدون حكم رسمي. يجتمع المندوبون من كل سطح في عنبر الشحن لصياغة ميثاق يحدد كيفية حكم المستعمرة المستقبلية. ثلاثة فصائل تطرح رؤى متنافسة للحكومة الجديدة.';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'صياغة ميثاق ديمقراطي بالاقتراع العام';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'يصادق المستعمرون على دستور يضمن التمثيل المتساوي. تتباطأ عملية صنع القرار ولكن الروح المعنوية ترتفع مع سماع كل صوت.';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'إنشاء سلطة تنفيذية قوية تتمتع بسلطات الطوارئ';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'يتم تعيين قائد واحد بسلطة كاسحة. تأتي القرارات بسرعة، لكن المنشقين يهمسون بالاستبداد في الطوابق السفلية.';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'تشكيل مجلس تكنوقراط من المختصين';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'ويشكل المهندسون والعلماء والأطباء مجلساً حاكماً قائماً على الخبرة. وتتحسن الكفاءة، رغم أن البعض يشعر بأنه مستبعد من السلطة.';
+
+  @override
+  String get event_militaryCoupThreat_title => 'التهديد بالانقلاب العسكري';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'استولى القائد فاسكيز من التفاصيل الأمنية للسفينة على مستودع الأسلحة وأصدر إنذارًا نهائيًا: امنح صلاحيات عسكرية طارئة أو واجه إغلاق جميع الطوابق. الوضع متقلب والمستعمرون يتطلعون إليك للحصول على رد.';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'مقاومة الانقلاب مع أفراد الطاقم المخلصين';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'الطاقم الموالي يتجمع لمعارضة فاسكيز. تنتهي المواجهة بأقل قدر من إراقة الدماء، ولكن تم إضعاف التفاصيل الأمنية ووقع بعض المستعمرين في مرمى النيران.';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => 'الخضوع لمطالب القائد';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'يتولى فاسكيز السيطرة على عمليات السفينة. تمت استعادة النظام بسرعة، ولكن على حساب الحريات المدنية. والآن تسير الدوريات المسلحة في كل ممر.';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'التفاوض على صلاحيات الطوارئ المحدودة مع شرط الانقضاء';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'بعد مفاوضات متوترة، يقبل فاسكويز سلطة مؤقتة مع الإشراف. تسوية هشة لا ترضي أحداً بشكل كامل، لكنها تمنع العنف.';
+
+  @override
+  String get event_religiousAwakening_title => 'الصحوة الدينية';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'قام واعظ ذو شخصية كاريزمية بجذب مئات المستعمرين إلى حركة دينية جديدة. يجتمعون في قبة المراقبة في كل دورة، وتردد ترانيمهم عبر فتحات التهوية. يشعر بعض أفراد الطاقم بالقلق من التعصب. ويجد آخرون راحة حقيقية في التعاليم.';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'احتضان الحركة الإيمانية وتوفير الموارد';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'وتزدهر الحركة بدعم رسمي. تتحسن الروح المعنوية بين المؤمنين، وتقوي روحهم الجماعية الروابط الاجتماعية عبر السفينة.';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'فرض العلمانية الصارمة على متن السفينة';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'تقتصر التجمعات الدينية على الأماكن الخاصة. وتذهب هذه الحركة إلى العمل السري، مما يؤدي إلى توليد الاستياء، ولكن العقلانية العلمية تظل هي العقيدة الرسمية.';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'السماح بالعبادة ولكن تنظيم تأثيرها';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'الإيمان مسموح به ولكنه منفصل عن الحكم. يتم تعيين قسيس للاتصال بالأمر. يتم الحفاظ على توازن غير مستقر.';
+
+  @override
+  String get event_corporateTakeover_title => 'استحواذ الشركات';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'كان مديرو موارد السفينة يعززون سيطرتهم بهدوء على توزيع الغذاء، وإعادة تدوير المياه، وتخصيص الطاقة. يقترحون الآن إضفاء الطابع الرسمي على سلطتهم في هيكل مؤسسي من شأنه إدارة اقتصاد المستعمرة المستقبلية.';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'السماح لمبادئ السوق الحرة بالتحكم في الموارد';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'يتولى فصيل الشركة إدارة الموارد. تتحسن الكفاءة بشكل كبير، لكن الأسعار ترتفع ويكافح أفقر المستعمرين من أجل توفير الضروريات الأساسية.';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      '- تأميم جميع الموارد تحت الملكية الجماعية';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'يتم الاستيلاء على الموارد ووضعها تحت السيطرة المجتمعية. لقد تم تفكيك فصيل الشركات، ولكن الابتكار يتعثر من دون حوافز الربح.';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'تنفيذ الأسواق المنظمة بشبكات الأمان';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'يتم إنشاء اقتصاد مختلط مع مراقبة الأسعار وبرامج الرعاية الاجتماعية. لم يكن أي من الفصيلين راضيًا تمامًا، ولكن تم تلبية الاحتياجات الأساسية مع السماح ببعض المشاريع.';
+
+  @override
+  String get event_successionCrisis_title => 'أزمة الخلافة';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'لقد مات قبطان السفينة أثناء نومه، ولم يترك خليفة معينًا. تتنافس ثلاثة فصائل على الفور من أجل السيطرة: المجلس المدني يطالب بإجراء انتخابات، ورئيس الأمن يدعي السلطة العسكرية، والمستعمرون الأكبر سناً يستحضرون طقوس القيادة التقليدية.';
+
+  @override
+  String get event_successionCrisis_choice0 => 'إجراء انتخابات طارئة';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'تنتج الانتخابات الفوضوية ولكن المفعمة بالحيوية قائدًا جديدًا يتم اختياره عن طريق التصويت الشعبي. العملية فوضوية، لكن المستعمرين يشعرون بملكية قيادتهم.';
+
+  @override
+  String get event_successionCrisis_choice1 => 'دع الجيش يتولى القيادة';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'يجلس رئيس الأمن على كرسي القبطان. تمت استعادة الانضباط على الفور، لكن الطاقم المدني ينظر إلى الحراس المسلحين بقلق متزايد.';
+
+  @override
+  String get event_successionCrisis_choice2 => 'عقد مجلس الشيوخ';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'يشكل المستعمرون الأكبر سناً والأكثر خبرة مجلسًا حاكمًا. حكمتهم هي التي تقود السفينة، على الرغم من أن بعض أفراد الطاقم الأصغر سنًا يشعرون بالتهميش بسبب حكم الشيخوخة.';
+
+  @override
+  String get event_nativeSovereignty_title => 'السيادة الوطنية';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'تؤكد عمليات المسح بعيدة المدى وجود حياة ذكية على الكوكب المستهدف. تكشف الاتصالات التي تم اعتراضها عن حضارة متطورة اكتشفت اقترابك. إنهم يرسلون طلبًا رسميًا: الاعتراف بسيادتهم الإقليمية أو مواجهة المقاومة عند وصولهم.';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'الاعتراف بالسيادة الأصلية وطلب الإذن بالاستقرار';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'أنت تنقل اعترافًا رسميًا بحقوق السكان الأصليين. الاستجابة حذرة ولكنها إيجابية. ستبدأ العلاقات المستقبلية على أساس من الاحترام المتبادل، على الرغم من أن مواقع الهبوط قد تكون محدودة.';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'تأكيد التفوق الاستعماري والاستعداد للمقاومة';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'أنت تبث نيتك في التسوية بغض النظر. يبدأ الطاقم تدريبات الأسلحة وتخطيط التحصينات. يصمت السكان الأصليون، وهو أمر أكثر رعبًا من التهديدات.';
+
+  @override
+  String get event_nativeSovereignty_choice2 => 'اقتراح الحكم المشترك للكوكب';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'أنت تقدم إطارًا للتعايش وتقاسم الموارد. السكان الأصليون مفتونون ولكنهم حذرون. ستكون المفاوضات معقدة، لكن إمكانية السلام موجودة.';
+
+  @override
+  String get event_laborStrike_title => 'الإضراب العمالي';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'لقد ترك الطاقم الهندسي العمل، مطالبين بنوبات عمل أقصر، وحصص غذائية أفضل، وبصوت في قرارات الملاحة. تعمل الأنظمة المهمة على نسخ احتياطية تلقائية، لكنها لن تدوم طويلاً. يراقب بقية المستعمرين بعصبية.';
+
+  @override
+  String get event_laborStrike_choice0 => 'تلبية مطالب العمال بشكل كامل';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'وينتهي الإضراب على الفور. يعود العمال إلى وظائفهم بظروف أفضل. تنخفض الإنتاجية قليلًا مع سريان المناوبات القصيرة، لكن الولاء لا يتزعزع.';
+
+  @override
+  String get event_laborStrike_choice1 => 'قمع الإضراب وفرض العمل الإلزامي';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'وتقوم قوات الأمن بمرافقة العمال إلى مراكزهم تحت تهديد السلاح. تطن المحركات مرة أخرى، لكن الكراهية تغلي في الطوابق السفلية. ويقتصر العديد من العمال على أرباع.';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'تقديم حل وسط جزئي بشأن المطالب الرئيسية';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'وبعد مفاوضات ماراثونية، تم التوصل إلى اتفاق: تحسين حصص الإعاشة والمدخلات الاستشارية، ولكن لا يوجد تخفيض في مدة المناوبة. لا يشعر أي من الجانبين بسعادة غامرة، لكن المحركات تستمر في العمل.';
+
+  @override
+  String get event_censorshipDebate_title => 'مناقشة الرقابة';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'وثيقة مسربة تكشف الحالة الحقيقية لأنظمة السفينة المعطلة. ينتشر الذعر عبر الطوابق السفلية. يقترح مسؤول الاتصالات تقييد الوصول إلى المعلومات لمنع المزيد من الاضطرابات. المدافعون عن الحريات المدنية غاضبون.';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'ضمان حرية الوصول إلى جميع المعلومات';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'يتم تأسيس الشفافية الكاملة. يهدأ الذعر الأولي عندما يتجمع المستعمرون للمساعدة في حل المشكلات التي يفهمونها الآن. وتنمو الثقة في القيادة، على الرغم من أن بعض المعلومات تسبب الضيق.';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'تنفيذ السيطرة الكاملة على المعلومات';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'تتم الآن تصفية جميع الاتصالات من خلال الأمر. يتوقف الذعر ويحل محله هدوء غريب. لكن الشائعات تملأ الفراغ الذي تتركه الحقيقة الخاضعة للرقابة، وهي غالبا ما تكون أسوأ من الواقع.';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'تصفية المعلومات الحساسة للأمان فقط';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'تم إنشاء نظام التصنيف. تتدفق معظم المعلومات بحرية، لكن البيانات العسكرية وبيانات النظام الهامة تتطلب تصريحًا. حل وسط عملي يرضي في الغالب.';
+
+  @override
+  String get event_colonialCharter_title => 'الميثاق الاستعماري';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'مع اقتراب نهاية الكوكب، يجب على المستعمرين صياغة قوانين أساسية لمجتمعهم الجديد. وقد ظهرت ثلاثة معسكرات فلسفية، يدافع كل منها عن رؤية مختلفة لما يجب أن تصبح عليه المستعمرة. النقاش ساخن وشخصي للغاية.';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'ميثاق تقدمي يؤكد على الحقوق الفردية';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'ويكرس الميثاق الحريات الشخصية والمساواة والحراك الاجتماعي. الفنانون والمفكرون يحتفلون؛ ويحذر التقليديون من أن الحرية غير المقيدة تؤدي إلى الفوضى.';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'ميثاق محافظ يحافظ على تقاليد الأرض';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'وينظم الميثاق القيم التقليدية، والهياكل الأسرية، والالتزام الديني. يجد الكثيرون الراحة في العادات المألوفة؛ ويشعر آخرون بالاختناق بسبب ثقل تفكير العالم القديم.';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'ميثاق عملي يركز على البقاء والنمو';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'ويعطي الميثاق الأولوية لإدارة الموارد والتعليم الفني والتنمية الاقتصادية. إنها تفتقر إلى الشعر ولكنها تضمن أن تكون المستعمرة فعالة ومنظمة بشكل جيد.';
+
+  @override
+  String get event_separatistMovement_title => 'الحركة الانفصالية';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'أعلن فصيل من المستعمرين الاستقلال عن إدارة السفن. لقد تحصنوا في القسم الخلفي، مطالبين بالحق في إنشاء مستوطنتهم الخاصة عند الهبوط. إنهم يسيطرون على 15% من احتياطيات الغذاء للسفينة ومجموعة ملاحية احتياطية.';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'منح الحكم الذاتي الإقليمي في إطار فدرالي';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'ويقبل الانفصاليون باتفاق يقضي بإقامة منطقتهم الخاصة تحت حكم محلي، تحت مظلة فيدرالية فضفاضة. سابقة التشرذم تقلق البعض، لكن السلام محفوظ.';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'اقتحام المتاريس وإعادة توحيد القوة';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'فرق الأمن تقتحم القسم الخلفي. الانفصاليون يقاومون بشراسة. تمت استعادة النظام، ولكن بتكلفة باهظة. السفينة موحدة في الجسد، إن لم تكن في الروح.';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'معالجة المظالم الجذرية التي تقود الحركة';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'ويعمل الوسطاء على فهم ما دفع الفصيل بعيداً. إن الإصلاحات في توزيع الموارد والتمثيل تعيد الانفصاليين ببطء إلى الحظيرة. الشفاء يستغرق وقتا.';
+
+  @override
+  String get event_warCouncil_title => 'مجلس الحرب';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'مع اكتشاف التهديدات المحتملة في الأنظمة القريبة، تعقد قيادة السفينة مجلسًا حربيًا. والسؤال: ما هو مقدار الموارد المحدودة للمستعمرة التي ينبغي تخصيصها للاستعداد العسكري مقابل البنية التحتية المدنية؟';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'التسلح الكامل: صياغة الأسلحة وتدريب الجنود';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'يتم إعادة تجهيز ورش العمل لإنتاج الأسلحة. يتلقى كل مستعمر سليم الجسم تدريبًا قتاليًا. السفينة مليئة بالأذرع، لكن ميزانية المعدات الزراعية تتقلص.';
+
+  @override
+  String get event_warCouncil_choice1 => 'نزع السلاح: تحويل الأسلحة إلى أدوات';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'يتم إفراغ مستودع الأسلحة وإعادة تدوير محتوياته إلى مواد بناء. سيتم بناء المستعمرة بالمحاريث وليس بالسيوف. دعاة السلام يفرحون؛ الواقعيون يقلقون بشأن ما يكمن في الظلام.';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'الوضع الدفاعي فقط: الدروع والجدران، وليس السيوف';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'تذهب الموارد إلى التحصينات والدروع وأنظمة الإنذار المبكر. لا يتم إنتاج أي أسلحة هجومية. نهج متوازن يبقي الخيارات مفتوحة دون استفزاز الجيران المحتملين.';
+
+  @override
+  String get event_tradeFederation_title => 'الاتحاد التجاري';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'مع اقتراب المستعمرة من القدرة على البقاء، تناقش الفصائل كيفية هيكلة اقتصادها. ويتجاوز السؤال مجرد البقاء على قيد الحياة، فهو سيحدد نوع المجتمع الذي يتجذر على أرض غريبة. التجار، الطائفيون، والبيروقراطيون كلهم ​​يطرحون قضيتهم.';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'إنشاء مناطق تجارة حرة مع الحد الأدنى من التنظيم';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'تظهر الأسواق في كل وحدة سكنية. يزدهر الابتكار مع تنافس التجار. يتزايد عدم المساواة في الثروة، ولكن كذلك إجمالي الموارد المتاحة للمستعمرة.';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'تنفيذ المشاركة المجتمعية لجميع الموارد';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'تم إلغاء الملكية الخاصة. كل شيء ينتمي إلى الجميع. لا أحد يجوع، لكن لا أحد لديه الحافز لإنتاج أكثر من الحد الأدنى. الرداءة مريحة.';
+
+  @override
+  String get event_tradeFederation_choice2 => 'إنشاء نظام تجاري تديره الدولة';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'تسيطر الحكومة على جميع التجارة، وتحدد الأسعار وتخصيص الموارد. النظام عادل ولكنه غير مرن. تظهر الأسواق السوداء في ممرات الصيانة.';
+
+  @override
+  String get event_faithVsScience_title => 'الإيمان مقابل العلم';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'التقط تلسكوب السفينة صورًا لظاهرة كونية تتعارض بشكل مباشر مع المبدأ الأساسي للحركة الدينية السائدة. يريد كبير العلماء نشر النتائج. يصر الزعيم الديني على أنهم سوف يمزقون المجتمع.';
+
+  @override
+  String get event_faithVsScience_choice0 => 'نشر النتائج العلمية كاملة';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'الحقيقة تنتصر على الراحة. تتحرر البيانات وتتفكك الحركة الدينية. بعض المؤمنين يكيفون إيمانهم؛ والبعض الآخر يفقدها تمامًا. المعرفة تتقدم.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'قمع النتائج للحفاظ على الانسجام الاجتماعي';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'يتم تصنيف البيانات. يظل المجتمع الديني مستقرًا، لكن معنويات الفريق العلمي محبطة. الحقيقة المؤجلة ليست حقيقة مرفوضة، ولكنها تشعر بذلك.';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'تشكيل لجنة مشتركة لإيجاد الانسجام بين وجهتي النظر';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'يعمل العلماء واللاهوتيون معًا لإعادة تفسير النتائج. يظهر تركيب جديد يوسع الفهم والإيمان. ليس الجميع مقتنعين، لكن الحوار صحي.';
+
+  @override
+  String get event_surveillanceState_title => 'دولة المراقبة';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'بعد سلسلة من حوادث التخريب، يقترح رئيس الأمن تركيب أنظمة مراقبة في كل حجرة من السفينة. ستقوم الكاميرات والميكروفونات والماسحات الضوئية البيومترية بتتبع تحركات كل مستعمر. المدافعون عن الخصوصية مرعوبون.';
+
+  @override
+  String get event_surveillanceState_choice0 => 'رفض اقتراح المراقبة تماما';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'يتم الحفاظ على الخصوصية. يظل المخرب طليقًا، لكن المستعمرين ينامون بسهولة عندما يعلمون أنهم غير مراقبين. ويستمر التحقيق بالوسائل التقليدية.';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'تنفيذ المراقبة الكاملة عبر السفينة';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'تتم مراقبة كل ركن من أركان السفينة. يتم القبض على المخرب في غضون أيام. لكن الكاميرات بقيت، ولم يبد رئيس الأمن أي اهتمام بإطفائها. أبدًا.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'تثبيت مراقبة محدودة في المناطق الحرجة فقط';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'تغطي الكاميرات غرفة المحرك ومستودع الأسلحة والجسر. تظل أماكن المعيشة خاصة. يتم التعرف على المخرب في النهاية من خلال تحليل الأنماط. استجابة محسوبة.';
+
+  @override
+  String get event_nativeAlliance_title => 'التحالف الوطني';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'اقترحت الحضارة الأصلية معاهدة رسمية. يصل سفيرهم عبر المكوك، وهو كائن أنيق يتحدث من خلال جهاز مترجم متطور بشكل مذهل. أنها توفر ثلاثة أشكال من العلاقة، لكل منها آثار مختلفة على مستقبل المستعمرة.';
+
+  @override
+  String get event_nativeAlliance_choice0 => 'التوقيع على معاهدة تحالف متساوية';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'تنص المعاهدة على الدفاع المشترك والبحث المشترك والحقوق الإقليمية المتساوية. سوف تنمو الحضارتان معًا. يشارك السكان الأصليون المعرفة الزراعية التي تغير آفاق مستعمرتك.';
+
+  @override
+  String get event_nativeAlliance_choice1 =>
+      'التفاوض من موقع الهيمنة الاستعمارية';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'يمكنك الاستفادة من التكنولوجيا المتقدمة الخاصة بك لتأمين شروط مواتية. يتنازل السكان الأصليون عن الأراضي والموارد. يوقعون بأيدٍ مرتجفة. لقد شهد التاريخ هذا من قبل، ونادرا ما ينتهي على خير.';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'إقامة شراكة تجارية تركز على المنفعة المتبادلة';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'التجارة تسد الفجوة بين الأنواع. تتدفق المواد الأصلية إلى ورش العمل الخاصة بك؛ التكنولوجيا الخاصة بك تعمل على تحسين الدواء. الصداقة تنمو من الربح المتبادل.';
 }

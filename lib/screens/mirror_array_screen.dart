@@ -1,3 +1,4 @@
+import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,11 +13,12 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 // ── Theme constants ────────────────────────────────────────────────────────
 
-const _kBgColor = Color(0xFF0B1426);
+const _kBgColor = SpaceColors.deepSpace;
 const _kAccent = Color(0xFFE0E0E0);
 const _kStarCore = Colors.white;
 const _kStarGlow = Color(0xFFBBDEFB);
@@ -40,7 +42,7 @@ class MirrorArrayScreen extends ConsumerStatefulWidget {
 }
 
 class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, EventTypewriterMixin<MirrorArrayScreen> {
   // ── Animation controllers ──────────────────────────────────────────────
 
   /// Drives mirror orbit and beam cycling (60 s full rotation).
@@ -54,12 +56,14 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnim;
 
-  // ── Typewriter state ───────────────────────────────────────────────────
+  /// Merged listenable that drives the ring painter's AnimatedBuilder.
+  /// Hoisted into a field so the `Listenable.merge` wrapper is allocated once
+  /// at mount rather than on every rebuild — the typewriter calls `setState`
+  /// every 30 ms, and without this each rebuild forced AnimatedBuilder to
+  /// detach/reattach its listener to both underlying controllers.
+  late final Listenable _ringAnimation;
 
-  String _displayedText = '';
-  int _charIndex = 0;
-  Timer? _typewriterTimer;
-  bool _typewriterDone = false;
+  // ── Typewriter state ───────────────────────────────────────────────────
 
   // ── Choice state ───────────────────────────────────────────────────────
 
@@ -80,9 +84,10 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _titleGlowAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut),
-    );
+    _titleGlowAnim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _titleGlow, curve: Curves.easeInOut));
 
     _pulseController = AnimationController(
       vsync: this,
@@ -92,44 +97,18 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _startTypewriter();
-    if (PlatformConfig.skipAnimations) _skipTypewriter();
+    _ringAnimation = Listenable.merge([_starController, _pulseAnim]);
+
+    initTypewriter(widget.event.narrative);
+    if (PlatformConfig.skipAnimations) skipTypewriter();
 
     // SFX on load.
     GameSfx().playLong(GameSfx.alienTech);
   }
 
-  void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(
-      const Duration(milliseconds: 30),
-      (timer) {
-        if (_charIndex >= widget.event.narrative.length) {
-          timer.cancel();
-          if (mounted) setState(() => _typewriterDone = true);
-          return;
-        }
-        if (mounted) {
-          setState(() {
-            _charIndex++;
-            _displayedText = widget.event.narrative.substring(0, _charIndex);
-          });
-        }
-      },
-    );
-  }
-
-  void _skipTypewriter() {
-    _typewriterTimer?.cancel();
-    setState(() {
-      _displayedText = widget.event.narrative;
-      _charIndex = widget.event.narrative.length;
-      _typewriterDone = true;
-    });
-  }
-
   @override
   void dispose() {
-    _typewriterTimer?.cancel();
+    disposeTypewriter();
     _starController.dispose();
     _titleGlow.dispose();
     _pulseController.dispose();
@@ -152,16 +131,31 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
       if (e.value == 0) continue;
       final pct = (e.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_chip('${systemLabel(e.key)} $sign$pct%', const Color(0xFF00E5FF)));
+      chips.add(_chip('${systemLabel(e.key)} $sign$pct%', SpaceColors.cyan));
     }
     if (choice.nextPlanetModifiers.isNotEmpty) {
       chips.add(_chip('NAV DATA Acquired', Colors.greenAccent));
     }
-    if (choice.fuelDelta != 0) chips.add(_chip('FUEL ${choice.fuelDelta > 0 ? "+" : ""}${choice.fuelDelta}', choice.fuelDelta > 0 ? Colors.greenAccent : Colors.redAccent));
-    if (choice.probeDelta != 0) chips.add(_chip('PROBES ${choice.probeDelta > 0 ? "+" : ""}${choice.probeDelta}', choice.probeDelta > 0 ? Colors.greenAccent : Colors.redAccent));
+    if (choice.fuelDelta != 0) {
+      chips.add(
+        _chip(
+          'FUEL ${choice.fuelDelta > 0 ? "+" : ""}${choice.fuelDelta}',
+          choice.fuelDelta > 0 ? Colors.greenAccent : Colors.redAccent,
+        ),
+      );
+    }
+    if (choice.probeDelta != 0) {
+      chips.add(
+        _chip(
+          'PROBES ${choice.probeDelta > 0 ? "+" : ""}${choice.probeDelta}',
+          choice.probeDelta > 0 ? Colors.greenAccent : Colors.redAccent,
+        ),
+      );
+    }
 
     return Wrap(
-      spacing: 6, runSpacing: 4,
+      spacing: 6,
+      runSpacing: 4,
       alignment: WrapAlignment.center,
       children: chips,
     );
@@ -175,41 +169,47 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
         color: color.withValues(alpha: 0.1),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
-    );
-  }
-
-  // ── Shared widget builders ──────────────────────────────────────────
-
-  Widget _buildTitle() {
-    final screen = ScreenInfo.of(context);
-    return AnimatedBuilder(
-      animation: _titleGlowAnim,
-      builder: (_, __) => Text(
-        'MIRROR ARRAY',
-        textAlign: TextAlign.center,
+      child: Text(
+        text,
         style: TextStyle(
-          fontSize: screen.scaledFontSize(26),
-          fontWeight: FontWeight.bold,
-          color: _kAccent,
-          letterSpacing: 3,
-          shadows: [
-            Shadow(color: _kAccent.withValues(alpha: _titleGlowAnim.value), blurRadius: 20),
-            Shadow(color: _kStarGlow.withValues(alpha: _titleGlowAnim.value * 0.4), blurRadius: 40),
-          ],
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
+  // ── Shared widget builders ──────────────────────────────────────────
+
+  Widget _buildTitle() => EventAnimatedTitle(
+    text: 'MIRROR ARRAY',
+    glow: _titleGlowAnim,
+    accentColor: _kAccent,
+    fontSize: 26,
+    letterSpacing: 3,
+    secondaryGlowColor: _kStarGlow,
+    secondaryGlowAlphaScale: 0.4,
+  );
+
   Widget _buildNarrativeCard() {
+    // Reserved text = the FINAL string this card will display, used by an
+    // invisible ghost layer inside the card so it takes its final height from
+    // the first frame. Without this, the typewriter grows `displayedText` one
+    // character at a time, each line-wrap nudges the card taller, and the
+    // visual area below reflows one line at a time while the narrative plays.
+    final displayed = _showingOutcome && _selectedRing != null
+        ? widget.event.choices[_selectedRing!].outcome
+        : displayedText;
+    final reserved = _showingOutcome && _selectedRing != null
+        ? widget.event.choices[_selectedRing!].outcome
+        : widget.event.narrative;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _typewriterDone ? null : _skipTypewriter,
+      onTap: typewriterDone ? null : skipTypewriter,
       child: _OutcomeCard(
-        text: _showingOutcome && _selectedRing != null
-            ? widget.event.choices[_selectedRing!].outcome
-            : _displayedText,
+        text: displayed,
+        reservedText: reserved,
         isOutcome: _showingOutcome,
         choice: null,
         showEffectChips: false,
@@ -217,76 +217,204 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
     );
   }
 
-  Widget _buildVisualArea() {
+  /// One ring-choice button. Shared between the bottom-row and left-column
+  /// layouts so wiring (tap target, semantics, visuals) stays in one place —
+  /// only positioning and the label string differ between the two layouts.
+  Widget _buildChoiceButton({
+    required int r,
+    required String label,
+    required Color color,
+    required double fontSize,
+  }) {
+    return Semantics(
+      button: true,
+      enabled:
+          widget.event.choices[r].probeCost == 0 ||
+          ref.read(voyageProvider).probes >= widget.event.choices[r].probeCost,
+      label: '$label — ${widget.event.choices[r].text}',
+      child: GestureDetector(
+        onTap: () {
+          final choice = widget.event.choices[r];
+          final probes = ref.read(voyageProvider).probes;
+          if (choice.probeCost > 0 && probes < choice.probeCost) {
+            return;
+          }
+          HapticService().selection();
+          GameSfx().play(GameSfx.interestingFind);
+          setState(() {
+            _selectedRing = r;
+            _showingOutcome = true;
+          });
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) setState(() => _showEffectChips = true);
+          });
+          unawaited(ref.read(voyageProvider.notifier).handleEvent(choice));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            // Opaque dark fill behind the accent wash so the rainbow mirror
+            // glitter underneath doesn't show through and fight the label.
+            color: Color.alphaBlend(
+              color.withValues(alpha: 0.55),
+              SpaceColors.deepSpace,
+            ),
+            border: Border.all(color: color, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.45),
+                blurRadius: 12,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: color,
+              fontSize: fontSize,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(color: color.withValues(alpha: 0.6), blurRadius: 8),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualArea({
+    double scaleFactor = 1.0,
+    bool buttonsLeft = false,
+  }) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
         final h = constraints.maxHeight;
-        final cx = w / 2;
-        final cy = h / 2;
-        const radii = [0.18, 0.30, 0.42];
-        const labels = ['STUDY OPTICS', 'HARVEST MATERIAL', 'MAP ROUTES'];
         const labelColors = [_kInnerLabel, _kMiddleLabel, _kOuterLabel];
+
+        // When the buttons stack on the left the column is wide enough to
+        // fit 'HARVEST MATERIALS' without abbreviation. The bottom-row layout
+        // has narrower slots and still needs the shortened form.
+        final labels = buttonsLeft
+            ? const ['STUDY OPTICS', 'HARVEST MATERIALS', 'MAP ROUTES']
+            : const ['STUDY OPTICS', 'HARVEST MAT.', 'MAP ROUTES'];
+
+        if (buttonsLeft) {
+          // Phone layout: three buttons stacked vertically on the left,
+          // mirror visualization drawn in the remaining space on the right.
+          const buttonWidth = 148.0;
+          const buttonHeight = 44.0;
+          const buttonGap = 10.0;
+          const buttonLeftMargin = 4.0;
+          const ringGap = 10.0;
+          final ringAreaLeft = buttonLeftMargin + buttonWidth + ringGap;
+          final ringAreaWidth = (w - ringAreaLeft).clamp(0.0, double.infinity);
+          final totalButtonsH = buttonHeight * 3 + buttonGap * 2;
+          final buttonStartY = ((h - totalButtonsH) / 2).clamp(0.0, h);
+
+          return Stack(
+            children: [
+              // Mirror visualization occupies the right portion. Giving the
+              // painter its own narrower Size means ring radii (fractions of
+              // width) shrink naturally to fit the reduced area. Wrapped in a
+              // RepaintBoundary so the 60 fps ring/pulse repaints don't
+              // invalidate the button column or the narrative card beside it.
+              Positioned(
+                left: ringAreaLeft,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                child: RepaintBoundary(
+                  child: AnimatedBuilder(
+                    animation: _ringAnimation,
+                    builder: (_, __) => CustomPaint(
+                      size: Size(ringAreaWidth, h),
+                      painter: _MirrorArrayPainter(
+                        animationValue: _starController.value,
+                        pulseValue: _pulseAnim.value,
+                        selectedRing: _selectedRing,
+                        isResolved: _showingOutcome,
+                        scaleFactor: scaleFactor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Vertical button column on the left, centered on the axis.
+              if (typewriterDone && !_showingOutcome)
+                for (
+                  var r = 0;
+                  r < labels.length && r < widget.event.choices.length;
+                  r++
+                )
+                  Positioned(
+                    left: buttonLeftMargin,
+                    width: buttonWidth,
+                    top: buttonStartY + r * (buttonHeight + buttonGap),
+                    height: buttonHeight,
+                    child: _buildChoiceButton(
+                      r: r,
+                      label: labels[r],
+                      color: labelColors[r],
+                      fontSize: 12,
+                    ),
+                  ),
+            ],
+          );
+        }
+
+        // Default: buttons row pinned to the bottom of the visual area.
+        const buttonHeight = 40.0;
+        const buttonBottomMargin = 4.0;
+        const buttonGap = 6.0;
+        final slotWidth = (w - buttonGap * 2) / 3;
+        final buttonTopY = h - buttonHeight - buttonBottomMargin;
+
+        double slotLeftX(int r) => (slotWidth + buttonGap) * r;
 
         return Stack(
           children: [
-            // Mirror visualization (behind buttons).
             Positioned.fill(
-              child: AnimatedBuilder(
-                animation: Listenable.merge([_starController, _pulseAnim]),
-                builder: (_, __) => CustomPaint(
-                  size: Size(w, h),
-                  painter: _MirrorArrayPainter(
-                    animationValue: _starController.value,
-                    pulseValue: _pulseAnim.value,
-                    selectedRing: _selectedRing,
-                    isResolved: _showingOutcome,
+              child: RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _ringAnimation,
+                  builder: (_, __) => CustomPaint(
+                    size: Size(w, h),
+                    painter: _MirrorArrayPainter(
+                      animationValue: _starController.value,
+                      pulseValue: _pulseAnim.value,
+                      selectedRing: _selectedRing,
+                      isResolved: _showingOutcome,
+                      scaleFactor: scaleFactor,
+                    ),
                   ),
                 ),
               ),
             ),
-            // Ring choice buttons (on top of mirrors).
-            if (_typewriterDone && !_showingOutcome)
-              for (var r = 0; r < labels.length && r < widget.event.choices.length; r++)
+            if (typewriterDone && !_showingOutcome)
+              for (
+                var r = 0;
+                r < labels.length && r < widget.event.choices.length;
+                r++
+              )
                 Positioned(
-                  left: cx - w * 0.25,
-                  width: w * 0.5,
-                  top: cy - w * radii[r] - 24,
-                  height: 40,
-                  child: GestureDetector(
-                    onTap: () {
-                      final choice = widget.event.choices[r];
-                      final probes = ref.read(voyageProvider).probes;
-                      if (choice.probeCost > 0 && probes < choice.probeCost) return;
-                      HapticService().selection();
-                      GameSfx().play(GameSfx.interestingFind);
-                      setState(() {
-                        _selectedRing = r;
-                        _showingOutcome = true;
-                      });
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        if (mounted) setState(() => _showEffectChips = true);
-                      });
-                      ref.read(voyageProvider.notifier).handleEvent(choice);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: labelColors[r].withValues(alpha: 0.12),
-                        border: Border.all(color: labelColors[r].withValues(alpha: 0.4)),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        labels[r],
-                        style: TextStyle(
-                          color: labelColors[r],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
-                          shadows: [Shadow(color: labelColors[r].withValues(alpha: 0.6), blurRadius: 8)],
-                        ),
-                      ),
-                    ),
+                  left: slotLeftX(r),
+                  width: slotWidth,
+                  top: buttonTopY,
+                  height: buttonHeight,
+                  child: _buildChoiceButton(
+                    r: r,
+                    label: labels[r],
+                    color: labelColors[r],
+                    fontSize: 11,
                   ),
                 ),
           ],
@@ -298,75 +426,96 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
   @override
   Widget build(BuildContext context) {
     final screen = ScreenInfo.of(context);
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
+    // On compact/phone the buttons move into a left column, which leaves the
+    // ring area narrower than the original full-width layout (~200px of ~360).
+    // Bump the scale so rings fill the narrower area — without this the
+    // graphic feels undersized next to the button column.
+    final ringScale = screen.screenClass == ScreenClass.compact ? 1.15 : 1.0;
 
-    return Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field background.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => CustomPaint(
-                  painter: StarFieldPainter(
-                    animationValue: _starController.value,
-                    farStarCount: 80,
-                    midStarCount: 30,
-                    nearStarCount: 10,
-                  ),
-                ),
+    return EventPopScope(
+      resolved: _showingOutcome,
+      child: Scaffold(
+        backgroundColor: _kBgColor,
+        body: Stack(
+          children: [
+            // Star field background.
+            EventStarField(
+              controller: _starController,
+              farStarCount: 80,
+              midStarCount: 30,
+              nearStarCount: 10,
+            ),
+
+            // Content.
+            SafeArea(
+              bottom: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: !typewriterDone
+                    ? skipTypewriter
+                    : _showingOutcome
+                    ? () {
+                        GameSfx().playVaried(GameSfx.buttonClick);
+                        Navigator.of(context).pop();
+                      }
+                    : null,
+                child: isLandscape
+                    ? _buildLandscape()
+                    : _buildPortrait(ringScale: ringScale),
               ),
             ),
-          ),
-
-          // Content.
-          SafeArea(
-            bottom: false,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: !_typewriterDone
-                  ? _skipTypewriter
-                  : _showingOutcome
-                      ? () {
-                          GameSfx().playVaried(GameSfx.buttonClick);
-                          Navigator.of(context).pop();
-                        }
-                      : null,
-              child: isLandscape ? _buildLandscape() : _buildPortrait(),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildPortrait() {
+  Widget _buildPortrait({required double ringScale}) {
     return Column(
       children: [
         Expanded(
           child: ResponsiveContent(
             child: Column(
               children: [
-          const SizedBox(height: 8),
-          _buildTitle(),
-          const SizedBox(height: 16),
-          _buildNarrativeCard(),
-          if (_showEffectChips) ...[
-            const SizedBox(height: 6),
-            _buildEffectChipsRow(),
-          ],
-          const SizedBox(height: 8),
-          if (!_typewriterDone)
-            Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
-          if (_typewriterDone && !_showingOutcome)
-            Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2)),
-          if (_showingOutcome)
-            Text('TAP TO CONTINUE', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
-          const SizedBox(height: 8),
-          Expanded(child: _buildVisualArea()),
-          const SizedBox(height: 8),
+                const SizedBox(height: 8),
+                _buildTitle(),
+                const SizedBox(height: 16),
+                _buildNarrativeCard(),
+                if (_showEffectChips) ...[
+                  const SizedBox(height: 6),
+                  _buildEffectChipsRow(),
+                ],
+                const SizedBox(height: 8),
+                Expanded(
+                  child: _buildVisualArea(
+                    scaleFactor: ringScale,
+                    buttonsLeft: true,
+                  ),
+                ),
+                // Tap hint sits BELOW the visual area so it doesn't overlap
+                // the HARVEST MATERIAL button at the top of the ring graphic.
+                const SizedBox(height: 8),
+                if (!typewriterDone)
+                  Text(
+                    context.l10n.ui_common_tapToSkip,
+                    style: TextStyle(
+                      color: _kAccent.withValues(alpha: 0.5),
+                      fontSize: 12,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                if (_showingOutcome)
+                  Text(
+                    context.l10n.ui_common_tapToContinue,
+                    style: TextStyle(
+                      color: _kAccent.withValues(alpha: 0.5),
+                      fontSize: 12,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -405,12 +554,24 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
                         ),
                       ),
                       const SizedBox(height: 8),
-                      if (!_typewriterDone)
-                        Text('TAP TO SKIP', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
-                      if (_typewriterDone && !_showingOutcome)
-                        Text('TAP A RING TO CHOOSE', style: TextStyle(color: _kAccent.withValues(alpha: 0.6), fontSize: 12, letterSpacing: 2)),
+                      if (!typewriterDone)
+                        Text(
+                          context.l10n.ui_common_tapToSkip,
+                          style: TextStyle(
+                            color: _kAccent.withValues(alpha: 0.5),
+                            fontSize: 12,
+                            letterSpacing: 2,
+                          ),
+                        ),
                       if (_showingOutcome)
-                        Text('TAP TO CONTINUE', style: TextStyle(color: _kAccent.withValues(alpha: 0.5), fontSize: 12, letterSpacing: 2)),
+                        Text(
+                          context.l10n.ui_common_tapToContinue,
+                          style: TextStyle(
+                            color: _kAccent.withValues(alpha: 0.5),
+                            fontSize: 12,
+                            letterSpacing: 2,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -427,7 +588,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
           ),
         ),
         // Ad banner full width at bottom.
-                    PremiumAdGate(child: AdaptiveBannerAd()),
+        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -438,51 +599,66 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
 class _OutcomeCard extends StatelessWidget {
   const _OutcomeCard({
     required this.text,
+    required this.reservedText,
     required this.isOutcome,
     this.choice,
     this.showEffectChips = false,
   });
 
+  /// Currently visible text (typewriter-animated subset, or the final outcome
+  /// string once a choice has been selected).
   final String text;
+
+  /// The FULL text this card will eventually display in its current state —
+  /// drawn into an invisible ghost layer so the card reserves its final height
+  /// immediately and doesn't grow line-by-line as the typewriter plays.
+  final String reservedText;
   final bool isOutcome;
   final EventChoice? choice;
   final bool showEffectChips;
 
   List<_EffectChipData> _buildEffectChips() {
-    if (choice == null) return [];
+    final c = choice;
+    if (c == null) return [];
     final chips = <_EffectChipData>[];
 
-    for (final entry in choice!.shipEffects.entries) {
+    for (final entry in c.shipEffects.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+        ),
+      );
     }
 
-    if (choice!.colonistDelta != 0) {
-      final sign = choice!.colonistDelta > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: 'COLONISTS',
-        delta: '$sign${choice!.colonistDelta}',
-        isPositive: choice!.colonistDelta > 0,
-        color: Colors.orange,
-      ));
+    if (c.colonistDelta != 0) {
+      final sign = c.colonistDelta > 0 ? '+' : '';
+      chips.add(
+        _EffectChipData(
+          label: 'COLONISTS',
+          delta: '$sign${c.colonistDelta}',
+          isPositive: c.colonistDelta > 0,
+          color: Colors.orange,
+        ),
+      );
     }
 
-    for (final entry in choice!.planetModifiers.entries) {
+    for (final entry in c.planetModifiers.entries) {
       if (entry.value == 0) continue;
       final pct = (entry.value * 100).round();
       final sign = pct > 0 ? '+' : '';
-      chips.add(_EffectChipData(
-        label: systemLabel(entry.key),
-        delta: '$sign$pct%',
-        isPositive: entry.value > 0,
-        color: _kOuterLabel,
-      ));
+      chips.add(
+        _EffectChipData(
+          label: systemLabel(entry.key),
+          delta: '$sign$pct%',
+          isPositive: entry.value > 0,
+          color: _kOuterLabel,
+        ),
+      );
     }
 
     return chips;
@@ -491,66 +667,82 @@ class _OutcomeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chips = _buildEffectChips();
+    const textStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 15,
+      height: 1.5,
+      letterSpacing: 0.3,
+    );
 
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxHeight: 190),
       child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _kBgColor.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isOutcome
-              ? _kAccent.withValues(alpha: 0.8)
-              : _kAccent.withValues(alpha: 0.3),
-          width: isOutcome ? 2 : 1,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _kBgColor.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isOutcome
+                ? _kAccent.withValues(alpha: 0.8)
+                : _kAccent.withValues(alpha: 0.3),
+            width: isOutcome ? 2 : 1,
+          ),
+          boxShadow: isOutcome
+              ? [
+                  BoxShadow(
+                    color: _kAccent.withValues(alpha: 0.15),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ]
+              : null,
         ),
-        boxShadow: isOutcome
-            ? [
-                BoxShadow(
-                  color: _kAccent.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  spreadRadius: 2,
-                ),
-              ]
-            : null,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child: Text(
-                text,
-                key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  height: 1.5,
-                  letterSpacing: 0.3,
-                ),
-              ),
-            ),
-            if (chips.isNotEmpty && showEffectChips) ...[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (var i = 0; i < chips.length; i++)
-                    _EffectChip(
-                      data: chips[i],
-                      delay: Duration(milliseconds: 80 * i),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Ghost-backed narrative: invisible full text behind the
+              // visible (growing) text. Pinning the width with SizedBox makes
+              // both layers wrap at the same column so line breaks align and
+              // the Stack's height stays pinned to the ghost from frame 1.
+              SizedBox(
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    Opacity(
+                      opacity: 0,
+                      child: Text(reservedText, style: textStyle),
                     ),
-                ],
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      child: Text(
+                        text,
+                        key: ValueKey(isOutcome ? 'outcome' : 'narrative'),
+                        style: textStyle,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              if (chips.isNotEmpty && showEffectChips) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var i = 0; i < chips.length; i++)
+                      _EffectChip(
+                        data: chips[i],
+                        delay: Duration(milliseconds: 80 * i),
+                      ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
@@ -627,10 +819,7 @@ class _EffectChipState extends State<_EffectChip>
             color: chipColor.withValues(alpha: 0.15),
             border: Border.all(color: chipColor.withValues(alpha: 0.5)),
             boxShadow: [
-              BoxShadow(
-                color: chipColor.withValues(alpha: 0.2),
-                blurRadius: 8,
-              ),
+              BoxShadow(color: chipColor.withValues(alpha: 0.2), blurRadius: 8),
             ],
           ),
           child: Text(
@@ -657,12 +846,18 @@ class _MirrorArrayPainter extends CustomPainter {
     required this.pulseValue,
     required this.selectedRing,
     required this.isResolved,
+    this.scaleFactor = 1.0,
   });
 
   final double animationValue;
   final double pulseValue;
   final int? selectedRing;
   final bool isResolved;
+
+  /// Multiplies the effective width used for ring radii and star sizing so the
+  /// whole graphic shrinks proportionally while staying centered in its slot.
+  /// Set below 1.0 when the layout is tight (e.g. phone + banner ad visible).
+  final double scaleFactor;
 
   // Ring configuration: radiusFraction, mirrorCount, mirrorSize, orbitSpeed.
   static const _rings = [
@@ -673,12 +868,23 @@ class _MirrorArrayPainter extends CustomPainter {
 
   static const _ringLabelColors = [_kInnerLabel, _kMiddleLabel, _kOuterLabel];
 
+  // Precomputed per-beam alpha values. The original code created a fresh
+  // `Random(42)` on every paint to get a stable per-beam brightness sequence;
+  // caching the list avoids the Random allocation while keeping the same
+  // visual result.
+  static final List<double> _beamAlphas = _computeBeamAlphas();
+
+  static List<double> _computeBeamAlphas() {
+    final rng = Random(42);
+    return List<double>.generate(10, (_) => 0.06 + 0.04 * rng.nextDouble());
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final center = Offset(cx, cy);
-    final w = size.width;
+    final w = size.width * scaleFactor;
 
     // ── Light beams (behind mirrors) ─────────────────────────────────────
     _drawBeams(canvas, center, w);
@@ -734,11 +940,7 @@ class _MirrorArrayPainter extends CustomPainter {
     );
 
     // Bright core point.
-    canvas.drawCircle(
-      center,
-      pulseRadius * 0.15,
-      Paint()..color = _kStarCore,
-    );
+    canvas.drawCircle(center, pulseRadius * 0.15, Paint()..color = _kStarCore);
   }
 
   void _drawRing(Canvas canvas, Offset center, double w, int ringIndex) {
@@ -765,8 +967,11 @@ class _MirrorArrayPainter extends CustomPainter {
         alpha = 0.85 + 0.15 * pulseValue;
       }
 
-      final mirrorColor = Color.lerp(_kMirrorBase, shimmer, 0.3)!
-          .withValues(alpha: alpha);
+      final mirrorColor = Color.lerp(
+        _kMirrorBase,
+        shimmer,
+        0.3,
+      )!.withValues(alpha: alpha);
 
       // Draw mirror as a small rotated rectangle facing the center.
       canvas.save();
@@ -780,10 +985,7 @@ class _MirrorArrayPainter extends CustomPainter {
       );
 
       // Mirror body.
-      canvas.drawRect(
-        rect,
-        Paint()..color = mirrorColor,
-      );
+      canvas.drawRect(rect, Paint()..color = mirrorColor);
 
       // Specular highlight on mirror.
       if (!isDimmed) {
@@ -813,19 +1015,36 @@ class _MirrorArrayPainter extends CustomPainter {
       canvas.restore();
     }
 
-    // Faint orbit ring guide.
+    // Colored orbit ring guide — stronger separation between ring bands.
+    final bandColor = _ringLabelColors[ringIndex];
+    final guideAlpha = isDimmed
+        ? 0.12
+        : (isResolved && isSelected ? 0.85 : 0.45);
+    final guideStroke = (isResolved && isSelected) ? 2.2 : 1.4;
+
+    // Soft glow under the orbit line.
     canvas.drawCircle(
       center,
       radius,
       Paint()
-        ..color = _kAccent.withValues(alpha: isDimmed ? 0.03 : 0.08)
+        ..color = bandColor.withValues(alpha: guideAlpha * 0.4)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.5,
+        ..strokeWidth = guideStroke + 3
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+    );
+
+    // Solid orbit ring.
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = bandColor.withValues(alpha: guideAlpha)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = guideStroke,
     );
   }
 
   void _drawBeams(Canvas canvas, Offset center, double w) {
-    final rng = Random(42);
     const beamCount = 10;
 
     for (var b = 0; b < beamCount; b++) {
@@ -834,8 +1053,8 @@ class _MirrorArrayPainter extends CustomPainter {
           ? selectedRing!
           : b % _rings.length;
       final ring = _rings[ringIdx];
-      final mirrorIdx = (b * 7 + (animationValue * ring.count * 2).floor()) %
-          ring.count;
+      final mirrorIdx =
+          (b * 7 + (animationValue * ring.count * 2).floor()) % ring.count;
       final orbitOffset = animationValue * 2 * pi * ring.speed;
       final angle = (2 * pi * mirrorIdx / ring.count) + orbitOffset;
       final radius = w * ring.radius;
@@ -846,7 +1065,7 @@ class _MirrorArrayPainter extends CustomPainter {
       );
 
       final isDimmed = isResolved && selectedRing != ringIdx;
-      final beamAlpha = isDimmed ? 0.0 : (0.06 + 0.04 * rng.nextDouble());
+      final beamAlpha = isDimmed ? 0.0 : _beamAlphas[b];
 
       if (beamAlpha <= 0) continue;
 
@@ -864,5 +1083,6 @@ class _MirrorArrayPainter extends CustomPainter {
       animationValue != old.animationValue ||
       pulseValue != old.pulseValue ||
       selectedRing != old.selectedRing ||
-      isResolved != old.isResolved;
+      isResolved != old.isResolved ||
+      scaleFactor != old.scaleFactor;
 }

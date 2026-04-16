@@ -9,9 +9,6 @@ class AppLocalizationsTh extends AppLocalizations {
   AppLocalizationsTh([String locale = 'th']) : super(locale);
 
   @override
-  String get appTitle => 'Stellar Broadcast';
-
-  @override
   String get ui_title_stellar => 'STELLAR';
 
   @override
@@ -37,6 +34,10 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get ui_title_startVoyage => 'เริ่มการเดินทาง';
+
+  @override
+  String get ui_title_seedInvalid =>
+      'รหัสเมล็ดพันธุ์ไม่ถูกต้อง ใช้เฉพาะ A–Z และ 0–9';
 
   @override
   String ui_voyage_sector(int count) {
@@ -197,6 +198,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ui_scan_statRadiation => 'รังสี';
 
   @override
+  String ui_scan_probesCount(int count) {
+    return 'คำถาม: $count';
+  }
+
+  @override
+  String ui_scan_uncertaintyPct(int percent) {
+    return 'ความไม่แน่นอน: ±$percent%';
+  }
+
+  @override
   String get ui_landing_planetAnalysis => 'การวิเคราะห์ดาวเคราะห์';
 
   @override
@@ -294,22 +305,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ui_landing_statLandingSys => 'ระบบลงจอด';
 
   @override
-  String get ui_landingSequence_phase1 => 'ขั้นที่ 1: ยืนยันวงโคจร';
-
-  @override
-  String get ui_landingSequence_phase1Desc =>
-      'หน้าต่างร่อนลงเปิดแล้ว ยืนยันการเข้าสู่ชั้นบรรยากาศ';
-
-  @override
-  String get ui_landingSequence_phase2 => 'ขั้นที่ 2: เปลวไฟบรรยากาศ';
-
-  @override
-  String get ui_landingSequence_title => 'ลำดับการลงจอด';
-
-  @override
-  String get ui_landingSequence_viewColonyReport => 'ดูรายงานอาณานิคม';
-
-  @override
   String get ui_ending_colonyEstablished => 'สถาปนาอาณานิคมแล้ว';
 
   @override
@@ -335,6 +330,18 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get ui_ending_challengeFriend => 'ท้าเพื่อน';
+
+  @override
+  String get ui_ending_shareCard => 'แชร์การ์ด';
+
+  @override
+  String get ui_ending_shareCardDialogTitle => 'แบ่งปันการเดินทางของคุณ';
+
+  @override
+  String get ui_ending_shareCardShare => 'แบ่งปัน';
+
+  @override
+  String get ui_ending_shareCardCancel => 'ยกเลิก';
 
   @override
   String get ui_ending_copySeed => 'คัดลอกซีด';
@@ -468,6 +475,15 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get ui_settings_systemDefault => 'ค่าเริ่มต้นของระบบ';
+
+  @override
+  String get ui_settings_statsPosition => 'สถิติและตำแหน่งปุ่ม';
+
+  @override
+  String get ui_settings_statsLeft => 'ซ้าย';
+
+  @override
+  String get ui_settings_statsRight => 'ขวา';
 
   @override
   String get ui_legacy_title => 'ศูนย์มรดก';
@@ -769,6 +785,36 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get planet_featureMedicinalFlora => 'พืชสมุนไพร';
+
+  @override
+  String get planet_featurePerpetualAurora => 'ออโรร่าตลอดกาล';
+
+  @override
+  String get planet_featurePetrifiedMegaflora => 'Megaflora กลายเป็นหิน';
+
+  @override
+  String get planet_featureUndergroundRivers => 'แม่น้ำใต้ดิน';
+
+  @override
+  String get planet_featureObsidianPlains => 'ที่ราบออบซิเดียน';
+
+  @override
+  String get planet_featureSaltFlats => 'เกลือแฟลต';
+
+  @override
+  String get planet_featureCarnivorousFlora => 'ฟลอร่ากินเนื้อเป็นอาหาร';
+
+  @override
+  String get planet_featureGhostCities => 'เมืองผี';
+
+  @override
+  String get planet_featureArchiveVaults => 'ห้องนิรภัยเก็บถาวร';
+
+  @override
+  String get planet_featureSinkholeFields => 'ทุ่งหลุมยุบ';
+
+  @override
+  String get planet_featureApexPredator => 'เอเพ็กซ์ พรีเดเตอร์';
 
   @override
   String get ui_monthJan => 'ม.ค.';
@@ -4191,18 +4237,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ending_scoreLabel_atmosphere => 'บรรยากาศ';
 
   @override
-  String get ending_scoreLabel_gravity => 'แรงโน้มถ่วง';
-
-  @override
-  String get ending_scoreLabel_temperature => 'อุณหภูมิ';
-
-  @override
-  String get ending_scoreLabel_water => 'น้ำ';
-
-  @override
-  String get ending_scoreLabel_resources => 'ทรัพยากร';
-
-  @override
   String get ending_scoreLabel_nativeRelations => 'ความสัมพันธ์กับชนพื้นเมือง';
 
   @override
@@ -4311,19 +4345,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ending_governmentTribalCouncil => 'สภาชนเผ่า';
 
   @override
-  String get ending_governmentTheocracy => 'Theocracy';
+  String get ending_governmentTheocracy => 'เทวาธิปไตย';
 
   @override
-  String get ending_governmentMilitaryJunta => 'Military Junta';
+  String get ending_governmentMilitaryJunta => 'เผด็จการทหาร';
 
   @override
-  String get ending_governmentCorporateOligarchy => 'Corporate Oligarchy';
+  String get ending_governmentCorporateOligarchy => 'คณาธิปไตยขององค์กร';
 
   @override
-  String get ending_governmentFascistState => 'Fascist State';
+  String get ending_governmentFascistState => 'รัฐฟาสซิสต์';
 
   @override
-  String get ending_governmentCommune => 'Commune';
+  String get ending_governmentCommune => 'ชุมชน';
 
   @override
   String get ending_cultureRenaissance => 'ยุคฟื้นฟูศิลปวิทยา';
@@ -4377,10 +4411,10 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ending_nativesConflict => 'ขัดแย้ง';
 
   @override
-  String get ending_nativesAlliance => 'Alliance';
+  String get ending_nativesAlliance => 'พันธมิตร';
 
   @override
-  String get ending_nativesSubjugation => 'Subjugation';
+  String get ending_nativesSubjugation => 'การปราบปราม';
 
   @override
   String get ending_landscapeGravityHigh => 'แรงโน้มถ่วงหนักกดทับทุกสิ่ง ';
@@ -4417,66 +4451,6 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get ending_landscapeAtmoLow =>
       'ความดันบรรยากาศต่ำอันตราย — ที่อยู่อาศัยปิดสนิทจำเป็น ';
-
-  @override
-  String get ending_landscapeMoonMetalRich =>
-      'ดวงจันทร์ที่เรืองรังด้วยแร่ธาตุครองท้องฟ้ายามค่ำ พื้นผิวโลหะสะท้อนแสงดาวทั่วภูมิทัศน์ ';
-
-  @override
-  String get ending_landscapeMoonUnstable =>
-      'ดวงจันทร์ที่แตกร้าวทะมึนอยู่เหนือศีรษะ พื้นผิวที่พังทลายลากวงแหวนเศษซากจาง — เตือนถึงการทิ้งระเบิดที่คุกคามเบื้องล่างตลอดเวลา ';
-
-  @override
-  String get ending_landscapeMoonBarren =>
-      'ดวงจันทร์ซีดแห้งแล้งขึ้นเหนือขอบฟ้า พื้นผิวที่เต็มหลุมอุกกาบาตเป็นผู้เฝ้ายามเงียบเหนืออาณานิคม ';
-
-  @override
-  String get ending_landscapeHighRotation =>
-      'ดาวเคราะห์หมุนเร็ว — วันยาวเพียงชั่วโมง และลมโคริออลิสกระหน่ำทุกสิ่งที่ตั้งสูง ';
-
-  @override
-  String get ending_landscapeLowRotation =>
-      'ดาวเคราะห์หมุนช้าอย่างทรมาน ซีกหันดวงอาทิตย์ร้อนจัดขณะด้านมืดเยือกแข็ง เฉพาะแถบทไวไลท์ระหว่างนั้นเท่านั้นที่ให้ที่หลบ ';
-
-  @override
-  String get ending_landscapeVolcanic =>
-      'เทือกภูเขาไฟแยกขอบฟ้า ไหล่เขาลายด้วยแม่น้ำหินหลอมเหลว อากาศมีรสกำมะถันและพื้นดินสั่นสะเทือนใต้เท้า ';
-
-  @override
-  String get ending_landscapeTectonic =>
-      'เปลือกโลกแตกร้าวและกระสับกระส่าย — รอยแยกใหม่เปิดโดยไม่เตือน เผยสายแร่ระยิบท่ามกลางเมฆฝุ่น ';
-
-  @override
-  String get ending_landscapeElectricalStorms =>
-      'สายฟ้าพาดผ่านท้องฟ้าเป็นผืนต่อเนื่อง เปลี่ยนกลางคืนเป็นกลางวันและเติมอากาศด้วยกลิ่นโอโซน ';
-
-  @override
-  String get ending_landscapeToxicSpores =>
-      'เมฆสปอร์เรืองแสงลอยตามสายลม สวยงามและอันตรายถึงชีวิต — ผู้ตั้งอาณานิคมต้องการที่อยู่อาศัยปิดสนิทหรือหน้ากากกรองเพื่อรอดกลางแจ้ง ';
-
-  @override
-  String get ending_landscapeDeepOceans =>
-      'ดาวเคราะห์เป็นมหาสมุทรเกือบทั้งหมด — ผืนน้ำมืดอันกว้างใหญ่ทอดยาวถึงทุกขอบฟ้า เพียงหมู่เกาะกระจัดกระจายโผล่เหนือผิวน้ำ ';
-
-  @override
-  String get ending_landscapeGeothermalVents =>
-      'ปล่องความร้อนใต้พิภพทะลุเปลือกโลก พ่นไอน้ำอุดมแร่ธาตุที่ให้ความอบอุ่นแก่ภูมิทัศน์โดยรอบและค้ำจุนโอเอซิสแห่งชีวิต ';
-
-  @override
-  String get ending_landscapeStrongMagnetosphere =>
-      'สนามแม่เหล็กอันทรงพลังห่อหุ้มดาวเคราะห์ เบี่ยงรังสีดาวแต่สร้างปัญหาให้อิเล็กทรอนิกส์ไม่มีเกราะ เข็มทิศหมุนไร้ประโยชน์ ';
-
-  @override
-  String get ending_landscapeWeakMagnetosphere =>
-      'ปราศจากสนามแม่เหล็กแรง ลมดาวลอกบรรยากาศชั้นบน แสงเหนืออันตระการตาพลิ้วทั่วท้องฟ้าทุกละติจูด ';
-
-  @override
-  String get ending_landscapeMegafauna =>
-      'สิ่งมีชีวิตมหึมาเคลื่อนผ่านภูมิทัศน์ — บางตัวใหญ่เท่าอาคาร รอยเท้าของมันรู้สึกได้ไกลหลายกิโลเมตร ';
-
-  @override
-  String get ending_landscapeSymbioticOrganisms =>
-      'ระบบนิเวศทำงานเป็นใยพึ่งพาอาศัยที่เชื่อมต่อกัน: ทุกสิ่งมีชีวิตขึ้นอยู่กับและค้ำจุนเพื่อนบ้านในสมดุลที่สง่างามแต่เปราะบาง ';
 
   @override
   String get ending_landscapeGravityWells =>
@@ -4523,27 +4497,27 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String ending_govSentenceTheocracy(String planetName) {
-    return 'A theocratic council guides $planetName, drawing wisdom from the faith that sustained the colonists through the void.';
+    return 'สภาตามระบอบของพระเจ้านำทาง $planetName โดยดึงภูมิปัญญามาจากศรัทธาที่ค้ำจุนชาวอาณานิคมผ่านความว่างเปล่า';
   }
 
   @override
   String ending_govSentenceMilitaryJunta(String planetName) {
-    return 'A military command structure governs $planetName, the discipline that saved them in space now defining their civilization.';
+    return 'โครงสร้างการบังคับบัญชาทางทหารควบคุม $planetName ซึ่งเป็นวินัยที่ช่วยให้พวกเขารอดพ้นจากอวกาศ ซึ่งปัจจุบันได้กำหนดอารยธรรมของพวกเขาแล้ว';
   }
 
   @override
   String ending_govSentenceCorporateOligarchy(String planetName) {
-    return 'A consortium of resource managers leads $planetName, their economic acumen having proven essential for survival.';
+    return 'กลุ่มผู้จัดการทรัพยากรเป็นผู้นำ $planetName ความเฉียบแหลมทางเศรษฐกิจที่ได้รับการพิสูจน์แล้วว่าจำเป็นต่อการอยู่รอด';
   }
 
   @override
   String ending_govSentenceFascistState(String planetName) {
-    return 'An authoritarian regime controls $planetName with an iron fist, civil liberties sacrificed for order in the new world.';
+    return 'ระบอบเผด็จการควบคุม $planetName ด้วยกำปั้นเหล็ก เสรีภาพของพลเมืองที่เสียสละเพื่อความสงบเรียบร้อยในโลกใหม่';
   }
 
   @override
   String ending_govSentenceCommune(String planetName) {
-    return 'The people of $planetName govern themselves collectively, sharing resources and decisions equally among all colonists.';
+    return 'ผู้คนใน $planetName ปกครองตนเองร่วมกัน แบ่งปันทรัพยากรและการตัดสินใจอย่างเท่าเทียมกันในหมู่ชาวอาณานิคมทั้งหมด';
   }
 
   @override
@@ -4583,10 +4557,6 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get ending_moonUnstable =>
       'ดวงจันทร์ไม่เสถียรในวงโคจรที่เสื่อมถอยโปรยเศษซากลงบนอาณานิคม ทำลายสาธารณูปโภคและเทคโนโลยีที่ทดแทนไม่ได้ในช่วงอุกกาบาตเป็นระยะ';
-
-  @override
-  String get ending_moonBarren =>
-      'ดวงจันทร์แห้งแล้งลอยอยู่บนท้องฟ้าต่างดาว เพื่อนร่วมทางอ้างว้างที่ไม่ให้อะไรแก่ผู้ตั้งอาณานิคมนอกจากทิวทัศน์คุ้นเคยให้เฝ้ามองในค่ำคืนยาวนาน';
 
   @override
   String get ending_culturePhrase_renaissance =>
@@ -4674,12 +4644,12 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String ending_nativeSentenceAlliance(String planetName) {
-    return 'A formal alliance binds the colonists and the native civilization of $planetName, their combined knowledge building something greater than either could alone.';
+    return 'พันธมิตรอย่างเป็นทางการผูกมัดชาวอาณานิคมและอารยธรรมพื้นเมืองของ $planetName ความรู้ที่รวมกันของพวกเขาสร้างบางสิ่งที่ยิ่งใหญ่เกินกว่าจะทำได้เพียงลำพัง';
   }
 
   @override
   String ending_nativeSentenceSubjugation(String planetName) {
-    return 'The native population of $planetName lives under colonial rule, their culture suppressed as the colonists impose their own order.';
+    return 'ประชากรพื้นเมืองของ $planetName อาศัยอยู่ภายใต้การปกครองของอาณานิคม วัฒนธรรมของพวกเขาถูกระงับเนื่องจากชาวอาณานิคมออกคำสั่งของตนเอง';
   }
 
   @override
@@ -4717,26 +4687,7 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
-  String get ui_moons => 'ดวงจันทร์';
-
-  @override
-  String get ui_rings => 'วงแหวน';
-
-  @override
   String get ui_landing_landOnMoon => 'ลงจอดบนดวงจันทร์';
-
-  @override
-  String ui_landing_moonComparison(String moonPercent, String planetPercent) {
-    return 'ดวงจันทร์: $moonPercent% vs ดาวเคราะห์: $planetPercent%';
-  }
-
-  @override
-  String get ui_landing_lowerGravity => 'แรงโน้มถ่วงต่ำกว่า — ลงจอดง่ายขึ้น';
-
-  @override
-  String ui_landing_ringSystem(String type) {
-    return 'ระบบวงแหวน$type';
-  }
 
   @override
   String get moon_barren => 'แห้งแล้ง';
@@ -4764,60 +4715,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get ring_metallic => 'โลหะ';
-
-  @override
-  String get ending_landscapeMoonSingle =>
-      'ดวงจันทร์ดวงเดียวแขวนอยู่บนท้องฟ้าเหนืออาณานิคม';
-
-  @override
-  String ending_landscapeMoonMultiple(int count) {
-    return 'ดวงจันทร์ $count ดวงโคจรอยู่เบื้องบน ทอดเงาเลื่อนไหลข้ามผืนแผ่นดิน';
-  }
-
-  @override
-  String get ending_landscapeMoonHabitable =>
-      'ในหมู่นั้น โลกที่อยู่อาศัยได้เรียกร้องความสนใจ — อัญมณีสีเขียวที่เปิดพรมแดนที่สองให้สำรวจ';
-
-  @override
-  String get ending_landscapeMoonIce =>
-      'ดวงจันทร์เยือกแข็งเปล่งประกายด้วยแหล่งน้ำแข็งมหาศาล คลังสำรองที่รอการเปิดใช้';
-
-  @override
-  String get ending_landscapeIceHarvest =>
-      'น้ำแข็งที่เก็บเกี่ยวจากดวงจันทร์เยือกแข็งเสริมแหล่งน้ำของอาณานิคม เปลี่ยนโลกแห้งแล้งให้พอมีชีวิตอยู่ได้';
-
-  @override
-  String get ending_landscapeMoonLanding =>
-      'อาณานิคมก่อตั้งขึ้นไม่ใช่บนดาวเคราะห์ แต่บนดวงจันทร์ที่มีแนวโน้มดีที่สุด — โลกเล็กกว่าที่แรงโน้มถ่วงอ่อนโยนและอนาคตสดใสกว่า';
-
-  @override
-  String get ending_landscapeRingDust =>
-      'วงแหวนฝุ่นจางๆ โค้งพาดท้องฟ้า เพิ่มความงามเหนือจริงให้ทุกรุ่งอรุณ';
-
-  @override
-  String get ending_landscapeRingIce =>
-      'วงแหวนน้ำแข็งเจิดจ้าจับแสงดาว วาดท้องฟ้าด้วยเปลวปริซึม';
-
-  @override
-  String get ending_landscapeRingRocky =>
-      'วงแหวนหินหนาแน่นล้อมรอบดาวเคราะห์ แหล่งวัสดุก่อสร้างที่ค่อยๆ ตกลงมาสู่เบื้องล่าง';
-
-  @override
-  String get ending_landscapeRingMetallic =>
-      'วงแหวนโลหะระยิบระยับเหนือศีรษะ อุดมด้วยแร่ที่หล่อเลี้ยงอุตสาหกรรมของอาณานิคม';
-
-  @override
-  String get ending_moonHabitableNote =>
-      'ดวงจันทร์ที่อยู่อาศัยได้เปิดโอกาสครั้งที่สองในการตั้งอาณานิคม';
-
-  @override
-  String get ending_moonIceHarvestNote =>
-      'น้ำแข็งที่เก็บเกี่ยวจากดวงจันทร์เยือกแข็งเสริมแหล่งน้ำของอาณานิคม';
-
-  @override
-  String ending_moonCountSentence(int count) {
-    return 'อาณานิคมโคจรอยู่ใต้ดวงจันทร์ $count ดวง';
-  }
 
   @override
   String get event_aiSoliloquy_title => 'บทพูดคนเดียวของ AI';
@@ -5333,6 +5230,30 @@ class AppLocalizationsTh extends AppLocalizations {
   String get ui_codex_noSynergy => '—';
 
   @override
+  String get ui_common_tapToSkip => 'แตะเพื่อข้าม';
+
+  @override
+  String get ui_common_tapRingToChoose => 'แตะแหวนเพื่อเลือก';
+
+  @override
+  String get ui_common_tapToContinue => 'แตะเพื่อดำเนินการต่อ';
+
+  @override
+  String get ui_tooltip_back => 'กลับ';
+
+  @override
+  String get ui_tooltip_codex => 'โคเด็กซ์';
+
+  @override
+  String get ui_tooltip_settings => 'การตั้งค่า';
+
+  @override
+  String get ui_tooltip_leaderboards => 'ลีดเดอร์บอร์ด';
+
+  @override
+  String get ui_tooltip_bugReport => 'รายงานข้อบกพร่อง';
+
+  @override
   String get event_pulsarLighthouse_title => 'ประภาคารพัลซาร์';
 
   @override
@@ -5354,6 +5275,13 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get event_pulsarLighthouse_outcome1 =>
       'เราอ้อมพัลซาร์ไปไกล เผาเชื้อเพลิงเพิ่มเพื่อรักษาวิถีที่ปลอดภัย ลูกเรือเฝ้าดูลำแสงกวาดผ่านหน้าต่างกรองแสง — งดงาม แต่ไกลออกไป';
+
+  @override
+  String get event_pulsarLighthouse_choice2 => 'ถอยไปก่อนที่กวาดจะมาถึงเรา';
+
+  @override
+  String get event_pulsarLighthouse_outcome2 =>
+      'เราเหวี่ยงออกไปที่การเผาไหม้ฉุกเฉินก่อนที่ลำแสงถัดไปจะผ่านไป สัญญาณของพัลซาร์จางหายไปข้างหลังเรา ไม่มีข้อมูลใดๆ ไม่ได้รับอันตรายใดๆ มีการใช้เชื้อเพลิงเพียงเล็กน้อยในการหลบหลีก';
 
   @override
   String get event_alienNursery_title => 'สถานรับเลี้ยงเอเลี่ยน';
@@ -5440,4 +5368,461 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get event_hydroponicsBlight_outcome1 =>
       'ยาต้านเชื้อราทดลองแสดงความหวังในตอนแรก แต่สายพันธุ์ที่ดื้อยาทะลุผ่าน เมื่อเราหันไปใช้การชำระล้างเต็มรูปแบบ โรคได้แพร่กระจายไปยังท่อสารอาหารของไครโอพอดแล้ว ความเสียหายแย่กว่าถ้าเราลงมือทำอย่างเด็ดขาดตั้งแต่แรก';
+
+  @override
+  String get event_constitutionalConvention_title => 'อนุสัญญารัฐธรรมนูญ';
+
+  @override
+  String get event_constitutionalConvention_narrative =>
+      'ประชากรเรืออาณานิคมเริ่มกระสับกระส่ายโดยไม่มีการปกครองอย่างเป็นทางการ ผู้แทนจากทุกสำรับจะมารวมตัวกันในห้องเก็บสินค้าเพื่อร่างกฎบัตรที่จะกำหนดวิธีการปกครองอาณานิคมในอนาคต ทั้งสามกลุ่มนำเสนอวิสัยทัศน์ที่แข่งขันกันสำหรับรัฐบาลใหม่';
+
+  @override
+  String get event_constitutionalConvention_choice0 =>
+      'ร่างกฎบัตรประชาธิปไตยโดยใช้คะแนนเสียงสากล';
+
+  @override
+  String get event_constitutionalConvention_outcome0 =>
+      'ชาวอาณานิคมให้สัตยาบันในรัฐธรรมนูญที่รับประกันการเป็นตัวแทนที่เท่าเทียมกัน การตัดสินใจเป็นไปอย่างช้าๆ แต่กำลังใจก็เพิ่มสูงขึ้นเมื่อได้ยินเสียงทุกเสียง';
+
+  @override
+  String get event_constitutionalConvention_choice1 =>
+      'สร้างผู้บริหารที่เข้มแข็งพร้อมอำนาจฉุกเฉิน';
+
+  @override
+  String get event_constitutionalConvention_outcome1 =>
+      'ผู้นำคนเดียวจะได้รับการแต่งตั้งโดยมีอำนาจครอบคลุม การตัดสินใจเกิดขึ้นอย่างรวดเร็ว แต่ผู้เห็นต่างกระซิบกระซาบถึงระบบเผด็จการในชั้นล่าง';
+
+  @override
+  String get event_constitutionalConvention_choice2 =>
+      'จัดตั้งสภาผู้เชี่ยวชาญทางเทคนิค';
+
+  @override
+  String get event_constitutionalConvention_outcome2 =>
+      'วิศวกร นักวิทยาศาสตร์ และแพทย์จัดตั้งสภาปกครองโดยอาศัยความเชี่ยวชาญ ประสิทธิภาพดีขึ้น แม้ว่าบางคนจะรู้สึกว่าถูกแยกออกจากพลังก็ตาม';
+
+  @override
+  String get event_militaryCoupThreat_title => 'ภัยคุกคามจากการทำรัฐประหาร';
+
+  @override
+  String get event_militaryCoupThreat_narrative =>
+      'ผู้บัญชาการ Vasquez แห่งฝ่ายรักษาความปลอดภัยของเรือได้เข้ายึดคลังอาวุธและยื่นคำขาด: ให้อำนาจทางทหารในกรณีฉุกเฉิน หรือเผชิญกับการล็อคดาดฟ้าทุกชั้น สถานการณ์มีความผันผวนและชาวอาณานิคมต่างมองหาคำตอบจากคุณ';
+
+  @override
+  String get event_militaryCoupThreat_choice0 =>
+      'ต่อต้านการรัฐประหารด้วยลูกเรือที่ภักดี';
+
+  @override
+  String get event_militaryCoupThreat_outcome0 =>
+      'กลุ่มผู้ภักดีรวมตัวกันเพื่อต่อต้านวาสเกซ การเผชิญหน้าจบลงด้วยการนองเลือดเพียงเล็กน้อย แต่รายละเอียดด้านความปลอดภัยลดลง และชาวอาณานิคมบางส่วนติดอยู่ในภวังค์';
+
+  @override
+  String get event_militaryCoupThreat_choice1 => 'ยื่นคำร้องของผู้บังคับบัญชา';
+
+  @override
+  String get event_militaryCoupThreat_outcome1 =>
+      'วาสเกซเข้าควบคุมการปฏิบัติงานของเรือ ความสงบเรียบร้อยได้รับการฟื้นฟูอย่างรวดเร็ว แต่ต้องสูญเสียเสรีภาพของพลเมือง ตอนนี้หน่วยลาดตระเวนติดอาวุธเดินทุกทางเดิน';
+
+  @override
+  String get event_militaryCoupThreat_choice2 =>
+      'เจรจาอำนาจฉุกเฉินที่มีจำกัดด้วยประโยคพระอาทิตย์ตก';
+
+  @override
+  String get event_militaryCoupThreat_outcome2 =>
+      'หลังจากการเจรจาอันตึงเครียด วาสเกซยอมรับอำนาจชั่วคราวโดยอยู่ภายใต้การควบคุมดูแล การประนีประนอมที่เปราะบางซึ่งไม่มีใครพอใจอย่างสมบูรณ์ แต่ป้องกันความรุนแรง';
+
+  @override
+  String get event_religiousAwakening_title => 'การตื่นรู้ทางศาสนา';
+
+  @override
+  String get event_religiousAwakening_narrative =>
+      'นักเทศน์ผู้มีเสน่ห์ดึงดูดชาวอาณานิคมหลายร้อยคนให้เข้าร่วมขบวนการศรัทธาใหม่ พวกเขารวมตัวกันในโดมสังเกตการณ์ในแต่ละรอบ เสียงเพลงของพวกเขาดังก้องผ่านปล่องระบายอากาศ ลูกเรือบางคนกังวลเกี่ยวกับความคลั่งไคล้ ส่วนคนอื่นๆ พบการปลอบโยนอย่างแท้จริงในคำสอน';
+
+  @override
+  String get event_religiousAwakening_choice0 =>
+      'โอบรับขบวนการศรัทธาและจัดหาทรัพยากร';
+
+  @override
+  String get event_religiousAwakening_outcome0 =>
+      'การเคลื่อนไหวเจริญรุ่งเรืองด้วยการสนับสนุนอย่างเป็นทางการ ขวัญกำลังใจดีขึ้นในหมู่ผู้ศรัทธา และจิตวิญญาณของชุมชนของพวกเขาเสริมสร้างความผูกพันทางสังคมทั่วทั้งเรือ';
+
+  @override
+  String get event_religiousAwakening_choice1 =>
+      'บังคับใช้ลัทธิฆราวาสนิยมอย่างเข้มงวดบนเรือ';
+
+  @override
+  String get event_religiousAwakening_outcome1 =>
+      'การรวมตัวทางศาสนาถูกจำกัดให้อยู่ในพื้นที่ส่วนตัว การเคลื่อนไหวนี้ดำเนินไปอย่างใต้ดิน ก่อให้เกิดความไม่พอใจ แต่ลัทธิเหตุผลนิยมทางวิทยาศาสตร์ยังคงเป็นหลักคำสอนอย่างเป็นทางการ';
+
+  @override
+  String get event_religiousAwakening_choice2 =>
+      'อนุญาตให้บูชาแต่ควบคุมอิทธิพลของมัน';
+
+  @override
+  String get event_religiousAwakening_outcome2 =>
+      'ศรัทธาได้รับอนุญาตแต่แยกออกจากการปกครอง แต่งตั้งอนุศาสนาจารย์เพื่อประสานงานกับผู้บังคับบัญชา รักษาสมดุลที่ไม่สบายใจ';
+
+  @override
+  String get event_corporateTakeover_title => 'การเทคโอเวอร์องค์กร';
+
+  @override
+  String get event_corporateTakeover_narrative =>
+      'ผู้จัดการทรัพยากรของเรือได้รวมการควบคุมการแจกจ่ายอาหาร การรีไซเคิลน้ำ และการจัดสรรพลังงานอย่างเงียบๆ ตอนนี้พวกเขาเสนอให้ปรับอำนาจของตนอย่างเป็นทางการให้เป็นโครงสร้างองค์กรที่จะจัดการเศรษฐกิจของอาณานิคมในอนาคต';
+
+  @override
+  String get event_corporateTakeover_choice0 =>
+      'อนุญาตให้หลักการตลาดเสรีควบคุมทรัพยากร';
+
+  @override
+  String get event_corporateTakeover_outcome0 =>
+      'ฝ่ายองค์กรเข้าควบคุมการจัดการทรัพยากร ประสิทธิภาพดีขึ้นอย่างมาก แต่ราคาก็สูงขึ้น และชาวอาณานิคมที่ยากจนที่สุดก็ดิ้นรนเพื่อซื้อสิ่งจำเป็นพื้นฐาน';
+
+  @override
+  String get event_corporateTakeover_choice1 =>
+      'ทำให้ทรัพยากรทั้งหมดเป็นของชาติภายใต้ความเป็นเจ้าของร่วมกัน';
+
+  @override
+  String get event_corporateTakeover_outcome1 =>
+      'ทรัพยากรถูกยึดและวางไว้ภายใต้การควบคุมของชุมชน กลุ่มบริษัทถูกรื้อถอนออกไป แต่นวัตกรรมกลับหยุดชะงักโดยไม่มีแรงจูงใจในการแสวงหาผลกำไร';
+
+  @override
+  String get event_corporateTakeover_choice2 =>
+      'ดำเนินการตลาดที่มีการควบคุมด้วยตาข่ายนิรภัย';
+
+  @override
+  String get event_corporateTakeover_outcome2 =>
+      'เศรษฐกิจแบบผสมผสานถูกสร้างขึ้นด้วยการควบคุมราคาและโปรแกรมสวัสดิการ ทั้งสองฝ่ายไม่ได้รับความพึงพอใจอย่างเต็มที่ แต่ความต้องการขั้นพื้นฐานก็ได้รับการตอบสนองในขณะที่อนุญาตให้มีองค์กรบางแห่งได้';
+
+  @override
+  String get event_successionCrisis_title => 'วิกฤติการสืบทอดตำแหน่ง';
+
+  @override
+  String get event_successionCrisis_narrative =>
+      'กัปตันเรือเสียชีวิตขณะหลับ โดยไม่มีผู้สืบทอดที่กำหนดไว้ สามฝ่ายแย่งชิงอำนาจทันที ได้แก่ สภาพลเรือนเรียกร้องให้มีการเลือกตั้ง หัวหน้าฝ่ายความมั่นคงอ้างอำนาจทางทหาร และกลุ่มผู้อาวุโสในอาณานิคมเรียกร้องให้มีพิธีกรรมความเป็นผู้นำแบบดั้งเดิม';
+
+  @override
+  String get event_successionCrisis_choice0 => 'จัดให้มีการเลือกตั้งฉุกเฉิน';
+
+  @override
+  String get event_successionCrisis_outcome0 =>
+      'การเลือกตั้งที่วุ่นวายแต่เต็มไปด้วยพลังทำให้กัปตันคนใหม่ได้รับเลือกจากคะแนนเสียงของประชาชน กระบวนการนี้ยุ่งเหยิง แต่ชาวอาณานิคมรู้สึกถึงความเป็นเจ้าของความเป็นผู้นำของพวกเขา';
+
+  @override
+  String get event_successionCrisis_choice1 => 'ให้ทหารเข้ารับคำสั่ง';
+
+  @override
+  String get event_successionCrisis_outcome1 =>
+      'หัวหน้าหน่วยรักษาความปลอดภัยก้าวขึ้นนั่งเก้าอี้กัปตัน ระเบียบวินัยกลับคืนมาทันที แต่ลูกเรือพลเรือนกลับจับตามองทหารองครักษ์ติดอาวุธด้วยความไม่สบายใจที่เพิ่มมากขึ้น';
+
+  @override
+  String get event_successionCrisis_choice2 => 'เรียกประชุมสภาผู้สูงอายุ';
+
+  @override
+  String get event_successionCrisis_outcome2 =>
+      'ชาวอาณานิคมที่อายุมากที่สุดและมีประสบการณ์มากที่สุดจะก่อตั้งสภาปกครอง ภูมิปัญญาของพวกเขานำทางเรือ แม้ว่าลูกเรืออายุน้อยบางคนจะรู้สึกว่าถูกกีดกันจากระบบผู้สูงอายุก็ตาม';
+
+  @override
+  String get event_nativeSovereignty_title => 'อธิปไตยของชนพื้นเมือง';
+
+  @override
+  String get event_nativeSovereignty_narrative =>
+      'การสแกนระยะไกลยืนยันชีวิตอัจฉริยะบนดาวเคราะห์เป้าหมาย การสื่อสารที่ถูกสกัดกั้นเผยให้เห็นอารยธรรมอันซับซ้อนที่ตรวจพบแนวทางของคุณ พวกเขาส่งข้อเรียกร้องอย่างเป็นทางการ: ยอมรับอธิปไตยในดินแดนของตนหรือเผชิญกับการต่อต้านเมื่อมาถึง';
+
+  @override
+  String get event_nativeSovereignty_choice0 =>
+      'ยอมรับอธิปไตยของชนพื้นเมืองและขออนุญาตตั้งถิ่นฐาน';
+
+  @override
+  String get event_nativeSovereignty_outcome0 =>
+      'คุณส่งการรับรู้อย่างเป็นทางการเกี่ยวกับสิทธิของชาวพื้นเมือง การตอบสนองมีความระมัดระวังแต่เป็นบวก ความสัมพันธ์ในอนาคตจะเริ่มต้นบนรากฐานของการเคารพซึ่งกันและกัน แม้ว่าจุดลงจอดอาจถูกจำกัดก็ตาม';
+
+  @override
+  String get event_nativeSovereignty_choice1 =>
+      'ยืนยันอำนาจสูงสุดของอาณานิคมและเตรียมพร้อมสำหรับการต่อต้าน';
+
+  @override
+  String get event_nativeSovereignty_outcome1 =>
+      'คุณแสดงความตั้งใจที่จะยุติโดยไม่คำนึงถึง ลูกเรือเริ่มการฝึกซ้อมอาวุธและการวางแผนป้อมปราการ ชาวพื้นเมืองเงียบไป ซึ่งน่ากลัวกว่าการคุกคาม';
+
+  @override
+  String get event_nativeSovereignty_choice2 => 'เสนอธรรมาภิบาลร่วมกันของโลก';
+
+  @override
+  String get event_nativeSovereignty_outcome2 =>
+      'คุณเสนอกรอบการทำงานสำหรับการอยู่ร่วมกันและแบ่งปันทรัพยากร ชาวบ้านสนใจแต่ก็ระวังตัว การเจรจาจะซับซ้อน แต่ก็มีความเป็นไปได้ของสันติภาพ';
+
+  @override
+  String get event_laborStrike_title => 'การนัดหยุดงานของแรงงาน';
+
+  @override
+  String get event_laborStrike_narrative =>
+      'ทีมงานวิศวกรได้ลาออกจากงาน โดยเรียกร้องให้มีกะที่สั้นลง มีการจัดสรรอาหารที่ดีขึ้น และเสียงในการตัดสินใจเกี่ยวกับการเดินเรือ ระบบที่สำคัญกำลังทำงานด้วยการสำรองข้อมูลอัตโนมัติ แต่จะคงอยู่ได้ไม่นาน ชาวอาณานิคมที่เหลือต่างเฝ้าดูอย่างประหม่า';
+
+  @override
+  String get event_laborStrike_choice0 =>
+      'ตอบสนองความต้องการของคนงานได้อย่างเต็มที่';
+
+  @override
+  String get event_laborStrike_outcome0 =>
+      'การหยุดงานประท้วงจะสิ้นสุดลงทันที คนงานกลับเข้าทำงานโดยมีสภาพที่ดีขึ้น ประสิทธิภาพการทำงานลดลงเล็กน้อยเมื่อกะที่สั้นลงมีผล แต่ความภักดีไม่สั่นคลอน';
+
+  @override
+  String get event_laborStrike_choice1 =>
+      'ปราบปรามการนัดหยุดงานและบังคับใช้แรงงานบังคับ';
+
+  @override
+  String get event_laborStrike_outcome1 =>
+      'กองกำลังรักษาความปลอดภัยคุ้มกันคนงานกลับไปยังสถานีของตนโดยใช้ปืนจ่อ เครื่องยนต์ส่งเสียงครวญครางอีกครั้ง แต่ความเกลียดชังยังคงคุกรุ่นอยู่ในชั้นล่าง คนงานหลายคนถูกจำกัดให้อยู่ในสี่ส่วน';
+
+  @override
+  String get event_laborStrike_choice2 =>
+      'เสนอการประนีประนอมบางส่วนกับความต้องการที่สำคัญ';
+
+  @override
+  String get event_laborStrike_outcome2 =>
+      'หลังจากการเจรจามาราธอน ข้อตกลงก็เกิดขึ้น: การปันส่วนที่ดีขึ้นและคำแนะนำ แต่ไม่มีการลดระยะเวลากะ ทั้งสองฝ่ายต่างตื่นเต้น แต่เครื่องยนต์ยังคงทำงานต่อไป';
+
+  @override
+  String get event_censorshipDebate_title => 'การอภิปรายเซ็นเซอร์';
+
+  @override
+  String get event_censorshipDebate_narrative =>
+      'เอกสารที่รั่วไหลเผยให้เห็นสภาพที่แท้จริงของระบบที่ล้มเหลวของเรือ ความตื่นตระหนกแพร่กระจายไปทั่วชั้นล่าง เจ้าหน้าที่สื่อสารเสนอให้จำกัดการเข้าถึงข้อมูลเพื่อป้องกันความไม่สงบต่อไป ผู้สนับสนุนสิทธิพลเมืองรู้สึกโกรธเคือง';
+
+  @override
+  String get event_censorshipDebate_choice0 =>
+      'รับประกันการเข้าถึงข้อมูลทั้งหมดฟรี';
+
+  @override
+  String get event_censorshipDebate_outcome0 =>
+      'สร้างความโปร่งใสอย่างสมบูรณ์ ความตื่นตระหนกในช่วงแรกบรรเทาลงเมื่อชาวอาณานิคมรวมตัวกันเพื่อช่วยแก้ไขปัญหาที่พวกเขาเข้าใจในตอนนี้ ความไว้วางใจในการเป็นผู้นำเพิ่มขึ้น แม้ว่าข้อมูลบางอย่างจะทำให้เกิดความทุกข์ก็ตาม';
+
+  @override
+  String get event_censorshipDebate_choice1 =>
+      'ใช้การควบคุมข้อมูลอย่างเต็มรูปแบบ';
+
+  @override
+  String get event_censorshipDebate_outcome1 =>
+      'ขณะนี้การสื่อสารทั้งหมดถูกกรองผ่านคำสั่ง ความตื่นตระหนกหยุดลง ถูกแทนที่ด้วยความสงบอันน่าขนลุก แต่ข่าวลือมาเติมเต็มความว่างเปล่าที่เกิดจากความจริงที่ถูกเซ็นเซอร์ และมักจะเลวร้ายยิ่งกว่าความเป็นจริง';
+
+  @override
+  String get event_censorshipDebate_choice2 =>
+      'กรองเฉพาะข้อมูลที่ละเอียดอ่อนด้านความปลอดภัย';
+
+  @override
+  String get event_censorshipDebate_outcome2 =>
+      'มีการสร้างระบบการจำแนกประเภท ข้อมูลส่วนใหญ่ไหลได้อย่างอิสระ แต่ข้อมูลทางการทหารและข้อมูลระบบที่สำคัญจำเป็นต้องได้รับการเคลียร์ พื้นกลางที่ใช้การได้ซึ่งส่วนใหญ่พึงพอใจ';
+
+  @override
+  String get event_colonialCharter_title => 'กฎบัตรอาณานิคม';
+
+  @override
+  String get event_colonialCharter_narrative =>
+      'เมื่อโลกล่มสลายใกล้เข้ามา ชาวอาณานิคมจะต้องร่างกฎหมายพื้นฐานสำหรับสังคมใหม่ของพวกเขา ค่ายปรัชญาสามค่ายได้ถือกำเนิดขึ้น แต่ละค่ายสนับสนุนวิสัยทัศน์ที่แตกต่างกันสำหรับสิ่งที่อาณานิคมควรจะเป็น การอภิปรายร้อนแรงและเป็นส่วนตัวอย่างลึกซึ้ง';
+
+  @override
+  String get event_colonialCharter_choice0 =>
+      'กฎบัตรก้าวหน้าที่เน้นสิทธิส่วนบุคคล';
+
+  @override
+  String get event_colonialCharter_outcome0 =>
+      'กฎบัตรนี้ประดิษฐานเสรีภาพส่วนบุคคล ความเสมอภาค และการเคลื่อนไหวทางสังคม ศิลปินและนักคิดเฉลิมฉลอง นักอนุรักษนิยมเตือนว่าเสรีภาพที่ไม่ถูกตรวจสอบนำไปสู่ความสับสนวุ่นวาย';
+
+  @override
+  String get event_colonialCharter_choice1 =>
+      'กฎบัตรอนุรักษ์นิยมที่อนุรักษ์ประเพณีของโลก';
+
+  @override
+  String get event_colonialCharter_outcome1 =>
+      'กฎบัตรนี้ประมวลค่านิยมดั้งเดิม โครงสร้างครอบครัว และการปฏิบัติตามศาสนา หลายคนพบความสะดวกสบายในประเพณีที่คุ้นเคย คนอื่นๆ รู้สึกอึดอัดกับน้ำหนักของความคิดแบบโลกเก่า';
+
+  @override
+  String get event_colonialCharter_choice2 =>
+      'กฎบัตรเชิงปฏิบัติมุ่งเน้นไปที่ความอยู่รอดและการเติบโต';
+
+  @override
+  String get event_colonialCharter_outcome2 =>
+      'กฎบัตรนี้ให้ความสำคัญกับการจัดการทรัพยากร การศึกษาด้านเทคนิค และการพัฒนาเศรษฐกิจ แม้ว่าจะไม่มีบทกวีแต่ก็ช่วยให้แน่ใจว่าอาณานิคมจะมีประสิทธิภาพและมีการจัดระเบียบอย่างดี';
+
+  @override
+  String get event_separatistMovement_title => 'ขบวนการแบ่งแยกดินแดน';
+
+  @override
+  String get event_separatistMovement_narrative =>
+      'กลุ่มชาวอาณานิคมได้ประกาศเอกราชจากการกำกับดูแลเรือ พวกเขาปิดกั้นตัวเองในส่วนท้ายเรือ เพื่อเรียกร้องสิทธิ์ในการตั้งถิ่นฐานของตนเองเมื่อเครื่องลงจอด พวกเขาควบคุมปริมาณอาหารสำรองของเรือ 15% และอาร์เรย์การนำทางสำรอง';
+
+  @override
+  String get event_separatistMovement_choice0 =>
+      'ให้เอกราชในระดับภูมิภาคภายในกรอบของรัฐบาลกลาง';
+
+  @override
+  String get event_separatistMovement_outcome0 =>
+      'กลุ่มแบ่งแยกดินแดนยอมรับข้อตกลง: เขตของตนเองกับการปกครองท้องถิ่น ภายใต้ร่มเงาของรัฐบาลกลาง แบบอย่างของการแตกกระจายเป็นกังวลสำหรับบางคน แต่ความสงบสุขยังคงอยู่';
+
+  @override
+  String get event_separatistMovement_choice1 =>
+      'บุกโจมตีเครื่องกีดขวางและรวมกำลังเข้าด้วยกัน';
+
+  @override
+  String get event_separatistMovement_outcome1 =>
+      'ทีมรักษาความปลอดภัยฝ่าฝืนส่วนท้ายเรือ พวกแบ่งแยกดินแดนต่อต้านอย่างดุเดือด คำสั่งซื้อได้รับการฟื้นฟู แต่มีราคาแย่มาก เรือเป็นอันหนึ่งอันเดียวกันในกายถ้าไม่ใช่วิญญาณ';
+
+  @override
+  String get event_separatistMovement_choice2 =>
+      'จัดการกับความคับข้องใจที่เป็นสาเหตุให้เกิดการเคลื่อนไหว';
+
+  @override
+  String get event_separatistMovement_outcome2 =>
+      'ผู้ไกล่เกลี่ยพยายามทำความเข้าใจว่าอะไรผลักไสฝ่ายนั้นให้ถอยออกไป การปฏิรูปการกระจายทรัพยากรและการเป็นตัวแทนทำให้ผู้แบ่งแยกดินแดนกลับเข้าสู่กลุ่มอย่างช้าๆ การรักษาต้องใช้เวลา';
+
+  @override
+  String get event_warCouncil_title => 'สภาสงคราม';
+
+  @override
+  String get event_warCouncil_narrative =>
+      'เมื่อตรวจพบภัยคุกคามที่อาจเกิดขึ้นในระบบใกล้เคียง ผู้นำของเรือจึงเรียกประชุมสภาสงคราม คำถาม: ทรัพยากรที่มีจำกัดของอาณานิคมควรทุ่มเทให้กับการเตรียมพร้อมทางทหารมากน้อยเพียงใดเมื่อเทียบกับโครงสร้างพื้นฐานของพลเรือน?';
+
+  @override
+  String get event_warCouncil_choice0 =>
+      'อาวุธยุทโธปกรณ์เต็มรูปแบบ: ปลอมอาวุธและฝึกทหาร';
+
+  @override
+  String get event_warCouncil_outcome0 =>
+      'โรงปฏิบัติงานได้รับการดัดแปลงใหม่สำหรับการผลิตอาวุธ ชาวอาณานิคมที่มีร่างกายแข็งแรงทุกคนจะได้รับการฝึกการต่อสู้ เรือมีอาวุธครบมือ แต่งบประมาณสำหรับอุปกรณ์การเกษตรกลับลดลง';
+
+  @override
+  String get event_warCouncil_choice1 => 'การลดอาวุธ: ละลายอาวุธเป็นเครื่องมือ';
+
+  @override
+  String get event_warCouncil_outcome1 =>
+      'คลังอาวุธว่างเปล่าและเนื้อหาในนั้นถูกรีไซเคิลเป็นวัสดุก่อสร้าง อาณานิคมจะสร้างโดยใช้ผาลไถนา ไม่ใช่ดาบ ผู้รักสงบย่อมชื่นชมยินดี นักสัจนิยมกังวลกับสิ่งที่แฝงตัวอยู่ในความมืด';
+
+  @override
+  String get event_warCouncil_choice2 =>
+      'ท่าป้องกันเท่านั้น: โล่และกำแพง ไม่ใช่ดาบ';
+
+  @override
+  String get event_warCouncil_outcome2 =>
+      'ทรัพยากรไปที่ป้อมปราการ โล่ และระบบเตือนภัยล่วงหน้า ไม่มีการผลิตอาวุธที่น่ารังเกียจ แนวทางที่สมดุลที่ช่วยให้ทางเลือกต่างๆ เปิดกว้างโดยไม่กระตุ้นให้เกิดเพื่อนบ้าน';
+
+  @override
+  String get event_tradeFederation_title => 'สหพันธ์การค้า';
+
+  @override
+  String get event_tradeFederation_narrative =>
+      'เมื่ออาณานิคมเข้าใกล้ความมีชีวิต กลุ่มต่างๆ ก็ถกเถียงกันว่าจะจัดโครงสร้างเศรษฐกิจของตนอย่างไร คำถามนี้มีมากกว่าแค่การอยู่รอดเท่านั้น แต่ยังเป็นตัวกำหนดประเภทของสังคมที่หยั่งรากลึกบนดินของมนุษย์ต่างดาว พ่อค้า คอมมิวนิสต์ และข้าราชการต่างก็ทำเรื่องของตัวเอง';
+
+  @override
+  String get event_tradeFederation_choice0 =>
+      'จัดตั้งเขตการค้าเสรีโดยมีกฎระเบียบน้อยที่สุด';
+
+  @override
+  String get event_tradeFederation_outcome0 =>
+      'ตลาดผุดขึ้นในทุกโมดูลที่อยู่อาศัย นวัตกรรมเจริญรุ่งเรืองเมื่อเทรดเดอร์แข่งขันกัน ความไม่เท่าเทียมกันด้านความมั่งคั่งเพิ่มมากขึ้น แต่แหล่งรวมทรัพยากรทั้งหมดที่มีอยู่ในอาณานิคมก็เพิ่มขึ้นเช่นกัน';
+
+  @override
+  String get event_tradeFederation_choice1 =>
+      'ดำเนินการแบ่งปันทรัพยากรทั้งหมดโดยชุมชน';
+
+  @override
+  String get event_tradeFederation_outcome1 =>
+      'ทรัพย์สินส่วนบุคคลถูกยกเลิก ทุกอย่างเป็นของทุกคน ไม่มีใครหิวโหย แต่ก็ไม่มีใครมีแรงจูงใจที่จะผลิตเกินปริมาณขั้นต่ำ ความธรรมดาก็สบายใจ';
+
+  @override
+  String get event_tradeFederation_choice2 => 'สร้างระบบการค้าที่รัฐจัดการ';
+
+  @override
+  String get event_tradeFederation_outcome2 =>
+      'รัฐบาลควบคุมการค้า การตั้งราคา และการจัดสรรทรัพยากรทั้งหมด ระบบมีความเป็นธรรมแต่ไม่ยืดหยุ่น ตลาดมืดเกิดขึ้นในบริเวณทางเดินซ่อมบำรุง';
+
+  @override
+  String get event_faithVsScience_title => 'ศรัทธากับวิทยาศาสตร์';
+
+  @override
+  String get event_faithVsScience_narrative =>
+      'กล้องโทรทรรศน์บนเรือได้จับภาพปรากฏการณ์จักรวาลที่ขัดแย้งโดยตรงต่อหลักการสำคัญของขบวนการศรัทธาที่โดดเด่น หัวหน้านักวิทยาศาสตร์ต้องการเผยแพร่ผลการวิจัย ผู้นำศาสนายืนกรานว่าพวกเขาจะทำลายชุมชนให้แตกแยก';
+
+  @override
+  String get event_faithVsScience_choice0 =>
+      'เผยแพร่ผลการวิจัยทางวิทยาศาสตร์อย่างครบถ้วน';
+
+  @override
+  String get event_faithVsScience_outcome0 =>
+      'ความจริงมีชัยเหนือความสะดวกสบาย ข้อมูลถูกเปิดเผยและขบวนการทางศาสนาแตกสลาย ผู้เชื่อบางคนปรับความเชื่อของตน คนอื่นสูญเสียมันไปโดยสิ้นเชิง ความรู้ก้าวหน้า.';
+
+  @override
+  String get event_faithVsScience_choice1 =>
+      'ระงับการค้นพบเพื่อรักษาความสามัคคีในสังคม';
+
+  @override
+  String get event_faithVsScience_outcome1 =>
+      'ข้อมูลถูกจัดประเภท ชุมชนศาสนายังคงมีเสถียรภาพ แต่ทีมวิทยาศาสตร์กลับขวัญเสีย ความจริงที่เลื่อนออกไปไม่ใช่การปฏิเสธความจริง แต่มันให้ความรู้สึกแบบนั้น';
+
+  @override
+  String get event_faithVsScience_choice2 =>
+      'ประชุมแผงร่วมเพื่อค้นหาความกลมกลืนระหว่างมุมมองทั้งสอง';
+
+  @override
+  String get event_faithVsScience_outcome2 =>
+      'นักวิทยาศาสตร์และนักเทววิทยาทำงานร่วมกันเพื่อตีความสิ่งที่ค้นพบใหม่ การสังเคราะห์แบบใหม่เกิดขึ้นซึ่งขยายทั้งความเข้าใจและศรัทธา ไม่ใช่ทุกคนที่มั่นใจ แต่บทสนทนาก็มีประโยชน์';
+
+  @override
+  String get event_surveillanceState_title => 'รัฐเฝ้าระวัง';
+
+  @override
+  String get event_surveillanceState_narrative =>
+      'หลังจากเหตุการณ์ก่อวินาศกรรมหลายครั้ง หัวหน้าหน่วยรักษาความปลอดภัยเสนอให้ติดตั้งระบบติดตามในทุกส่วนของเรือ กล้อง ไมโครโฟน และเครื่องสแกนไบโอเมตริกซ์จะติดตามการเคลื่อนไหวของชาวอาณานิคมทุกคน ผู้สนับสนุนความเป็นส่วนตัวรู้สึกหวาดกลัว';
+
+  @override
+  String get event_surveillanceState_choice0 =>
+      'ปฏิเสธข้อเสนอการเฝ้าระวังโดยสิ้นเชิง';
+
+  @override
+  String get event_surveillanceState_outcome0 =>
+      'ความเป็นส่วนตัวจะถูกรักษาไว้ ผู้ก่อวินาศกรรมยังคงลอยนวล แต่ชาวอาณานิคมนอนหลับได้ง่ายขึ้นเมื่อรู้ว่าไม่มีใครจับตาดู การสืบสวนดำเนินต่อไปด้วยวิธีการแบบดั้งเดิม';
+
+  @override
+  String get event_surveillanceState_choice1 =>
+      'ดำเนินการเฝ้าระวังเต็มรูปแบบทั่วเรือ';
+
+  @override
+  String get event_surveillanceState_outcome1 =>
+      'ทุกมุมของเรือได้รับการตรวจสอบ ผู้ก่อวินาศกรรมถูกจับได้ภายในไม่กี่วัน แต่กล้องยังคงอยู่ และหัวหน้าหน่วยรักษาความปลอดภัยไม่สนใจที่จะปิดกล้อง เคย.';
+
+  @override
+  String get event_surveillanceState_choice2 =>
+      'ติดตั้งการตรวจสอบแบบจำกัดในพื้นที่วิกฤติเท่านั้น';
+
+  @override
+  String get event_surveillanceState_outcome2 =>
+      'กล้องจะครอบคลุมห้องเครื่อง คลังอาวุธ และสะพาน ที่อยู่อาศัยยังคงเป็นส่วนตัว ในที่สุดผู้ก่อวินาศกรรมจะถูกระบุตัวได้ผ่านการวิเคราะห์รูปแบบ การตอบสนองที่วัดได้';
+
+  @override
+  String get event_nativeAlliance_title => 'พันธมิตรพื้นเมือง';
+
+  @override
+  String get event_nativeAlliance_narrative =>
+      'อารยธรรมพื้นเมืองได้เสนอสนธิสัญญาอย่างเป็นทางการ ทูตของพวกเขาเดินทางมาโดยรถรับส่ง ซึ่งเป็นสิ่งมีชีวิตที่สง่างามที่พูดผ่านอุปกรณ์แปลที่มีความซับซ้อนอย่างน่าอัศจรรย์ พวกเขาเสนอความสัมพันธ์สามรูปแบบ แต่ละรูปแบบมีความหมายที่แตกต่างกันสำหรับอนาคตของอาณานิคม';
+
+  @override
+  String get event_nativeAlliance_choice0 =>
+      'ลงนามในสนธิสัญญาพันธมิตรที่เท่าเทียมกัน';
+
+  @override
+  String get event_nativeAlliance_outcome0 =>
+      'สนธิสัญญาดังกล่าวกำหนดการป้องกันซึ่งกันและกัน การวิจัยร่วมกัน และสิทธิในดินแดนที่เท่าเทียมกัน อารยธรรมทั้งสองจะเติบโตไปด้วยกัน ชาวพื้นเมืองแบ่งปันความรู้ด้านการเกษตรที่เปลี่ยนแปลงโอกาสในอาณานิคมของคุณ';
+
+  @override
+  String get event_nativeAlliance_choice1 => 'เจรจาจากตำแหน่งที่ครอบงำอาณานิคม';
+
+  @override
+  String get event_nativeAlliance_outcome1 =>
+      'คุณใช้ประโยชน์จากเทคโนโลยีขั้นสูงของคุณเพื่อรักษาเงื่อนไขที่ดี ชาวพื้นเมืองยอมสละดินแดนและทรัพยากร พวกเขาลงนามด้วยมือที่สั่นเทา ประวัติศาสตร์เคยเห็นสิ่งนี้มาก่อน และมันไม่ค่อยจบลงด้วยดี';
+
+  @override
+  String get event_nativeAlliance_choice2 =>
+      'สร้างความร่วมมือทางการค้าที่มุ่งเน้นผลประโยชน์ร่วมกัน';
+
+  @override
+  String get event_nativeAlliance_outcome2 =>
+      'การค้าเชื่อมช่องว่างระหว่างสายพันธุ์ วัสดุพื้นเมืองจะถูกส่งไปยังเวิร์คช็อปของคุณ เทคโนโลยีของคุณช่วยปรับปรุงยาของพวกเขา มิตรภาพเติบโตจากผลกำไรร่วมกัน';
 }

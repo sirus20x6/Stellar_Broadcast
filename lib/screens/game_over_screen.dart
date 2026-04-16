@@ -14,10 +14,11 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
-const _kBgColor = Color(0xFF0B1426);
-const _kAccent = Color(0xFF00E5FF);
+const _kBgColor = SpaceColors.deepSpace;
+const _kAccent = SpaceColors.cyan;
 const _kWarning = Color(0xFFFF1744);
 
 /// Dramatic game-over screen shown when the voyage ends in catastrophic failure.
@@ -30,8 +31,6 @@ class GameOverScreen extends ConsumerStatefulWidget {
 
 class _GameOverScreenState extends ConsumerState<GameOverScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _starController;
-
   // Phase controllers — staggered reveal.
   late final AnimationController _phase1Controller; // Warning icon + "MISSION FAILED"
   late final AnimationController _phase2Controller; // Game over reason
@@ -61,11 +60,6 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
   void initState() {
     super.initState();
 
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
-
     // Read voyage state.
     final voyage = ref.read(voyageProvider);
     _reason = voyage.gameOverReason;
@@ -79,7 +73,10 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
     _energyRemaining = voyage.energy;
     _seedCode = seedToCode(voyage.seed);
 
-    // Fade out music for dramatic silence, then alarm + haptics.
+    // Fade out music for dramatic silence, then alarm + haptics. Cancel
+    // any encounter-screen long audio WITHOUT resuming bg music — game over
+    // wants silence.
+    GameSfx().stopAllLongAudio(resumeBgMusic: false);
     GameMusic().stop(fadeOutSeconds: 0.5);
     GameSfx().play(GameSfx.criticalAlarm, volume: 0.9);
     HapticService().heavy();
@@ -234,7 +231,6 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
 
   @override
   void dispose() {
-    _starController.dispose();
     _pulseController.dispose();
     _phase1Controller.dispose();
     _phase2Controller.dispose();
@@ -316,10 +312,13 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
           ),
         ),
 
-        const SizedBox(height: 40),
+        if (_reason.isNotEmpty) const SizedBox(height: 40),
 
-        // Phase 2: Game over reason text.
-        AnimatedBuilder(
+        // Phase 2: Game over reason text. Skipped entirely if there's no
+        // reason set — otherwise we'd render an empty red box, which shipped
+        // once via a QA screenshot.
+        if (_reason.isNotEmpty)
+          AnimatedBuilder(
           animation: _phase2Controller,
           builder: (_, __) {
             final opacity =
@@ -598,24 +597,10 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
       body: Stack(
         children: [
           // Star field.
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (_, __) => Semantics(
-                  label: 'Animated star field background',
-                  excludeSemantics: true,
-                  child: CustomPaint(
-                    painter: StarFieldPainter(
-                      animationValue: _starController.value,
-                      farStarCount: 100,
-                      midStarCount: 40,
-                      nearStarCount: 15,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          const EventStarField(
+            farStarCount: 100,
+            midStarCount: 40,
+            nearStarCount: 15,
           ),
 
           // Content.

@@ -7,9 +7,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_debug/quickapps_debug.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:stellar_broadcast/app.dart' show routeObserver;
 import 'package:stellar_broadcast/services/game_music.dart';
-import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/data/events.dart';
 import 'package:stellar_broadcast/logic/puzzle_generator.dart';
@@ -20,7 +20,9 @@ import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/services/voyage_save_service.dart';
-import 'package:stellar_broadcast/widgets/star_field.dart';
+import 'package:stellar_broadcast/widgets/bug_report_dialog.dart';
+import 'package:stellar_broadcast/widgets/event_screen_common.dart';
+import 'package:stellar_broadcast/theme/app_theme.dart';
 
 const _dailyAccent = Color(0xFFFFD740);
 
@@ -35,17 +37,15 @@ class TitleScreen extends ConsumerStatefulWidget {
   ConsumerState<TitleScreen> createState() => _TitleScreenState();
 }
 
-class _TitleScreenState extends ConsumerState<TitleScreen>
-    with SingleTickerProviderStateMixin, RouteAware {
-  static const _background = Color(0xFF0B1426);
-  static const _accent = Color(0xFF00E5FF);
+class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
+  static const _background = SpaceColors.deepSpace;
+  static const _accent = SpaceColors.cyan;
 
-  late final AnimationController _starController;
   Timer? _bgMusicTimer;
   bool _bgMusicStarted = false;
   String _buildLabel = '';
   bool _hasSavedVoyage = false;
-  int _adRefreshCount = 0;
+  bool _leaderboardsInFlight = false;
 
   @override
   void initState() {
@@ -56,10 +56,6 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
         setState(() => _buildLabel = 'v${info.version}+${info.buildNumber}');
       }
     });
-    _starController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    )..repeat();
 
     // Play intro logo (15s), then start bgmusic at 10s.
     GameSfx().playIntroLogo();
@@ -79,13 +75,11 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
     routeObserver.unsubscribe(this);
     _bgMusicTimer?.cancel();
     GameSfx().stopIntroLogo();
-    _starController.dispose();
     super.dispose();
   }
 
   @override
   void didPopNext() {
-    setState(() => _adRefreshCount++);
     _checkSavedVoyage();
   }
 
@@ -118,6 +112,14 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
     _showDebugMenu();
   }
 
+  /// True for the three number-sequence puzzle types. Used by species-filter
+  /// debug buttons so they don't accidentally surface canvas-type puzzles
+  /// (spectral/chirality/starCluster/signalFilter) under the species name.
+  static bool _isSequenceType(SequenceType t) =>
+      t == SequenceType.piDigits ||
+      t == SequenceType.fibonacci ||
+      t == SequenceType.primes;
+
   void _ensureVoyageStarted() {
     final voyage = ref.read(voyageProvider);
     if (voyage.encounterCount == 0 && !voyage.isComplete) {
@@ -128,6 +130,14 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
     }
   }
 
+  Future<void> _debugScanPlanet() async {
+    try {
+      await ref.read(voyageProvider.notifier).scanPlanet();
+    } catch (e, st) {
+      QaLogger.app.warning('debug scanPlanet failed', e, st);
+    }
+  }
+
   void _showDebugMenu() {
     final pool = getEventPool(context.l10n);
 
@@ -135,6 +145,12 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
       context: context,
       ref: ref,
       sections: [
+        DebugSection('PROTO', [
+          DebugButton(
+            'Title (Proto - 3D Mesh Buttons)',
+            () => Navigator.pushNamed(context, '/title-proto'),
+          ),
+        ]),
         DebugSection('PUZZLES', [
           DebugButton('Puzzle (Random)', () {
             final puzzle = PuzzleGenerator.generate(
@@ -143,10 +159,17 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
             );
             Navigator.pushNamed(context, '/puzzle', arguments: puzzle);
           }),
+          // Species buttons must ALSO filter on sequence-based types
+          // (piDigits/fibonacci/primes) — otherwise a "Geometric" puzzle can
+          // roll a spectralId/chirality/etc canvas type and render visually
+          // identical to the spectral/chirality debug buttons, making the
+          // species button look like it opened the wrong puzzle.
           DebugButton('Puzzle (Synthetic)', () {
             AlienPuzzle? p;
             final r = Random();
-            while (p == null || p.species != AlienSpecies.synthetic) {
+            while (p == null ||
+                p.species != AlienSpecies.synthetic ||
+                !_isSequenceType(p.sequenceType)) {
               p = PuzzleGenerator.generate(
                 r,
                 const VoyageState(encounterCount: 10),
@@ -157,7 +180,9 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
           DebugButton('Puzzle (Geometric)', () {
             AlienPuzzle? p;
             final r = Random();
-            while (p == null || p.species != AlienSpecies.geometric) {
+            while (p == null ||
+                p.species != AlienSpecies.geometric ||
+                !_isSequenceType(p.sequenceType)) {
               p = PuzzleGenerator.generate(
                 r,
                 const VoyageState(encounterCount: 10),
@@ -168,7 +193,9 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
           DebugButton('Puzzle (Crystalline)', () {
             AlienPuzzle? p;
             final r = Random();
-            while (p == null || p.species != AlienSpecies.crystalline) {
+            while (p == null ||
+                p.species != AlienSpecies.crystalline ||
+                !_isSequenceType(p.sequenceType)) {
               p = PuzzleGenerator.generate(
                 r,
                 const VoyageState(encounterCount: 10),
@@ -332,7 +359,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
           }),
           DebugButton('Scan', () {
             _ensureVoyageStarted();
-            ref.read(voyageProvider.notifier).scanPlanet();
+            unawaited(_debugScanPlanet());
             Navigator.pushNamed(context, '/scan');
           }),
           DebugButton('Trader', () {
@@ -341,12 +368,12 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
           }),
           DebugButton('Landing', () {
             _ensureVoyageStarted();
-            ref.read(voyageProvider.notifier).scanPlanet();
+            unawaited(_debugScanPlanet());
             Navigator.pushNamed(context, '/landing');
           }),
           DebugButton('Ending', () {
             _ensureVoyageStarted();
-            ref.read(voyageProvider.notifier).scanPlanet();
+            unawaited(_debugScanPlanet());
             Navigator.pushNamed(context, '/ending');
           }),
           DebugButton(
@@ -416,7 +443,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF0B1426),
+          backgroundColor: SpaceColors.deepSpace,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: _accent.withValues(alpha: 0.4)),
@@ -471,8 +498,19 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
               onPressed: () {
                 final text = controller.text.trim().toUpperCase();
                 if (text.isEmpty) return;
-                Navigator.pop(ctx);
                 final seed = codeToSeed(text);
+                if (seed == null) {
+                  // Invalid characters in the seed code. Shake the field via
+                  // a snackbar instead of crashing.
+                  ScaffoldMessenger.of(ctx).showSnackBar(
+                    SnackBar(
+                      content: Text(context.l10n.ui_title_seedInvalid),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                  return;
+                }
+                Navigator.pop(ctx);
                 _beginVoyage(seed: seed);
               },
               child: Text(
@@ -496,278 +534,283 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
       body: Stack(
         children: [
           // — Parallax star field —
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedBuilder(
-                animation: _starController,
-                builder: (context, _) {
-                  return Semantics(
-                    label: 'Animated star field background',
-                    excludeSemantics: true,
-                    child: CustomPaint(
-                      painter: StarFieldPainter(
-                        animationValue: _starController.value,
-                      ),
-                      size: Size.infinite,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          const EventStarField(),
 
-          // — Ship silhouette at top —
-          Positioned(
-            top: 40,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Semantics(
-                label: 'Colony ship silhouette',
-                excludeSemantics: true,
-                child: RepaintBoundary(
-                  child: CustomPaint(
-                    size: Size(screenSize.width * 0.35, 100),
-                    painter: _ShipSilhouettePainter(accent: _accent),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // — Build number (triple-tap to open debug trader) —
-          if (_buildLabel.isNotEmpty)
-            Positioned(
-              top: 0,
-              left: 0,
-              child: SafeArea(
-                child: GestureDetector(
-                  onDoubleTap: _handleVersionTap,
-                  onLongPress: _handleVersionLongPress,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      _buildLabel,
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 10,
-                        color: _accent.withValues(alpha: 0.3),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-          // — Settings gear —
-          Positioned(
-            top: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: IconButton(
-                  tooltip: 'Settings',
-                  onPressed: () {
-                    HapticService().light();
-                    Navigator.pushNamed(context, '/settings');
-                  },
-                  icon: Icon(
-                    Icons.settings,
-                    color: _accent.withValues(alpha: 0.6),
-                    size: 26,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // — Foreground UI —
-          SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                const Spacer(flex: 4),
-
-                // Title.
-                Text(
-                  context.l10n.ui_title_stellar,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: screen.scaledFontSize(42),
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 10,
-                    color: _accent,
-                    shadows: [
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.8),
-                        blurRadius: 20,
-                      ),
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.5),
-                        blurRadius: 40,
-                      ),
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.3),
-                        blurRadius: 60,
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  context.l10n.ui_title_broadcast,
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: screen.scaledFontSize(42),
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 18,
-                    color: _accent,
-                    shadows: [
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.8),
-                        blurRadius: 20,
-                      ),
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.5),
-                        blurRadius: 40,
-                      ),
-                      Shadow(
-                        color: _accent.withValues(alpha: 0.3),
-                        blurRadius: 60,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Subtitle.
-                Text(
-                  "Humanity's Last Voyage",
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 16,
-                    letterSpacing: 3,
-                    color: Colors.white.withValues(alpha: 0.7),
-                    shadows: [
-                      Shadow(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        blurRadius: 8,
-                      ),
-                      Shadow(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        blurRadius: 20,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(flex: 3),
-
-                // Buttons.
-                ResponsiveContent(
-                  extraPadding: 24,
-                  child: Column(
-                    children: [
-                      if (_hasSavedVoyage) ...[
-                        HolographicButton(
-                          label: 'RESUME VOYAGE',
-                          autofocus: true,
-                          onPressed: _resumeVoyage,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                      HolographicButton(
-                        label: context.l10n.ui_title_beginVoyage,
-                        autofocus: !_hasSavedVoyage,
-                        onPressed: () {
-                          // Clear any stale save when starting fresh.
-                          VoyageSaveService.clear();
-                          _beginVoyage();
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      _DailyVoyageButton(
-                        onPressed: () => _beginVoyage(isDaily: true),
-                      ),
-                      const SizedBox(height: 16),
-                      HolographicButton(
-                        label: context.l10n.ui_title_customSeed,
-                        isPrimary: false,
-                        onPressed: _showSeedDialog,
-                      ),
-                      const SizedBox(height: 16),
-                      HolographicButton(
-                        label: context.l10n.ui_title_legacyHub,
-                        isPrimary: false,
-                        onPressed: () {
-                          GameSfx().play(GameSfx.buttonClick);
-                          Navigator.pushNamed(context, '/legacy');
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Utility row.
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          Column(
+            children: [
+              // Foreground UI takes all available space above the ad.
+              Expanded(
+                child: Stack(
                   children: [
-                    IconButton(
-                      tooltip: 'Leaderboards',
-                      onPressed: () async {
-                        final shown =
-                            await PlayGamesService.showAllLeaderboards();
-                        if (!shown && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Play Games unavailable. View leaderboards at stellarbroadcast.org',
-                              ),
-                              duration: Duration(seconds: 4),
+                    // — Ship silhouette at top —
+                    Positioned(
+                      top: 40,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Semantics(
+                          label: 'Colony ship silhouette',
+                          excludeSemantics: true,
+                          child: RepaintBoundary(
+                            child: CustomPaint(
+                              size: Size(screenSize.width * 0.35, 100),
+                              painter: _ShipSilhouettePainter(accent: _accent),
                             ),
-                          );
-                        }
-                      },
-                      icon: Icon(
-                        Icons.leaderboard,
-                        color: _accent.withValues(alpha: 0.6),
-                        size: 24,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    IconButton(
-                      tooltip: 'Settings',
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/settings'),
-                      icon: Icon(
-                        Icons.settings,
-                        color: _accent.withValues(alpha: 0.6),
-                        size: 24,
+
+                    // — Build number (triple-tap to open debug trader) —
+                    if (_buildLabel.isNotEmpty)
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: SafeArea(
+                          child: GestureDetector(
+                            onDoubleTap: _handleVersionTap,
+                            onLongPress: _handleVersionLongPress,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                _buildLabel,
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 10,
+                                  color: _accent.withValues(alpha: 0.3),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    // — Foreground UI —
+                    SafeArea(
+                      bottom: false,
+                      child: Column(
+                        children: [
+                          Spacer(flex: screen.isCompact ? 2 : 4),
+
+                          // Title.
+                          Text(
+                            context.l10n.ui_title_stellar,
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: screen.scaledFontSize(42),
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 10,
+                              color: _accent,
+                              shadows: [
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.8),
+                                  blurRadius: 20,
+                                ),
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.5),
+                                  blurRadius: 40,
+                                ),
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.3),
+                                  blurRadius: 60,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            context.l10n.ui_title_broadcast,
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: screen.scaledFontSize(42),
+                              fontWeight: FontWeight.w900,
+                              // Matches STELLAR (10). Was 18 — BROADCAST is 9 letters,
+                              // which at 18 wrapped to 2 lines on ~360dp-wide phones.
+                              letterSpacing: 10,
+                              color: _accent,
+                              shadows: [
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.8),
+                                  blurRadius: 20,
+                                ),
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.5),
+                                  blurRadius: 40,
+                                ),
+                                Shadow(
+                                  color: _accent.withValues(alpha: 0.3),
+                                  blurRadius: 60,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Subtitle.
+                          Text(
+                            "Humanity's Last Voyage",
+                            style: TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 16,
+                              letterSpacing: 3,
+                              color: Colors.white.withValues(alpha: 0.7),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                ),
+                                Shadow(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  blurRadius: 20,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Spacer(flex: screen.isCompact ? 2 : 3),
+
+                          // Buttons.
+                          ResponsiveContent(
+                            extraPadding: 24,
+                            child: Column(
+                              children: [
+                                if (_hasSavedVoyage) ...[
+                                  HolographicButton(
+                                    label: 'RESUME VOYAGE',
+                                    autofocus: true,
+                                    compact: screen.isCompact,
+                                    onPressed: _resumeVoyage,
+                                  ),
+                                  SizedBox(height: screen.isCompact ? 10 : 16),
+                                ],
+                                HolographicButton(
+                                  label: context.l10n.ui_title_beginVoyage,
+                                  autofocus: !_hasSavedVoyage,
+                                  compact: screen.isCompact,
+                                  onPressed: () {
+                                    // Clear any stale save when starting fresh.
+                                    unawaited(VoyageSaveService.clear());
+                                    _beginVoyage();
+                                  },
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                _DailyVoyageButton(
+                                  compact: screen.isCompact,
+                                  onPressed: () => _beginVoyage(isDaily: true),
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                HolographicButton(
+                                  label: context.l10n.ui_title_customSeed,
+                                  isPrimary: false,
+                                  compact: screen.isCompact,
+                                  onPressed: _showSeedDialog,
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                HolographicButton(
+                                  label: context.l10n.ui_title_legacyHub,
+                                  isPrimary: false,
+                                  compact: screen.isCompact,
+                                  onPressed: () {
+                                    GameSfx().play(GameSfx.buttonClick);
+                                    Navigator.pushNamed(context, '/legacy');
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: screen.isCompact ? 6 : 12),
+                          // Utility row.
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                tooltip: context.l10n.ui_tooltip_leaderboards,
+                                onPressed: _leaderboardsInFlight
+                                    ? null
+                                    : () async {
+                                        setState(
+                                          () => _leaderboardsInFlight = true,
+                                        );
+                                        try {
+                                          final shown =
+                                              await PlayGamesService.showAllLeaderboards();
+                                          if (!mounted) return;
+                                          if (!shown && context.mounted) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Play Games unavailable. View leaderboards at stellarbroadcast.org',
+                                                ),
+                                                duration: Duration(seconds: 4),
+                                              ),
+                                            );
+                                          }
+                                        } finally {
+                                          if (mounted) {
+                                            setState(
+                                              () =>
+                                                  _leaderboardsInFlight = false,
+                                            );
+                                          }
+                                        }
+                                      },
+                                icon: Icon(
+                                  Icons.leaderboard,
+                                  color: _accent.withValues(alpha: 0.6),
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              IconButton(
+                                tooltip: context.l10n.ui_tooltip_bugReport,
+                                onPressed: () {
+                                  GameSfx().play(GameSfx.buttonClick);
+                                  showDialog<void>(
+                                    context: context,
+                                    builder: (_) => const BugReportDialog(),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.bug_report_outlined,
+                                  color: _accent.withValues(alpha: 0.6),
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              IconButton(
+                                tooltip: context.l10n.ui_tooltip_settings,
+                                onPressed: () =>
+                                    Navigator.pushNamed(context, '/settings'),
+                                icon: Icon(
+                                  Icons.settings,
+                                  color: _accent.withValues(alpha: 0.6),
+                                  size: 24,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Spacer(flex: screen.isCompact ? 1 : 2),
+                        ],
                       ),
                     ),
                   ],
                 ),
+              ),
 
-                const Spacer(flex: 2),
-              ],
-            ),
-          ),
-
-          // Banner ad — outside SafeArea for flush bottom.
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: PremiumAdGate(
-              child: AdaptiveBannerAd(
-                key: ValueKey('title_banner_$_adRefreshCount'),
-                fallback: AdFallbackBanner(
-                  onRemoveAds: () =>
-                      Navigator.pushNamed(context, '/settings'),
+              // Banner ad — outside SafeArea for flush bottom.
+              PremiumAdGate(
+                child: AdaptiveBannerAd(
+                  key: const ValueKey('title_banner'),
+                  fallback: AdFallbackBanner(
+                    onRemoveAds: () =>
+                        Navigator.pushNamed(context, '/settings'),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -777,9 +820,10 @@ class _TitleScreenState extends ConsumerState<TitleScreen>
 
 /// Daily Voyage button with gold accent, date label, and played-today check.
 class _DailyVoyageButton extends ConsumerWidget {
-  const _DailyVoyageButton({required this.onPressed});
+  const _DailyVoyageButton({required this.onPressed, this.compact = false});
 
   final VoidCallback onPressed;
+  final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -827,7 +871,10 @@ class _DailyVoyageButton extends ConsumerWidget {
             splashColor: _dailyAccent.withValues(alpha: 0.3),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+              padding: EdgeInsets.symmetric(
+                vertical: compact ? 10 : 14,
+                horizontal: compact ? 20 : 32,
+              ),
               decoration: BoxDecoration(
                 color: _dailyAccent.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
@@ -845,9 +892,9 @@ class _DailyVoyageButton extends ConsumerWidget {
                         : context.l10n.ui_title_dailyVoyage,
                     style: TextStyle(
                       fontFamily: 'monospace',
-                      fontSize: 16,
+                      fontSize: compact ? 13 : 16,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 3,
+                      letterSpacing: compact ? 2 : 3,
                       color: _dailyAccent,
                       shadows: played
                           ? null

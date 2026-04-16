@@ -12,9 +12,72 @@ class PuzzleGenerator {
   // Raw sequences
   // -----------------------------------------------------------------------
 
-  static const _piDigits = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9, 3, 2, 3, 8, 4];
-  static const _fibonacci = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765];
-  static const _primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71];
+  static const _piDigits = [
+    3,
+    1,
+    4,
+    1,
+    5,
+    9,
+    2,
+    6,
+    5,
+    3,
+    5,
+    8,
+    9,
+    7,
+    9,
+    3,
+    2,
+    3,
+    8,
+    4,
+  ];
+  static const _fibonacci = [
+    1,
+    1,
+    2,
+    3,
+    5,
+    8,
+    13,
+    21,
+    34,
+    55,
+    89,
+    144,
+    233,
+    377,
+    610,
+    987,
+    1597,
+    2584,
+    4181,
+    6765,
+  ];
+  static const _primes = [
+    2,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    31,
+    37,
+    41,
+    43,
+    47,
+    53,
+    59,
+    61,
+    67,
+    71,
+  ];
 
   // -----------------------------------------------------------------------
   // Titles & narratives (hardcoded English — l10n wired later)
@@ -81,15 +144,22 @@ class PuzzleGenerator {
   // -----------------------------------------------------------------------
 
   static AlienPuzzle generate(Random random, VoyageState state) {
-    var species = AlienSpecies.values[random.nextInt(AlienSpecies.values.length)];
-    var seqType = SequenceType.values[random.nextInt(SequenceType.values.length)];
+    var species =
+        AlienSpecies.values[random.nextInt(AlienSpecies.values.length)];
+    var seqType =
+        SequenceType.values[random.nextInt(SequenceType.values.length)];
 
     // Signal filter is synthetic-only. If it was rolled for another species,
     // re-roll the puzzle type. Conversely, give synthetic a 30% chance to
     // get signal filter regardless of initial roll.
-    if (seqType == SequenceType.signalFilter && species != AlienSpecies.synthetic) {
-      seqType = SequenceType.values[random.nextInt(SequenceType.values.length - 1)]; // exclude signalFilter
-    } else if (species == AlienSpecies.synthetic && random.nextDouble() < 0.30) {
+    if (seqType == SequenceType.signalFilter &&
+        species != AlienSpecies.synthetic) {
+      seqType =
+          SequenceType.values[random.nextInt(
+            SequenceType.values.length - 1,
+          )]; // exclude signalFilter
+    } else if (species == AlienSpecies.synthetic &&
+        random.nextDouble() < 0.30) {
       seqType = SequenceType.signalFilter;
     }
 
@@ -128,7 +198,10 @@ class PuzzleGenerator {
     final effectiveSeqLength = seqLength.clamp(1, usable);
     int start;
     if (seqType == SequenceType.primes) {
-      final maxStart = (usable - effectiveSeqLength).clamp(0, rawSeq.length - effectiveSeqLength);
+      final maxStart = (usable - effectiveSeqLength).clamp(
+        0,
+        rawSeq.length - effectiveSeqLength,
+      );
       start = maxStart <= 0 ? 0 : random.nextInt(maxStart);
     } else {
       start = 0;
@@ -159,7 +232,12 @@ class PuzzleGenerator {
 
     // Generate distractors: nearby values that are plausible but wrong.
     final distractors = _generateDistractors(
-      correctValue, seqType, rawSeq, distractorCount, random, system,
+      correctValue,
+      seqType,
+      rawSeq,
+      distractorCount,
+      random,
+      system,
     );
 
     final reward = _buildReward(species, enc);
@@ -188,21 +266,142 @@ class PuzzleGenerator {
   // Internals
   // -----------------------------------------------------------------------
 
+  /// Difficulty caps: species. Binary needs small numbers, geometric uses
+  /// single-digit mapping so multi-digit gets confusing fast, crystalline
+  /// can handle a bit more.
+  static int _maxSequenceDepth(AlienSpecies species, SequenceType seqType) =>
+      switch (species) {
+        // Binary: keep values ≤ 13 (Fib), ≤ 13 (primes), all pi digits fine.
+        AlienSpecies.synthetic => seqType == SequenceType.piDigits ? 20 : 8,
+        // Shapes are per-digit so multi-digit works, but keep it recognisable.
+        AlienSpecies.geometric => seqType == SequenceType.piDigits ? 20 : 10,
+        // Atom diagrams only look distinct up to ~Z=20. Cap sequences so
+        // values stay small enough for readable nucleus polygons.
+        AlienSpecies.crystalline => seqType == SequenceType.piDigits ? 20 : 8,
+      };
+
+  static List<int> _rawSequence(SequenceType type) {
+    switch (type) {
+      case SequenceType.piDigits:
+        return _piDigits;
+      case SequenceType.fibonacci:
+        return _fibonacci;
+      case SequenceType.primes:
+        return _primes;
+      case SequenceType.spectralId:
+      case SequenceType.starCluster:
+      case SequenceType.chirality:
+      case SequenceType.signalFilter:
+        return const []; // Never called — visual puzzles use separate path.
+    }
+  }
+
+  static List<String> _generateDistractors(
+    int correct,
+    SequenceType seqType,
+    List<int> rawSeq,
+    int count,
+    Random random,
+    AlienNumberSystem system,
+  ) {
+    final candidates = <int>{};
+
+    // Add nearby sequence members.
+    for (final v in rawSeq) {
+      if (v != correct) candidates.add(v);
+    }
+
+    // Add values close to correct.
+    for (var delta = 1; delta <= 3; delta++) {
+      if (correct + delta > 0) candidates.add(correct + delta);
+      if (correct - delta > 0) candidates.add(correct - delta);
+    }
+
+    // Remove the correct answer.
+    candidates.remove(correct);
+
+    final pool = candidates.toList()..shuffle(random);
+    final picked = pool.take(count).toList();
+
+    // If we don't have enough, pad with random positives.
+    while (picked.length < count) {
+      final v = 1 + random.nextInt(correct.clamp(2, 100));
+      if (v != correct && !picked.contains(v)) picked.add(v);
+    }
+
+    return picked.map(system.convert).toList();
+  }
+
+  static EventChoice _buildReward(AlienSpecies species, int encounter) {
+    switch (species) {
+      case AlienSpecies.synthetic:
+        // Forgiving: ship repairs.
+        return const EventChoice(
+          text: 'Correct',
+          outcome: '',
+          shipEffects: {'hull': 0.12, 'shields': 0.08, 'tech': 0.05},
+        );
+      case AlienSpecies.geometric:
+        // Neutral: navigation data + minor resources.
+        return const EventChoice(
+          text: 'Correct',
+          outcome: '',
+          nextPlanetModifiers: {'temperature': 0.06, 'gravity': 0.05},
+          energyDelta: 5,
+          probeDelta: 1,
+        );
+      case AlienSpecies.crystalline:
+        // Harsh: nav data + probes.
+        return const EventChoice(
+          text: 'Correct',
+          outcome: '',
+          nextPlanetModifiers: {
+            'atmosphere': 0.08,
+            'water': 0.06,
+            'biodiversity': 0.05,
+          },
+          probeDelta: 2,
+        );
+    }
+  }
+
+  static EventChoice? _buildPenalty(AlienSpecies species, int encounter) {
+    switch (species) {
+      case AlienSpecies.synthetic:
+        // Forgiving but not free: minor probe loss.
+        return const EventChoice(
+          text: 'Incorrect',
+          outcome: '',
+          probeDelta: -1,
+        );
+      case AlienSpecies.geometric:
+        // Neutral: mild penalty.
+        return const EventChoice(
+          text: 'Incorrect',
+          outcome: '',
+          shipEffects: {'hull': -0.05},
+        );
+      case AlienSpecies.crystalline:
+        // Harsh: significant penalty.
+        return const EventChoice(
+          text: 'Incorrect',
+          outcome: '',
+          shipEffects: {'hull': -0.10, 'nav': -0.05},
+        );
+    }
+  }
+
   // -----------------------------------------------------------------------
   // Spectral identification puzzle
   // -----------------------------------------------------------------------
 
-  /// Spectral line wavelengths (nm) for each compound.
-  /// These are the prominent visible/UV absorption lines players see.
-  /// Real spectral emission/absorption lines (nm) in the 200-900nm range.
-  /// Sources: NIST Atomic Spectra Database, VPL Molecular Spectral Database.
+  /// Common atmospheric compounds with their absorption wavelengths (nm).
   static const _spectralCompounds = {
-    // O: green nebula lines (O III 496, 501) + green ionised cluster (O II 538)
-    //    + auroral green (557.7) + red auroral (630) + NIR triplet (777)
-    'O\u2082': [495.9, 500.7, 538.0, 557.7, 630.0, 777.4],
-    // NH₃: UV vibronic bands (202-221) + visible overtone at 550
-    'NH\u2083': [201.8, 209.2, 217.1, 221.6, 550.0],
-    // CH₄: weak visible/NIR overtone bands
+    // Oxygen: UV Fraunhofer lines (760) + weak visual bands
+    'O\u2082': [760.4, 763.5, 687.0, 627.0],
+    // Water: IR absorption bands
+    'H\u2082O': [720.0, 820.0, 930.0, 970.0],
+    // Methane: Near-IR bands
     'CH\u2084': [619.0, 727.0, 790.0, 890.0],
     // SO₂: UV B-band absorber (240-320) + weak A-band (340-390)
     'SO\u2082': [265.0, 280.0, 295.0, 310.0, 360.0],
@@ -221,7 +420,9 @@ class PuzzleGenerator {
     // Format: "key|wl1,wl2,wl3,wl4" per entry. The puzzle screen parses
     // these and renders each as a tappable spectrum bar.
     final displayed = keys.map((key) {
-      final wls = _spectralCompounds[key]!.map((w) => w.toStringAsFixed(1)).join(',');
+      final wls = _spectralCompounds[key]!
+          .map((w) => w.toStringAsFixed(1))
+          .join(',');
       return '$key|$wls';
     }).toList();
 
@@ -229,7 +430,6 @@ class PuzzleGenerator {
       id: 'puzzle_spectral_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.spectralId,
-      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHAT DO YOU SEEK?',
       narrative: '',
       displayedSequence: displayed,
@@ -251,11 +451,9 @@ class PuzzleGenerator {
         outcome: '',
         shipEffects: {'atmosphericScanner': -0.03},
       ),
-      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'Oxygen. The unmistakable signature of a living atmosphere. '
           'Navigation banks updated — our next target looks far more promising.',
-      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The alien considers our answer, then dims. A pulse of '
           'interference scrambles the atmospheric scanner as it withdraws.',
@@ -270,13 +468,13 @@ class PuzzleGenerator {
   /// Each cluster is a mix of stars from one dominant class.
   static const _starClasses = {
     // label: [temp_min, temp_max, red, green, blue, min_radius, max_radius]
-    'O': [30000, 50000, 0x9B, 0xB0, 0xFF, 3.0, 6.0],   // blue-white giants
-    'B': [10000, 30000, 0xAA, 0xBF, 0xFF, 2.5, 5.0],    // blue-white
-    'A': [7500, 10000, 0xCA, 0xD7, 0xFF, 2.0, 4.0],     // white
-    'F': [6000, 7500, 0xF8, 0xF7, 0xFF, 1.8, 3.5],      // yellow-white
-    'G': [5200, 6000, 0xFF, 0xF4, 0xE0, 1.5, 3.0],      // yellow (Sun-like!)
-    'K': [3700, 5200, 0xFF, 0xCC, 0x6F, 1.2, 2.5],      // orange
-    'M': [2400, 3700, 0xFF, 0x6B, 0x35, 1.0, 2.0],      // red dwarf
+    'O': [30000, 50000, 0x9B, 0xB0, 0xFF, 3.0, 6.0], // blue-white giants
+    'B': [10000, 30000, 0xAA, 0xBF, 0xFF, 2.5, 5.0], // blue-white
+    'A': [7500, 10000, 0xCA, 0xD7, 0xFF, 2.0, 4.0], // white
+    'F': [6000, 7500, 0xF8, 0xF7, 0xFF, 1.8, 3.5], // yellow-white
+    'G': [5200, 6000, 0xFF, 0xF4, 0xE0, 1.5, 3.0], // yellow (Sun-like!)
+    'K': [3700, 5200, 0xFF, 0xCC, 0x6F, 1.2, 2.5], // orange
+    'M': [2400, 3700, 0xFF, 0x6B, 0x35, 1.0, 2.0], // red dwarf
   };
 
   static AlienPuzzle _generateStarClusterPuzzle(
@@ -298,7 +496,9 @@ class PuzzleGenerator {
         final x = random.nextDouble();
         final y = random.nextDouble();
         final r = minR + random.nextDouble() * (maxR - minR);
-        stars.add('${x.toStringAsFixed(3)},${y.toStringAsFixed(3)},${r.toStringAsFixed(1)}');
+        stars.add(
+          '${x.toStringAsFixed(3)},${y.toStringAsFixed(3)},${r.toStringAsFixed(1)}',
+        );
       }
       return '$cls|${stars.join(';')}';
     }
@@ -306,22 +506,26 @@ class PuzzleGenerator {
     final displayed = <String>[
       // Main sequence: more stars.
       for (final cls in mainSeq)
-        makeStars(cls, 12 + random.nextInt(8), // 12-19 stars
+        makeStars(
+          cls,
+          12 + random.nextInt(8), // 12-19 stars
           (_starClasses[cls]![5]).toDouble(),
-          (_starClasses[cls]![6]).toDouble()),
+          (_starClasses[cls]![6]).toDouble(),
+        ),
       // Giants: large, fewer.
       for (final g in giants) makeStars(g, 3 + random.nextInt(4), 3.0, 5.5),
       // Supergiants: very large, rare.
-      for (final sg in supergiants) makeStars(sg, 1 + random.nextInt(3), 4.5, 7.0),
+      for (final sg in supergiants)
+        makeStars(sg, 1 + random.nextInt(3), 4.5, 7.0),
       // White dwarfs: tiny, scattered.
-      for (final wd in whiteDwarfs) makeStars(wd, 4 + random.nextInt(5), 0.8, 1.5),
+      for (final wd in whiteDwarfs)
+        makeStars(wd, 4 + random.nextInt(5), 0.8, 1.5),
     ];
 
     return AlienPuzzle(
       id: 'puzzle_stars_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.starCluster,
-      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHERE IS HOME?',
       narrative: '',
       displayedSequence: displayed,
@@ -343,12 +547,10 @@ class PuzzleGenerator {
         outcome: '',
         shipEffects: {'nav': -0.05},
       ),
-      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'G-type stars. Yellow dwarfs like the one that warmed Earth. '
           'The navigation computer locks onto the cluster — our next '
           'destination will orbit a familiar kind of sun.',
-      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The stars are beautiful, but wrong. Not the kind of sun '
           'that could nurture a world like the one we left behind.',
@@ -378,10 +580,7 @@ class PuzzleGenerator {
     // Randomise the overall rotation so it's not always the same orientation.
     final rotation = random.nextInt(360);
 
-    final displayed = <String>[
-      'L|$rotation',
-      'D|$rotation',
-    ];
+    final displayed = <String>['L|$rotation', 'D|$rotation'];
     // Shuffle so L isn't always first.
     displayed.shuffle(random);
 
@@ -389,7 +588,6 @@ class PuzzleGenerator {
       id: 'puzzle_chirality_${species.name}_${state.encounterCount}',
       species: species,
       sequenceType: SequenceType.chirality,
-      // TODO(l10n): Move to ARB files for internationalization.
       title: 'WHICH HAND IS LIFE?',
       narrative: '',
       displayedSequence: displayed,
@@ -399,25 +597,17 @@ class PuzzleGenerator {
       reward: const EventChoice(
         text: 'Correct',
         outcome: '',
-        nextPlanetModifiers: {
-          'biodiversity': 0.15,
-          'atmosphere': 0.06,
-        },
+        nextPlanetModifiers: {'biodiversity': 0.15, 'atmosphere': 0.06},
       ),
       penalty: const EventChoice(
         text: 'Incorrect',
         outcome: '',
-        nextPlanetModifiers: {
-          'biodiversity': -0.12,
-          'atmosphere': -0.04,
-        },
+        nextPlanetModifiers: {'biodiversity': -0.12, 'atmosphere': -0.04},
       ),
-      // TODO(l10n): Move to ARB files for internationalization.
       correctOutcome:
           'Left-handed. The same chirality as every amino acid that '
           'built every protein on Earth. The probe pulses with recognition — '
           'our next destination may harbour familiar biochemistry.',
-      // TODO(l10n): Move to ARB files for internationalization.
       incorrectOutcome:
           'The mirror image. A world built on D-amino acids would be alien '
           'at the molecular level — its proteins incompatible, its food '
@@ -538,136 +728,5 @@ class PuzzleGenerator {
       if (a[i] != b[i]) return false;
     }
     return true;
-  }
-
-  /// species. Binary needs small numbers, geometric uses single-digit mapping
-  /// so multi-digit gets confusing fast, crystalline can handle a bit more.
-  static int _maxSequenceDepth(AlienSpecies species, SequenceType seqType) {
-    switch (species) {
-      case AlienSpecies.synthetic:
-        // Binary: keep values ≤ 13 (Fib), ≤ 13 (primes), all pi digits fine.
-        return seqType == SequenceType.piDigits ? 20 : 8;
-      case AlienSpecies.geometric:
-        // Shapes are per-digit so multi-digit works, but keep it recognisable.
-        return seqType == SequenceType.piDigits ? 20 : 10;
-      case AlienSpecies.crystalline:
-        // Atom diagrams only look distinct up to ~Z=20. Cap sequences
-        // so values stay small enough for readable nucleus polygons.
-        return seqType == SequenceType.piDigits ? 20 : 8;
-    }
-  }
-
-  static List<int> _rawSequence(SequenceType type) {
-    switch (type) {
-      case SequenceType.piDigits:
-        return _piDigits;
-      case SequenceType.fibonacci:
-        return _fibonacci;
-      case SequenceType.primes:
-        return _primes;
-      case SequenceType.spectralId:
-      case SequenceType.starCluster:
-      case SequenceType.chirality:
-      case SequenceType.signalFilter:
-        return const []; // Never called — visual puzzles use separate path.
-    }
-  }
-
-  static List<String> _generateDistractors(
-    int correct,
-    SequenceType seqType,
-    List<int> rawSeq,
-    int count,
-    Random random,
-    AlienNumberSystem system,
-  ) {
-    final candidates = <int>{};
-
-    // Add nearby sequence members.
-    for (final v in rawSeq) {
-      if (v != correct) candidates.add(v);
-    }
-
-    // Add values close to correct.
-    for (var delta = 1; delta <= 3; delta++) {
-      if (correct + delta > 0) candidates.add(correct + delta);
-      if (correct - delta > 0) candidates.add(correct - delta);
-    }
-
-    // Remove the correct answer.
-    candidates.remove(correct);
-
-    final pool = candidates.toList()..shuffle(random);
-    final picked = pool.take(count).toList();
-
-    // If we don't have enough, pad with random positives.
-    while (picked.length < count) {
-      final v = 1 + random.nextInt(correct.clamp(2, 100));
-      if (v != correct && !picked.contains(v)) picked.add(v);
-    }
-
-    return picked.map(system.convert).toList();
-  }
-
-  static EventChoice _buildReward(AlienSpecies species, int encounter) {
-    switch (species) {
-      case AlienSpecies.synthetic:
-        // Forgiving: ship repairs.
-        return const EventChoice(
-          text: 'Correct',
-          outcome: '',
-          shipEffects: {'hull': 0.12, 'shields': 0.08, 'tech': 0.05},
-        );
-      case AlienSpecies.geometric:
-        // Neutral: navigation data + minor resources.
-        return const EventChoice(
-          text: 'Correct',
-          outcome: '',
-          nextPlanetModifiers: {
-            'temperature': 0.06,
-            'gravity': 0.05,
-          },
-          energyDelta: 5,
-          probeDelta: 1,
-        );
-      case AlienSpecies.crystalline:
-        // Harsh: nav data + probes.
-        return const EventChoice(
-          text: 'Correct',
-          outcome: '',
-          nextPlanetModifiers: {
-            'atmosphere': 0.08,
-            'water': 0.06,
-            'biodiversity': 0.05,
-          },
-          probeDelta: 2,
-        );
-    }
-  }
-
-  static EventChoice? _buildPenalty(AlienSpecies species, int encounter) {
-    switch (species) {
-      case AlienSpecies.synthetic:
-        // Forgiving but not free: minor probe loss.
-        return const EventChoice(
-          text: 'Incorrect',
-          outcome: '',
-          probeDelta: -1,
-        );
-      case AlienSpecies.geometric:
-        // Neutral: mild penalty.
-        return const EventChoice(
-          text: 'Incorrect',
-          outcome: '',
-          shipEffects: {'hull': -0.05},
-        );
-      case AlienSpecies.crystalline:
-        // Harsh: significant penalty.
-        return const EventChoice(
-          text: 'Incorrect',
-          outcome: '',
-          shipEffects: {'hull': -0.10, 'nav': -0.05},
-        );
-    }
   }
 }
