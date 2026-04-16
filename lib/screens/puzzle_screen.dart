@@ -123,7 +123,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
   }
 
   void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (
+    // Reveal 3 chars per 90ms tick (~33 chars/sec) — same visual cadence as
+    // 1 char per 30ms but 1/3 the rebuilds, reducing battery/thermal drain.
+    const charsPerTick = 3;
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 90), (
       timer,
     ) {
       if (_charIndex >= widget.puzzle.narrative.length) {
@@ -133,7 +136,10 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
       }
       if (mounted) {
         setState(() {
-          _charIndex++;
+          _charIndex = (_charIndex + charsPerTick).clamp(
+            0,
+            widget.puzzle.narrative.length,
+          );
           _displayedText = widget.puzzle.narrative.substring(0, _charIndex);
         });
       }

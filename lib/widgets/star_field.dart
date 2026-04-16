@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 import 'dart:ui';
 
@@ -90,16 +91,22 @@ class StarFieldPainter extends CustomPainter {
   }
 
   List<_StarData> _precomputeLayer(
-      int count, int seedOffset, double minR, double maxR) {
+    int count,
+    int seedOffset,
+    double minR,
+    double maxR,
+  ) {
     final rng = Random(seed + seedOffset);
     final result = <_StarData>[];
     for (int i = 0; i < count; i++) {
-      result.add(_StarData(
-        baseX: rng.nextDouble(),
-        baseY: rng.nextDouble(),
-        radius: lerpDouble(minR, maxR, rng.nextDouble())!,
-        isBlueWhite: rng.nextDouble() > 0.6,
-      ));
+      result.add(
+        _StarData(
+          baseX: rng.nextDouble(),
+          baseY: rng.nextDouble(),
+          radius: lerpDouble(minR, maxR, rng.nextDouble())!,
+          isBlueWhite: rng.nextDouble() > 0.6,
+        ),
+      );
     }
     return result;
   }
@@ -137,20 +144,53 @@ class StarFieldPainter extends CustomPainter {
     final count = max(1, nearStarCount ~/ 10);
     _streakStars = [];
     for (int i = 0; i < count; i++) {
-      _streakStars.add(_StreakData(
-        baseX: rng.nextDouble(),
-        baseY: rng.nextDouble(),
-        length: 10 + rng.nextDouble() * 22,
-        angle: 0.35 + rng.nextDouble() * 0.35,
-      ));
+      _streakStars.add(
+        _StreakData(
+          baseX: rng.nextDouble(),
+          baseY: rng.nextDouble(),
+          length: 10 + rng.nextDouble() * 22,
+          angle: 0.35 + rng.nextDouble() * 0.35,
+        ),
+      );
     }
   }
 
   // ---------------------------------------------------------------------------
-  // Cached shaders — recreated only when canvas size changes.
+  // Static shader cache — survives across painter rebuilds (AnimatedBuilder
+  // instantiates a fresh StarFieldPainter each frame, so instance caches were
+  // dead weight). Keyed by (purpose, roundedWidth, roundedHeight). Size is
+  // rounded to the nearest 4px to dodge sub-pixel layout wobble while still
+  // catching real size changes (rotation, orientation, window resize).
+  //
+  // Bounded by LRU eviction: at ~16 entries we cover all 5 shader purposes
+  // (3 atmosphere indices + dust + streak + vignette) across a couple of
+  // canvas sizes (phone portrait/landscape, tablet, etc.) with headroom.
   // ---------------------------------------------------------------------------
-  Size _cachedSize = Size.zero;
-  Shader? _dustShader;
+  static const int _shaderCacheCap = 24;
+  static final LinkedHashMap<_ShaderKey, Shader> _shaderCache =
+      LinkedHashMap<_ShaderKey, Shader>();
+
+  /// Returns a cached shader for [key], creating it via [build] on miss.
+  /// On access, the entry is promoted to the MRU end. On overflow, the LRU
+  /// entry is evicted (and its GPU resource disposed).
+  static Shader _cachedShader(_ShaderKey key, Shader Function() build) {
+    final existing = _shaderCache.remove(key);
+    if (existing != null) {
+      _shaderCache[key] = existing; // re-insert at MRU end
+      return existing;
+    }
+    final shader = build();
+    _shaderCache[key] = shader;
+    if (_shaderCache.length > _shaderCacheCap) {
+      final evictKey = _shaderCache.keys.first;
+      final evicted = _shaderCache.remove(evictKey);
+      evicted?.dispose();
+    }
+    return shader;
+  }
+
+  static int _roundSize(double v) => (v / 4).round() * 4;
+
   final List<RadialGradient> _atmosphereGradients = [
     const RadialGradient(
       colors: [Color(0x2200E5FF), Color(0x1100B8D4), Colors.transparent],
@@ -166,25 +206,23 @@ class StarFieldPainter extends CustomPainter {
     ),
   ];
 
-  void _ensureSizeShaders(Size size) {
-    if (size == _cachedSize) return;
-    _cachedSize = size;
-    _dustShader = const LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        Color(0x0008141F),
-        Color(0x1108141F),
-        Color(0x33040A14),
-      ],
-      stops: [0.0, 0.45, 1.0],
-    ).createShader(Offset.zero & size);
-  }
+  static const _dustGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0x0008141F), Color(0x1108141F), Color(0x33040A14)],
+    stops: [0.0, 0.45, 1.0],
+  );
+
+  static const _vignetteGradient = RadialGradient(
+    center: Alignment(0, -0.1),
+    radius: 1.1,
+    colors: [Colors.transparent, Color(0x14000000), Color(0x3A000000)],
+    stops: [0.55, 0.82, 1.0],
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
     _ensureStarData();
-    _ensureSizeShaders(size);
     _drawAtmosphere(canvas, size);
     _drawLayerCached(canvas, size, _farStars, 0.15, 0.4);
     _drawLayerCached(canvas, size, _midStars, 0.4, 0.7);
@@ -196,22 +234,32 @@ class StarFieldPainter extends CustomPainter {
 
   void _drawAtmosphere(Canvas canvas, Size size) {
     for (final cloud in _atmosphereClouds) {
-      final center = Offset(
-        size.width * cloud.cx,
-        size.height * cloud.cy,
-      );
+      final center = Offset(size.width * cloud.cx, size.height * cloud.cy);
       final radius = size.shortestSide * cloud.radiusFactor;
       final driftX = sin(animationValue * 2 * pi + cloud.index) * 18;
       final driftY = cos(animationValue * 2 * pi * 0.7 + cloud.index) * 12;
-      final rect = Rect.fromCircle(
-        center: center.translate(driftX, driftY),
-        radius: radius,
+      final drifted = center.translate(driftX, driftY);
+
+      // Cache one shader per cloud-index, built at the origin with the
+      // stable rect size. canvas.translate shifts it into place each frame
+      // so the per-frame drift costs zero shader allocations.
+      final diameter = radius * 2;
+      final key = _ShaderKey(
+        id: 0x100 | cloud.index,
+        w: _roundSize(diameter),
+        h: _roundSize(diameter),
+      );
+      final originRect = Rect.fromLTWH(0, 0, diameter, diameter);
+      final shader = _cachedShader(
+        key,
+        () => _atmosphereGradients[cloud.index].createShader(originRect),
       );
 
-      _atmospherePaint.shader =
-          _atmosphereGradients[cloud.index].createShader(rect);
-
-      canvas.drawCircle(rect.center, radius, _atmospherePaint);
+      _atmospherePaint.shader = shader;
+      canvas.save();
+      canvas.translate(drifted.dx - radius, drifted.dy - radius);
+      canvas.drawCircle(Offset(radius, radius), radius, _atmospherePaint);
+      canvas.restore();
     }
   }
 
@@ -286,17 +334,21 @@ class StarFieldPainter extends CustomPainter {
     dustPath.lineTo(size.width, size.height);
     dustPath.close();
 
-    _dustPaint.shader = _dustShader;
+    final dustKey = _ShaderKey(
+      id: 0x200,
+      w: _roundSize(size.width),
+      h: _roundSize(size.height),
+    );
+    _dustPaint.shader = _cachedShader(
+      dustKey,
+      () => _dustGradient.createShader(Offset.zero & size),
+    );
 
     canvas.drawPath(dustPath, _dustPaint);
   }
 
   static const _streakGradient = LinearGradient(
-    colors: [
-      Colors.transparent,
-      Color(0x66D7F5FF),
-      Colors.transparent,
-    ],
+    colors: [Colors.transparent, Color(0x66D7F5FF), Colors.transparent],
   );
 
   void _drawStreaks(Canvas canvas, Size size) {
@@ -305,40 +357,56 @@ class StarFieldPainter extends CustomPainter {
       final progress = (animationValue + i * 0.23) % 1.0;
       final startX = streak.baseX * size.width;
       final startY =
-          ((streak.baseY * size.height) + progress * size.height) %
-          size.height;
-      final end = Offset(
-        startX - cos(streak.angle) * streak.length,
-        startY - sin(streak.angle) * streak.length,
+          ((streak.baseY * size.height) + progress * size.height) % size.height;
+      final dx = -cos(streak.angle) * streak.length;
+      final dy = -sin(streak.angle) * streak.length;
+      final end = Offset(startX + dx, startY + dy);
+
+      // The streak's bounding rect size is constant per-streak (length and
+      // angle are precomputed). Build the shader once at the origin and
+      // translate the canvas so the cached shader lines up with the moving
+      // segment each frame.
+      final rectW = dx.abs();
+      final rectH = dy.abs();
+      final key = _ShaderKey(
+        id: 0x300 | i,
+        w: _roundSize(rectW),
+        h: _roundSize(rectH),
+      );
+      final originRect = Rect.fromLTWH(0, 0, rectW, rectH);
+      _streakPaint.shader = _cachedShader(
+        key,
+        () => _streakGradient.createShader(originRect),
       );
 
-      _streakPaint.shader = _streakGradient
-          .createShader(Rect.fromPoints(Offset(startX, startY), end));
-
-      canvas.drawLine(Offset(startX, startY), end, _streakPaint);
+      // Canvas translate aligns the cached origin-anchored shader with the
+      // current segment's bounding rect origin (min of start/end).
+      final originX = dx < 0 ? end.dx : startX;
+      final originY = dy < 0 ? end.dy : startY;
+      canvas.save();
+      canvas.translate(originX, originY);
+      canvas.drawLine(
+        Offset(startX - originX, startY - originY),
+        Offset(end.dx - originX, end.dy - originY),
+        _streakPaint,
+      );
+      canvas.restore();
     }
   }
 
-  // Cached vignette state — shader is recreated only when size changes.
-  Size _vignetteCachedSize = Size.zero;
   final _vignettePaint = Paint();
 
   void _drawVignette(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    if (size != _vignetteCachedSize) {
-      _vignettePaint.shader = const RadialGradient(
-        center: Alignment(0, -0.1),
-        radius: 1.1,
-        colors: [
-          Colors.transparent,
-          Color(0x14000000),
-          Color(0x3A000000),
-        ],
-        stops: [0.55, 0.82, 1.0],
-      ).createShader(rect);
-      _vignetteCachedSize = size;
-    }
-
+    final key = _ShaderKey(
+      id: 0x400,
+      w: _roundSize(size.width),
+      h: _roundSize(size.height),
+    );
+    _vignettePaint.shader = _cachedShader(
+      key,
+      () => _vignetteGradient.createShader(rect),
+    );
     canvas.drawRect(rect, _vignettePaint);
   }
 
@@ -368,12 +436,37 @@ class _StarData {
 /// Pre-computed atmosphere cloud data.
 class _AtmosphereData {
   const _AtmosphereData(
-      this.cx, this.cy, this.radiusFactor, this.colors, this.index);
+    this.cx,
+    this.cy,
+    this.radiusFactor,
+    this.colors,
+    this.index,
+  );
   final double cx;
   final double cy;
   final double radiusFactor;
   final List<Color> colors;
   final int index;
+}
+
+/// Composite cache key for [StarFieldPainter]'s static shader cache.
+///
+/// [id] encodes the draw purpose plus any per-instance index (e.g. cloud
+/// index for atmosphere, streak index for streaks). [w]/[h] are the rounded
+/// rect dimensions used when the shader was built.
+class _ShaderKey {
+  const _ShaderKey({required this.id, required this.w, required this.h});
+  final int id;
+  final int w;
+  final int h;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is _ShaderKey && other.id == id && other.w == w && other.h == h);
+
+  @override
+  int get hashCode => Object.hash(id, w, h);
 }
 
 /// Pre-computed streak data (normalized positions).

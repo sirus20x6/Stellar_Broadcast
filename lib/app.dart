@@ -350,9 +350,9 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       unawaited(
         ref.read(voyageProvider.notifier).saveState().catchError((
           Object e,
-          StackTrace s,
+          StackTrace st,
         ) {
-          debugPrint('saveState failed during app lifecycle change: $e');
+          QaLogger.app.warning('Save state failed on lifecycle pause', e, st);
         }),
       );
     } else if (state == AppLifecycleState.resumed) {
@@ -362,7 +362,9 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
         GameSfx().resumeLongAudio();
       }
       // Re-check purchases in case a promo code was redeemed while backgrounded.
-      QaIapService().restore().catchError((_) {});
+      QaIapService().restore().catchError((Object e, StackTrace st) {
+        QaLogger.app.warning('IAP restore failed on resume', e, st);
+      });
     }
   }
 

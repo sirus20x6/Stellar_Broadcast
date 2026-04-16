@@ -20,14 +20,19 @@ void main() {
       expect(s.encounterCount, 5);
     });
 
-    test('fromJson tolerates a future schemaVersion (forward compat)', () {
-      // A save from a newer version loads optimistically rather than
-      // refusing — unknown fields just get ignored.
-      final s = VoyageState.fromJson(const {
-        'schemaVersion': 999,
-        'encounterCount': 3,
-      });
-      expect(s.encounterCount, 3);
+    test('fromJson refuses a future schemaVersion (no silent data loss)', () {
+      // A save from a newer app version must not be decoded optimistically:
+      // silently dropping unknown fields and then re-saving would overwrite
+      // the richer blob with our lossy reconstruction. fromJson throws a
+      // FormatException so the caller can decide whether to clear or
+      // preserve the forward save.
+      expect(
+        () => VoyageState.fromJson(const {
+          'schemaVersion': 999,
+          'encounterCount': 3,
+        }),
+        throwsA(isA<FormatException>()),
+      );
     });
   });
 

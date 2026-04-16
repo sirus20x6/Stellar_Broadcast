@@ -115,7 +115,10 @@ class _EventScreenState extends ConsumerState<EventScreen>
   }
 
   void _startTypewriter() {
-    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 30), (
+    // Reveal 3 chars per 90ms tick (~33 chars/sec) — same visual cadence as
+    // 1 char per 30ms but 1/3 the rebuilds, reducing battery/thermal drain.
+    const charsPerTick = 3;
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 90), (
       timer,
     ) {
       if (_charIndex >= widget.event.narrative.length) {
@@ -125,7 +128,10 @@ class _EventScreenState extends ConsumerState<EventScreen>
       }
       if (mounted) {
         setState(() {
-          _charIndex++;
+          _charIndex = (_charIndex + charsPerTick).clamp(
+            0,
+            widget.event.narrative.length,
+          );
           _displayedText = widget.event.narrative.substring(0, _charIndex);
         });
       }

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 /// Captures a rolling buffer of log records and POSTs bug reports to the
 /// stellarbroadcast.org receiver.
@@ -36,11 +37,11 @@ class BugReportService {
       (match) => '${match.group(1)}[redacted]',
     );
     sanitized = sanitized.replaceAll(
-      RegExp(r'AIza[0-9A-Za-z_\-]+'),
+      RegExp(r'AIza[0-9A-Za-z_\-]{35,128}'),
       '[redacted-google-key]',
     );
     sanitized = sanitized.replaceAll(
-      RegExp(r'\b[0-9a-fA-F]{32,}\b'),
+      RegExp(r'\b[0-9a-fA-F]{32,128}\b'),
       '[REDACTED_HEX]',
     );
     sanitized = sanitized.replaceAll(
@@ -88,8 +89,8 @@ class BugReportService {
       packageName = info.packageName;
       version = info.version;
       buildNumber = info.buildNumber;
-    } catch (_) {
-      // PackageInfo unavailable — leave fields blank.
+    } catch (e, st) {
+      QaLogger.app.warning('PackageInfo failed in bug report', e, st);
     }
 
     return {

@@ -30,6 +30,39 @@ import 'utils/platform_config.dart';
 /// instance (which itself throws) if an error fires early in bootstrap.
 bool _crashlyticsReady = false;
 
+/// Tracks whether the IAP service finished initializing. Hoisted to top-level
+/// so the background retry (scheduled on timeout/failure) can short-circuit
+/// once a later attempt succeeds. QaIapService does not expose a public
+/// `isInitialized` flag, so we track it here.
+bool _iapInitialized = false;
+
+/// Schedule a background retry of IAP initialization. Used when the initial
+/// attempt times out or fails — e.g. slow Play Store / cold network. Without
+/// this, a user who paid for premium would keep seeing ads until the next
+/// cold start, because the premium listener only fires on state *changes*
+/// and the initial state was never loaded.
+void _scheduleIapRetry() {
+  Future.delayed(const Duration(seconds: 30), () async {
+    if (_iapInitialized) return;
+    try {
+      await QaIapService()
+          .initialize(productIds: {'premium_lifetime'})
+          .timeout(const Duration(seconds: 15));
+      _iapInitialized = true;
+      // Reconcile ad config with the now-known premium state. The listener
+      // registered earlier will also fire on any transition, but this
+      // handles the case where the cached premium flag was already true
+      // before the listener was attached (addPremiumListener doesn't
+      // deliver the current value).
+      if (!kDebugMode || PlatformConfig.forcePremium) {
+        QaAdConfig.isPremium = QaIapService().isPremium;
+      }
+    } catch (e, st) {
+      QaLogger.app.warning('IAP retry failed', e, st);
+    }
+  });
+}
+
 Future<void> main() async {
   // Wrap the entire app in a guarded zone so unhandled async errors
   // are forwarded to Crashlytics instead of crashing silently.
@@ -118,33 +151,39 @@ Future<void> _bootstrap() async {
   // Phase 2: IAP must complete before ads so premium status is known.
   // A 5s timeout prevents a stuck Play Store / IAP service from hanging
   // the entire bootstrap (and therefore the ads init that follows).
-  var iapInitialized = false;
-  if (PlatformConfig.supportsIap) {
-    try {
-      await QaIapService()
-          .initialize(productIds: {'premium_lifetime'})
-          .timeout(const Duration(seconds: 5));
-      iapInitialized = true;
-    } on TimeoutException catch (e, st) {
-      QaLogger.app.warning('IAP init timed out after 5s', e, st);
-    } catch (e, st) {
-      QaLogger.app.warning('IAP init failed', e, st);
-    }
-  }
-
-  // Set premium flag before ad init so ads never load for premium users.
-  // If IAP init didn't complete, default to non-premium (safer than
-  // reading an uninitialized service and assuming premium).
-  QaAdConfig.isPremium = iapInitialized && QaIapService().isPremium;
-  // Single premium listener: keep the ad config in sync AND log purchases
-  // for analytics. Previously there were two separate listener registrations
-  // which stacked up on hot-restart.
+  //
+  // Register the premium listener BEFORE initialize() so any state
+  // transition observed during init (e.g. cached premium flag loading,
+  // or a late-arriving restore) is reconciled into QaAdConfig. If we
+  // register after a failed/timed-out init, the listener would miss
+  // any premium state set by a retry before this point.
   QaIapService().addPremiumListener((isPremium) {
     QaAdConfig.isPremium = isPremium;
     if (isPremium) {
       AnalyticsService().logEvent(name: QaEvents.premiumPurchased);
     }
   });
+
+  if (PlatformConfig.supportsIap) {
+    try {
+      await QaIapService()
+          .initialize(productIds: {'premium_lifetime'})
+          .timeout(const Duration(seconds: 5));
+      _iapInitialized = true;
+    } on TimeoutException catch (e, st) {
+      QaLogger.app.warning('IAP init timed out after 5s', e, st);
+      _scheduleIapRetry();
+    } catch (e, st) {
+      QaLogger.app.warning('IAP init failed', e, st);
+      _scheduleIapRetry();
+    }
+  }
+
+  // Set premium flag before ad init so ads never load for premium users.
+  // If IAP init didn't complete, default to non-premium (safer than
+  // reading an uninitialized service and assuming premium). A late-
+  // arriving retry will flip this via the listener registered above.
+  QaAdConfig.isPremium = _iapInitialized && QaIapService().isPremium;
 
   // Desktop, web, Amazon, and Huawei builds run as premium-only (no ad SDK).
   if (PlatformConfig.forcePremium) {

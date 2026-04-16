@@ -386,10 +386,25 @@ class VoyageState {
     // field and are treated as v1 (the first published format).
     final version = _readInt(json['schemaVersion'], 1);
     if (version > currentSchemaVersion) {
+      // Refuse to decode a save produced by a newer app version. Loading
+      // optimistically would silently drop unknown fields and then the
+      // next save would overwrite the richer blob with our lossy
+      // reconstruction — permanent data loss on downgrade. Throwing is
+      // the file's "refuse to decode" convention; VoyageSaveService
+      // catches this on load. NOTE: the current caller treats any
+      // exception as "corrupt save" and clears it, so a downgrade-load
+      // will still destroy the newer save. If preserving the forward
+      // save through a downgrade is desired, the caller in
+      // voyage_save_service.dart must be updated to detect this specific
+      // FormatException and leave the stored blob intact.
       QaLogger.app.warning(
         'voyage save: schemaVersion $version > supported '
-        '$currentSchemaVersion. Loading optimistically; unknown fields '
-        'will be dropped.',
+        '$currentSchemaVersion; refusing to decode to avoid silent data '
+        'loss on a downgrade round-trip.',
+      );
+      throw FormatException(
+        'VoyageState save schemaVersion $version is newer than supported '
+        '$currentSchemaVersion',
       );
     } else if (version < currentSchemaVersion) {
       json = _migrateJson(json, version);

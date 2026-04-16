@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:onnxruntime_v2/onnxruntime_v2.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 
 /// Loads a char-level LSTM ONNX model at startup and generates planet names
 /// conditioned on 7-stat vectors.
@@ -20,6 +21,11 @@ class PlanetNameService {
   int _sosIdx = 1;
   int _eosIdx = 2;
   int _padIdx = 0;
+
+  /// Process-wide flag: inference-path failure is logged at most once, so
+  /// per-planet spam doesn't drown out ops signal while preserving the
+  /// deliberate fallback to procedural names.
+  static bool _inferenceFailureLogged = false;
 
   bool get isReady => _session != null;
 
@@ -69,7 +75,9 @@ class PlanetNameService {
       // Clean up any partially-initialized session so dispose() isn't relied on.
       try {
         _session?.release();
-      } catch (_) {}
+      } catch (e, st) {
+        QaLogger.app.warning('ONNX release failed', e, st);
+      }
       _session = null;
       rethrow;
     } finally {
@@ -77,7 +85,9 @@ class PlanetNameService {
       // mid-way, it's no longer needed after this point.
       try {
         sessionOptions?.release();
-      } catch (_) {}
+      } catch (e, st) {
+        QaLogger.app.warning('ONNX release failed', e, st);
+      }
     }
   }
 
@@ -176,8 +186,24 @@ class PlanetNameService {
 
         charIn = Int64List.fromList([charIdx]);
       }
+    } catch (e, st) {
+      // Deliberate fallback: caller uses procedural name when '' is returned.
+      // Log once per process so ops see that inference is broken without
+      // flooding logs on every planet generated.
+      if (!_inferenceFailureLogged) {
+        _inferenceFailureLogged = true;
+        QaLogger.app.warning(
+            'PlanetNameService.generateName inference failed (logged once per process; falling back to procedural names)',
+            e,
+            st);
+      }
+      return '';
     } finally {
-      runOptions.release();
+      try {
+        runOptions.release();
+      } catch (e, st) {
+        QaLogger.app.warning('ONNX release failed', e, st);
+      }
     }
 
     return nameChars.join();
@@ -235,7 +261,11 @@ class PlanetNameService {
   }
 
   void dispose() {
-    _session?.release();
+    try {
+      _session?.release();
+    } catch (e, st) {
+      QaLogger.app.warning('ONNX release failed', e, st);
+    }
     _session = null;
   }
 }

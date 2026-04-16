@@ -1078,7 +1078,8 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 // Legacy (meta-progression)
 // ═══════════════════════════════════════════════════════════════════════════
 
-final legacyProvider = StateNotifierProvider<LegacyNotifier, LegacyData>((ref) {
+final legacyProvider =
+    StateNotifierProvider.autoDispose<LegacyNotifier, LegacyData>((ref) {
   return LegacyNotifier(ref);
 });
 
@@ -1471,7 +1472,8 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
 // Locale override
 // ═══════════════════════════════════════════════════════════════════════════
 
-final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
+final localeProvider =
+    StateNotifierProvider.autoDispose<LocaleNotifier, Locale?>(
   (ref) => LocaleNotifier(),
 );
 
@@ -1513,7 +1515,8 @@ class LocaleNotifier extends StateNotifier<Locale?> {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /// Whether stats/buttons appear on the left (true, default) or right (false).
-final statsOnLeftProvider = StateNotifierProvider<StatsOnLeftNotifier, bool>(
+final statsOnLeftProvider =
+    StateNotifierProvider.autoDispose<StatsOnLeftNotifier, bool>(
   (ref) => StatsOnLeftNotifier(),
 );
 

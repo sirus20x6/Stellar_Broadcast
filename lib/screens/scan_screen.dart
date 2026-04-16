@@ -219,15 +219,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
 
     // Watch only the fields whose changes should trigger rebuild. Avoids
     // rebuilding when unrelated voyage state (log entries, encounter count,
-    // etc.) mutates.
-    ref.watch(voyageProvider.select((v) => v.currentPlanet));
-    ref.watch(voyageProvider.select((v) => v.ship));
-    ref.watch(voyageProvider.select((v) => v.probes));
-    ref.watch(voyageProvider.select((v) => v.probedStats));
-    ref.watch(voyageProvider.select((v) => v.scannerReadings));
-    ref.watch(voyageProvider.select((v) => v.scannerLevels));
-    ref.watch(voyageProvider.select((v) => v.solarRechargeAmount));
-    ref.watch(voyageProvider.select((v) => v.revealedFeatures));
+    // etc.) mutates. Merged into a single select that returns a Dart record
+    // so the provider only needs one listener instead of eight.
+    ref.watch(voyageProvider.select((v) => (
+          currentPlanet: v.currentPlanet,
+          ship: v.ship,
+          probes: v.probes,
+          probedStats: v.probedStats,
+          scannerReadings: v.scannerReadings,
+          scannerLevels: v.scannerLevels,
+          solarRechargeAmount: v.solarRechargeAmount,
+          revealedFeatures: v.revealedFeatures,
+        )));
     final voyage = ref.read(voyageProvider);
     final planet = voyage.currentPlanet;
 
