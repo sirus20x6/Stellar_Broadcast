@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
+import 'package:stellar_broadcast/utils/constants.dart';
 
 /// Captures a rolling buffer of log records and POSTs bug reports to the
 /// stellarbroadcast.org receiver.
@@ -26,6 +28,40 @@ class BugReportService {
   static const int _maxLogLineLength = 1000;
   static final Queue<String> _logBuffer = Queue<String>();
   static bool _attached = false;
+
+  /// Guard so the "no pins configured" warning only logs once per process.
+  static bool _warnedNoPins = false;
+
+  /// Runs a certificate-pinning handshake probe against [url]. Returns true
+  /// when the server's SPKI matches [CertPins.bugReport], or when the pin
+  /// list is empty (fall back to standard HTTPS trust). Returns false when
+  /// pins are configured but the server fingerprint does not match.
+  static Future<bool> _verifyPin(Uri url) async {
+    if (CertPins.bugReport.isEmpty) {
+      if (!_warnedNoPins) {
+        _warnedNoPins = true;
+        QaLogger.app.warning(
+          'BugReportService: no SPKI pins configured; '
+          'falling back to standard HTTPS trust',
+        );
+      }
+      return true;
+    }
+    try {
+      final result = await HttpCertificatePinning.check(
+        serverURL: url.toString(),
+        sha: SHA.SHA256,
+        allowedSHAFingerprints: CertPins.bugReport,
+        timeout: 10,
+      );
+      if (result.contains('CONNECTION_SECURE')) return true;
+      QaLogger.app.warning('BugReportService cert pinning failed: $result');
+      return false;
+    } catch (e, st) {
+      QaLogger.app.warning('BugReportService cert pinning error', e, st);
+      return false;
+    }
+  }
 
   static String _sanitizeLogLine(String line) {
     var sanitized = line.replaceAllMapped(
@@ -116,11 +152,20 @@ class BugReportService {
   /// [BugReportException] on any failure with a user-readable message.
   static Future<void> submit(String userMessage) async {
     final payload = await _buildPayload(userMessage);
+    final endpointUri = Uri.parse(_endpoint);
+    // Cert-pin handshake probe runs before the real request. Fails closed
+    // when pins are configured and the server fingerprint doesn't match;
+    // no-op when the pin list is empty.
+    if (!await _verifyPin(endpointUri)) {
+      throw BugReportException(
+        'Could not verify server identity (certificate pinning failed)',
+      );
+    }
     http.Response response;
     try {
       response = await http
           .post(
-            Uri.parse(_endpoint),
+            endpointUri,
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
               'Accept': 'application/json',

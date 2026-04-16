@@ -121,3 +121,20 @@ class AppConstants {
     'no_scan': 'stellar_no_scan',
   };
 }
+
+/// HTTPS certificate pinning SPKI SHA-256 hashes (base64).
+///
+/// Each entry is a hash of the target server's public-key SubjectPublicKeyInfo
+/// (SPKI). If the list for an endpoint is empty, pinning is skipped and
+/// standard HTTPS trust is used. Generate the hash with:
+///
+///   openssl s_client -connect HOST:443 -servername HOST < /dev/null | \
+///     openssl x509 -pubkey -noout | openssl rsa -pubin -outform der | \
+///     openssl dgst -sha256 -binary | openssl base64
+///
+/// Pin both the leaf and the intermediate to survive cert rotation.
+class CertPins {
+  // TODO: paste SPKI hashes here once the server certs have been captured.
+  static const List<String> leaderboard = <String>[];
+  static const List<String> bugReport = <String>[];
+}

@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
+import 'package:stellar_broadcast/utils/constants.dart';
 
 /// Client for the self-hosted leaderboard API.
 ///
@@ -39,6 +41,41 @@ class LeaderboardApi {
       String.fromEnvironment('LEADERBOARD_API_KEY', defaultValue: '');
 
   static final _settings = SettingsRepository();
+
+  /// Guard so the "no pins configured" warning only logs once per process.
+  static bool _warnedNoPins = false;
+
+  /// Runs a certificate-pinning handshake probe against [url]. Returns true
+  /// when the server's SPKI matches [CertPins.leaderboard], or when the pin
+  /// list is empty (fall back to standard HTTPS trust). Returns false when
+  /// pins are configured but the server fingerprint does not match — this
+  /// is the fail-closed path that blocks MITM.
+  static Future<bool> _verifyPin(Uri url) async {
+    if (CertPins.leaderboard.isEmpty) {
+      if (!_warnedNoPins) {
+        _warnedNoPins = true;
+        QaLogger.app.warning(
+          'LeaderboardApi: no SPKI pins configured; '
+          'falling back to standard HTTPS trust',
+        );
+      }
+      return true;
+    }
+    try {
+      final result = await HttpCertificatePinning.check(
+        serverURL: url.toString(),
+        sha: SHA.SHA256,
+        allowedSHAFingerprints: CertPins.leaderboard,
+        timeout: 10,
+      );
+      if (result.contains('CONNECTION_SECURE')) return true;
+      QaLogger.app.warning('LeaderboardApi cert pinning failed: $result');
+      return false;
+    } catch (e, st) {
+      QaLogger.app.warning('LeaderboardApi cert pinning error', e, st);
+      return false;
+    }
+  }
 
   /// Submit a score to the leaderboard. Fire-and-forget from the caller's
   /// perspective: returns immediately, retries persist on network failure.
@@ -112,11 +149,16 @@ class LeaderboardApi {
   /// network error, non-2xx response, or web platform).
   static Future<bool> _post(String path, Map<String, dynamic> body) async {
     if (kIsWeb) return false; // dart:io HttpClient not available on web
+    final uri = Uri.parse('$_baseUrl$path');
+    // Cert-pin handshake probe runs before the real request. Fails closed
+    // when pins are configured and the server fingerprint doesn't match;
+    // no-op when the pin list is empty.
+    if (!await _verifyPin(uri)) return false;
     HttpClient? client;
     try {
       client = HttpClient();
       client.connectionTimeout = const Duration(seconds: 5);
-      final request = await client.postUrl(Uri.parse('$_baseUrl$path'));
+      final request = await client.postUrl(uri);
       request.headers.set('Content-Type', 'application/json');
       request.headers.set('X-API-Key', _apiKey);
       request.write(jsonEncode(body));

@@ -656,7 +656,7 @@ class _DailySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dailyPlayed = ref.watch(dailyPlayedProvider);
-    final played = dailyPlayed.valueOrNull ?? false;
+    final played = dailyPlayed.value ?? false;
 
     // Today's date for display.
     final now = DateTime.now().toUtc();

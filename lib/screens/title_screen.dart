@@ -828,7 +828,7 @@ class _DailyVoyageButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dailyPlayed = ref.watch(dailyPlayedProvider);
-    final played = dailyPlayed.valueOrNull ?? false;
+    final played = dailyPlayed.value ?? false;
 
     // Format today's date as "MAR 19" style.
     final now = DateTime.now().toUtc();
