@@ -154,7 +154,7 @@ Future<void> _bootstrap() async {
   // Debug builds always show ads so the dev's premium grant doesn't hide
   // the ad surface during QA. kDebugMode is the single toggle — release
   // builds always respect premium.
-  if (kDebugMode) {
+  if (kDebugMode && !PlatformConfig.forcePremium) {
     QaAdConfig.isPremium = false;
     QaIapService().setPremium(false);
   }

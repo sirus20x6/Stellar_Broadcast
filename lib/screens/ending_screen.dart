@@ -119,6 +119,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   /// laid out. Lives on the parent so the GlobalKey isn't recreated when
   /// the sheet rebuilds.
   final GlobalKey _shareCardKey = GlobalKey();
+  bool _shareSheetOpen = false;
 
   @override
   void didChangeDependencies() {
@@ -1091,6 +1092,8 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   /// [ShareRunCard] inside a [RepaintBoundary] keyed to [_shareCardKey];
   /// once the user confirms, [_captureAndShareCard] turns it into a PNG.
   Future<void> _showShareCardSheet(BuildContext context) async {
+    if (_shareSheetOpen) return;
+    _shareSheetOpen = true;
     final cardData = ShareRunCardData(
       score: _finalScore,
       tier: _tier,
@@ -1115,7 +1118,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         cardKey: _shareCardKey,
         onShare: () => _captureAndShareCard(sheetContext, cardData),
       ),
-    );
+    ).whenComplete(() => _shareSheetOpen = false);
   }
 
   /// Renders the share card to a PNG via [RenderRepaintBoundary.toImage] and

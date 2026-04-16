@@ -56,7 +56,22 @@ class VoyageSaveService {
     try {
       return VoyageState.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (e, st) {
-      QaLogger.app.severe('Save data corrupted, clearing', e, st);
+      QaLogger.app.severe('Primary save corrupted, trying staged fallback', e, st);
+      final staged = await _settings.getString(_stagingKey);
+      if (staged.isNotEmpty) {
+        try {
+          final recovered = VoyageState.fromJson(
+            jsonDecode(staged) as Map<String, dynamic>,
+          );
+          QaLogger.app.warning('Recovered from staged write after primary corruption');
+          await _settings.setString(_key, staged);
+          await _settings.remove(_stagingKey);
+          return recovered;
+        } catch (_) {
+          // Both corrupted — fall through to clear.
+        }
+      }
+      QaLogger.app.severe('Both primary and staged saves corrupt, clearing');
       await clear();
       return null;
     }

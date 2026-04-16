@@ -85,10 +85,10 @@ class GameSfx {
   /// which calls playLong in initState) leaves multiple ~30-60s tracks playing
   /// simultaneously on top of bg music and stacking into a cacophony.
   Future<void> playLong(String filename, {double volume = 1.0}) async {
-    await _disposeAllLongPlayers();
-    await _pauseBgm();
     final sfx = SfxPlayer();
     if (!sfx.enabled) return;
+    await _disposeAllLongPlayers();
+    await _pauseBgm();
     try {
       final player = await FlameAudio.playLongAudio(filename, volume: volume * sfx.volume);
       _longPlayers.add(player);
@@ -224,8 +224,8 @@ class GameSfx {
       await player.setSourceAsset(filename);
       await player.setVolume(volume * sfx.volume);
       await player.resume();
-      // Dispose when finished.
-      player.onPlayerComplete.listen((_) => player.dispose());
+      // Dispose when finished. Using .first auto-cancels the subscription.
+      player.onPlayerComplete.first.then((_) => player.dispose());
     } catch (e) {
       QaLogger.audio.warning('Failed to play varied SFX "$filename": $e');
     }

@@ -182,10 +182,11 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
                 const SizedBox(height: 12),
                 _UpgradesGrid(
                   legacy: legacy,
-                  onPurchase: (id, cost) {
-                    ref
+                  onPurchase: (id, cost) async {
+                    final ok = await ref
                         .read(legacyProvider.notifier)
                         .purchaseUpgrade(id, cost: cost);
+                    if (!ok) return;
                     AnalyticsService().logEvent(
                       name: QaEvents.legacyUpgradePurchased,
                       parameters: {'upgrade_id': id, 'cost': cost},
@@ -276,8 +277,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
         const SizedBox(height: 12),
         _UpgradesGrid(
           legacy: legacy,
-          onPurchase: (id, cost) {
-            ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
+          onPurchase: (id, cost) async {
+            final ok = await ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
+            if (!ok) return;
             AnalyticsService().logEvent(
               name: QaEvents.legacyUpgradePurchased,
               parameters: {'upgrade_id': id, 'cost': cost},
@@ -986,7 +988,7 @@ class _UpgradesGrid extends StatelessWidget {
   const _UpgradesGrid({required this.legacy, required this.onPurchase});
 
   final LegacyData legacy;
-  final void Function(String id, int cost) onPurchase;
+  final Function(String id, int cost) onPurchase;
 
   @override
   Widget build(BuildContext context) {

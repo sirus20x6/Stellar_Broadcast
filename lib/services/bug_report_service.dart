@@ -39,6 +39,14 @@ class BugReportService {
       RegExp(r'AIza[0-9A-Za-z_\-]+'),
       '[redacted-google-key]',
     );
+    sanitized = sanitized.replaceAll(
+      RegExp(r'\b[0-9a-fA-F]{32,}\b'),
+      '[REDACTED_HEX]',
+    );
+    sanitized = sanitized.replaceAll(
+      RegExp(r'\beyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b'),
+      '[REDACTED_JWT]',
+    );
     if (sanitized.length > _maxLogLineLength) {
       sanitized = '${sanitized.substring(0, _maxLogLineLength)}...[truncated]';
     }

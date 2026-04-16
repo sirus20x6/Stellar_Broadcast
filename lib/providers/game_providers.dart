@@ -570,16 +570,24 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     );
   }
 
+  /// The chain event ID from the most recent [triggerEvent] call, so that
+  /// [handleEvent] can pass it through to [EventEngine.applyChoice] for
+  /// proper cleanup of fired chains.
+  String? _lastChainEventId;
+
   /// Triggers a random narrative event and returns it for the UI to display.
   GameEvent triggerEvent() {
-    final event = EventEngine.getRandomEvent(
+    final selection = EventEngine.getRandomEvent(
       _random,
       state,
       _eventPool,
       eventIndex: _eventIndex,
     );
-    state = state.copyWith(seenEventIds: [...state.seenEventIds, event.id]);
-    return event;
+    _lastChainEventId = selection.chainEventId;
+    state = state.copyWith(
+      seenEventIds: [...state.seenEventIds, selection.event.id],
+    );
+    return selection.event;
   }
 
   /// Applies the player's chosen [EventChoice] to the current state.
@@ -587,10 +595,14 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   /// Important: callers should `await` this method because it may trigger
   /// async planet generation ([_openImmediatePlanet]) that mutates state.
   Future<void> handleEvent(EventChoice choice) async {
-    // Note: weighted outcomes should be resolved by the caller before passing
-    // here, so the choice's outcome/effects are already finalized.
-    final eventId = state.seenEventIds.isNotEmpty ? state.seenEventIds.last : null;
-    state = EventEngine.applyChoice(state, choice, _random, triggeredEventId: eventId);
+    // Use the chain event ID captured by triggerEvent so the cleanup logic
+    // in applyChoice correctly removes the fired chain. Previously this used
+    // seenEventIds.last which was always non-null and prevented cleanup when
+    // a non-chain event happened to fire at the same encounter a chain was
+    // due (the != check at line ~286 kept the stale chain forever).
+    final chainId = _lastChainEventId;
+    _lastChainEventId = null;
+    state = EventEngine.applyChoice(state, choice, _random, triggeredEventId: chainId);
 
     if (choice.opensPlanetScreen) {
       await _openImmediatePlanet(
@@ -1280,8 +1292,7 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     return result;
   }
 
-  void addVoyageResult(VoyageLogEntry entry, {bool isDaily = false}) async {
-    await _loadFuture;
+  void addVoyageResult(VoyageLogEntry entry, {bool isDaily = false}) {
     final score = entry.score;
     final seed = entry.seed;
     final points = (score / 8000).ceil();
@@ -1352,16 +1363,14 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   }
 
   /// Records newly discovered planet features into the legacy codex.
-  void recordDiscoveries(List<String> features) async {
-    await _loadFuture;
+  void recordDiscoveries(List<String> features) {
     final updated = {...state.discoveredFeatures, ...features};
     if (updated.length == state.discoveredFeatures.length) return;
     state = state.copyWith(discoveredFeatures: updated);
     _saveToStorage();
   }
 
-  void unlockAchievement(String achievement) async {
-    await _loadFuture;
+  void unlockAchievement(String achievement) {
     if (state.achievements.contains(achievement)) return;
     state = state.copyWith(
       achievements: [...state.achievements, achievement],

@@ -6,6 +6,10 @@ import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 
+/// Result of [EventEngine.getRandomEvent]: the selected event plus the
+/// chain's [eventId] when the event came from [VoyageState.pendingChains].
+typedef EventSelection = ({GameEvent event, String? chainEventId});
+
 /// Core event resolution engine.
 class EventEngine {
   EventEngine._();
@@ -19,7 +23,10 @@ class EventEngine {
   ///
   /// If a chained event is due this encounter, it fires instead of the
   /// normal selection.
-  static GameEvent getRandomEvent(
+  ///
+  /// Returns an [EventSelection] record so the caller knows which chain
+  /// fired (if any) and can pass [chainEventId] through to [applyChoice].
+  static EventSelection getRandomEvent(
     Random random,
     VoyageState state,
     List<GameEvent> eventPool, {
@@ -34,7 +41,9 @@ class EventEngine {
     for (final chain in state.pendingChains) {
       if (state.encounterCount >= chain.triggerAtEncounter) {
         final chained = indexedEvents[chain.eventId];
-        if (chained != null) return chained;
+        if (chained != null) {
+          return (event: chained, chainEventId: chain.eventId);
+        }
       }
     }
 
@@ -74,10 +83,12 @@ class EventEngine {
       final roll = random.nextDouble();
       if (roll < 0.30) {
         if (malfunctions.isNotEmpty) {
-          return malfunctions[random.nextInt(malfunctions.length)];
+          return _noChain(malfunctions[random.nextInt(malfunctions.length)]);
         }
       } else if (roll < 0.40) {
-        if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
+        if (boons.isNotEmpty) {
+          return _noChain(boons[random.nextInt(boons.length)]);
+        }
       }
 
       candidates = [...common, ...rare, ...uneventful];
@@ -89,10 +100,12 @@ class EventEngine {
 
       if (roll < malfunctionChance) {
         if (malfunctions.isNotEmpty) {
-          return malfunctions[random.nextInt(malfunctions.length)];
+          return _noChain(malfunctions[random.nextInt(malfunctions.length)]);
         }
       } else if (roll < malfunctionChance + 0.05) {
-        if (boons.isNotEmpty) return boons[random.nextInt(boons.length)];
+        if (boons.isNotEmpty) {
+          return _noChain(boons[random.nextInt(boons.length)]);
+        }
       }
 
       // Rare events still possible but uncommon.
@@ -105,11 +118,15 @@ class EventEngine {
       // Last-resort fallback. eventPool is normally non-empty (loaded from
       // YAML on startup), but if a future code path supplies an empty pool
       // we degrade to a no-op event rather than crashing.
-      if (eventPool.isEmpty) return _emptyEvent;
-      return eventPool[random.nextInt(eventPool.length)];
+      if (eventPool.isEmpty) return _noChain(_emptyEvent);
+      return _noChain(eventPool[random.nextInt(eventPool.length)]);
     }
-    return candidates[random.nextInt(candidates.length)];
+    return _noChain(candidates[random.nextInt(candidates.length)]);
   }
+
+  /// Wraps a non-chain event in the [EventSelection] record.
+  static EventSelection _noChain(GameEvent event) =>
+      (event: event, chainEventId: null);
 
   static final GameEvent _emptyEvent = GameEvent(
     id: 'empty_fallback',
