@@ -61,6 +61,10 @@
 	</array>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Stellar Broadcast does not access your photo library. This description is required by Apple because a linked SDK references the Photos framework.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Stellar Broadcast does not save to your photo library. This description is required by Apple because a linked SDK references the Photos framework.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-8340454950181235~6909599878</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
