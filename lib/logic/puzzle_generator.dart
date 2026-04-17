@@ -395,13 +395,17 @@ class PuzzleGenerator {
   // Spectral identification puzzle
   // -----------------------------------------------------------------------
 
-  /// Common atmospheric compounds with their absorption wavelengths (nm).
+  /// Real spectral emission/absorption lines (nm) in the 200-900nm range.
+  /// Sources: NIST Atomic Spectra Database, VPL Molecular Spectral Database.
+  /// H₂O is intentionally excluded — water is a habitability signal too, so
+  /// adding it would give the puzzle two defensible correct answers.
   static const _spectralCompounds = {
-    // Oxygen: UV Fraunhofer lines (760) + weak visual bands
-    'O\u2082': [760.4, 763.5, 687.0, 627.0],
-    // Water: IR absorption bands
-    'H\u2082O': [720.0, 820.0, 930.0, 970.0],
-    // Methane: Near-IR bands
+    // O: green nebula lines (O III 496, 501) + green ionised cluster (O II 538)
+    //    + auroral green (557.7) + red auroral (630) + NIR triplet (777)
+    'O\u2082': [495.9, 500.7, 538.0, 557.7, 630.0, 777.4],
+    // NH₃: UV vibronic bands (202-221) + visible overtone at 550
+    'NH\u2083': [201.8, 209.2, 217.1, 221.6, 550.0],
+    // CH₄: weak visible/NIR overtone bands
     'CH\u2084': [619.0, 727.0, 790.0, 890.0],
     // SO₂: UV B-band absorber (240-320) + weak A-band (340-390)
     'SO\u2082': [265.0, 280.0, 295.0, 310.0, 360.0],

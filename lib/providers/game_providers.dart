@@ -278,6 +278,12 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
   /// Generates deceptive scanner readings based on scanner subsystem health.
   /// Consumes 2 energy per scan.
   Future<void> scanPlanet() async {
+    // Reroll guard: if a planet is already scanned this encounter, this call
+    // is a re-navigation (back button from scan screen, then Scan Planet
+    // tapped again). Treat it as "review the existing planet", not a free
+    // re-roll of a bad scan.
+    if (state.currentPlanet != null) return;
+
     var planet = await PlanetGenerator.generate(
       _random,
       scannerLevels: state.scannerLevels,
