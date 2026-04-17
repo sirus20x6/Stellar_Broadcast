@@ -14,6 +14,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Run at lowest CPU + idle I/O priority so the build doesn't thrash the
+# desktop while it runs. Subprocesses (Gradle, javac, Dart) inherit.
+# Failures are non-fatal — macOS has no ionice, and some distros restrict
+# ionice class 3 behind CAP_SYS_NICE.
+renice -n 19 -p $$ >/dev/null 2>&1 || true
+command -v ionice >/dev/null 2>&1 && ionice -c 3 -p $$ >/dev/null 2>&1 || true
+
 # Load build secrets from .env if present (gitignored, see .gitignore).
 # Expected keys: LEADERBOARD_API_KEY
 if [ -f ".env" ]; then
