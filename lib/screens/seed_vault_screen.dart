@@ -181,7 +181,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
     final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
-      builder: (_, __) {
+      builder: (_, _) {
         final titleColor = _titleColor;
         return Text(
           'SEED VAULT CRITICAL',
@@ -449,7 +449,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
                 Expanded(
                   child: AnimatedBuilder(
                     animation: _waveController,
-                    builder: (_, __) => _SeedTank(
+                    builder: (_, _) => _SeedTank(
                       label: 'FOOD CROPS',
                       fillPercent: foodFill,
                       accentColor: _kFoodColor,
@@ -463,7 +463,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
                 Expanded(
                   child: AnimatedBuilder(
                     animation: _waveController,
-                    builder: (_, __) => _SeedTank(
+                    builder: (_, _) => _SeedTank(
                       label: 'HERITAGE',
                       fillPercent: heritageFill,
                       accentColor: _kHeritageColor,
@@ -496,7 +496,7 @@ class _SeedVaultScreenState extends ConsumerState<SeedVaultScreen>
                 borderRadius: BorderRadius.circular(8),
                 child: AnimatedBuilder(
                   animation: _titleGlowAnim,
-                  builder: (_, __) {
+                  builder: (_, _) {
                     final glowAlpha = 0.15 + _titleGlowAnim.value * 0.15;
                     return Container(
                       width: double.infinity,

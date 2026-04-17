@@ -160,7 +160,7 @@ class _SingularityEngineScreenState
               _arcController,
               _pulseController,
             ]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _SingularityEnginePainter(
                 ringValue: _ringController.value,

@@ -182,7 +182,7 @@ class _ChronoVortexScreenState extends ConsumerState<ChronoVortexScreen>
           onTapDown: _handleTapDown,
           child: AnimatedBuilder(
             animation: Listenable.merge([_vortexController, _pulseController]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _ChronoVortexPainter(
                 animationValue: _vortexController.value,

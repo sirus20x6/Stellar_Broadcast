@@ -147,7 +147,7 @@ class _PhantomShipScreenState extends ConsumerState<PhantomShipScreen>
               : (details) => _handleTap(details, constraints),
           child: AnimatedBuilder(
             animation: Listenable.merge([_phaseController, _glitchController]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _PhantomShipPainter(
                 phaseValue: _phaseController.value,

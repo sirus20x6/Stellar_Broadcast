@@ -154,7 +154,7 @@ class _DysonSphereScreenState extends ConsumerState<DysonSphereScreen>
               : (details) => _handleTap(details, constraints),
           child: AnimatedBuilder(
             animation: Listenable.merge([_starController, _pulseController]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _DysonSpherePainter(
                 animationValue: _starController.value,

@@ -334,7 +334,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
                 child: RepaintBoundary(
                   child: AnimatedBuilder(
                     animation: _ringAnimation,
-                    builder: (_, __) => CustomPaint(
+                    builder: (_, _) => CustomPaint(
                       size: Size(ringAreaWidth, h),
                       painter: _MirrorArrayPainter(
                         animationValue: _starController.value,
@@ -386,7 +386,7 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
               child: RepaintBoundary(
                 child: AnimatedBuilder(
                   animation: _ringAnimation,
-                  builder: (_, __) => CustomPaint(
+                  builder: (_, _) => CustomPaint(
                     size: Size(w, h),
                     painter: _MirrorArrayPainter(
                       animationValue: _starController.value,

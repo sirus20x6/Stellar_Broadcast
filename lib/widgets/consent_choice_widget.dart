@@ -63,7 +63,7 @@ class _ConsentChoiceWidgetState extends State<ConsentChoiceWidget>
           // Animated shield icon
           AnimatedBuilder(
             animation: _shimmerCtrl,
-            builder: (_, __) {
+            builder: (_, _) {
               final phase = _shimmerCtrl.value * 2 * math.pi;
               final glowAlpha = 0.15 + 0.1 * math.sin(phase);
               return Container(

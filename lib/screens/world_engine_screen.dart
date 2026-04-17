@@ -234,7 +234,7 @@ class _WorldEngineScreenState extends ConsumerState<WorldEngineScreen>
                 _pulseController,
                 _energyController,
               ]),
-              builder: (_, __) => CustomPaint(
+              builder: (_, _) => CustomPaint(
                 size: constraints.biggest,
                 painter: _WorldEnginePainter(
                   animationValue: _energyController.value,

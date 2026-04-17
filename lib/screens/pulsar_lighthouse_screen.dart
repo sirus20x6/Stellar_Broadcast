@@ -152,7 +152,7 @@ class _PulsarLighthouseScreenState extends ConsumerState<PulsarLighthouseScreen>
               : (details) => _handleTap(details, constraints),
           child: AnimatedBuilder(
             animation: Listenable.merge([_beamController, _pulseController]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _PulsarLighthousePainter(
                 beamValue: _beamController.value,

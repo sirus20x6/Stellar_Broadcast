@@ -125,7 +125,7 @@ class _EventStarFieldState extends State<EventStarField>
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: controller,
-          builder: (_, __) => Semantics(
+          builder: (_, _) => Semantics(
             label: 'Animated star field background',
             excludeSemantics: true,
             child: CustomPaint(
@@ -183,7 +183,7 @@ class EventAnimatedTitle extends StatelessWidget {
     final scaled = ScreenInfo.of(context).scaledFontSize(fontSize);
     return AnimatedBuilder(
       animation: glow,
-      builder: (_, __) {
+      builder: (_, _) {
         final secondary = secondaryGlowColor ?? accentColor;
         return Text(
           text,

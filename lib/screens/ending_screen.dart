@@ -550,7 +550,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         // Phase 1: "COLONY ESTABLISHED" with expanding glow.
         AnimatedBuilder(
           animation: _phase1Controller,
-          builder: (_, __) => Opacity(
+          builder: (_, _) => Opacity(
             opacity: _glowOpacity.value,
             child: Column(
               children: [
@@ -604,7 +604,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         // Phase 2: Score reveal.
         AnimatedBuilder(
           animation: _phase2Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity = _phase2Controller.value.clamp(0.0, 1.0);
             return Opacity(
               opacity: opacity,
@@ -645,7 +645,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         // Phase 3: Tier badge.
         AnimatedBuilder(
           animation: _phase3Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final scale = Curves.elasticOut.transform(
               _phase3Controller.value.clamp(0.0, 1.0),
             );
@@ -707,7 +707,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         // Phase 5: Legacy points earned.
         AnimatedBuilder(
           animation: _phase5Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity = _phase5Controller.value.clamp(0.0, 1.0);
             final scale = 0.8 + 0.2 * _phase5Controller.value;
             return Opacity(
@@ -832,7 +832,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         // Phase 4: Epilogue text.
         AnimatedBuilder(
           animation: _phase4Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity = _phase4Controller.value.clamp(0.0, 1.0);
             final slide = 20.0 * (1.0 - _phase4Controller.value);
             return Opacity(

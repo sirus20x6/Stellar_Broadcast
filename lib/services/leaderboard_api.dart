@@ -65,8 +65,8 @@ class LeaderboardApi {
       'player': player,
       'score': score,
       'board': board,
-      if (seed != null) 'seed': seed,
-      if (version != null) 'version': version,
+      'seed': ?seed,
+      'version': ?version,
       'ts': DateTime.now().toUtc().toIso8601String(),
     };
     // Schedule async work without blocking the caller.

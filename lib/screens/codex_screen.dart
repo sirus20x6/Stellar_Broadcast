@@ -257,7 +257,7 @@ class _AnimatedStarFieldState extends State<_AnimatedStarField>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (_, __) => Semantics(
+      builder: (_, _) => Semantics(
         label: 'Animated star field background',
         excludeSemantics: true,
         child: CustomPaint(

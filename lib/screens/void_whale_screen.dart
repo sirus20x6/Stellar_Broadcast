@@ -168,7 +168,7 @@ class _VoidWhaleScreenState extends ConsumerState<VoidWhaleScreen>
                 _glowController,
                 _pulseController,
               ]),
-              builder: (_, __) => CustomPaint(
+              builder: (_, _) => CustomPaint(
                 size: Size(constraints.maxWidth, constraints.maxHeight),
                 painter: _VoidWhalePainter(
                   animationValue: _whaleController.value,

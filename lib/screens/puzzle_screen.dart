@@ -287,7 +287,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     final screen = ScreenInfo.of(context);
     return AnimatedBuilder(
       animation: _titleGlowAnim,
-      builder: (_, __) => Text(
+      builder: (_, _) => Text(
         puzzle.title,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -728,7 +728,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
           height: 200,
           child: AnimatedBuilder(
             animation: _starController,
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size.infinite,
               painter: _SignalFilterPainter(
                 inputA: inputA,
@@ -887,7 +887,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                     borderRadius: BorderRadius.circular(7),
                     child: AnimatedBuilder(
                       animation: _starController,
-                      builder: (_, __) => CustomPaint(
+                      builder: (_, _) => CustomPaint(
                         size: Size.infinite,
                         painter: _SpectralPainter(
                           wavelengths: wls,
@@ -930,7 +930,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
           builder: (context, constraints) {
             return AnimatedBuilder(
               animation: _pulseController,
-              builder: (_, __) => GestureDetector(
+              builder: (_, _) => GestureDetector(
                 onTapDown: _resolved
                     ? null
                     : (details) {
@@ -1044,7 +1044,7 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
                     borderRadius: BorderRadius.circular(11),
                     child: AnimatedBuilder(
                       animation: _pulseController,
-                      builder: (_, __) => CustomPaint(
+                      builder: (_, _) => CustomPaint(
                         size: Size.infinite,
                         painter: _AlaninePainter(
                           isL: hand == 'L',

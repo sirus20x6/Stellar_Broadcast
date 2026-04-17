@@ -1369,7 +1369,7 @@ class _VoyageLogState extends State<_VoyageLog> {
         shrinkWrap: true,
         padding: const EdgeInsets.all(12),
         itemCount: widget.logs.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        separatorBuilder: (_, _) => const SizedBox(height: 8),
         itemBuilder: (_, index) {
           final logIndex = widget.logs.length - 1 - index;
           final entry = widget.logs[logIndex];

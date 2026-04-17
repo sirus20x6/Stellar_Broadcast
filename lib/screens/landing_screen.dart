@@ -327,7 +327,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
       label: 'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
       child: AnimatedBuilder(
         animation: _pulseController,
-        builder: (_, __) => _PlanetVisualization(
+        builder: (_, _) => _PlanetVisualization(
           planet: planet,
           pulse: _pulseController.value,
         ),
@@ -1170,7 +1170,7 @@ class _GlowingActionButton extends StatelessWidget {
 
     return AnimatedBuilder(
       animation: pulseController,
-      builder: (_, __) {
+      builder: (_, _) {
         final glowAlpha =
             isPrimary ? 0.2 + pulseController.value * 0.15 : 0.0;
 

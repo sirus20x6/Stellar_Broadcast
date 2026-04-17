@@ -149,7 +149,7 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
               : (details) => _handleTap(details, constraints),
           child: AnimatedBuilder(
             animation: Listenable.merge([_diskController, _pulseController]),
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
               size: Size(constraints.maxWidth, constraints.maxHeight),
               painter: _BlackHolePainter(
                 animationValue: _diskController.value,

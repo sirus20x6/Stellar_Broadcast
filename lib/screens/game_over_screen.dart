@@ -246,14 +246,14 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         // Phase 1: Pulsing warning icon + "MISSION FAILED".
         AnimatedBuilder(
           animation: _phase1Controller,
-          builder: (_, __) => Opacity(
+          builder: (_, _) => Opacity(
             opacity: _glowOpacity.value,
             child: Column(
               children: [
                 // Pulsing warning icon with red glow.
                 AnimatedBuilder(
                   animation: _pulseController,
-                  builder: (_, __) {
+                  builder: (_, _) {
                     final pulse = 0.7 + 0.3 * _pulseController.value;
                     return Container(
                       width: 120 + _glowExpand.value * 60,
@@ -320,7 +320,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         if (_reason.isNotEmpty)
           AnimatedBuilder(
           animation: _phase2Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity =
                 _phase2Controller.value.clamp(0.0, 1.0);
             final slide =
@@ -370,7 +370,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         // Phase 3: Epilogue text.
         AnimatedBuilder(
           animation: _phase3Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity =
                 _phase3Controller.value.clamp(0.0, 1.0);
             final slide =
@@ -414,7 +414,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         // Phase 4: Voyage stats.
         AnimatedBuilder(
           animation: _phase4Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity =
                 _phase4Controller.value.clamp(0.0, 1.0);
             final scale =
@@ -501,7 +501,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         // Phase 5: Buttons.
         AnimatedBuilder(
           animation: _phase5Controller,
-          builder: (_, __) {
+          builder: (_, _) {
             final opacity =
                 _phase5Controller.value.clamp(0.0, 1.0);
             return Opacity(

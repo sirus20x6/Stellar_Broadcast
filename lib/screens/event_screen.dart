@@ -305,7 +305,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
   Widget _buildTitle() {
     return AnimatedBuilder(
       animation: _titleGlowAnim,
-      builder: (_, __) => Text(
+      builder: (_, _) => Text(
         widget.event.title,
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -907,7 +907,7 @@ class _ChoiceButtonState extends State<_ChoiceButton>
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: _shimmer,
-          builder: (_, __) {
+          builder: (_, _) {
             final shimmerAlpha = isDisabled
                 ? 0.0
                 : 0.15 * (0.5 + 0.5 * sin(_shimmer.value * 2 * pi));
