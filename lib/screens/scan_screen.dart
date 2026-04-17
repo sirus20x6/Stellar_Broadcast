@@ -374,8 +374,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           Flexible(
             child: Text(
               planet.name.toUpperCase(),
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'monospace',
                 fontSize: screen.scaledFontSize(28),
@@ -955,8 +956,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                               Flexible(
                                 child: Text(
                                   planet.name.toUpperCase(),
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'monospace',
                                     fontSize: screen.scaledFontSize(28),
