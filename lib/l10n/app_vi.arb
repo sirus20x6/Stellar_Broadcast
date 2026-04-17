@@ -376,7 +376,7 @@
   "event_lifeSupportGlitch_title": "Lỗi Dây Chuyền Hỗ Trợ Sự Sống",
   "event_lifeSupportGlitch_narrative": "AI quản lý hỗ trợ sự sống đã rơi vào vòng lặp lỗi, chu kỳ lọc CO2 dao động không thể đoán. Nồng độ CO₂ trên các tầng có người dao động. Phi hành đoàn đau đầu; một số đã bất tỉnh.",
   "event_lifeSupportGlitch_choice0_text": "Ép khởi động lại cứng AI hỗ trợ sự sống",
-  "event_lifeSupportGlitch_choice0_outcome": "Khởi động lại xóa vòng lặp nhưng chế độ điều khiển thủ công chạy mười giờ. Ba thành viên tử vong vì tích tụ CO\\u2082 trước khi mức ổn định.",
+  "event_lifeSupportGlitch_choice0_outcome": "Khởi động lại xóa vòng lặp nhưng chế độ điều khiển thủ công chạy mười giờ. Ba thành viên tử vong vì tích tụ CO₂ trước khi mức ổn định.",
   "event_lifeSupportGlitch_choice1_text": "Vá vòng lặp phần mềm — chậm hơn nhưng an toàn hơn",
   "event_lifeSupportGlitch_choice1_outcome": "Đội phần mềm cô lập và vá lỗi trong sáu giờ căng thẳng. Mức CO₂ từ từ ổn định. Không cần khởi động lại cứng.",
   "event_lifeSupportGlitch_choice2_text": "Sơ tán tầng bị ảnh hưởng và chạy hỗ trợ sự sống tối thiểu",

@@ -990,7 +990,7 @@
   "event_lifeSupportGlitch_title": "Gangguan Beruntun Sokongan Hayat",
   "event_lifeSupportGlitch_narrative": "AI pengurusan sokongan hayat telah memasuki gelung ralat, mengitar sela penyaringan karbon dioksida secara tidak menentu. Tahap CO₂ di seluruh dek yang diduduki berturun naik. Kru mengalami sakit kepala; ada yang sudah tidak mampu bergerak.",
   "event_lifeSupportGlitch_choice0_text": "Paksa set semula keras AI sokongan hayat",
-  "event_lifeSupportGlitch_choice0_outcome": "Set semula membersihkan gelung tetapi meninggalkan ganti manual berjalan selama sepuluh jam. Tiga anggota kru meninggal akibat pengumpulan CO\\u2082 sebelum tahap kembali normal.",
+  "event_lifeSupportGlitch_choice0_outcome": "Set semula membersihkan gelung tetapi meninggalkan ganti manual berjalan selama sepuluh jam. Tiga anggota kru meninggal akibat pengumpulan CO₂ sebelum tahap kembali normal.",
   "event_lifeSupportGlitch_choice1_text": "Tampal gelung perisian — lebih perlahan tetapi lebih selamat",
   "event_lifeSupportGlitch_choice1_outcome": "Pasukan perisian mengasingkan dan menampal kerosakan selama enam jam yang tegang. Tahap CO₂ perlahan-lahan kembali normal. Tiada set semula keras diperlukan.",
   "event_lifeSupportGlitch_choice2_text": "Kosongkan dek yang terjejas dan jalankan sokongan hayat minimum",

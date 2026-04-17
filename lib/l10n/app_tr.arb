@@ -998,7 +998,7 @@
   "event_lifeSupportGlitch_title": "Yaşam Desteği Çağlayan Arızası",
   "event_lifeSupportGlitch_narrative": "Yaşam desteği yönetim YZ'si hata döngüsüne girmiş, karbondioksit temizleme aralıklarını tahmin edilemez şekilde değiştiriyor. Yaşanan güvertelerde CO₂ seviyeleri dalgalanıyor. Mürettebat baş ağrısı geliştiriyor; bazıları çoktan etkisiz kalmış.",
   "event_lifeSupportGlitch_choice0_text": "Yaşam desteği YZ'sini zorla sıfırla",
-  "event_lifeSupportGlitch_choice0_outcome": "Sıfırlama döngüyü temizliyor ama on saat manuel geçersiz kılmalar çalışıyor. Seviyeler normalleşmeden üç mürettebat CO\\u2082 birikimine yenik düşüyor.",
+  "event_lifeSupportGlitch_choice0_outcome": "Sıfırlama döngüyü temizliyor ama on saat manuel geçersiz kılmalar çalışıyor. Seviyeler normalleşmeden üç mürettebat CO₂ birikimine yenik düşüyor.",
   "event_lifeSupportGlitch_choice1_text": "Yazılım döngüsünü yama — daha yavaş ama güvenli",
   "event_lifeSupportGlitch_choice1_outcome": "Yazılım ekibi altı gergin saat boyunca arızayı izole edip yamalıyor. CO₂ seviyeleri yavaşça normalleşiyor.",
   "event_lifeSupportGlitch_choice2_text": "Etkilenen güverteleri tahliye et ve minimal yaşam desteğiyle çalış",

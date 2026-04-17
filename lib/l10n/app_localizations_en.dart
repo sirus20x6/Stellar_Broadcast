@@ -3803,7 +3803,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO\\u2082 buildup before levels normalise.';
+      'The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO₂ buildup before levels normalise.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>

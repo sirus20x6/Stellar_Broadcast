@@ -3847,7 +3847,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'La réinitialisation résout la boucle mais laisse les commandes manuelles tourner pendant dix heures. Trois membres d\'équipage succombent à l\'accumulation de CO\\u2082 avant que les niveaux ne se normalisent.';
+      'La réinitialisation résout la boucle mais laisse les commandes manuelles tourner pendant dix heures. Trois membres d\'équipage succombent à l\'accumulation de CO₂ avant que les niveaux ne se normalisent.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>

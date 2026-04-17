@@ -3826,7 +3826,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'Das Reset behebt die Schleife, lässt aber manuelle Übersteuerungen zehn Stunden lang laufen. Drei Besatzungsmitglieder erliegen dem CO\\u2082-Aufbau, bevor sich die Werte normalisieren.';
+      'Das Reset behebt die Schleife, lässt aber manuelle Übersteuerungen zehn Stunden lang laufen. Drei Besatzungsmitglieder erliegen dem CO₂-Aufbau, bevor sich die Werte normalisieren.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>

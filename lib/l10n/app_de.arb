@@ -981,7 +981,7 @@
   "event_lifeSupportGlitch_title": "Lebenserhaltungs-Kaskadenglitch",
   "event_lifeSupportGlitch_narrative": "Die KI der Lebenserhaltung ist in eine Fehlerschleife geraten und zykliert die CO₂-Waschintervalle unberechenbar. CO₂-Werte auf bewohnten Decks schwanken. Besatzungsmitglieder entwickeln Kopfschmerzen; einige sind bereits handlungsunfähig.",
   "event_lifeSupportGlitch_choice0_text": "Hartes Reset der Lebenserhaltungs-KI erzwingen",
-  "event_lifeSupportGlitch_choice0_outcome": "Das Reset behebt die Schleife, lässt aber manuelle Übersteuerungen zehn Stunden lang laufen. Drei Besatzungsmitglieder erliegen dem CO\\u2082-Aufbau, bevor sich die Werte normalisieren.",
+  "event_lifeSupportGlitch_choice0_outcome": "Das Reset behebt die Schleife, lässt aber manuelle Übersteuerungen zehn Stunden lang laufen. Drei Besatzungsmitglieder erliegen dem CO₂-Aufbau, bevor sich die Werte normalisieren.",
   "event_lifeSupportGlitch_choice1_text": "Die Softwareschleife patchen — langsamer, aber sicherer",
   "event_lifeSupportGlitch_choice1_outcome": "Das Softwareteam isoliert und behebt den Fehler über sechs angespannte Stunden. CO₂-Werte normalisieren sich langsam. Kein hartes Reset nötig.",
   "event_lifeSupportGlitch_choice2_text": "Betroffene Decks evakuieren und auf minimale Lebenserhaltung umstellen",

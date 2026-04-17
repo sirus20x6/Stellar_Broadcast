@@ -1087,7 +1087,7 @@
   "event_lifeSupportGlitch_title": "Life Support Cascade Glitch",
   "event_lifeSupportGlitch_narrative": "The life support management AI has entered an error loop, cycling carbon dioxide scrubbing intervals unpredictably. CO₂ levels across occupied decks are fluctuating. Crew are developing headaches; some are already incapacitated.",
   "event_lifeSupportGlitch_choice0_text": "Force a hard reset of the life support AI",
-  "event_lifeSupportGlitch_choice0_outcome": "The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO\\u2082 buildup before levels normalise.",
+  "event_lifeSupportGlitch_choice0_outcome": "The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO₂ buildup before levels normalise.",
   "event_lifeSupportGlitch_choice1_text": "Patch the software loop — slower but safer",
   "event_lifeSupportGlitch_choice1_outcome": "The software team isolates and patches the fault over six tense hours. CO₂ levels slowly normalise. No hard reset needed.",
   "event_lifeSupportGlitch_choice2_text": "Evacuate affected decks and run on minimal life support",

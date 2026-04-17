@@ -3810,7 +3810,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'Set semula membersihkan gelung tetapi meninggalkan ganti manual berjalan selama sepuluh jam. Tiga anggota kru meninggal akibat pengumpulan CO\\u2082 sebelum tahap kembali normal.';
+      'Set semula membersihkan gelung tetapi meninggalkan ganti manual berjalan selama sepuluh jam. Tiga anggota kru meninggal akibat pengumpulan CO₂ sebelum tahap kembali normal.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>

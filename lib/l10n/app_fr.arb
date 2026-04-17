@@ -979,7 +979,7 @@
   "event_lifeSupportGlitch_title": "Dysfonctionnement en Cascade du Support Vital",
   "event_lifeSupportGlitch_narrative": "L'IA du support vital est entrée dans une boucle d'erreur, cyclant les intervalles d'épuration de CO₂ de façon imprévisible. Les niveaux de CO₂ sur les ponts occupés fluctuent. Les membres d'équipage développent des maux de tête ; certains sont déjà incapacités.",
   "event_lifeSupportGlitch_choice0_text": "Forcer une réinitialisation dure de l'IA du support vital",
-  "event_lifeSupportGlitch_choice0_outcome": "La réinitialisation résout la boucle mais laisse les commandes manuelles tourner pendant dix heures. Trois membres d'équipage succombent à l'accumulation de CO\\u2082 avant que les niveaux ne se normalisent.",
+  "event_lifeSupportGlitch_choice0_outcome": "La réinitialisation résout la boucle mais laisse les commandes manuelles tourner pendant dix heures. Trois membres d'équipage succombent à l'accumulation de CO₂ avant que les niveaux ne se normalisent.",
   "event_lifeSupportGlitch_choice1_text": "Patcher la boucle logicielle — plus lent mais plus sûr",
   "event_lifeSupportGlitch_choice1_outcome": "L'équipe logicielle isole et corrige la faute sur six heures tendues. Les niveaux de CO₂ se normalisent lentement. Pas de réinitialisation dure nécessaire.",
   "event_lifeSupportGlitch_choice2_text": "Évacuer les ponts affectés et fonctionner en support vital minimal",

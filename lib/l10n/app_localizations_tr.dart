@@ -3791,7 +3791,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'Sıfırlama döngüyü temizliyor ama on saat manuel geçersiz kılmalar çalışıyor. Seviyeler normalleşmeden üç mürettebat CO\\u2082 birikimine yenik düşüyor.';
+      'Sıfırlama döngüyü temizliyor ama on saat manuel geçersiz kılmalar çalışıyor. Seviyeler normalleşmeden üç mürettebat CO₂ birikimine yenik düşüyor.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>

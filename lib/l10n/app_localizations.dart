@@ -6370,7 +6370,7 @@ abstract class AppLocalizations {
   /// No description provided for @event_lifeSupportGlitch_choice0_outcome.
   ///
   /// In en, this message translates to:
-  /// **'The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO\\u2082 buildup before levels normalise.'**
+  /// **'The reset clears the loop but leaves manual overrides running for ten hours. Three crew members succumb to CO₂ buildup before levels normalise.'**
   String get event_lifeSupportGlitch_choice0_outcome;
 
   /// No description provided for @event_lifeSupportGlitch_choice1_text.

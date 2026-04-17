@@ -3792,7 +3792,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get event_lifeSupportGlitch_choice0_outcome =>
-      'Khởi động lại xóa vòng lặp nhưng chế độ điều khiển thủ công chạy mười giờ. Ba thành viên tử vong vì tích tụ CO\\u2082 trước khi mức ổn định.';
+      'Khởi động lại xóa vòng lặp nhưng chế độ điều khiển thủ công chạy mười giờ. Ba thành viên tử vong vì tích tụ CO₂ trước khi mức ổn định.';
 
   @override
   String get event_lifeSupportGlitch_choice1_text =>
