@@ -15,6 +15,8 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/screens/scan_screen.dart'
+    show maybePreloadScanInterstitial;
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 
@@ -694,6 +696,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                 ? () {
                     HapticService().medium();
                     GameSfx().play(GameSfx.scanningPlanet);
+                    // Kick the interstitial preload now so it has the full
+                    // nav + scan animation + result-read window to resolve
+                    // before Press On. No-op if next scan isn't a show slot.
+                    maybePreloadScanInterstitial(ref);
                     Navigator.pushNamed(context, '/scan');
                     // Generate planet after navigation so the scan animation
                     // plays while ONNX inference runs on the next frame.

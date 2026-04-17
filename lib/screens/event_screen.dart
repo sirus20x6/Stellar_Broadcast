@@ -11,6 +11,8 @@ import 'package:stellar_broadcast/logic/event_engine.dart';
 import 'package:stellar_broadcast/logic/guard_evaluator.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
+import 'package:stellar_broadcast/screens/scan_screen.dart'
+    show maybePreloadScanInterstitial;
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
@@ -229,6 +231,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
         if (selectedChoice == null) return KeyEventResult.ignored;
         final hasPlanet = ref.read(voyageProvider).currentPlanet != null;
         if (selectedChoice.opensPlanetScreen && hasPlanet) {
+          maybePreloadScanInterstitial(ref);
           Navigator.of(context).pushReplacementNamed('/scan');
         } else {
           Navigator.of(context).pop();
@@ -425,6 +428,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
             if (selectedChoice == null) return;
             final hasPlanet = ref.read(voyageProvider).currentPlanet != null;
             if (selectedChoice.opensPlanetScreen && hasPlanet) {
+              maybePreloadScanInterstitial(ref);
               Navigator.of(context).pushReplacementNamed('/scan');
               return;
             }

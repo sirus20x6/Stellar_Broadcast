@@ -26,6 +26,31 @@ import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 
+/// Placement string shared by the "Scan Planet" preload and the Press On /
+/// Land Here shows, so GA4 can attribute impressions to a single trigger.
+const String scanInterstitialPlacement = 'scan_press_on';
+
+/// Preload the interstitial ad for the upcoming scan_screen — called from
+/// every navigation site that pushes `/scan` (voyage_screen's Scan Planet
+/// button, event_screen planet-choice taps). This fires one screen earlier
+/// than scan_screen itself, giving the SDK the full navigation + scan
+/// animation + result-read window to return a filled ad before Press On.
+///
+/// No-op on any of:
+///   * user is premium (ads are gated off)
+///   * the upcoming scan count isn't a show slot (every 3rd, skipping
+///     every ninth which is a paywall)
+///   * an ad is already loaded or loading (load() is idempotent).
+void maybePreloadScanInterstitial(WidgetRef ref) {
+  final nextScanned = ref.read(voyageProvider).planetsScanned + 1;
+  if (nextScanned > 0 &&
+      nextScanned % 3 == 0 &&
+      !ref.read(isPremiumProvider) &&
+      (nextScanned ~/ 3) % 3 != 0) {
+    ref.read(interstitialAdProvider).load(placement: scanInterstitialPlacement);
+  }
+}
+
 /// Precomputed scan data shared between portrait and landscape layouts.
 class _ScanData {
   final ShipSystems ship;
@@ -89,13 +114,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
   void initState() {
     super.initState();
 
-    // Preload check at mount — handles the event_screen path that uses
-    // pushReplacementNamed('/scan'), where planetsScanned has already been
-    // updated before this screen is pushed. The voyage_screen path is NOT
-    // covered here because its post-frame scanPlanet() hasn't run yet and
-    // the counter is stale; that path is handled by the ref.listen in
-    // build() which fires when scanPlanet() actually bumps the value.
-    _maybePreloadInterstitial(ref.read(voyageProvider).planetsScanned);
+    // Interstitial preload happens at the navigation site (voyage_screen's
+    // "Scan Planet" button + event_screen planet-choice taps) via
+    // [maybePreloadScanInterstitial], one screen earlier. By the time this
+    // screen mounts, the ad request is already in-flight and has the full
+    // scan animation + result-read window to resolve before Press On.
 
     _masterController = AnimationController(
       vsync: this,
@@ -187,36 +210,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
   /// Telemetry placement key shared by every interstitial event fired from
   /// the scan screen. GA4 reports break revenue down by `placement` so this
   /// shows up next to other rewarded/interstitial slots when we add them.
-  static const _interstitialPlacement = 'scan_press_on';
+  // scanInterstitialPlacement (top-level constant) is shared with the
+  // preload at the navigation site so all three events (requested, loaded,
+  // impression) carry the same placement tag for GA4 attribution.
   static const _landPlacement = 'scan_land';
 
   /// Fires a preload if the given post-scan count matches the "Press On will
   /// show an interstitial" condition. Guarded against no-op cases (premium,
   /// count < 3, paywall cycle). The underlying load() in the handle is also
   /// idempotent so calling this repeatedly is safe.
-  void _maybePreloadInterstitial(int scanned) {
-    if (scanned > 0 &&
-        scanned % 3 == 0 &&
-        !ref.read(isPremiumProvider) &&
-        (scanned ~/ 3) % 3 != 0) {
-      ref.read(interstitialAdProvider).load(placement: _interstitialPlacement);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // React to planetsScanned transitioning to its post-scan value — this is
-    // the voyage_screen path, where scan_screen is pushed BEFORE scanPlanet()
-    // runs (it's queued as a post-frame callback). Firing the preload here
-    // means the ad request matches the moment Press On's show() condition
-    // becomes true, rather than lagging by one scan cycle (which caused the
-    // 11% show rate — preloaded ads sat in cache until the NEXT show trigger
-    // and mostly went unshown when players abandoned mid-voyage).
-    ref.listen<int>(
-      voyageProvider.select((v) => v.planetsScanned),
-      (_, next) => _maybePreloadInterstitial(next),
-    );
-
     // Watch only the fields whose changes should trigger rebuild. Each
     // select does its own short-circuit equality, so unrelated voyage state
     // (log entries, encounter count) doesn't cause a rebuild.
@@ -710,7 +715,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           } else {
             final shown = await ref
                 .read(interstitialAdProvider)
-                .show(placement: _interstitialPlacement);
+                .show(placement: scanInterstitialPlacement);
             if (!shown && mounted) await showPremiumPaywall(context);
           }
         }
@@ -1337,7 +1342,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                         final shown = await ref
                                             .read(interstitialAdProvider)
                                             .show(
-                                              placement: _interstitialPlacement,
+                                              placement: scanInterstitialPlacement,
                                             );
                                         if (!shown && mounted) {
                                           await showPremiumPaywall(context);
