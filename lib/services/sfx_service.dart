@@ -263,24 +263,25 @@ class GameSfx {
   }
 
   /// Pause the engine hum (app backgrounded).
+  ///
+  /// AudioPlayer.pause() returns a Future, so a synchronous try/catch won't
+  /// see the PlatformException the plugin throws when the native player has
+  /// already been disposed (a race we hit when lifecycle pause fires while
+  /// the engine is being torn down). Use catchError to swallow it.
   void pauseEngineHum() {
     if (_enginePlaying) {
-      try {
-        _enginePlayer?.pause();
-      } catch (e) {
-        QaLogger.audio.warning('Failed to pause engine hum: $e');
-      }
+      _enginePlayer?.pause().catchError((Object e, StackTrace st) {
+        QaLogger.audio.warning('Failed to pause engine hum', e, st);
+      });
     }
   }
 
-  /// Resume the engine hum (app foregrounded).
+  /// Resume the engine hum (app foregrounded). Same async-throw caveat.
   void resumeEngineHum() {
     if (_enginePlaying) {
-      try {
-        _enginePlayer?.resume();
-      } catch (e) {
-        QaLogger.audio.warning('Failed to resume engine hum: $e');
-      }
+      _enginePlayer?.resume().catchError((Object e, StackTrace st) {
+        QaLogger.audio.warning('Failed to resume engine hum', e, st);
+      });
     }
   }
 }

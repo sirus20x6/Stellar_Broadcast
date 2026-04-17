@@ -92,3 +92,4 @@ flutter:
     - assets/models/planet_namer_fp16.onnx
     - assets/models/vocab.json
     - assets/events/
+    - assets/Icon_512.png

@@ -171,6 +171,18 @@ class ShipSystems {
         return copyWith(temperatureScanner: clamp(temperatureScanner));
       case 'waterScanner':
         return copyWith(waterScanner: clamp(waterScanner));
+      case 'scanners':
+        // Alias meaning "every scanner" — event authors use this when a
+        // choice damages or heals the whole scanner suite. Apply the delta
+        // uniformly to all six individual scanners.
+        return copyWith(
+          atmosphericScanner: clamp(atmosphericScanner),
+          gravimetricScanner: clamp(gravimetricScanner),
+          mineralScanner: clamp(mineralScanner),
+          lifeSignsScanner: clamp(lifeSignsScanner),
+          temperatureScanner: clamp(temperatureScanner),
+          waterScanner: clamp(waterScanner),
+        );
       default:
         throw ArgumentError('Unknown ship system: $system');
     }

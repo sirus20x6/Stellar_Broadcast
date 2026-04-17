@@ -3585,7 +3585,7 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
       EventChoice(
         text: l10n.event_derelictArmada_choice1,
         outcome: l10n.event_derelictArmada_outcome1,
-        shipEffects: {'culture': 0.08, 'technology': 0.08},
+        shipEffects: {'culture': 0.08, 'tech': 0.08},
       ),
     ],
   ),
@@ -3603,7 +3603,7 @@ List<GameEvent> buildEventPool(AppLocalizations l10n) => [
         text: l10n.event_alienQuarantineZone_choice0,
         outcome: l10n.event_alienQuarantineZone_outcome0,
         shipEffects: {
-          'technology': 0.12,
+          'tech': 0.12,
           'mineralScanner': 0.08,
           'cryopods': -0.10,
         },
