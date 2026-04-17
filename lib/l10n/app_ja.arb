@@ -1908,5 +1908,82 @@
   "event_nativeAlliance_outcome0": "この条約は、相互防衛、共同研究、平等な領土権を確立します。両方の文明は共に成長します。先住民は、植民地の見通しを変える農業の知識を共有します。",
   "event_nativeAlliance_narrative": "先住民文明は正式な条約を提案しました。彼らの大使はシャトルで到着し、驚くほど洗練された翻訳機を通して話すエレガントな存在です。これらは 3 つの関係形式を提供し、それぞれがコロニーの将来に異なる意味を持ちます。",
   "event_nativeAlliance_outcome1": "高度なテクノロジーを活用して有利な条件を確保します。原住民は領土と資源を譲渡します。彼らは震える手でサインをします。歴史上これまでにもこのような事態は見られましたが、良い結末を迎えることはめったにありません。",
-  "event_nativeAlliance_choice2": "相互利益を重視した貿易パートナーシップを確立する"
+  "event_nativeAlliance_choice2": "相互利益を重視した貿易パートナーシップを確立する",
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

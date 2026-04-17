@@ -1898,5 +1898,92 @@
   "event_nativeAlliance_choice2": "Establecer una asociación comercial centrada en el beneficio mutuo",
   "event_nativeAlliance_outcome1": "Aprovecha su tecnología avanzada para obtener condiciones favorables. Los nativos ceden territorio y recursos. Hacen señas con manos temblorosas. La historia ha visto esto antes y rara vez termina bien.",
   "event_surveillanceState_outcome2": "Las cámaras cubren la sala de máquinas, la armería y el puente. Las viviendas siguen siendo privadas. El saboteador es finalmente identificado mediante un análisis de patrones. Una respuesta mesurada.",
-  "event_nativeAlliance_title": "Alianza Nativa"
+  "event_nativeAlliance_title": "Alianza Nativa",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

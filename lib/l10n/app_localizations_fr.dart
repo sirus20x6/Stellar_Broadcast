@@ -1646,7 +1646,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get event_geneticModification_choice0_outcome =>
-      'Les modifications commencent sur les volontaires. Dix colons subissent des réactions de rejet fatales \\u2014 un rappel sinistre que l\'évolution a un prix. Les survivants sont plus robustes, mais sont-ils encore pleinement humains ?';
+      'Les modifications commencent sur les volontaires. Dix colons subissent des réactions de rejet fatales — un rappel sinistre que l\'évolution a un prix. Les survivants sont plus robustes, mais sont-ils encore pleinement humains ?';
 
   @override
   String get event_geneticModification_choice1_text =>
@@ -1685,7 +1685,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice1_outcome =>
-      'Les plus vulnérables sont sauvés. Trois perdent le combat malgré un traitement précoce \\u2014 le virus était trop avancé.';
+      'Les plus vulnérables sont sauvés. Trois perdent le combat malgré un traitement précoce — le virus était trop avancé.';
 
   @override
   String get event_triageDecision_choice2_text =>
@@ -1693,7 +1693,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice2_outcome =>
-      'Un tirage au sort. Dix sont doublement malchanceux \\u2014 traitement refusé et trop faibles pour se battre. Le vaisseau continue en boitant.';
+      'Un tirage au sort. Dix sont doublement malchanceux — traitement refusé et trop faibles pour se battre. Le vaisseau continue en boitant.';
 
   @override
   String get event_earthSignal_title => 'Signal de la Terre';
@@ -2231,7 +2231,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get event_gravityLensPlanet_narrative =>
-      'La lentille gravitationnelle révèle une planète qui semble être une copie exacte de la Terre \\u2014 océans bleus, continents verts, nuages blancs. Mais les calculs de lentille montrent qu\'elle est à des centaines d\'années-lumière de notre cap \\u2014 impossiblement loin. Néanmoins, ses données spectrales pourraient affiner nos critères de recherche.';
+      'La lentille gravitationnelle révèle une planète qui semble être une copie exacte de la Terre — océans bleus, continents verts, nuages blancs. Mais les calculs de lentille montrent qu\'elle est à des centaines d\'années-lumière de notre cap — impossiblement loin. Néanmoins, ses données spectrales pourraient affiner nos critères de recherche.';
 
   @override
   String get event_gravityLensPlanet_choice0_text =>

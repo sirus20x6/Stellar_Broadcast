@@ -1625,7 +1625,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get event_geneticModification_choice0_outcome =>
-      'Pengubahsuaian dimulakan pada sukarelawan. Sepuluh kolonis mengalami reaksi penolakan yang membawa maut \\u2014 peringatan suram bahawa evolusi ada harganya. Yang terselamat lebih lasak, tetapi adakah mereka masih sepenuhnya manusia?';
+      'Pengubahsuaian dimulakan pada sukarelawan. Sepuluh kolonis mengalami reaksi penolakan yang membawa maut — peringatan suram bahawa evolusi ada harganya. Yang terselamat lebih lasak, tetapi adakah mereka masih sepenuhnya manusia?';
 
   @override
   String get event_geneticModification_choice1_text =>
@@ -1663,7 +1663,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice1_outcome =>
-      'Yang paling rentan diselamatkan. Tiga kalah dalam pertempuran walaupun rawatan awal \\u2014 virus sudah terlalu jauh.';
+      'Yang paling rentan diselamatkan. Tiga kalah dalam pertempuran walaupun rawatan awal — virus sudah terlalu jauh.';
 
   @override
   String get event_triageDecision_choice2_text =>
@@ -1671,7 +1671,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice2_outcome =>
-      'Cabutan rawak. Sepuluh tidak bernasib baik dua kali \\u2014 dinafikan rawatan dan terlalu lemah untuk bertahan. Kapal tertatih meneruskan perjalanan.';
+      'Cabutan rawak. Sepuluh tidak bernasib baik dua kali — dinafikan rawatan dan terlalu lemah untuk bertahan. Kapal tertatih meneruskan perjalanan.';
 
   @override
   String get event_earthSignal_title => 'Isyarat dari Bumi';
@@ -2204,7 +2204,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get event_gravityLensPlanet_narrative =>
-      'Lenturan graviti mendedahkan planet yang kelihatan seperti salinan tepat Bumi \\u2014 lautan biru, benua hijau, awan putih. Tetapi pengiraan lenturan menunjukkan ia ratusan tahun cahaya dari haluan kita \\u2014 amat jauh. Namun, data spektralnya boleh memperhalusi kriteria pencarian kita.';
+      'Lenturan graviti mendedahkan planet yang kelihatan seperti salinan tepat Bumi — lautan biru, benua hijau, awan putih. Tetapi pengiraan lenturan menunjukkan ia ratusan tahun cahaya dari haluan kita — amat jauh. Namun, data spektralnya boleh memperhalusi kriteria pencarian kita.';
 
   @override
   String get event_gravityLensPlanet_choice0_text =>

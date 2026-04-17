@@ -424,7 +424,7 @@
   "event_geneticModification_title": "Cadangan Penyesuaian Genetik",
   "event_geneticModification_narrative": "Pasukan sains mencadangkan pengubahsuaian DNA kolonis untuk lebih bertahan di dunia asing — tulang lebih kuat, ketahanan UV, paru-paru dipertingkat. Pengubahsuaian ini tidak boleh diundur dan akan mengubah manusia selama-lamanya.",
   "event_geneticModification_choice0_text": "Luluskan — kelangsungan hidup menuntut evolusi",
-  "event_geneticModification_choice0_outcome": "Pengubahsuaian dimulakan pada sukarelawan. Sepuluh kolonis mengalami reaksi penolakan yang membawa maut \\u2014 peringatan suram bahawa evolusi ada harganya. Yang terselamat lebih lasak, tetapi adakah mereka masih sepenuhnya manusia?",
+  "event_geneticModification_choice0_outcome": "Pengubahsuaian dimulakan pada sukarelawan. Sepuluh kolonis mengalami reaksi penolakan yang membawa maut — peringatan suram bahawa evolusi ada harganya. Yang terselamat lebih lasak, tetapi adakah mereka masih sepenuhnya manusia?",
   "event_geneticModification_choice1_text": "Jadikan sukarela sahaja",
   "event_geneticModification_choice1_outcome": "Ada yang menawarkan diri, ada yang enggan. Koloni akan terbahagi antara yang diubah suai dan yang semula jadi.",
   "event_geneticModification_choice2_text": "Tolak — manusia mesti kekal manusia",
@@ -434,9 +434,9 @@
   "event_triageDecision_choice0_text": "Utamakan kakitangan penting",
   "event_triageDecision_choice0_outcome": "Jurutera dan juruterbang pulih dengan cepat. Lapan kru bukan penting meninggal sebelum rawatan sampai.",
   "event_triageDecision_choice1_text": "Rawat yang paling sakit dahulu — triaj mengikut keperluan",
-  "event_triageDecision_choice1_outcome": "Yang paling rentan diselamatkan. Tiga kalah dalam pertempuran walaupun rawatan awal \\u2014 virus sudah terlalu jauh.",
+  "event_triageDecision_choice1_outcome": "Yang paling rentan diselamatkan. Tiga kalah dalam pertempuran walaupun rawatan awal — virus sudah terlalu jauh.",
   "event_triageDecision_choice2_text": "Undian — nasib yang menentukan",
-  "event_triageDecision_choice2_outcome": "Cabutan rawak. Sepuluh tidak bernasib baik dua kali \\u2014 dinafikan rawatan dan terlalu lemah untuk bertahan. Kapal tertatih meneruskan perjalanan.",
+  "event_triageDecision_choice2_outcome": "Cabutan rawak. Sepuluh tidak bernasib baik dua kali — dinafikan rawatan dan terlalu lemah untuk bertahan. Kapal tertatih meneruskan perjalanan.",
   "event_earthSignal_title": "Isyarat dari Bumi",
   "event_earthSignal_narrative": "Secara mustahil, transmisi tiba dari Bumi — ditangguhkan masa berdekad-dekad. Ia mengandungi mesej: \"Jangan mendarat di mana-mana dunia dengan bacaan anomali melebihi 0.5. Kami terlambat mengetahuinya.\" Mesej berakhir dengan statik.",
   "event_earthSignal_choice0_text": "Patuhi amaran — kalibrasi semula kriteria kita",
@@ -576,7 +576,7 @@
   "event_memoryPlague_choice2_text": "Sumber ramai — bangunkan kolonis untuk menulis semula dari ingatan",
   "event_memoryPlague_choice2_outcome": "Beribu-ribu menyumbang ingatan: lagu, cerita, resipi, puisi. Tiga kolonis warga tua, dilemahkan oleh pencairan, tidak bertahan dalam proses itu. Arkib dibina semula, tidak sempurna tetapi sangat manusiawi.",
   "event_gravityLensPlanet_title": "Dunia Cermin",
-  "event_gravityLensPlanet_narrative": "Lenturan graviti mendedahkan planet yang kelihatan seperti salinan tepat Bumi \\u2014 lautan biru, benua hijau, awan putih. Tetapi pengiraan lenturan menunjukkan ia ratusan tahun cahaya dari haluan kita \\u2014 amat jauh. Namun, data spektralnya boleh memperhalusi kriteria pencarian kita.",
+  "event_gravityLensPlanet_narrative": "Lenturan graviti mendedahkan planet yang kelihatan seperti salinan tepat Bumi — lautan biru, benua hijau, awan putih. Tetapi pengiraan lenturan menunjukkan ia ratusan tahun cahaya dari haluan kita — amat jauh. Namun, data spektralnya boleh memperhalusi kriteria pencarian kita.",
   "event_gravityLensPlanet_choice0_text": "Kaji tandatangan spektralnya untuk memperhalusi pencarian",
   "event_gravityLensPlanet_choice0_outcome": "Data spektral mendedahkan penanda bio dan tandatangan atmosfera yang kini boleh kita imbas. Harapan menajam menjadi fokus.",
   "event_gravityLensPlanet_choice1_text": "Catatkan koordinat tetapi kekal di haluan",
@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_title": "Perikatan Asli",
   "event_nativeAlliance_choice2": "Wujudkan perkongsian perdagangan yang tertumpu pada manfaat bersama",
   "event_nativeAlliance_outcome1": "Anda memanfaatkan teknologi canggih anda untuk mendapatkan syarat yang menguntungkan. Orang asli menyerahkan wilayah dan sumber. Mereka menandatangani dengan tangan yang menggeletar. Sejarah telah melihat perkara ini sebelum ini, dan ia jarang berakhir dengan baik.",
-  "event_nativeAlliance_outcome2": "Perdagangan merapatkan jurang antara spesies. Bahan asli mengalir ke bengkel anda; teknologi anda menambah baik perubatan mereka. Persahabatan tumbuh dari keuntungan bersama."
+  "event_nativeAlliance_outcome2": "Perdagangan merapatkan jurang antara spesies. Bahan asli mengalir ke bengkel anda; teknologi anda menambah baik perubatan mereka. Persahabatan tumbuh dari keuntungan bersama.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

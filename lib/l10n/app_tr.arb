@@ -432,7 +432,7 @@
   "event_geneticModification_title": "Genetik Adaptasyon Teklifi",
   "event_geneticModification_narrative": "Bilim ekibi, uzaylı dünyalarda daha iyi hayatta kalmak için kolonist DNA'sını değiştirmeyi teklif ediyor — daha güçlü kemikler, UV direnci, gelişmiş akciğerler. Değişiklikler geri dönüşümsüz ve insanlığı sonsuza dek değiştirecek.",
   "event_geneticModification_choice0_text": "Onayla — hayatta kalma evrim talep eder",
-  "event_geneticModification_choice0_outcome": "Değişiklikler gönüllülerle başlıyor. On kolonist ölümcül red reaksiyonu gösteriyor \\u2014 evrimin bir bedeli olduğunun kasvetli hatırlatıcısı. Hayatta kalanlar daha dayanıklı, ama hâlâ tam olarak insan mılar?",
+  "event_geneticModification_choice0_outcome": "Değişiklikler gönüllülerle başlıyor. On kolonist ölümcül red reaksiyonu gösteriyor — evrimin bir bedeli olduğunun kasvetli hatırlatıcısı. Hayatta kalanlar daha dayanıklı, ama hâlâ tam olarak insan mılar?",
   "event_geneticModification_choice1_text": "Yalnızca gönüllü olsun",
   "event_geneticModification_choice1_outcome": "Bazıları gönüllü oluyor, diğerleri reddediyor. Koloni değiştirilmişler ve doğallar arasında bölünecek.",
   "event_geneticModification_choice2_text": "Reddet — insanlık insan kalmalı",
@@ -442,9 +442,9 @@
   "event_triageDecision_choice0_text": "Kilit personele öncelik ver",
   "event_triageDecision_choice0_outcome": "Mühendisler ve pilotlar çabuk iyileşiyor. Sekiz kilit olmayan mürettebat, tedavi ulaşmadan hayatını kaybediyor.",
   "event_triageDecision_choice1_text": "Önce en hastayı tedavi et — ihtiyaca göre triyaj",
-  "event_triageDecision_choice1_outcome": "En savunmasızlar kurtarılıyor. Üçü erken tedaviye rağmen mücadeleyi kaybediyor \\u2014 virüs çok ilerlemiş.",
+  "event_triageDecision_choice1_outcome": "En savunmasızlar kurtarılıyor. Üçü erken tedaviye rağmen mücadeleyi kaybediyor — virüs çok ilerlemiş.",
   "event_triageDecision_choice2_text": "Kura — kader karar versin",
-  "event_triageDecision_choice2_outcome": "Rastgele çekiliş. On kişi iki kez şanssız \\u2014 tedaviden mahrum ve savaşamayacak kadar zayıf. Gemi aksayarak devam ediyor.",
+  "event_triageDecision_choice2_outcome": "Rastgele çekiliş. On kişi iki kez şanssız — tedaviden mahrum ve savaşamayacak kadar zayıf. Gemi aksayarak devam ediyor.",
   "event_earthSignal_title": "Dünya'dan Sinyal",
   "event_earthSignal_narrative": "İmkânsız bir şekilde Dünya'dan bir iletim geliyor — onlarca yıl gecikmiş. Bir mesaj içeriyor: \"Anomali okumaları 0.5'in üzerinde olan herhangi bir dünyaya inmeyin. Çok geç öğrendik.\" Mesaj parazitle bitiyor.",
   "event_earthSignal_choice0_text": "Uyarıyı dikkate al — kriterlerimizi yeniden kalibre et",
@@ -584,7 +584,7 @@
   "event_memoryPlague_choice2_text": "Toplu kurtarma — hafızadan yeniden yazmak için kolonistleri uyandır",
   "event_memoryPlague_choice2_outcome": "Binlerce kişi anılarını paylaşıyor: şarkılar, hikâyeler, tarifler, şiirler. Üç yaşlı kolonist çözülmeden zayıf düşüp hayatını kaybediyor. Arşiv yeniden inşa ediliyor, kusurlu ama derinden insani.",
   "event_gravityLensPlanet_title": "Ayna Dünya",
-  "event_gravityLensPlanet_narrative": "Kütleçekim merceği, Dünya'nın birebir kopyası gibi görünen bir gezegen ortaya koyuyor \\u2014 mavi okyanuslar, yeşil kıtalar, beyaz bulutlar. Ama mercek hesaplamaları rotamızdan yüzlerce ışık yılı uzakta olduğunu gösteriyor \\u2014 imkânsız uzaklıkta. Yine de spektral verileri arama kriterlerimizi rafine edebilir.",
+  "event_gravityLensPlanet_narrative": "Kütleçekim merceği, Dünya'nın birebir kopyası gibi görünen bir gezegen ortaya koyuyor — mavi okyanuslar, yeşil kıtalar, beyaz bulutlar. Ama mercek hesaplamaları rotamızdan yüzlerce ışık yılı uzakta olduğunu gösteriyor — imkânsız uzaklıkta. Yine de spektral verileri arama kriterlerimizi rafine edebilir.",
   "event_gravityLensPlanet_choice0_text": "Aramayı rafine etmek için spektral imzasını incele",
   "event_gravityLensPlanet_choice0_outcome": "Spektral veriler artık tarayabileceğimiz biyobelirteçler ve atmosferik imzalar ortaya koyuyor. Umut netleşiyor.",
   "event_gravityLensPlanet_choice1_text": "Koordinatları kaydet ama rotada kal",
@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_title": "Yerli İttifak",
   "event_surveillanceState_outcome0": "Gizlilik korunur. Sabotajcı hâlâ serbest ama sömürgeciler izlenilmediklerini bildikleri için daha rahat uyuyorlar. Soruşturma geleneksel yöntemlerle devam ediyor.",
   "event_surveillanceState_outcome2": "Kameralar makine dairesini, cephaneliği ve köprüyü izliyor. Yaşam alanları özel kalır. Sabotajcı en sonunda model analizi yoluyla tanımlanır. Ölçülü bir yanıt.",
-  "event_nativeAlliance_outcome1": "Uygun koşulları güvence altına almak için ileri teknolojinizden yararlanırsınız. Yerliler topraklarını ve kaynaklarını bırakıyor. Titreyen ellerle imza atıyorlar. Tarih bunu daha önce de görmüştü ve sonu nadiren iyi bitmişti."
+  "event_nativeAlliance_outcome1": "Uygun koşulları güvence altına almak için ileri teknolojinizden yararlanırsınız. Yerliler topraklarını ve kaynaklarını bırakıyor. Titreyen ellerle imza atıyorlar. Tarih bunu daha önce de görmüştü ve sonu nadiren iyi bitmişti.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

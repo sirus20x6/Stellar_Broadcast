@@ -155,8 +155,8 @@ void main() {
     test('schemaVersion > currentSchemaVersion is rejected', () {
       // A newer save format must not be silently downgraded on load, or the
       // next save would overwrite a richer blob with our lossy view. The
-      // save service catches this FormatException and clears the save, but
-      // the important contract is that fromJson refuses to decode.
+      // save service catches this ForwardSchemaException and preserves the
+      // blob; the important contract is that fromJson refuses to decode.
       final state = const VoyageState().copyWith(encounterCount: 5);
       final encoded = jsonEncode(state.toJson());
       final decoded = jsonDecode(encoded) as Map<String, dynamic>;
@@ -164,7 +164,7 @@ void main() {
 
       expect(
         () => VoyageState.fromJson(decoded),
-        throwsA(isA<FormatException>()),
+        throwsA(isA<ForwardSchemaException>()),
       );
     });
 
@@ -184,7 +184,7 @@ void main() {
       };
       expect(
         () => VoyageState.fromJson(decoded),
-        throwsA(isA<FormatException>()),
+        throwsA(isA<ForwardSchemaException>()),
       );
     });
   });
@@ -318,8 +318,8 @@ void main() {
       // an object). jsonDecode succeeds, but the `as Map<String, dynamic>`
       // cast throws a TypeError, which lands in the generic catch branch —
       // the one that triggers the staged-fallback recovery. A pure parse
-      // failure would throw FormatException and return null without
-      // consulting staged (that's the forward-version preservation path).
+      // failure (malformed JSON) also lands in that generic catch now;
+      // forward-schema is a dedicated [ForwardSchemaException] path.
       await adapter.setString(primaryKey, '[1,2,3]');
       await adapter.setString(stagingKey, validBlob);
 
@@ -329,6 +329,37 @@ void main() {
       expect(loaded.colonists, state.colonists);
 
       // Primary has been healed with the staged contents; staged is cleared.
+      expect(adapter.store[primaryKey], validBlob);
+      expect(adapter.store.containsKey(stagingKey), isFalse);
+    });
+
+    test(
+        'truncated/malformed primary JSON is NOT treated as forward-schema: '
+        'staged recovery runs and primary is healed', () async {
+      // Regression: jsonDecode() throws FormatException on malformed JSON,
+      // and the load() path used to catch FormatException to mean
+      // "forward-schema, preserve the blob forever". That misclassified
+      // corrupt saves as future saves — data loss risk. The fix uses a
+      // dedicated ForwardSchemaException, so malformed JSON falls through
+      // to the generic catch and the staged recovery path runs.
+      final state = e2eBaseline();
+      final validBlob = jsonEncode(state.toJson());
+
+      // Truncated, not a valid JSON document at all. jsonDecode will
+      // throw FormatException.
+      const truncated = '{"partial';
+      await adapter.setString(primaryKey, truncated);
+      await adapter.setString(stagingKey, validBlob);
+
+      final loaded = await VoyageSaveService.load();
+      expect(loaded, isNotNull,
+          reason: 'corrupt primary must fall through to staged recovery, '
+              'not be preserved as a forward-schema blob');
+      expect(loaded!.encounterCount, state.encounterCount);
+      expect(loaded.colonists, state.colonists);
+
+      // Primary has been healed and staged consumed — the corrupt blob is
+      // gone, not preserved forever.
       expect(adapter.store[primaryKey], validBlob);
       expect(adapter.store.containsKey(stagingKey), isFalse);
     });

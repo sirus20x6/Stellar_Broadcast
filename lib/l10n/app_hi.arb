@@ -1905,5 +1905,85 @@
   "event_surveillanceState_outcome2": "कैमरे इंजन कक्ष, शस्त्रागार और पुल को कवर करते हैं। रहने वाले क्वार्टर निजी रहते हैं। तोड़फोड़ करने वाले की अंततः पैटर्न विश्लेषण के माध्यम से पहचान की जाती है। एक नपी-तुली प्रतिक्रिया.",
   "event_nativeAlliance_choice2": "पारस्परिक लाभ पर केंद्रित व्यापार साझेदारी स्थापित करें",
   "event_nativeAlliance_outcome1": "आप अनुकूल शर्तों को सुरक्षित करने के लिए अपनी उन्नत तकनीक का लाभ उठाते हैं। मूल निवासी क्षेत्र और संसाधन सौंप देते हैं। वे कांपते हाथों से हस्ताक्षर करते हैं। इतिहास ने ऐसा पहले भी देखा है, और इसका अंत शायद ही कभी अच्छा होता है।",
-  "event_nativeAlliance_outcome2": "वाणिज्य प्रजातियों के बीच अंतर को पाटता है। आपकी कार्यशालाओं में मूल सामग्री प्रवाहित होती है; आपकी तकनीक उनकी दवा को बेहतर बनाती है। मित्रता पारस्परिक लाभ से बढ़ती है।"
+  "event_nativeAlliance_outcome2": "वाणिज्य प्रजातियों के बीच अंतर को पाटता है। आपकी कार्यशालाओं में मूल सामग्री प्रवाहित होती है; आपकी तकनीक उनकी दवा को बेहतर बनाती है। मित्रता पारस्परिक लाभ से बढ़ती है।",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

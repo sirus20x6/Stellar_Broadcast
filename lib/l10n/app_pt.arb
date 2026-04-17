@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_title": "Aliança Nativa",
   "event_surveillanceState_outcome2": "Câmeras cobrem a sala de máquinas, o arsenal e a ponte. Os alojamentos permanecem privados. O sabotador é eventualmente identificado através da análise de padrões. Uma resposta medida.",
   "event_surveillanceState_outcome0": "A privacidade é preservada. O sabotador continua foragido, mas os colonos dormem mais tranquilos sabendo que não são vigiados. A investigação continua através dos meios tradicionais.",
-  "event_nativeAlliance_outcome2": "O comércio preenche a lacuna entre as espécies. Os materiais nativos fluem para suas oficinas; sua tecnologia melhora a medicina deles. A amizade cresce a partir do lucro mútuo."
+  "event_nativeAlliance_outcome2": "O comércio preenche a lacuna entre as espécies. Os materiais nativos fluem para suas oficinas; sua tecnologia melhora a medicina deles. A amizade cresce a partir do lucro mútuo.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

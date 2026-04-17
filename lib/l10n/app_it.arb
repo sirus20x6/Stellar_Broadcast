@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_choice0": "Firma un trattato di alleanza paritaria",
   "event_nativeAlliance_choice1": "Negoziare da una posizione di dominio coloniale",
   "event_nativeAlliance_outcome0": "Il trattato stabilisce la difesa reciproca, la ricerca condivisa e la parità di diritti territoriali. Entrambe le civiltà cresceranno insieme. I nativi condividono conoscenze agricole che trasformano le prospettive della tua colonia.",
-  "event_nativeAlliance_choice2": "Stabilire una partnership commerciale incentrata sul vantaggio reciproco"
+  "event_nativeAlliance_choice2": "Stabilire una partnership commerciale incentrata sul vantaggio reciproco",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

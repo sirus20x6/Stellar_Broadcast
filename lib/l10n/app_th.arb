@@ -1915,5 +1915,75 @@
   "event_nativeAlliance_title": "พันธมิตรพื้นเมือง",
   "event_surveillanceState_outcome2": "กล้องจะครอบคลุมห้องเครื่อง คลังอาวุธ และสะพาน ที่อยู่อาศัยยังคงเป็นส่วนตัว ในที่สุดผู้ก่อวินาศกรรมจะถูกระบุตัวได้ผ่านการวิเคราะห์รูปแบบ การตอบสนองที่วัดได้",
   "event_nativeAlliance_outcome2": "การค้าเชื่อมช่องว่างระหว่างสายพันธุ์ วัสดุพื้นเมืองจะถูกส่งไปยังเวิร์คช็อปของคุณ เทคโนโลยีของคุณช่วยปรับปรุงยาของพวกเขา มิตรภาพเติบโตจากผลกำไรร่วมกัน",
-  "event_nativeAlliance_outcome1": "คุณใช้ประโยชน์จากเทคโนโลยีขั้นสูงของคุณเพื่อรักษาเงื่อนไขที่ดี ชาวพื้นเมืองยอมสละดินแดนและทรัพยากร พวกเขาลงนามด้วยมือที่สั่นเทา ประวัติศาสตร์เคยเห็นสิ่งนี้มาก่อน และมันไม่ค่อยจบลงด้วยดี"
+  "event_nativeAlliance_outcome1": "คุณใช้ประโยชน์จากเทคโนโลยีขั้นสูงของคุณเพื่อรักษาเงื่อนไขที่ดี ชาวพื้นเมืองยอมสละดินแดนและทรัพยากร พวกเขาลงนามด้วยมือที่สั่นเทา ประวัติศาสตร์เคยเห็นสิ่งนี้มาก่อน และมันไม่ค่อยจบลงด้วยดี",
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

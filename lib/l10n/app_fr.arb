@@ -414,7 +414,7 @@
   "event_geneticModification_title": "Proposition d'Adaptation Génétique",
   "event_geneticModification_narrative": "L'équipe scientifique propose de modifier l'ADN des colons pour mieux survivre sur des mondes extraterrestres — os plus solides, résistance aux UV, poumons améliorés. Les modifications sont irréversibles et changeraient l'humanité à jamais.",
   "event_geneticModification_choice0_text": "Approuver — la survie exige l'évolution",
-  "event_geneticModification_choice0_outcome": "Les modifications commencent sur les volontaires. Dix colons subissent des réactions de rejet fatales \\u2014 un rappel sinistre que l'évolution a un prix. Les survivants sont plus robustes, mais sont-ils encore pleinement humains ?",
+  "event_geneticModification_choice0_outcome": "Les modifications commencent sur les volontaires. Dix colons subissent des réactions de rejet fatales — un rappel sinistre que l'évolution a un prix. Les survivants sont plus robustes, mais sont-ils encore pleinement humains ?",
   "event_geneticModification_choice1_text": "Sur la base du volontariat uniquement",
   "event_geneticModification_choice1_outcome": "Certains se portent volontaires, d'autres refusent. La colonie sera divisée entre les modifiés et les naturels.",
   "event_geneticModification_choice2_text": "Rejeter — l'humanité doit rester humaine",
@@ -423,9 +423,9 @@
   "event_triageDecision_choice0_text": "Prioriser le personnel essentiel",
   "event_triageDecision_choice0_outcome": "Ingénieurs et pilotes se rétablissent vite. Huit membres non essentiels succombent avant que le traitement ne les atteigne.",
   "event_triageDecision_choice1_text": "Traiter les plus malades d'abord — triage par besoin",
-  "event_triageDecision_choice1_outcome": "Les plus vulnérables sont sauvés. Trois perdent le combat malgré un traitement précoce \\u2014 le virus était trop avancé.",
+  "event_triageDecision_choice1_outcome": "Les plus vulnérables sont sauvés. Trois perdent le combat malgré un traitement précoce — le virus était trop avancé.",
   "event_triageDecision_choice2_text": "Tirage au sort — le destin décide",
-  "event_triageDecision_choice2_outcome": "Un tirage au sort. Dix sont doublement malchanceux \\u2014 traitement refusé et trop faibles pour se battre. Le vaisseau continue en boitant.",
+  "event_triageDecision_choice2_outcome": "Un tirage au sort. Dix sont doublement malchanceux — traitement refusé et trop faibles pour se battre. Le vaisseau continue en boitant.",
   "event_earthSignal_title": "Signal de la Terre",
   "event_earthSignal_narrative": "Contre toute attente, une transmission arrive de la Terre — retardée de décennies. Elle contient un message : \"N'atterrissez sur aucun monde avec des relevés d'anomalie supérieurs à 0,5. Nous l'avons appris trop tard.\" Le message se termine par du bruit.",
   "event_earthSignal_choice0_text": "Tenir compte de l'avertissement — recalibrer nos critères",
@@ -565,7 +565,7 @@
   "event_memoryPlague_choice2_text": "Récupération participative — réveiller les colons pour réécrire de mémoire",
   "event_memoryPlague_choice2_outcome": "Des milliers contribuent des souvenirs : chansons, histoires, recettes, poèmes. Trois colons âgés, affaiblis par le dégel, ne survivent pas au processus. L'archive est reconstruite, imparfaite mais profondément humaine.",
   "event_gravityLensPlanet_title": "Monde Miroir",
-  "event_gravityLensPlanet_narrative": "La lentille gravitationnelle révèle une planète qui semble être une copie exacte de la Terre \\u2014 océans bleus, continents verts, nuages blancs. Mais les calculs de lentille montrent qu'elle est à des centaines d'années-lumière de notre cap \\u2014 impossiblement loin. Néanmoins, ses données spectrales pourraient affiner nos critères de recherche.",
+  "event_gravityLensPlanet_narrative": "La lentille gravitationnelle révèle une planète qui semble être une copie exacte de la Terre — océans bleus, continents verts, nuages blancs. Mais les calculs de lentille montrent qu'elle est à des centaines d'années-lumière de notre cap — impossiblement loin. Néanmoins, ses données spectrales pourraient affiner nos critères de recherche.",
   "event_gravityLensPlanet_choice0_text": "Étudier sa signature spectrale pour affiner notre recherche",
   "event_gravityLensPlanet_choice0_outcome": "Les données spectrales révèlent des biomarqueurs et des signatures atmosphériques que nous pouvons désormais scanner. L'espoir se cristallise.",
   "event_gravityLensPlanet_choice1_text": "Enregistrer les coordonnées mais rester en cap",
@@ -1898,5 +1898,92 @@
   "event_nativeAlliance_outcome0": "Le traité établit une défense mutuelle, une recherche partagée et des droits territoriaux égaux. Les deux civilisations grandiront ensemble. Les indigènes partagent des connaissances agricoles qui transforment les perspectives de votre colonie.",
   "event_nativeAlliance_choice1": "Négocier à partir d’une position de domination coloniale",
   "event_nativeAlliance_outcome1": "Vous tirez parti de votre technologie avancée pour obtenir des conditions avantageuses. Les indigènes cèdent du territoire et des ressources. Ils signent avec les mains tremblantes. L’histoire a déjà vu cela, et cela se termine rarement bien.",
-  "event_nativeAlliance_outcome2": "Le commerce comble le fossé entre les espèces. Les matières natives affluent vers vos ateliers ; votre technologie améliore leur médecine. L'amitié naît du profit mutuel."
+  "event_nativeAlliance_outcome2": "Le commerce comble le fossé entre les espèces. Les matières natives affluent vers vos ateliers ; votre technologie améliore leur médecine. L'amitié naît du profit mutuel.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

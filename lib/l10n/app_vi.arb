@@ -804,7 +804,7 @@
   "event_geneticModification_title": "Đề Xuất Thích Ứng Di Truyền",
   "event_geneticModification_narrative": "Đội khoa học đề xuất chỉnh sửa DNA dân di cư để sống sót tốt hơn trên các thế giới xa lạ — xương chắc hơn, kháng UV, phổi tăng cường. Các chỉnh sửa không thể đảo ngược và sẽ thay đổi nhân loại mãi mãi.",
   "event_geneticModification_choice0_text": "Phê duyệt — sinh tồn đòi hỏi tiến hóa",
-  "event_geneticModification_choice0_outcome": "Quá trình chỉnh sửa bắt đầu trên tình nguyện viên. Mười dân di cư tử vong do phản ứng đào thải \\u2014 lời nhắc nhở nghiệt ngã rằng tiến hóa có cái giá. Người sống sót cường tráng hơn, nhưng họ còn hoàn toàn là con người không?",
+  "event_geneticModification_choice0_outcome": "Quá trình chỉnh sửa bắt đầu trên tình nguyện viên. Mười dân di cư tử vong do phản ứng đào thải — lời nhắc nhở nghiệt ngã rằng tiến hóa có cái giá. Người sống sót cường tráng hơn, nhưng họ còn hoàn toàn là con người không?",
   "event_geneticModification_choice1_text": "Chỉ trên cơ sở tự nguyện",
   "event_geneticModification_choice1_outcome": "Một số tình nguyện, số khác từ chối. Thuộc địa sẽ bị chia rẽ giữa người đã chỉnh sửa và người tự nhiên.",
   "event_geneticModification_choice2_text": "Từ chối — nhân loại phải giữ nguyên bản chất",
@@ -814,9 +814,9 @@
   "event_triageDecision_choice0_text": "Ưu tiên nhân sự thiết yếu",
   "event_triageDecision_choice0_outcome": "Kỹ sư và phi công phục hồi nhanh. Tám thành viên không thiết yếu qua đời trước khi thuốc đến nơi.",
   "event_triageDecision_choice1_text": "Trị người bệnh nặng nhất — phân loại theo nhu cầu",
-  "event_triageDecision_choice1_outcome": "Người dễ tổn thương nhất được cứu. Ba người thua cuộc dù được điều trị sớm \\u2014 virus đã quá xa.",
+  "event_triageDecision_choice1_outcome": "Người dễ tổn thương nhất được cứu. Ba người thua cuộc dù được điều trị sớm — virus đã quá xa.",
   "event_triageDecision_choice2_text": "Bốc thăm — số phận quyết định",
-  "event_triageDecision_choice2_outcome": "Bốc thăm ngẫu nhiên. Mười người xui xẻo hai lần \\u2014 bị từ chối điều trị và quá yếu để chống lại. Con tàu khập khiễng tiến lên.",
+  "event_triageDecision_choice2_outcome": "Bốc thăm ngẫu nhiên. Mười người xui xẻo hai lần — bị từ chối điều trị và quá yếu để chống lại. Con tàu khập khiễng tiến lên.",
   "event_earthSignal_title": "Tín Hiệu Từ Trái Đất",
   "event_earthSignal_narrative": "Không thể tin được, một truyền tin đến từ Trái Đất — trễ hàng thập kỷ. Nó chứa thông điệp: \"Không hạ cánh trên bất kỳ thế giới nào có chỉ số dị thường trên 0.5. Chúng tôi nhận ra quá muộn.\" Thông điệp kết thúc bằng tĩnh điện.",
   "event_earthSignal_choice0_text": "Nghe theo cảnh báo — hiệu chỉnh lại tiêu chí",
@@ -956,7 +956,7 @@
   "event_memoryPlague_choice2_text": "Huy động đám đông — đánh thức dân di cư để viết lại từ trí nhớ",
   "event_memoryPlague_choice2_outcome": "Hàng nghìn người đóng góp ký ức: bài hát, câu chuyện, công thức, thơ. Ba người cao tuổi, suy yếu vì rã đông, không sống sót. Kho lưu trữ được xây lại, không hoàn hảo nhưng sâu sắc nhân văn.",
   "event_gravityLensPlanet_title": "Thế Giới Gương",
-  "event_gravityLensPlanet_narrative": "Thấu kính trọng lực tiết lộ một hành tinh có vẻ là bản sao chính xác của Trái Đất \\u2014 đại dương xanh, lục địa xanh, mây trắng. Nhưng tính toán thấu kính cho thấy nó cách hàng trăm năm ánh sáng ngoài hướng bay \\u2014 xa bất khả. Tuy nhiên, dữ liệu quang phổ có thể tinh chỉnh tiêu chí tìm kiếm.",
+  "event_gravityLensPlanet_narrative": "Thấu kính trọng lực tiết lộ một hành tinh có vẻ là bản sao chính xác của Trái Đất — đại dương xanh, lục địa xanh, mây trắng. Nhưng tính toán thấu kính cho thấy nó cách hàng trăm năm ánh sáng ngoài hướng bay — xa bất khả. Tuy nhiên, dữ liệu quang phổ có thể tinh chỉnh tiêu chí tìm kiếm.",
   "event_gravityLensPlanet_choice0_text": "Nghiên cứu chữ ký quang phổ để tinh chỉnh tìm kiếm",
   "event_gravityLensPlanet_choice0_outcome": "Dữ liệu quang phổ tiết lộ dấu hiệu sinh học và chữ ký khí quyển chúng tôi giờ có thể quét tìm. Hy vọng trở nên sắc nét.",
   "event_gravityLensPlanet_choice1_text": "Ghi tọa độ nhưng giữ nguyên hướng",
@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_choice2": "Thiết lập quan hệ đối tác thương mại tập trung vào lợi ích chung",
   "event_nativeAlliance_outcome0": "Hiệp ước thiết lập phòng thủ chung, nghiên cứu chung và quyền lãnh thổ bình đẳng. Cả hai nền văn minh sẽ cùng nhau phát triển. Người bản xứ chia sẻ kiến ​​thức nông nghiệp giúp thay đổi triển vọng thuộc địa của bạn.",
   "event_nativeAlliance_outcome2": "Thương mại thu hẹp khoảng cách giữa các loài. Nguyên liệu gốc chảy vào xưởng của bạn; công nghệ của bạn cải thiện thuốc của họ. Tình bạn phát triển từ lợi ích chung.",
-  "event_nativeAlliance_outcome1": "Bạn tận dụng công nghệ tiên tiến của mình để đảm bảo các điều khoản có lợi. Người bản địa nhượng lại lãnh thổ và tài nguyên. Họ ký với đôi tay run rẩy. Lịch sử đã chứng kiến ​​điều này trước đây và nó hiếm khi kết thúc tốt đẹp."
+  "event_nativeAlliance_outcome1": "Bạn tận dụng công nghệ tiên tiến của mình để đảm bảo các điều khoản có lợi. Người bản địa nhượng lại lãnh thổ và tài nguyên. Họ ký với đôi tay run rẩy. Lịch sử đã chứng kiến ​​điều này trước đây và nó hiếm khi kết thúc tốt đẹp.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

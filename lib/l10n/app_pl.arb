@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_choice2": "Nawiąż partnerstwo handlowe nastawione na obopólne korzyści",
   "event_nativeAlliance_outcome1": "Wykorzystujesz swoją zaawansowaną technologię, aby zapewnić korzystne warunki. Tubylcy oddają terytorium i zasoby. Podpisują się drżącymi rękami. Historia już to widziała i rzadko kończyło się to dobrze.",
   "event_nativeAlliance_outcome2": "Handel wypełnia lukę między gatunkami. Do Twoich warsztatów napływają rodzime materiały; Twoja technologia udoskonala ich medycynę. Przyjaźń rośnie dzięki obopólnemu zyskowi.",
-  "event_nativeAlliance_choice1": "Negocjuj z pozycji dominacji kolonialnej"
+  "event_nativeAlliance_choice1": "Negocjuj z pozycji dominacji kolonialnej",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

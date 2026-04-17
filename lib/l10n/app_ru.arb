@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_title": "Родной Альянс",
   "event_nativeAlliance_outcome1": "Вы используете свои передовые технологии для обеспечения выгодных условий. Туземцы уступают территории и ресурсы. Они подписывают трясущимися руками. История уже сталкивалась с подобным, и это редко заканчивается хорошо.",
   "event_nativeAlliance_choice2": "Установить торговое партнерство, ориентированное на взаимную выгоду",
-  "event_nativeAlliance_outcome2": "Коммерция устраняет разрыв между видами. Родные материалы поступают в ваши мастерские; ваша технология улучшает их медицину. Дружба растет из взаимной выгоды."
+  "event_nativeAlliance_outcome2": "Коммерция устраняет разрыв между видами. Родные материалы поступают в ваши мастерские; ваша технология улучшает их медицину. Дружба растет из взаимной выгоды.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

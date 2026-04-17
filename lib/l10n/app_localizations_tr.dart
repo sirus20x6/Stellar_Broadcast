@@ -1618,7 +1618,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get event_geneticModification_choice0_outcome =>
-      'Değişiklikler gönüllülerle başlıyor. On kolonist ölümcül red reaksiyonu gösteriyor \\u2014 evrimin bir bedeli olduğunun kasvetli hatırlatıcısı. Hayatta kalanlar daha dayanıklı, ama hâlâ tam olarak insan mılar?';
+      'Değişiklikler gönüllülerle başlıyor. On kolonist ölümcül red reaksiyonu gösteriyor — evrimin bir bedeli olduğunun kasvetli hatırlatıcısı. Hayatta kalanlar daha dayanıklı, ama hâlâ tam olarak insan mılar?';
 
   @override
   String get event_geneticModification_choice1_text => 'Yalnızca gönüllü olsun';
@@ -1655,14 +1655,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice1_outcome =>
-      'En savunmasızlar kurtarılıyor. Üçü erken tedaviye rağmen mücadeleyi kaybediyor \\u2014 virüs çok ilerlemiş.';
+      'En savunmasızlar kurtarılıyor. Üçü erken tedaviye rağmen mücadeleyi kaybediyor — virüs çok ilerlemiş.';
 
   @override
   String get event_triageDecision_choice2_text => 'Kura — kader karar versin';
 
   @override
   String get event_triageDecision_choice2_outcome =>
-      'Rastgele çekiliş. On kişi iki kez şanssız \\u2014 tedaviden mahrum ve savaşamayacak kadar zayıf. Gemi aksayarak devam ediyor.';
+      'Rastgele çekiliş. On kişi iki kez şanssız — tedaviden mahrum ve savaşamayacak kadar zayıf. Gemi aksayarak devam ediyor.';
 
   @override
   String get event_earthSignal_title => 'Dünya\'dan Sinyal';
@@ -2190,7 +2190,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get event_gravityLensPlanet_narrative =>
-      'Kütleçekim merceği, Dünya\'nın birebir kopyası gibi görünen bir gezegen ortaya koyuyor \\u2014 mavi okyanuslar, yeşil kıtalar, beyaz bulutlar. Ama mercek hesaplamaları rotamızdan yüzlerce ışık yılı uzakta olduğunu gösteriyor \\u2014 imkânsız uzaklıkta. Yine de spektral verileri arama kriterlerimizi rafine edebilir.';
+      'Kütleçekim merceği, Dünya\'nın birebir kopyası gibi görünen bir gezegen ortaya koyuyor — mavi okyanuslar, yeşil kıtalar, beyaz bulutlar. Ama mercek hesaplamaları rotamızdan yüzlerce ışık yılı uzakta olduğunu gösteriyor — imkânsız uzaklıkta. Yine de spektral verileri arama kriterlerimizi rafine edebilir.';
 
   @override
   String get event_gravityLensPlanet_choice0_text =>

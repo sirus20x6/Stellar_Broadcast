@@ -20,6 +20,18 @@ class LeaderboardApi {
 
   /// Persistent queue of submissions that failed to POST. Capped to avoid
   /// unbounded growth on a device that never recovers connectivity.
+  ///
+  /// Privacy note: queue entries contain the player-supplied `player`
+  /// name plus game metadata (score, seed, board). They persist via
+  /// [SettingsRepository] (Hive on Android, NSUserDefaults on iOS), both
+  /// unencrypted at rest. For this game it's acceptable — the only
+  /// identifying field is the voluntary leaderboard handle — but it is
+  /// worth knowing:
+  ///   * On iOS, the values are included in iCloud backup if the user
+  ///     has iCloud Backup enabled for the app (default: yes).
+  ///   * App uninstall clears the queue on both platforms.
+  /// If we ever start queueing actual PII (email, precise location, etc.)
+  /// this should move to an encrypted Hive box.
   @visibleForTesting
   static const pendingQueueKey = 'leaderboard.pending_submissions';
 

@@ -1915,5 +1915,75 @@
   "event_nativeAlliance_outcome0": "تنص المعاهدة على الدفاع المشترك والبحث المشترك والحقوق الإقليمية المتساوية. سوف تنمو الحضارتان معًا. يشارك السكان الأصليون المعرفة الزراعية التي تغير آفاق مستعمرتك.",
   "event_nativeAlliance_outcome2": "التجارة تسد الفجوة بين الأنواع. تتدفق المواد الأصلية إلى ورش العمل الخاصة بك؛ التكنولوجيا الخاصة بك تعمل على تحسين الدواء. الصداقة تنمو من الربح المتبادل.",
   "event_nativeAlliance_title": "التحالف الوطني",
-  "event_surveillanceState_outcome2": "تغطي الكاميرات غرفة المحرك ومستودع الأسلحة والجسر. تظل أماكن المعيشة خاصة. يتم التعرف على المخرب في النهاية من خلال تحليل الأنماط. استجابة محسوبة."
+  "event_surveillanceState_outcome2": "تغطي الكاميرات غرفة المحرك ومستودع الأسلحة والجسر. تظل أماكن المعيشة خاصة. يتم التعرف على المخرب في النهاية من خلال تحليل الأنماط. استجابة محسوبة.",
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

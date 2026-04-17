@@ -1905,5 +1905,85 @@
   "event_nativeAlliance_choice1": "식민지배적 입장에서 협상하라",
   "event_nativeAlliance_outcome1": "귀하는 고급 기술을 활용하여 유리한 조건을 확보합니다. 원주민은 영토와 자원을 양도합니다. 그들은 떨리는 손으로 서명을 합니다. 역사는 이것을 이전에 보아왔으며, 좋게 끝나는 경우는 거의 없습니다.",
   "event_surveillanceState_outcome2": "카메라는 기관실, 무기고, 교량을 감시합니다. 거주 공간은 비공개로 유지됩니다. 파괴자는 결국 패턴 분석을 통해 식별됩니다. 측정된 응답입니다.",
-  "event_nativeAlliance_outcome2": "상업은 종 간의 격차를 해소합니다. 기본 자료가 귀하의 작업장으로 흘러갑니다. 당신의 기술은 그들의 약을 향상시킵니다. 우정은 상호 이익을 통해 성장합니다."
+  "event_nativeAlliance_outcome2": "상업은 종 간의 격차를 해소합니다. 기본 자료가 귀하의 작업장으로 흘러갑니다. 당신의 기술은 그들의 약을 향상시킵니다. 우정은 상호 이익을 통해 성장합니다.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

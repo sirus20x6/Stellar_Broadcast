@@ -1624,7 +1624,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get event_geneticModification_choice0_outcome =>
-      'Quá trình chỉnh sửa bắt đầu trên tình nguyện viên. Mười dân di cư tử vong do phản ứng đào thải \\u2014 lời nhắc nhở nghiệt ngã rằng tiến hóa có cái giá. Người sống sót cường tráng hơn, nhưng họ còn hoàn toàn là con người không?';
+      'Quá trình chỉnh sửa bắt đầu trên tình nguyện viên. Mười dân di cư tử vong do phản ứng đào thải — lời nhắc nhở nghiệt ngã rằng tiến hóa có cái giá. Người sống sót cường tráng hơn, nhưng họ còn hoàn toàn là con người không?';
 
   @override
   String get event_geneticModification_choice1_text =>
@@ -1662,7 +1662,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice1_outcome =>
-      'Người dễ tổn thương nhất được cứu. Ba người thua cuộc dù được điều trị sớm \\u2014 virus đã quá xa.';
+      'Người dễ tổn thương nhất được cứu. Ba người thua cuộc dù được điều trị sớm — virus đã quá xa.';
 
   @override
   String get event_triageDecision_choice2_text =>
@@ -1670,7 +1670,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice2_outcome =>
-      'Bốc thăm ngẫu nhiên. Mười người xui xẻo hai lần \\u2014 bị từ chối điều trị và quá yếu để chống lại. Con tàu khập khiễng tiến lên.';
+      'Bốc thăm ngẫu nhiên. Mười người xui xẻo hai lần — bị từ chối điều trị và quá yếu để chống lại. Con tàu khập khiễng tiến lên.';
 
   @override
   String get event_earthSignal_title => 'Tín Hiệu Từ Trái Đất';
@@ -2196,7 +2196,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get event_gravityLensPlanet_narrative =>
-      'Thấu kính trọng lực tiết lộ một hành tinh có vẻ là bản sao chính xác của Trái Đất \\u2014 đại dương xanh, lục địa xanh, mây trắng. Nhưng tính toán thấu kính cho thấy nó cách hàng trăm năm ánh sáng ngoài hướng bay \\u2014 xa bất khả. Tuy nhiên, dữ liệu quang phổ có thể tinh chỉnh tiêu chí tìm kiếm.';
+      'Thấu kính trọng lực tiết lộ một hành tinh có vẻ là bản sao chính xác của Trái Đất — đại dương xanh, lục địa xanh, mây trắng. Nhưng tính toán thấu kính cho thấy nó cách hàng trăm năm ánh sáng ngoài hướng bay — xa bất khả. Tuy nhiên, dữ liệu quang phổ có thể tinh chỉnh tiêu chí tìm kiếm.';
 
   @override
   String get event_gravityLensPlanet_choice0_text =>

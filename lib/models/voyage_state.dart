@@ -5,6 +5,21 @@ import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 
+/// Thrown when [VoyageState.fromJson] is asked to load a save whose
+/// `schemaVersion` is higher than the app currently understands. The
+/// caller should preserve the stored blob so the user's data survives
+/// across an upgrade, instead of treating the save as corrupt.
+class ForwardSchemaException implements Exception {
+  const ForwardSchemaException(this.foundVersion, this.currentVersion);
+  final int foundVersion;
+  final int currentVersion;
+
+  @override
+  String toString() =>
+      'ForwardSchemaException: save schemaVersion=$foundVersion > '
+      'current=$currentVersion';
+}
+
 /// Snapshot of an in-progress voyage.
 class VoyageState {
   final ShipSystems ship;
@@ -389,23 +404,18 @@ class VoyageState {
       // Refuse to decode a save produced by a newer app version. Loading
       // optimistically would silently drop unknown fields and then the
       // next save would overwrite the richer blob with our lossy
-      // reconstruction — permanent data loss on downgrade. Throwing is
-      // the file's "refuse to decode" convention; VoyageSaveService
-      // catches this on load. NOTE: the current caller treats any
-      // exception as "corrupt save" and clears it, so a downgrade-load
-      // will still destroy the newer save. If preserving the forward
-      // save through a downgrade is desired, the caller in
-      // voyage_save_service.dart must be updated to detect this specific
-      // FormatException and leave the stored blob intact.
+      // reconstruction — permanent data loss on downgrade. Throwing a
+      // dedicated [ForwardSchemaException] lets VoyageSaveService
+      // distinguish "forward-version, preserve the blob" from "corrupt
+      // JSON, fall through to recovery" — a generic FormatException
+      // collides with what jsonDecode() throws on malformed data, and
+      // that collision was masking data-loss bugs.
       QaLogger.app.warning(
         'voyage save: schemaVersion $version > supported '
         '$currentSchemaVersion; refusing to decode to avoid silent data '
         'loss on a downgrade round-trip.',
       );
-      throw FormatException(
-        'VoyageState save schemaVersion $version is newer than supported '
-        '$currentSchemaVersion',
-      );
+      throw ForwardSchemaException(version, currentSchemaVersion);
     } else if (version < currentSchemaVersion) {
       json = _migrateJson(json, version);
     }

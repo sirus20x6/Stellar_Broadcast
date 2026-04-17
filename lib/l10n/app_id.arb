@@ -1898,5 +1898,92 @@
   "event_nativeAlliance_outcome2": "Perdagangan menjembatani kesenjangan antar spesies. Materi asli mengalir ke bengkel Anda; teknologi Anda meningkatkan pengobatan mereka. Persahabatan tumbuh dari keuntungan bersama.",
   "event_nativeAlliance_choice2": "Membangun kemitraan perdagangan yang fokus pada saling menguntungkan",
   "event_nativeAlliance_outcome1": "Anda memanfaatkan teknologi canggih Anda untuk mendapatkan persyaratan yang menguntungkan. Penduduk asli menyerahkan wilayah dan sumber daya. Mereka menandatangani dengan tangan gemetar. Sejarah telah melihat hal ini sebelumnya, dan hal ini jarang berakhir dengan baik.",
-  "event_nativeAlliance_outcome0": "Perjanjian tersebut menetapkan pertahanan bersama, penelitian bersama, dan persamaan hak teritorial. Kedua peradaban akan tumbuh bersama. Penduduk asli berbagi pengetahuan pertanian yang mengubah prospek koloni Anda."
+  "event_nativeAlliance_outcome0": "Perjanjian tersebut menetapkan pertahanan bersama, penelitian bersama, dan persamaan hak teritorial. Kedua peradaban akan tumbuh bersama. Penduduk asli berbagi pengetahuan pertanian yang mengubah prospek koloni Anda.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
 }

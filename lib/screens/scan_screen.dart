@@ -217,20 +217,25 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
       (_, next) => _maybePreloadInterstitial(next),
     );
 
-    // Watch only the fields whose changes should trigger rebuild. Avoids
-    // rebuilding when unrelated voyage state (log entries, encounter count,
-    // etc.) mutates. Merged into a single select that returns a Dart record
-    // so the provider only needs one listener instead of eight.
-    ref.watch(voyageProvider.select((v) => (
-          currentPlanet: v.currentPlanet,
-          ship: v.ship,
-          probes: v.probes,
-          probedStats: v.probedStats,
-          scannerReadings: v.scannerReadings,
-          scannerLevels: v.scannerLevels,
-          solarRechargeAmount: v.solarRechargeAmount,
-          revealedFeatures: v.revealedFeatures,
-        )));
+    // Watch only the fields whose changes should trigger rebuild. Each
+    // select does its own short-circuit equality, so unrelated voyage state
+    // (log entries, encounter count) doesn't cause a rebuild.
+    //
+    // These are intentionally separate .select() calls instead of one
+    // merged record: Planet, ShipSystems, Map, and Set don't override
+    // operator==, so a merged record's structural equality would fall
+    // back to reference equality on those fields and rebuild on any
+    // copyWith(). Individual selects sidestep that because primitives
+    // (int) short-circuit correctly, and reference-type selects only
+    // rebuild when those specific references change.
+    ref.watch(voyageProvider.select((v) => v.currentPlanet));
+    ref.watch(voyageProvider.select((v) => v.ship));
+    ref.watch(voyageProvider.select((v) => v.probes));
+    ref.watch(voyageProvider.select((v) => v.probedStats));
+    ref.watch(voyageProvider.select((v) => v.scannerReadings));
+    ref.watch(voyageProvider.select((v) => v.scannerLevels));
+    ref.watch(voyageProvider.select((v) => v.solarRechargeAmount));
+    ref.watch(voyageProvider.select((v) => v.revealedFeatures));
     final voyage = ref.read(voyageProvider);
     final planet = voyage.currentPlanet;
 

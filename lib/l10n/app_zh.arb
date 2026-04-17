@@ -1915,5 +1915,75 @@
   "event_nativeAlliance_choice2": "建立互惠互利的贸易伙伴关系",
   "event_nativeAlliance_outcome1": "您可以利用先进的技术来获得有利的条件。当地人割让领土和资源。他们用颤抖的双手签名。历史曾经见过这样的情况，而且很少有好的结局。",
   "event_nativeAlliance_title": "本土联盟",
-  "event_surveillanceState_outcome2": "摄像机覆盖了机舱、军械库和舰桥。居住区保持私密。最终通过模式分析识别出破坏者。经过衡量的反应。"
+  "event_surveillanceState_outcome2": "摄像机覆盖了机舱、军械库和舰桥。居住区保持私密。最终通过模式分析识别出破坏者。经过衡量的反应。",
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  }
 }

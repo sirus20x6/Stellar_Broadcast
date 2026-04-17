@@ -263,6 +263,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       },
     );
 
+    // Persist initial voyage so a force-close right after start doesn't lose it.
     saveState();
   }
 
@@ -353,6 +354,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       },
     );
 
+    // Persist scanned-planet state so reopening the app restores scan readings.
     saveState();
   }
 
@@ -627,6 +629,9 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 
     // Check for game over conditions.
     _checkGameOver();
+    // Save here: most event flows pop back to the voyage screen without
+    // going through pressOn. Coalesced with any later pressOn save via
+    // the _saving/_saveQueued guards in saveState.
     saveState();
   }
 
@@ -667,6 +672,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     }
 
     _checkGameOver();
+    // Puzzle flow returns directly to voyage — no pressOn follows, so save here.
     saveState();
   }
 
@@ -858,6 +864,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 
     // Check for game over conditions.
     _checkGameOver();
+    // Natural end-of-turn save after the scan/landing pressOn button.
     saveState();
   }
 
@@ -1080,7 +1087,7 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
 // ═══════════════════════════════════════════════════════════════════════════
 
 final legacyProvider =
-    StateNotifierProvider.autoDispose<LegacyNotifier, LegacyData>((ref) {
+    StateNotifierProvider<LegacyNotifier, LegacyData>((ref) {
   return LegacyNotifier(ref);
 });
 

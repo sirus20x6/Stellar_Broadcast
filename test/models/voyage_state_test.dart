@@ -24,14 +24,14 @@ void main() {
       // A save from a newer app version must not be decoded optimistically:
       // silently dropping unknown fields and then re-saving would overwrite
       // the richer blob with our lossy reconstruction. fromJson throws a
-      // FormatException so the caller can decide whether to clear or
-      // preserve the forward save.
+      // dedicated ForwardSchemaException so the caller can distinguish
+      // "preserve the forward save" from "malformed JSON, recover".
       expect(
         () => VoyageState.fromJson(const {
           'schemaVersion': 999,
           'encounterCount': 3,
         }),
-        throwsA(isA<FormatException>()),
+        throwsA(isA<ForwardSchemaException>()),
       );
     });
   });

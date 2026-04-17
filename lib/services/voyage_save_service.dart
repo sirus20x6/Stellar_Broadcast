@@ -92,7 +92,7 @@ class VoyageSaveService {
         await _adapter.setString(_key, staged);
         await _adapter.remove(_stagingKey);
         return recovered;
-      } on FormatException catch (e, st) {
+      } on ForwardSchemaException catch (e, st) {
         // Forward-version save: keep the staged blob intact so the next
         // app version (or a reinstall with the newer binary) can read it.
         QaLogger.app.warning(
@@ -109,7 +109,7 @@ class VoyageSaveService {
     }
     try {
       return VoyageState.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-    } on FormatException catch (e, st) {
+    } on ForwardSchemaException catch (e, st) {
       // schemaVersion > currentSchemaVersion — user downgraded the app.
       // Preserve both primary and staged blobs untouched so the save is
       // still there when they upgrade again. DO NOT clear.
@@ -131,7 +131,7 @@ class VoyageSaveService {
           await _adapter.setString(_key, staged);
           await _adapter.remove(_stagingKey);
           return recovered;
-        } on FormatException {
+        } on ForwardSchemaException {
           // Staged is forward-version too. Preserve and bail.
           QaLogger.app.warning(
             'Staged save is also from a newer schema; preserving until upgrade',

@@ -1637,7 +1637,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get event_geneticModification_choice0_outcome =>
-      'Die Modifikationen beginnen an Freiwilligen. Zehn Kolonisten erleiden tödliche Abstoßungsreaktionen \\u2014 eine düstere Erinnerung, dass Evolution ihren Preis hat. Die Überlebenden sind widerstandsfähiger, aber sind sie noch vollständig menschlich?';
+      'Die Modifikationen beginnen an Freiwilligen. Zehn Kolonisten erleiden tödliche Abstoßungsreaktionen — eine düstere Erinnerung, dass Evolution ihren Preis hat. Die Überlebenden sind widerstandsfähiger, aber sind sie noch vollständig menschlich?';
 
   @override
   String get event_geneticModification_choice1_text => 'Nur freiwillig';
@@ -1675,7 +1675,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice1_outcome =>
-      'Die Verwundbarsten werden gerettet. Drei verlieren trotz früher Behandlung den Kampf \\u2014 das Virus war zu weit fortgeschritten.';
+      'Die Verwundbarsten werden gerettet. Drei verlieren trotz früher Behandlung den Kampf — das Virus war zu weit fortgeschritten.';
 
   @override
   String get event_triageDecision_choice2_text =>
@@ -1683,7 +1683,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get event_triageDecision_choice2_outcome =>
-      'Eine Zufallsziehung. Zehn haben zweimal Pech \\u2014 keine Behandlung und zu schwach zum Kämpfen. Das Schiff humpelt weiter.';
+      'Eine Zufallsziehung. Zehn haben zweimal Pech — keine Behandlung und zu schwach zum Kämpfen. Das Schiff humpelt weiter.';
 
   @override
   String get event_earthSignal_title => 'Signal von der Erde';
@@ -2219,7 +2219,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get event_gravityLensPlanet_narrative =>
-      'Gravitationslinsen enthüllen einen Planeten, der eine exakte Kopie der Erde zu sein scheint \\u2014 blaue Ozeane, grüne Kontinente, weiße Wolken. Aber die Linsenberechnungen zeigen, dass er Hunderte Lichtjahre von unserem Kurs entfernt ist \\u2014 unerreichbar weit. Dennoch könnten seine Spektraldaten unsere Suchkriterien verfeinern.';
+      'Gravitationslinsen enthüllen einen Planeten, der eine exakte Kopie der Erde zu sein scheint — blaue Ozeane, grüne Kontinente, weiße Wolken. Aber die Linsenberechnungen zeigen, dass er Hunderte Lichtjahre von unserem Kurs entfernt ist — unerreichbar weit. Dennoch könnten seine Spektraldaten unsere Suchkriterien verfeinern.';
 
   @override
   String get event_gravityLensPlanet_choice0_text =>

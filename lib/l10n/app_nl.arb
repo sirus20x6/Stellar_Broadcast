@@ -1891,5 +1891,99 @@
   "event_nativeAlliance_outcome0": "Het verdrag regelt wederzijdse verdediging, gedeeld onderzoek en gelijke territoriale rechten. Beide beschavingen zullen samen groeien. De inboorlingen delen landbouwkennis die de vooruitzichten voor uw kolonie verandert.",
   "event_nativeAlliance_choice1": "Onderhandel vanuit een positie van koloniale dominantie",
   "event_nativeAlliance_outcome2": "Handel overbrugt de kloof tussen soorten. Native materialen stromen naar uw workshops; jouw technologie verbetert hun medicijn. Vriendschap groeit uit wederzijds voordeel.",
-  "event_nativeAlliance_outcome1": "U maakt gebruik van uw geavanceerde technologie om gunstige voorwaarden te garanderen. De inboorlingen staan ​​grondgebied en hulpbronnen af. Ze tekenen met trillende handen. De geschiedenis heeft dit eerder gezien en het eindigt zelden goed."
+  "event_nativeAlliance_outcome1": "U maakt gebruik van uw geavanceerde technologie om gunstige voorwaarden te garanderen. De inboorlingen staan ​​grondgebied en hulpbronnen af. Ze tekenen met trillende handen. De geschiedenis heeft dit eerder gezien en het eindigt zelden goed.",
+  "@ending_cultureTechJoiner": {
+    "placeholders": {
+      "culturePhrase": {
+        "type": "String"
+      },
+      "techPhrase": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCommune": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceCorporateOligarchy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceFascistState": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceMilitaryJunta": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_govSentenceTheocracy": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceAlliance": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ending_nativeSentenceSubjugation": {
+    "placeholders": {
+      "planetName": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_scan_probesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_scan_uncertaintyPct": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_trader_costPer10": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "@ui_voyage_sector": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@ui_voyage_seed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  }
 }
