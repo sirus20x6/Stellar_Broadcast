@@ -545,6 +545,13 @@ class AppLocalizationsMs extends AppLocalizations {
   String get ui_premium_lifetime => 'Seumur Hidup';
 
   @override
+  String get ui_premium_enablePersonalizedAds => 'Enable Personalized Ads';
+
+  @override
+  String get ui_premium_enablePersonalizedAdsSubtitle =>
+      'See this prompt half as often';
+
+  @override
   String get ui_scannerUpgrade_title => 'NAIK TARAF PENGIMBAS';
 
   @override

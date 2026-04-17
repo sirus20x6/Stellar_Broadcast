@@ -1129,6 +1129,18 @@ abstract class AppLocalizations {
   /// **'Lifetime'**
   String get ui_premium_lifetime;
 
+  /// No description provided for @ui_premium_enablePersonalizedAds.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Personalized Ads'**
+  String get ui_premium_enablePersonalizedAds;
+
+  /// No description provided for @ui_premium_enablePersonalizedAdsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See this prompt half as often'**
+  String get ui_premium_enablePersonalizedAdsSubtitle;
+
   /// No description provided for @ui_scannerUpgrade_title.
   ///
   /// In en, this message translates to:

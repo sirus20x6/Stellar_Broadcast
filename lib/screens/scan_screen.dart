@@ -710,7 +710,13 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
         ref.read(voyageProvider.notifier).pressOn();
         if (scanned > 0 && scanned % 3 == 0 && !ref.read(isPremiumProvider)) {
           final insertion = scanned ~/ 3;
-          if (insertion % 3 == 0) {
+          // Paywall cadence: every 3rd ad-slot by default (≈ every 9 planets).
+          // Halved to every 6th slot (≈ every 18 planets) when the user has
+          // opted in to personalized ads — higher eCPM means we can afford
+          // to nag less, and it rewards the choice.
+          final paywallEvery =
+              QaConsentManager.canShowPersonalizedAds ? 6 : 3;
+          if (insertion % paywallEvery == 0) {
             await showPremiumPaywall(context);
           } else {
             final shown = await ref
@@ -1330,13 +1336,21 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                         .read(voyageProvider)
                                         .planetsScanned;
                                     ref.read(voyageProvider.notifier).pressOn();
-                                    // Every 3 planets: 2 interstitial ads then 1 premium nudge.
+                                    // Every 3 planets: interstitial ads then a premium nudge.
+                                    // Cadence of the nudge halves (every 6th
+                                    // ad-slot instead of every 3rd) when the
+                                    // user is on personalized ads, rewarding
+                                    // the consent opt-in.
                                     if (scanned > 0 &&
                                         scanned % 3 == 0 &&
                                         !ref.read(isPremiumProvider)) {
                                       // Cycle position: 1-based insertion number.
                                       final insertion = scanned ~/ 3;
-                                      if (insertion % 3 == 0) {
+                                      final paywallEvery = QaConsentManager
+                                              .canShowPersonalizedAds
+                                          ? 6
+                                          : 3;
+                                      if (insertion % paywallEvery == 0) {
                                         await showPremiumPaywall(context);
                                       } else {
                                         final shown = await ref

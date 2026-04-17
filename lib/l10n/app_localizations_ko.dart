@@ -530,6 +530,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get ui_premium_lifetime => '평생';
 
   @override
+  String get ui_premium_enablePersonalizedAds => 'Enable Personalized Ads';
+
+  @override
+  String get ui_premium_enablePersonalizedAdsSubtitle =>
+      'See this prompt half as often';
+
+  @override
   String get ui_scannerUpgrade_title => '스캐너 업그레이드';
 
   @override

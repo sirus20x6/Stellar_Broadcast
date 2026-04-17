@@ -214,6 +214,8 @@
   "ui_premium_exclusiveTitle": "Exclusive commander title",
   "ui_premium_priorityFeatures": "Priority feature requests",
   "ui_premium_lifetime": "Lifetime",
+  "ui_premium_enablePersonalizedAds": "Enable Personalized Ads",
+  "ui_premium_enablePersonalizedAdsSubtitle": "See this prompt half as often",
   "ui_scannerUpgrade_title": "SCANNER UPGRADE",
   "ui_scannerUpgrade_subtitle": "Choose a scanner to upgrade",
   "ui_scannerUpgrade_skip": "SKIP",

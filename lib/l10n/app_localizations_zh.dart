@@ -527,6 +527,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get ui_premium_lifetime => '终身';
 
   @override
+  String get ui_premium_enablePersonalizedAds => 'Enable Personalized Ads';
+
+  @override
+  String get ui_premium_enablePersonalizedAdsSubtitle =>
+      'See this prompt half as often';
+
+  @override
   String get ui_scannerUpgrade_title => '扫描仪升级';
 
   @override
