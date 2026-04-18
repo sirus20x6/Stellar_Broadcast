@@ -1,7 +1,7 @@
 name: stellar_broadcast
 description: "Humanity's last colony ship searches for a new home among the stars."
 publish_to: 'none'
-version: 2.2.6+116
+version: 2.2.6+117
 
 environment:
   sdk: ^3.8.0
@@ -37,6 +37,12 @@ dependencies:
   share_plus: ^10.1.4
   path_provider: ^2.1.0
   app_links: ^6.0.0
+
+  # iOS App Tracking Transparency (direct dep because main.dart calls
+  # requestTrackingAuthorization during bootstrap, before any ads SDK
+  # initializes — Apple requires ATT as the authoritative tracking
+  # permission mechanism).
+  app_tracking_transparency: ^2.0.6
 
   quickapps_storage:
     path: ../../packages/quickapps_storage

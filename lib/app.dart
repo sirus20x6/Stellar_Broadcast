@@ -15,6 +15,7 @@ import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 
+import 'package:stellar_broadcast/main.dart' show tryReinitializeIap;
 import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/data/events.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
@@ -196,30 +197,47 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       return;
     }
 
+    final int seedInt;
+    final Map<String, bool> upgrades;
+    final AppLocalizations l10n;
     try {
-      final seedInt = codeToSeed(seed);
-      if (seedInt == null) {
+      final parsed = codeToSeed(seed);
+      if (parsed == null) {
         QaLogger.app.warning('Deep link contained invalid seed: $seed');
         return;
       }
-      final upgrades = ref.read(legacyProvider).upgrades;
+      seedInt = parsed;
+      upgrades = ref.read(legacyProvider).upgrades;
       final navContext = _navigatorKey.currentContext;
       if (navContext == null) return;
-      final l10n = Localizations.of<AppLocalizations>(
-        navContext,
-        AppLocalizations,
-      );
-      if (l10n == null) return;
+      final resolved =
+          Localizations.of<AppLocalizations>(navContext, AppLocalizations);
+      if (resolved == null) return;
+      l10n = resolved;
+    } catch (e, st) {
+      QaLogger.app.warning('Deep link parse/resolve failed', e, st);
+      return;
+    }
+
+    // Only navigate if startVoyage succeeds. Previously this was inside
+    // a shared try/catch, so a thrown startVoyage would still fall
+    // through to the logger but the navigator push either wouldn't
+    // happen (because the exception jumped out) or would land on a
+    // half-initialized voyage in the middle of the reconciliation
+    // window. Separating the phases makes the failure mode explicit.
+    try {
       ref
           .read(voyageProvider.notifier)
           .startVoyage(seed: seedInt, upgrades: upgrades, l10n: l10n);
-      _navigatorKey.currentState?.pushNamedAndRemoveUntil(
-        '/voyage',
-        (r) => r.isFirst,
-      );
     } catch (e, st) {
-      QaLogger.app.warning('Failed to handle deep link', e, st);
+      QaLogger.app.warning('Deep link startVoyage failed', e, st);
+      return;
     }
+
+    _navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      '/voyage',
+      (r) => r.isFirst,
+    );
   }
 
   /// Debug: navigate directly to a named screen for QA screenshot automation.
@@ -367,6 +385,10 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       QaIapService().restore().catchError((Object e, StackTrace st) {
         QaLogger.app.warning('IAP restore failed on resume', e, st);
       });
+      // If IAP init never completed at bootstrap (background retries
+      // exhausted), try one more time now that the user has returned
+      // with presumably better network. No-op if already initialized.
+      unawaited(tryReinitializeIap());
     }
   }
 
