@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:stellar_broadcast/logic/planet_namer.dart';
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
@@ -238,6 +239,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                   const SizedBox(height: 24),
                   _buildColonyNameField(),
                   const SizedBox(height: 24),
+                  _buildLandingAd(screen),
                   _buildActionButtons(planet),
                   const SizedBox(height: 40),
                 ],
@@ -280,11 +282,40 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
           const SizedBox(height: 24),
           _buildColonyNameField(),
           const SizedBox(height: 24),
+          _buildLandingAd(ScreenInfo.of(context)),
           _buildActionButtons(planet),
           const SizedBox(height: 40),
         ],
       ),
     ));
+  }
+
+  /// Native ad placed directly above the Land / Abort action buttons.
+  /// This is the pre-landing read-through screen where the player's
+  /// attention dwells on stats and risk — the end of that flow is a
+  /// strong native-ad slot. Size ladder mirrors other screens:
+  /// expanded tablets get `large` (450dp), non-compact tablets get
+  /// `medium` (300dp), compact phones get `small` (100dp).
+  Widget _buildLandingAd(ScreenInfo screen) {
+    final QaNativeAdSize size;
+    if (screen.screenClass == ScreenClass.expanded) {
+      size = QaNativeAdSize.large;
+    } else if (!screen.isCompact) {
+      size = QaNativeAdSize.medium;
+    } else {
+      size = screen.height >= 800
+          ? QaNativeAdSize.medium
+          : QaNativeAdSize.small;
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: PremiumAdGate(
+        child: AdaptiveNativeAd(
+          key: ValueKey('landing_native_${size.name}'),
+          size: size,
+        ),
+      ),
+    );
   }
 
   Widget _buildPlanetHeader(Planet planet) {

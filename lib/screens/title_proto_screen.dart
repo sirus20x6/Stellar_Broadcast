@@ -552,7 +552,9 @@ class _TitleProtoScreenState extends ConsumerState<TitleProtoScreen>
               left: 0,
               child: SafeArea(
                 child: GestureDetector(
-                  onDoubleTap: _handleVersionTap,
+                  // Long-press only — see title_screen.dart for why the
+                  // onDoubleTap was removed (gesture ambiguity with the
+                  // long-press recognizer).
                   onLongPress: _handleVersionLongPress,
                   child: Padding(
                     padding: const EdgeInsets.all(12),

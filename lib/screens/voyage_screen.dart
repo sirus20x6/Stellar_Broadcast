@@ -211,7 +211,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     PremiumAdGate(
-                      child: AdaptiveNativeAd(size: QaNativeAdSize.medium),
+                      // Tablet landscape — plenty of vertical room in
+                      // the left column, so give the media slot the
+                      // bigger (450dp) layout.
+                      child: AdaptiveNativeAd(size: QaNativeAdSize.large),
                     ),
                   ],
                 ),
@@ -241,31 +244,27 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
       );
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: ResponsiveContent(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: _buildHudContent(
-                ship: ship,
-                isCritical: isCritical,
-                canScan: canScan,
-                encounterCount: encounterCount,
-                probes: probes,
-                fuel: fuel,
-                energy: energy,
-                colonists: colonists,
-                seed: seed,
-                pendingPlanetModifiers: pendingPlanetModifiers,
-              ),
-            ),
-          ),
+    // Portrait ad is now a native unit inside the HUD, placed directly
+    // above the Scan/Press On actions (see _buildHudContent). The
+    // old bottom-of-screen banner was wasting vertical space and
+    // earning banner-tier eCPM — native above the CTA gives the
+    // same screen share with much higher revenue per impression.
+    return ResponsiveContent(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: _buildHudContent(
+          ship: ship,
+          isCritical: isCritical,
+          canScan: canScan,
+          encounterCount: encounterCount,
+          probes: probes,
+          fuel: fuel,
+          energy: energy,
+          colonists: colonists,
+          seed: seed,
+          pendingPlanetModifiers: pendingPlanetModifiers,
         ),
-        PremiumAdGate(
-          child: AdaptiveBannerAd(key: const ValueKey('voyage_banner')),
-        ),
-      ],
+      ),
     );
   }
 
@@ -335,7 +334,29 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     required Map<String, double> pendingPlanetModifiers,
   }) {
     // Portrait / phone layout only (landscape is handled by _buildLayout).
-    final compact = ScreenInfo.of(context).isCompact;
+    final screen = ScreenInfo.of(context);
+    final compact = screen.isCompact;
+
+    // Native ad size: three-tier ladder.
+    //   - Tablets (non-compact screen class) in portrait get `large`
+    //     (450dp) — massive vertical slack, and the big media slot
+    //     commands higher eCPM.
+    //   - Phones at 800dp+ height get `medium` (300dp) — iPhone 13+ /
+    //     most modern Androids. Narrative still scrollable above.
+    //   - iPhone SE (667dp) and similar short phones get `small`
+    //     (100dp) so the primary CTA stays above the fold.
+    // ScreenClass.compact covers every iPhone in portrait (it keys off
+    // the 600dp short-axis), so we must NOT rely on screenClass alone
+    // for the phone split — iPhone SE and 17 Pro Max are both compact.
+    final QaNativeAdSize nativeSize;
+    if (!screen.isCompact) {
+      nativeSize = QaNativeAdSize.large;
+    } else if (screen.height >= 800) {
+      nativeSize = QaNativeAdSize.medium;
+    } else {
+      nativeSize = QaNativeAdSize.small;
+    }
+
     return Column(
       children: [
         _buildHeader(
@@ -358,6 +379,16 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
                 ),
               ],
             ),
+          ),
+        ),
+        SizedBox(height: compact ? 10 : 16),
+        // Native ad above the primary CTA. Replaces the old bottom
+        // banner — higher eCPM, uses the vertical slack modern
+        // iPhones have. Size adapts to device height (see above).
+        PremiumAdGate(
+          child: AdaptiveNativeAd(
+            key: ValueKey('voyage_native_${nativeSize.name}'),
+            size: nativeSize,
           ),
         ),
         SizedBox(height: compact ? 10 : 16),
