@@ -771,6 +771,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     final statsOnLeft = ref.watch(statsOnLeftProvider);
 
     // Stats + buttons column — spreads elements when vertical space allows.
+    // Note: LAND HERE / PRESS ON move to the ad column when it's visible
+    // (non-premium), so the stats column stays compact and the primary
+    // actions sit beside the ad where the user's attention finishes.
     Widget statsColumn() => Expanded(
       flex: 3,
       child: LayoutBuilder(
@@ -783,7 +786,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
             _buildSurfaceFeatures(planet, voyage, revealFraction),
             _buildMoonTags(planet, revealFraction),
             _buildRingTags(planet, revealFraction),
-            _buildActionButtons(voyage, revealFraction, vertical: true),
+            // Only include action buttons here for premium users —
+            // non-premium see them in the ad column instead.
+            if (isPremium)
+              _buildActionButtons(voyage, revealFraction, vertical: true),
           ];
 
           // If we have finite height, use MainAxisAlignment.spaceEvenly
@@ -833,18 +839,30 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
       ),
     );
 
-    // Ad column (only for non-premium).
+    // Ad + actions column (only for non-premium). Native ad pinned
+    // to the top, LAND HERE / PRESS ON bottom-aligned. Minimum 24dp
+    // gap between ad and buttons so the ad's CTA never visually
+    // crowds the game's primary actions (AdMob accidental-click
+    // concern). Expanded tablets get large (450dp); standard
+    // tablets get medium (300dp).
+    final scanAdSize = screen.screenClass == ScreenClass.expanded
+        ? QaNativeAdSize.large
+        : QaNativeAdSize.medium;
     Widget adColumn() => Expanded(
       flex: 3,
-      child: Center(
-        child: PremiumAdGate(
-          child: AdaptiveBannerAd(
-            key: const ValueKey('scan_banner_landscape'),
-            fallback: AdFallbackBanner(
-              onRemoveAds: () => Navigator.pushNamed(context, '/settings'),
+      child: Column(
+        children: [
+          PremiumAdGate(
+            child: AdaptiveNativeAd(
+              key: ValueKey('scan_native_${scanAdSize.name}'),
+              size: scanAdSize,
             ),
           ),
-        ),
+          const SizedBox(height: 24),
+          const Spacer(),
+          _buildActionButtons(voyage, revealFraction, vertical: true),
+          const SizedBox(height: 8),
+        ],
       ),
     );
 

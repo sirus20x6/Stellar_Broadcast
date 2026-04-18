@@ -477,25 +477,64 @@ class _EventScreenState extends ConsumerState<EventScreen>
   /// All action widgets: trader button, choice buttons, or continue button.
   List<Widget> _buildActions() {
     final event = widget.event;
-    return [
-      if (_typewriterDone && !_showingOutcome && event.openTraderScreen)
-        _buildTraderButton(),
-      if (_typewriterDone && !_showingOutcome && !event.openTraderScreen)
-        FocusTraversalGroup(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildChoiceButtons(),
-          ),
+
+    // Always materialise the final action body (choice buttons / trader /
+    // continue) so it reserves the vertical space it will occupy. This
+    // keeps any native ad placed above the actions (tablet portrait &
+    // landscape) from shifting when the user taps to skip the
+    // typewriter — otherwise the ad jumps as the small tap-hint text is
+    // replaced by full-size buttons, which reads as layout flicker and
+    // can also misregister a skip-tap onto the ad.
+    final Widget actionsBody;
+    if (_showingOutcome) {
+      actionsBody = _buildContinueButton();
+    } else if (event.openTraderScreen) {
+      actionsBody = _buildTraderButton();
+    } else {
+      actionsBody = FocusTraversalGroup(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: _buildChoiceButtons(),
         ),
-      if (_showingOutcome) _buildContinueButton(),
-      if (!_typewriterDone) _buildTapHint(),
-    ];
+      );
+    }
+
+    if (!_typewriterDone) {
+      // Typewriter still running: render the final body invisibly (it
+      // still occupies its natural height) with the tap-to-skip hint
+      // overlaid on top. When the typewriter completes, the opacity
+      // flips to 1.0 with no layout change.
+      return [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            IgnorePointer(child: Opacity(opacity: 0, child: actionsBody)),
+            _buildTapHint(),
+          ],
+        ),
+      ];
+    }
+
+    return [actionsBody];
   }
 
   // ── Portrait layout ─────────────────────────────────────────────────────
 
   Widget _buildPortrait() {
-    final compact = ScreenInfo.of(context).isCompact;
+    final screen = ScreenInfo.of(context);
+    final compact = screen.isCompact;
+
+    // Tablet portrait has huge vertical slack between a typical 2–4
+    // sentence narrative and the choice buttons. Fill it with a
+    // native ad — much higher eCPM than the 468×60 bottom banner it
+    // replaces on tablets. Phones in portrait stay on the bottom
+    // banner (their gap between narrative and buttons is usually
+    // zero already).
+    final showColumnNative = !compact;
+    final nativeSize = screen.screenClass == ScreenClass.expanded
+        ? QaNativeAdSize.large
+        : QaNativeAdSize.medium;
+
     return ResponsiveContent(
       child: Column(
         children: [
@@ -506,6 +545,15 @@ class _EventScreenState extends ConsumerState<EventScreen>
           _buildTitle(),
           SizedBox(height: compact ? 12 : 32),
           _buildNarrativeCard(),
+          if (showColumnNative) ...[
+            const SizedBox(height: 24),
+            PremiumAdGate(
+              child: AdaptiveNativeAd(
+                key: ValueKey('event_portrait_${nativeSize.name}'),
+                size: nativeSize,
+              ),
+            ),
+          ],
           SizedBox(height: compact ? 14 : 24),
           ..._buildActions(),
           SizedBox(height: compact ? 6 : 12),
@@ -517,9 +565,28 @@ class _EventScreenState extends ConsumerState<EventScreen>
   // ── Landscape layout ────────────────────────────────────────────────────
 
   Widget _buildLandscape() {
+    // Tablet landscape has huge vertical slack below the narrative
+    // (usually 2–4 sentences) and below the choice buttons (usually 2–4
+    // buttons). Fill that slack with native ads per column — much
+    // higher eCPM than the 728×90 leaderboard banner it replaces, and
+    // keeps both columns visually balanced. On expanded tablets (iPad
+    // Pro 12.9" etc.) we go `large` (450dp media slot); on standard
+    // tablets we use `medium` (300dp). Narrative is still
+    // scrollable, so genuinely long events don't get clipped — they
+    // just scroll inside their column.
+    final screen = ScreenInfo.of(context);
+    final nativeSize = screen.screenClass == ScreenClass.expanded
+        ? QaNativeAdSize.large
+        : QaNativeAdSize.medium;
+
     return Row(
       children: [
-        // Left: title + narrative card (scrollable).
+        // Left: title at top, narrative expands to fill available
+        // vertical space (scrolls on overflow), native ad pinned to
+        // the bottom. Bottom-anchored ad gives genuinely long events
+        // the full column height for their narrative before they have
+        // to scroll, instead of capping narrative against a top-hugging
+        // ad.
         Expanded(
           flex: 2,
           child: Padding(
@@ -533,18 +600,40 @@ class _EventScreenState extends ConsumerState<EventScreen>
                     child: _buildNarrativeCard(expanded: false),
                   ),
                 ),
+                const SizedBox(height: 16),
+                PremiumAdGate(
+                  child: AdaptiveNativeAd(
+                    key: ValueKey('event_left_${nativeSize.name}'),
+                    size: nativeSize,
+                  ),
+                ),
               ],
             ),
           ),
         ),
-        // Right: choice buttons or continue button + effect chips.
+        // Right: native ad top-aligned, choice buttons bottom-aligned.
+        // The Spacer pushes the buttons to the bottom of the column;
+        // the SizedBox before it guarantees a minimum gap so the ad's
+        // own CTA can never visually crowd the first choice button
+        // even if the column is short (matters for AdMob's accidental-
+        // click policy).
         Expanded(
           flex: 2,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 24, 8),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [..._buildActions(), const SizedBox(height: 8)],
+              children: [
+                PremiumAdGate(
+                  child: AdaptiveNativeAd(
+                    key: ValueKey('event_right_${nativeSize.name}'),
+                    size: nativeSize,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                const Spacer(),
+                ..._buildActions(),
+                const SizedBox(height: 8),
+              ],
             ),
           ),
         ),
@@ -586,7 +675,13 @@ class _EventScreenState extends ConsumerState<EventScreen>
                             ? _buildLandscape()
                             : _buildPortrait(),
                       ),
-                      _buildAdBanner(),
+                      // Bottom leaderboard banner is only shown on
+                      // compact phones (portrait). Tablet landscape
+                      // has two column-local natives; tablet portrait
+                      // has a single column-local native between
+                      // narrative and choices. Stacking a banner
+                      // below either would be double-dipping.
+                      if (screen.isCompact) _buildAdBanner(),
                     ],
                   ),
                 ),

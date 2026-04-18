@@ -246,36 +246,46 @@ class _EarthGoodbyeScreenState extends ConsumerState<EarthGoodbyeScreen>
   }
 
   Widget _buildPortrait() {
+    // Visual area takes ~35% of viewport height (clamped), leaving
+    // room for narrative + choices + continue + banner. The outer
+    // SingleChildScrollView guarantees no overflow even when outcome
+    // text is very long (e.g. "You carry every song we ever sang…"
+    // is ~300dp on a phone) or when a tall continue + effect-chip
+    // group appears below.
+    final screen = ScreenInfo.of(context);
+    final visualHeight = (screen.height * 0.35).clamp(180.0, 360.0);
     return Column(
       children: [
         Expanded(
           child: ResponsiveContent(
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                _buildTitle(),
-                const SizedBox(height: 16),
-                _buildNarrativeCard(),
-                const SizedBox(height: 12),
-                Expanded(child: _buildVisualArea()),
-                if (typewriterDone && !_resolved) ...[
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 24),
+                  _buildTitle(),
+                  const SizedBox(height: 16),
+                  _buildNarrativeCard(),
                   const SizedBox(height: 12),
-                  _buildChoices(),
-                ],
-                if (_showEffects) ...[
-                  const SizedBox(height: 10),
-                  _buildEffectChips(),
-                ],
-                if (!_resolved && !typewriterDone) ...[
-                  const SizedBox(height: 8),
-                  _buildSkipHint(),
-                ],
-                if (_resolved) ...[
+                  SizedBox(height: visualHeight, child: _buildVisualArea()),
+                  if (typewriterDone && !_resolved) ...[
+                    const SizedBox(height: 12),
+                    _buildChoices(),
+                  ],
+                  if (_showEffects) ...[
+                    const SizedBox(height: 10),
+                    _buildEffectChips(),
+                  ],
+                  if (!_resolved && !typewriterDone) ...[
+                    const SizedBox(height: 8),
+                    _buildSkipHint(),
+                  ],
+                  if (_resolved) ...[
+                    const SizedBox(height: 12),
+                    _buildContinue(),
+                  ],
                   const SizedBox(height: 12),
-                  _buildContinue(),
                 ],
-                const SizedBox(height: 12),
-              ],
+              ),
             ),
           ),
         ),

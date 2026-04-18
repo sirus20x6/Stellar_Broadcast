@@ -218,8 +218,15 @@ Future<void> _bootstrap() async {
 
   if (PlatformConfig.supportsIap) {
     try {
+      // In debug, skip auto-restore. A test purchase on the signed-in
+      // Google/Apple ID would otherwise fire a restored event mid-boot
+      // and flip premium back on — hiding ads, which is exactly the
+      // opposite of what we want while QAing ad layouts.
       await QaIapService()
-          .initialize(productIds: {'premium_lifetime'})
+          .initialize(
+            productIds: {'premium_lifetime'},
+            autoRestore: !kDebugMode,
+          )
           .timeout(const Duration(seconds: 5));
       _iapInitialized = true;
     } on TimeoutException catch (e, st) {

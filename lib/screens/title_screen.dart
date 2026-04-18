@@ -11,6 +11,7 @@ import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:stellar_broadcast/app.dart' show routeObserver;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/data/event_loader.dart';
 import 'package:stellar_broadcast/data/events.dart';
 import 'package:stellar_broadcast/logic/puzzle_generator.dart';
 import 'package:stellar_broadcast/models/puzzle.dart';
@@ -350,6 +351,28 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
               );
             }
           }),
+          DebugButton('Earth Goodbye', () async {
+            // earth_goodbye lives in events.yaml (with its chain
+            // precursors earth_final_broadcast / earth_silence) rather
+            // than the hardcoded Dart pool, so we load it on demand
+            // instead of reading from `pool`. useYamlEvents is off in
+            // production, but this button is debug-only.
+            final yamlEvents = await EventLoader.loadEvents(
+              'assets/events/events.yaml',
+              (k) => k,
+            );
+            if (!mounted) return;
+            final event = yamlEvents
+                .where((e) => e.id == 'earth_goodbye')
+                .firstOrNull;
+            if (event != null) {
+              Navigator.pushNamed(
+                context,
+                '/earth-goodbye',
+                arguments: event,
+              );
+            }
+          }),
         ]),
         DebugSection('SCREENS', [
           DebugButton('Ship Status (Damaged)', () => _handleVersionTap()),
@@ -568,7 +591,14 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
                         left: 0,
                         child: SafeArea(
                           child: GestureDetector(
-                            onDoubleTap: _handleVersionTap,
+                            // Long-press only. A prior onDoubleTap for
+                            // the ship-status debug shortcut competed
+                            // with the long-press recognizer — a short
+                            // initial hold (<500ms) or any double-input
+                            // would route to ship status instead of the
+                            // debug menu. The debug menu already has a
+                            // "Ship Status (Damaged)" button, so the
+                            // double-tap path was redundant.
                             onLongPress: _handleVersionLongPress,
                             child: Padding(
                               padding: const EdgeInsets.all(12),
