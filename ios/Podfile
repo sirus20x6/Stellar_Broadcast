@@ -32,6 +32,10 @@ target 'Runner' do
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
+  # AdMob mediation adapters — keep in sync with android/app/build.gradle.kts
+  pod 'GoogleMobileAdsMediationUnity'
+  pod 'GoogleMobileAdsMediationFacebook'
+
   target 'RunnerTests' do
     inherit! :search_paths
   end

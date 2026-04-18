@@ -27,6 +27,7 @@ import 'package:stellar_broadcast/screens/black_hole_screen.dart';
 import 'package:stellar_broadcast/screens/chrono_vortex_screen.dart';
 import 'package:stellar_broadcast/screens/codex_screen.dart';
 import 'package:stellar_broadcast/screens/dyson_sphere_screen.dart';
+import 'package:stellar_broadcast/screens/earth_goodbye_screen.dart';
 import 'package:stellar_broadcast/screens/ending_screen.dart';
 import 'package:stellar_broadcast/screens/event_screen.dart';
 import 'package:stellar_broadcast/screens/game_over_screen.dart';
@@ -81,6 +82,7 @@ const Map<String, String> _screenRouteLabels = {
   '/phantom-ship': 'Phantom Ship',
   '/singularity-engine': 'Singularity Engine',
   '/pulsar-lighthouse': 'Pulsar Lighthouse',
+  '/earth-goodbye': 'Earth Goodbye',
 };
 
 final _coverageService = ScreenCoverageService.init(_screenRouteLabels);
@@ -631,6 +633,12 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
             return MaterialPageRoute(
               settings: settings,
               builder: (context) => PhantomShipScreen(event: event),
+            );
+          case '/earth-goodbye':
+            final event = settings.arguments as GameEvent;
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => EarthGoodbyeScreen(event: event),
             );
           case '/singularity-engine':
             final event = settings.arguments as GameEvent;

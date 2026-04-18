@@ -22,6 +22,7 @@ events:
       - text: "@event_asteroidField_choice1_text"
         outcome: "@event_asteroidField_choice1_outcome"
         ship: { nav: -0.10, tech: -0.05 }
+        fuel: -8
       - text: "@event_asteroidField_choice2_text"
         outcome: "@event_asteroidField_choice2_outcome"
         ship: { tech: -0.12, hull: 0.02 }
@@ -37,10 +38,10 @@ events:
     choices:
       - text: "@event_solarFlare_choice0_text"
         outcome: "@event_solarFlare_choice0_outcome"
-        ship: { shields: -0.08, tech: -0.08, scanners: -0.08, culture: 0.05 }
+        ship: { tech: -0.08, scanners: -0.08 }
       - text: "@event_solarFlare_choice1_text"
         outcome: "@event_solarFlare_choice1_outcome"
-        ship: { cryopods: 0.05, hull: -0.12 }
+        ship: { hull: -0.12 }
       - text: "@event_solarFlare_choice2_text"
         outcome: "@event_solarFlare_choice2_outcome"
         ship: { hull: -0.08, culture: -0.08 }
@@ -100,12 +101,9 @@ events:
       - text: "@event_crewUnrest_choice1_text"
         outcome: "@event_crewUnrest_choice1_outcome"
         ship: { culture: -0.12, tech: 0.05 }
-        fuel: 8
-        probes: 1
       - text: "@event_crewUnrest_choice2_text"
         outcome: "@event_crewUnrest_choice2_outcome"
-        ship: { culture: 0.05, cryopods: -0.08, shields: 0.06 }
-        fuel: 5
+        ship: { culture: 0.05, cryopods: -0.08 }
 
   - id: stowaway
     title: "@event_stowaway_title"
@@ -218,7 +216,7 @@ events:
         outcomes:
           - weight: 65
             outcome: "@event_ancientBeacon_choice0_outcome"
-            ship: { nav: -0.08, gravimetricScanner: 0.10 }
+            ship: { nav: 0.08, gravimetricScanner: 0.10 }
             planet: { anomaly: 0.15, resources: 0.10 }
           - weight: 25
             outcome: "The beacon emits a disorienting pulse that scrambles your navigation systems and unsettles the crew."
@@ -292,7 +290,6 @@ events:
       - text: "@event_navMalfunction_choice1_text"
         outcome: "@event_navMalfunction_choice1_outcome"
         ship: { nav: -0.08 }
-        fuel: -10
       - text: "@event_navMalfunction_choice2_text"
         outcome: "@event_navMalfunction_choice2_outcome"
         ship: { nav: -0.05, culture: 0.05, tech: -0.03 }
@@ -400,7 +397,7 @@ events:
             planet: { resources: 0.08 }
           - weight: 30
             outcome: "Dormant defence systems flicker to life. Automated turrets open fire before the team can retreat — the hull is breached and casualties are taken."
-            ship: { hull: -0.18, cryopods: -0.12 }
+            ship: { hull: -0.18, culture: -0.08 }
             colonists: -5
           - weight: 15
             outcome: "Behind the defence grid lies an untouched alien tech cache. Rare components and intact data cores are recovered, a windfall beyond anything anticipated."
@@ -482,8 +479,7 @@ events:
         ship: { nav: 0.08, tech: 0.05 }
       - text: "@event_aiAwakening_choice2_text"
         outcome: "@event_aiAwakening_choice2_outcome"
-        ship: { nav: 0.05, culture: -0.04, tech: -0.03 }
-        probes: 2
+        ship: { nav: -0.08, culture: -0.04, tech: -0.03 }
 
   - id: genetic_modification
     title: "@event_geneticModification_title"
@@ -657,6 +653,7 @@ events:
       - text: "@event_boonStellarNursery_choice0_text"
         outcome: "@event_boonStellarNursery_choice0_outcome"
         ship: { tech: 0.12, atmosphericScanner: 0.08, culture: 0.10 }
+        energy: 15
       - text: "@event_boonStellarNursery_choice1_text"
         outcome: "@event_boonStellarNursery_choice1_outcome"
         ship: { hull: 0.10, tech: 0.10, nav: 0.05 }
@@ -709,7 +706,6 @@ events:
       - text: "@event_boonLibrary_choice0_text"
         outcome: "@event_boonLibrary_choice0_outcome"
         ship: { culture: 0.15, tech: 0.12 }
-        planet: { resources: 0.05 }
       - text: "@event_boonLibrary_choice1_text"
         outcome: "@event_boonLibrary_choice1_outcome"
         ship: { tech: 0.15, hull: 0.08, constructors: 0.10 }
@@ -726,7 +722,7 @@ events:
             ship: { tech: -0.12, atmosphericScanner: -0.08 }
           - weight: 20
             outcome: "Shielding collapses in three unprotected bays. Crew in the affected sections take a lethal dose before emergency bulkheads seal. The casualties hit morale like a hammer."
-            ship: { hull: -0.12, shields: -0.10 }
+            ship: { hull: -0.12, shields: -0.10, culture: -0.08 }
             colonists: -15
           - weight: 15
             outcome: "The burst overloads the shield emitters, but the surge floods the scanner arrays with high-energy photons and calibrates them better than any manual tuning could."
@@ -834,7 +830,7 @@ events:
         ship: { culture: -0.18 }
       - text: "@event_memoryPlague_choice2_text"
         outcome: "@event_memoryPlague_choice2_outcome"
-        ship: { culture: -0.03, cryopods: -0.10, tech: -0.05 }
+        ship: { culture: 0.05, cryopods: -0.10, tech: -0.05 }
         colonists: -3
 
   - id: gravity_lens_planet
@@ -881,7 +877,7 @@ events:
         ship: { hull: -0.10, tech: 0.05 }
       - text: "@event_magneticStorm_choice1_text"
         outcome: "@event_magneticStorm_choice1_outcome"
-        ship: { hull: 0.05, atmosphericScanner: -0.12, tech: -0.05 }
+        ship: { hull: 0.05, scanners: -0.10, tech: -0.05 }
       - text: "@event_magneticStorm_choice2_text"
         outcome: "@event_magneticStorm_choice2_outcome"
         ship: { hull: -0.03, tech: -0.03 }
@@ -990,8 +986,7 @@ events:
         ship: { hull: 0.08, tech: 0.05, gravimetricScanner: 0.05 }
       - text: "@event_relicSentinel_choice2_text"
         outcome: "@event_relicSentinel_choice2_outcome"
-        ship: { culture: -0.03, shields: 0.05 }
-        fuel: 5
+        ship: { culture: -0.03 }
 
   - id: relic_seed_probe
     title: "@event_relicSeedProbe_title"
@@ -1077,7 +1072,7 @@ events:
     choices:
       - text: "@event_relicRosetta_choice0_text"
         outcome: "@event_relicRosetta_choice0_outcome"
-        ship: { tech: 0.15, nav: 0.10 }
+        ship: { tech: 0.15, nav: 0.10, gravimetricScanner: 0.10 }
       - text: "@event_relicRosetta_choice1_text"
         outcome: "@event_relicRosetta_choice1_outcome"
         ship: { hull: 0.12, tech: 0.05 }
@@ -1247,6 +1242,38 @@ events:
         outcome: "@event_uneventfulAnniversary_choice1_outcome"
         ship: { tech: 0.01, nav: 0.01 }
 
+  - id: memorial_star
+    title: "Memorial Star"
+    narrative: >
+      A quiet binary pair drifts through our long-range scopes —
+      unremarkable, un-named in any database we carry. The command
+      crew asks whether one of them should bear the name of Dr.
+      Alvaro Penha, the atmospheric chemist who died in her cryopod
+      four months into the voyage. Her work is still woven through
+      the ship's systems, but there is no other monument to her.
+    category: uneventful
+    tags: [memorial, emotional, culture]
+    guard: "encounter >= 4"
+    choices:
+      - text: "Hold a full ship-wide dedication"
+        outcome: >
+          The ceremony is broadcast to every deck. Watch crews pause;
+          the galley serves a toast. The star is formally logged as
+          Penha-A in the navigational archive. Something about the
+          ritual steadies the ship.
+        ship: { culture: 0.08 }
+      - text: "A quiet entry by the astrogators"
+        outcome: >
+          The dedication is logged without ceremony. Those who knew
+          her notice the new name when they file their charts. It is
+          enough.
+        ship: { culture: 0.04 }
+      - text: "Leave it un-named; her work is her monument"
+        outcome: >
+          The star passes without inscription. Some of the crew find
+          it cold; others, clarifying. We keep moving.
+        ship: { culture: -0.03 }
+
   - id: database_literature
     title: "@event_databaseLiterature_title"
     narrative: "@event_databaseLiterature_narrative"
@@ -1311,8 +1338,8 @@ events:
         ship: { culture: 0.10, nav: 0.05, atmosphericScanner: 0.05 }
       - text: "@event_alienFleetSighting_choice2_text"
         outcome: "@event_alienFleetSighting_choice2_outcome"
-        ship: { nav: -0.06, culture: -0.03, shields: 0.05 }
-        fuel: 5
+        ship: { nav: -0.06, culture: -0.03 }
+        fuel: -10
 
   - id: alien_trade_offer
     title: "@event_alienTradeOffer_title"
@@ -1357,8 +1384,7 @@ events:
         planet: { nativePresence: 0.10, nativeDisposition: 0.05 }
       - text: "@event_nativeSignalDetected_choice2_text"
         outcome: "@event_nativeSignalDetected_choice2_outcome"
-        ship: { tech: -0.03, culture: -0.05, shields: 0.05 }
-        fuel: 8
+        ship: { tech: -0.03, culture: -0.05 }
         planet: { nativePresence: 0.05, nativeDisposition: -0.15 }
 
   - id: native_probe_encounter
@@ -1428,7 +1454,7 @@ events:
     choices:
       - text: "@event_dysonSphere_choice0_text"
         outcome: "@event_dysonSphere_choice0_outcome"
-        ship: { tech: 0.20, constructors: 0.15, atmosphericScanner: 0.10 }
+        ship: { tech: 0.20, constructors: 0.15, gravimetricScanner: 0.10 }
         colonists: -5
       - text: "@event_dysonSphere_choice1_text"
         outcome: "@event_dysonSphere_choice1_outcome"
@@ -1454,7 +1480,7 @@ events:
       - text: "@event_nanotechPlague_choice2_text"
         outcome: "@event_nanotechPlague_choice2_outcome"
         ship: { tech: 0.05, hull: 0.08, constructors: 0.08, culture: -0.15 }
-        colonists: -25
+        colonists: -5
       - text: "@event_nanotechPlague_choice3_text"
         outcome: "@event_nanotechPlague_choice3_outcome"
         ship: { hull: -0.03, tech: -0.03 }
@@ -1469,7 +1495,7 @@ events:
       - text: "@event_prematureAwakening_choice0_text"
         outcome: "@event_prematureAwakening_choice0_outcome"
         ship: { culture: 0.12, cryopods: -0.22, tech: 0.05 }
-        colonists: 130
+        colonists: 180
       - text: "@event_prematureAwakening_choice1_text"
         outcome: "@event_prematureAwakening_choice1_outcome"
         ship: { cryopods: -0.03, culture: 0.08, tech: 0.10, hull: 0.05 }
@@ -1845,7 +1871,7 @@ events:
     choices:
       - text: "@event_commsArrayFailure_choice0_text"
         outcome: "@event_commsArrayFailure_choice0_outcome"
-        ship: { atmosphericScanner: -0.06, culture: -0.08 }
+        ship: { culture: -0.08 }
         colonists: -1
       - text: "@event_commsArrayFailure_choice1_text"
         outcome: "@event_commsArrayFailure_choice1_outcome"
@@ -2238,7 +2264,7 @@ events:
     choices:
       - text: "@event_derelictArmada_choice0"
         outcome: "@event_derelictArmada_outcome0"
-        ship: { constructors: 0.10, hull: 0.06 }
+        ship: { constructors: 0.10, hull: 0.06, tech: 0.08 }
         colonists: -12
       - text: "@event_derelictArmada_choice1"
         outcome: "@event_derelictArmada_outcome1"
@@ -2380,7 +2406,6 @@ events:
         outcome: >
           The probe hums to life and begins broadcasting. Something
           out there is listening.
-        ship: { nav: 0.05, culture: 0.03 }
         energy: -3
         chain:
           event: seed_probe_response
@@ -2618,6 +2643,7 @@ events:
       thin but steady. She knows you'll receive this decades after
       she's gone.
     category: rare
+    route: "/earth-goodbye"
     tags: [earth, emotional, chain, payoff]
     choices:
       - text: "Broadcast to the whole ship"
@@ -2687,6 +2713,46 @@ events:
           recording. Everyone hears something different in it. Maybe
           that's enough.
         ship: { culture: 0.05 }
+
+  - id: patient_observer
+    title: "The Patient Observer"
+    narrative: >
+      A sleek, dark probe drifts across our path — inert at first
+      glance, then alive when our scanners brush it. Its casing is
+      older than our species. Its memory banks are full. They contain
+      centuries of observation data — of Earth. Of us. Among the
+      latest entries: dates that fall well after our launch. Things
+      we never saw from the ground.
+    category: rare
+    tags: [alien, earth, emotional, contact]
+    guard: "encounter >= 6"
+    choices:
+      - text: "Decode and broadcast the footage"
+        outcome: >
+          For three watches the ship watches what came after us —
+          triumphs, atrocities, a child in Lagos learning to read, a
+          war in orbit we had no part in. By the end, the crew is
+          quieter than it has ever been, and hungrier to build what
+          cannot be unmade.
+        ship: { culture: 0.12, tech: 0.05 }
+        cultureDelta: 0.10
+      - text: "Seal the archive for the colony's centennial"
+        outcome: >
+          The full record is locked behind a double-key vault, to be
+          opened on the hundredth birthday of the first child born
+          planetside. What came after us is not our story to
+          narrate — only to carry.
+        ship: { culture: 0.05 }
+        faithDelta: 0.05
+        cultureDelta: -0.05
+      - text: "Destroy the probe — its archive is not ours"
+        outcome: >
+          A single laser pulse, precise and final. The probe splinters
+          and drifts. Whatever it carried is gone. Some of the crew
+          call it a mercy. Others will never forgive it.
+        ship: { culture: -0.10, shields: 0.05 }
+        authorityDelta: 0.08
+        militaryDelta: 0.05
 
   # ═══════════════════════════════════════════════════════════════════════════
   # STOWAWAY GROWS UP
