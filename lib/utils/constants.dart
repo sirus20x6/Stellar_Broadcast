@@ -7,7 +7,6 @@ class AppConstants {
   // ---------------------------------------------------------------------------
 
   static const String appName = 'Stellar Broadcast';
-  static const String appVersion = '1.0.0';
   static const String packageName = 'com.quickapps.stellar_broadcast';
 
   // ---------------------------------------------------------------------------
@@ -44,6 +43,8 @@ class AppConstants {
 
   static const String testNativeAndroid =
       'ca-app-pub-3940256099942544/2247696110';
+  static const String testNativeIos =
+      'ca-app-pub-3940256099942544/3986624511';
 
   // ---------------------------------------------------------------------------
   // Ad unit IDs — Production

@@ -85,19 +85,30 @@ class LeaderboardApi {
     }
   }
 
-  /// Attempts pending submissions from the persistent queue. Successful
-  /// entries are removed; on the first failure we stop (to avoid thrashing
-  /// a flaky network) and leave the remaining entries for next time.
+  /// Number of consecutive per-entry failures allowed during a flush
+  /// before we abort and leave the rest for next time. This keeps a
+  /// single bad entry (or genuinely-down network) from stalling the
+  /// queue forever while also not thrashing a dead connection across
+  /// 20 POSTs.
+  static const _flushConsecutiveFailureLimit = 3;
+
+  /// Attempts pending submissions from the persistent queue. Each entry
+  /// is tried independently: successful ones are dropped, failed ones
+  /// are kept. We only abort the flush after
+  /// [_flushConsecutiveFailureLimit] consecutive failures, so a single
+  /// bad or server-rejected entry at the front of the queue can't pin
+  /// the rest forever.
   static Future<void> flushPendingSubmissions() async {
     if (kIsWeb) return;
     final queue = await _readQueue();
     if (queue.isEmpty) return;
 
     final remaining = <Map<String, dynamic>>[];
-    var stopped = false;
+    var consecutiveFailures = 0;
+    var aborted = false;
     for (var i = 0; i < queue.length; i++) {
       final entry = queue[i];
-      if (stopped) {
+      if (aborted) {
         remaining.add(entry);
         continue;
       }
@@ -111,14 +122,24 @@ class LeaderboardApi {
       final ok = await _post(path, body);
       if (ok) {
         QaLogger.app.info('LeaderboardApi flushed queued submission');
+        consecutiveFailures = 0;
       } else {
-        // Stop on first failure. Keep this and all subsequent entries.
-        stopped = true;
         remaining.add(entry);
+        consecutiveFailures++;
+        if (consecutiveFailures >= _flushConsecutiveFailureLimit) {
+          // Network probably down — stop hammering. Keep remaining
+          // entries for next flush.
+          aborted = true;
+        }
       }
     }
     await _writeQueue(remaining);
   }
+
+  /// Hard wall-clock cap on a single POST (connect + send + response +
+  /// drain). Without this, a half-open socket could stall writeBytes /
+  /// drain for much longer than the connection/read timeouts suggest.
+  static const _postOverallTimeout = Duration(seconds: 10);
 
   /// Performs the HTTP POST. Returns true on 2xx, false otherwise (timeout,
   /// network error, non-2xx response, or web platform).
@@ -127,21 +148,25 @@ class LeaderboardApi {
     final uri = Uri.parse('$_baseUrl$path');
     HttpClient? client;
     try {
-      client = HttpClient();
-      client.connectionTimeout = const Duration(seconds: 5);
-      final request = await client.postUrl(uri);
-      request.headers.set('Content-Type', 'application/json');
-      request.headers.set('X-API-Key', _apiKey);
-      request.write(jsonEncode(body));
-      final response = await request.close().timeout(const Duration(seconds: 5));
-      await response.drain<void>();
-      final ok = response.statusCode >= 200 && response.statusCode < 300;
-      if (!ok) {
-        QaLogger.app.warning(
-          'LeaderboardApi POST $path returned ${response.statusCode}',
-        );
-      }
-      return ok;
+      return await () async {
+        client = HttpClient();
+        client!.connectionTimeout = const Duration(seconds: 5);
+        final request = await client!.postUrl(uri);
+        request.headers.set('Content-Type', 'application/json');
+        request.headers.set('X-API-Key', _apiKey);
+        request.write(jsonEncode(body));
+        final response =
+            await request.close().timeout(const Duration(seconds: 5));
+        await response.drain<void>();
+        final ok = response.statusCode >= 200 && response.statusCode < 300;
+        if (!ok) {
+          QaLogger.app.warning(
+            'LeaderboardApi POST $path returned ${response.statusCode}',
+          );
+        }
+        return ok;
+      }()
+          .timeout(_postOverallTimeout);
     } catch (e, st) {
       QaLogger.app.warning('LeaderboardApi POST $path failed', e, st);
       return false;
