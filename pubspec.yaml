@@ -1,7 +1,7 @@
 name: stellar_broadcast
 description: "Humanity's last colony ship searches for a new home among the stars."
 publish_to: 'none'
-version: 2.2.6+118
+version: 2.2.9+121
 
 environment:
   sdk: ^3.8.0
@@ -24,6 +24,7 @@ dependencies:
     path: ../../packages/quickapps_play_games
   firebase_core: ^4.0.0
   firebase_crashlytics: ^5.0.0
+  firebase_remote_config: ^6.0.0
   logging: ^1.3.0
   http: ^1.2.0
   firebase_performance: ^0.11.0

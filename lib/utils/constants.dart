@@ -50,12 +50,15 @@ class AppConstants {
   // Ad unit IDs — Production
   // ---------------------------------------------------------------------------
 
+  // Rotated 2026-04-20 (v2.2.9+121) to lock out a rage-clicker sitting on
+  // an old app version. Old units paused in AdMob console after rollout.
+  // iOS rotation deferred — no iOS attacker observed.
   static const String prodBannerAndroid =
-      'ca-app-pub-8340454950181235/3749920812';
+      'ca-app-pub-8340454950181235/9241242990';
   static const String prodInterstitialAndroid =
-      'ca-app-pub-8340454950181235/7724095898';
+      'ca-app-pub-8340454950181235/1455298499';
   static const String prodNativeAndroid =
-      'ca-app-pub-8340454950181235/5313554970';
+      'ca-app-pub-8340454950181235/3525881882';
   // iOS AdMob app ID: ca-app-pub-8340454950181235~6909599878 (see ios/Runner/Info.plist).
   static const String prodBannerIos = 'ca-app-pub-8340454950181235/6695112921';
   static const String prodInterstitialIos =

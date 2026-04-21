@@ -278,6 +278,19 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
     await Future.delayed(const Duration(milliseconds: 1000));
     if (!mounted) return;
     setState(() => _sequenceComplete = true);
+
+    // Commit the landing to the codex / voyage log the moment the cinematic
+    // ends. Previously this only happened when the user tapped Continue,
+    // which meant backgrounding the app before tapping lost the discovery.
+    // `finalizeLanding` is idempotent so the Continue-tap path below is now
+    // a no-op for the legacy save.
+    try {
+      await ref
+          .read(voyageProvider.notifier)
+          .finalizeLanding(context.l10n);
+    } catch (e, st) {
+      QaLogger.app.warning('finalizeLanding failed after cinematic', e, st);
+    }
   }
 
   void _applyLandingDamage() {

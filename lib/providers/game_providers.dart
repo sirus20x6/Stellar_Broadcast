@@ -128,11 +128,15 @@ final planetNameServiceProvider = Provider<PlanetNameService?>((ref) => null);
 final voyageProvider = StateNotifierProvider<VoyageNotifier, VoyageState>((
   ref,
 ) {
-  return VoyageNotifier(ref.watch(planetNameServiceProvider));
+  return VoyageNotifier(ref, ref.watch(planetNameServiceProvider));
 });
 
 class VoyageNotifier extends StateNotifier<VoyageState> {
-  VoyageNotifier(this._nameService) : super(const VoyageState());
+  VoyageNotifier(this._ref, this._nameService) : super(const VoyageState());
+
+  /// Ref used to reach sibling providers (currently only [legacyProvider] for
+  /// the finalize-landing commit).
+  final Ref _ref;
 
   /// Toggle to load events from YAML instead of hardcoded Dart constructors.
   /// Set to true to test the statechart event system.
@@ -247,6 +251,11 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       seed: seed,
       isDaily: isDaily,
     );
+
+    // New voyage — clear the landing-finalized guard so finalizeLanding can
+    // run again when this voyage ends.
+    _didFinalizeCurrentVoyage = false;
+    _lastNewAchievements = const [];
 
     // Record daily play immediately so force-close can't bypass the limit.
     if (isDaily) {
@@ -809,6 +818,103 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     return result;
   }
 
+  /// Guard for [finalizeLanding]. Flipped true after the legacy commit runs
+  /// for the current voyage; reset to false in [startVoyage]. Prevents
+  /// double-counting voyage logs / legacy points if finalize is invoked from
+  /// more than one place (landing cinematic and ending screen both call it).
+  bool _didFinalizeCurrentVoyage = false;
+
+  /// Newly unlocked achievements from the most recent finalizeLanding call,
+  /// so a second idempotent call (e.g. from the ending screen) can return
+  /// the same list without re-running achievement checks.
+  List<String> _lastNewAchievements = const [];
+
+  /// Commits the landing to persistent legacy state: appends the voyage log,
+  /// records codex discoveries, and checks for newly unlocked achievements.
+  /// Awaiting the returned future guarantees the disk write has landed.
+  ///
+  /// Idempotent — the first call does the work, subsequent calls return the
+  /// same cached achievement list without touching legacy state.
+  ///
+  /// Call sites:
+  ///   1. `landing_sequence_screen` — fires as soon as the cinematic ends, so
+  ///      the codex is saved even if the user never taps Continue.
+  ///   2. `ending_screen` — safety net if the cinematic is somehow skipped.
+  Future<List<String>> finalizeLanding(AppLocalizations l10n) async {
+    if (_didFinalizeCurrentVoyage) return _lastNewAchievements;
+    final planet = state.currentPlanet;
+    if (planet == null) return const [];
+
+    // Mark the voyage complete first if we were called before landOnPlanet
+    // (i.e. directly from the cinematic screen).
+    if (!state.isComplete) {
+      try {
+        landOnPlanet(l10n);
+      } catch (e, st) {
+        QaLogger.app.warning('landOnPlanet failed inside finalizeLanding', e, st);
+      }
+    }
+
+    final voyage = state;
+    final result = EndingCalculator.calculate(
+      voyage.ship,
+      planet,
+      l10n,
+      colonists: voyage.colonists,
+      colonyName: voyage.colonyName,
+      fuel: voyage.fuel,
+      landedOnMoon: voyage.landedOnMoon,
+      voyage: voyage,
+    );
+
+    final discoveries = <String>[
+      ...planet.surfaceFeatures,
+      for (final moon in planet.moons) 'moon_${moon.type.name}',
+      if (planet.rings != null) 'ring_${planet.rings!.type.name}',
+    ];
+
+    final entry = VoyageLogEntry(
+      planetName: planet.name,
+      tier: result.tier,
+      score: result.score,
+      seed: voyage.seed,
+      encounterCount: voyage.encounterCount,
+      colonistsLanded: voyage.colonists,
+      planetsScanned: voyage.planetsScanned,
+      planetsSkipped: voyage.planetsSkipped,
+      fuelConsumed: voyage.fuelConsumed,
+      energyConsumed: voyage.energyConsumed,
+      totalDamageTaken: voyage.totalDamageTaken,
+      keyEvents: List<String>.from(voyage.seenEventIds),
+      timestamp: DateTime.now().millisecondsSinceEpoch,
+      isDaily: voyage.isDaily,
+      surfaceFeatures: List<String>.from(planet.surfaceFeatures),
+      moonTypes: planet.moons.map((m) => m.type.name).toList(),
+      ringType: planet.rings?.type.name,
+      nativeDescription: planet.nativeDescription,
+      governmentType: result.governmentType,
+      cultureLevel: result.cultureLevel,
+      technologyLevel: result.technologyLevel,
+      nativeRelations: result.nativeRelationsLabel,
+      landscapeDescription: result.landscapeDescription,
+      landedOnMoon: voyage.landedOnMoon,
+    );
+
+    // Flip the guard *before* the await so a concurrent second call while
+    // the legacy save is in flight can't double-commit.
+    _didFinalizeCurrentVoyage = true;
+    final legacyNotifier = _ref.read(legacyProvider.notifier);
+    final newAch = await legacyNotifier.finalizeVoyage(
+      entry: entry,
+      discoveries: discoveries,
+      score: result.score,
+      voyage: voyage,
+      isDaily: voyage.isDaily,
+    );
+    _lastNewAchievements = newAch;
+    return newAch;
+  }
+
   /// Reject the current planet and continue the voyage.
   void pressOn() {
     final hadPlanet = state.currentPlanet != null;
@@ -1158,13 +1264,13 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   /// previous legacy state untouched; a completed batch is written atomically
   /// by the wrapped save service. Returns the list of newly unlocked
   /// achievements (pushed to Play Games / Game Center inside the batch).
-  List<String> finalizeVoyage({
+  Future<List<String>> finalizeVoyage({
     required VoyageLogEntry entry,
     required List<String> discoveries,
     required int score,
     required VoyageState voyage,
     bool isDaily = false,
-  }) {
+  }) async {
     _saveSuppressCount++;
     List<String> newlyUnlocked;
     try {
@@ -1175,10 +1281,12 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
       _saveSuppressCount--;
     }
     // One save writes the bundled result: voyage log + discoveries +
-    // achievements + any score/points mutations. Once the save resolves we
-    // flush any deferred daily marker so the on-disk ordering is
-    // legacy-state-then-marker (never the other way around).
-    unawaited(_saveToStorage().then((_) => _flushPendingDailyMarker()));
+    // achievements + any score/points mutations. Awaited so callers can
+    // guarantee the disk write landed before they navigate or the process
+    // exits — critical for short app sessions where the user kills the app
+    // right after the landing cinematic.
+    await _saveToStorage();
+    _flushPendingDailyMarker();
     return newlyUnlocked;
   }
 

@@ -9,15 +9,15 @@ import 'package:intl/intl.dart' as intl;
 import 'package:path_provider/path_provider.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
+import 'package:quickapps_logging/quickapps_logging.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:stellar_broadcast/logic/ending_calculator.dart';
 import 'package:stellar_broadcast/models/planet.dart';
-import 'package:stellar_broadcast/models/voyage_log_entry.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
-    show voyageProvider, legacyProvider, seedToCode;
+    show voyageProvider, seedToCode;
 import 'package:stellar_broadcast/services/leaderboard_api.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/utils/constants.dart';
@@ -222,83 +222,45 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       );
     });
 
-    final planetName = planet.name;
-    final voyageSeed = voyage.seed;
     final voyageIsDaily = voyage.isDaily;
     final resultScore = result.score;
     final resultTier = result.tier;
-
-    // Collect all discoverable feature keys from this planet.
-    final discoveries = <String>[
-      ...planet.surfaceFeatures,
-      for (final moon in planet.moons) 'moon_${moon.type.name}',
-      if (planet.rings != null) 'ring_${planet.rings!.type.name}',
-    ];
-
     final voyageEncounters = voyage.encounterCount;
-    final voyageColonists = voyage.colonists;
     final voyagePlanetsScanned = voyage.planetsScanned;
     final voyagePlanetsSkipped = voyage.planetsSkipped;
+    final voyageColonists = voyage.colonists;
     final voyageFuelConsumed = voyage.fuelConsumed;
-    final voyageEnergyConsumed = voyage.energyConsumed;
-    final voyageDamageTaken = voyage.totalDamageTaken;
-    final voyageKeyEvents = List<String>.from(voyage.seenEventIds);
-    final voyageLandedOnMoon = voyage.landedOnMoon;
-
-    final planetFeatures = List<String>.from(planet.surfaceFeatures);
-    final planetMoons = planet.moons.map((m) => m.type.name).toList();
-    final planetRingType = planet.rings?.type.name;
-    final planetNativeDesc = planet.nativeDescription;
-    final resultGovernment = result.governmentType;
-    final resultCulture = result.cultureLevel;
-    final resultTech = result.technologyLevel;
-    final resultNativeRelations = result.nativeRelationsLabel;
-    final resultLandscape = result.landscapeDescription;
+    final voyageSeed = voyage.seed;
     final voyageAuthorityAxis = voyage.authorityAxis;
     final voyageCultureAxis = voyage.cultureAxis;
     final voyageEconomyAxis = voyage.economyAxis;
     final voyageFaithAxis = voyage.faithAxis;
     final voyageMilitaryAxis = voyage.militaryAxis;
+    final resultGovernment = result.governmentType;
 
-    final legacyNotifier = ref.read(legacyProvider.notifier);
-    // Batch voyage log + discoveries + achievements into a single atomic
-    // persist so a crash mid-update can't leave the legacy state partially
-    // committed (e.g. score recorded but achievements not unlocked).
-    final newAch = legacyNotifier.finalizeVoyage(
-      entry: VoyageLogEntry(
-        planetName: planetName,
-        tier: resultTier,
-        score: resultScore,
-        seed: voyageSeed,
-        encounterCount: voyageEncounters,
-        colonistsLanded: voyageColonists,
-        planetsScanned: voyagePlanetsScanned,
-        planetsSkipped: voyagePlanetsSkipped,
-        fuelConsumed: voyageFuelConsumed,
-        energyConsumed: voyageEnergyConsumed,
-        totalDamageTaken: voyageDamageTaken,
-        keyEvents: voyageKeyEvents,
-        timestamp: DateTime.now().millisecondsSinceEpoch,
-        isDaily: voyageIsDaily,
-        surfaceFeatures: planetFeatures,
-        moonTypes: planetMoons,
-        ringType: planetRingType,
-        nativeDescription: planetNativeDesc,
-        governmentType: resultGovernment,
-        cultureLevel: resultCulture,
-        technologyLevel: resultTech,
-        nativeRelations: resultNativeRelations,
-        landscapeDescription: resultLandscape,
-        landedOnMoon: voyageLandedOnMoon,
-      ),
-      discoveries: discoveries,
-      score: resultScore,
-      voyage: voyage,
-      isDaily: voyageIsDaily,
-    );
-    if (mounted && newAch.isNotEmpty) {
-      setState(() => _newAchievements = newAch);
-    }
+    // Persist the landing — idempotent. If the landing cinematic already
+    // finalized (common case: user tapped Continue to get here), this call
+    // returns the cached achievement list without re-writing legacy state.
+    // If the cinematic was somehow bypassed and we reached the ending fresh,
+    // this is the save.
+    ref
+        .read(voyageProvider.notifier)
+        .finalizeLanding(context.l10n)
+        .then((newAch) {
+          if (!mounted) return;
+          if (newAch.isNotEmpty) {
+            setState(() => _newAchievements = newAch);
+          }
+          for (final ach in newAch) {
+            AnalyticsService().logEvent(
+              name: QaEvents.achievementUnlocked,
+              parameters: {'achievement_id': ach},
+            );
+          }
+        })
+        .onError((Object e, StackTrace st) {
+          QaLogger.app.warning('finalizeLanding failed on ending screen', e, st);
+        });
 
     // Submit to Play Games leaderboards.
     PlayGamesService.submitScore(
@@ -364,12 +326,8 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
       name: QaEvents.leaderboardSubmitted,
       parameters: {'board': 'best', 'score': resultScore},
     );
-    for (final ach in newAch) {
-      AnalyticsService().logEvent(
-        name: QaEvents.achievementUnlocked,
-        parameters: {'achievement_id': ach},
-      );
-    }
+    // Achievement-unlocked analytics live in the finalizeLanding().then()
+    // callback above, since newAch is produced by that future.
     AnalyticsService().logEvent(
       name: 'governance_result',
       parameters: {

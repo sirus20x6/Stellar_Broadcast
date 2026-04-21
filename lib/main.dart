@@ -22,6 +22,7 @@ import 'app.dart';
 import 'providers/game_providers.dart';
 import 'services/bug_report_service.dart';
 import 'services/planet_name_service_loader.dart';
+import 'services/remote_config_service.dart';
 import 'services/sfx_service.dart';
 import 'utils/constants.dart';
 import 'utils/platform_config.dart';
@@ -295,6 +296,11 @@ Future<void> _bootstrap() async {
   // iOS, on ATT having resolved above).
   if (PlatformConfig.supportsAds) {
     try {
+      // Apply Firebase Remote Config BEFORE QaAdConfig.initialize so the
+      // throttle thresholds and remote kill-switch are in effect from the
+      // first ad request.
+      await RemoteConfigService.apply();
+
       final adTelemetry = QaAdTelemetry(
         logEvent: (name, params) =>
             AnalyticsService().logEvent(name: name, parameters: params),
