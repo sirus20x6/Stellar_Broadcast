@@ -50,7 +50,7 @@ class AppConstants {
   // Ad unit IDs — Production
   // ---------------------------------------------------------------------------
 
-  // Rotated 2026-04-20 (v2.2.9+121) to lock out a rage-clicker sitting on
+  // Rotated 2026-04-21 (v2.2.9+121) to lock out a rage-clicker sitting on
   // an old app version. Old units paused in AdMob console after rollout.
   // iOS rotation deferred — no iOS attacker observed.
   static const String prodBannerAndroid =

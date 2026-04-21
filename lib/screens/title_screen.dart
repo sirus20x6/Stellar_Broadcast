@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_debug/quickapps_debug.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
@@ -77,6 +79,20 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
     _bgMusicTimer?.cancel();
     GameSfx().stopIntroLogo();
     super.dispose();
+  }
+
+  /// Open an external URL in the system browser or app. Silently ignores
+  /// failures — if url_launcher can't open the link (unsupported platform,
+  /// no browser, etc.) we just don't navigate; no user-visible crash.
+  Future<void> _openExternal(String url) async {
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e, st) {
+      QaLogger.app.warning('Failed to open external URL: $url', e, st);
+    }
   }
 
   @override
@@ -806,6 +822,36 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
                                   Icons.bug_report_outlined,
                                   color: _accent.withValues(alpha: 0.6),
                                   size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              IconButton(
+                                tooltip: 'Reddit',
+                                onPressed: () {
+                                  GameSfx().play(GameSfx.buttonClick);
+                                  _openExternal(
+                                    'https://reddit.com/r/stellarbroadcast',
+                                  );
+                                },
+                                icon: FaIcon(
+                                  FontAwesomeIcons.redditAlien,
+                                  color: _accent.withValues(alpha: 0.6),
+                                  size: 22,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              IconButton(
+                                tooltip: 'Discord',
+                                onPressed: () {
+                                  GameSfx().play(GameSfx.buttonClick);
+                                  _openExternal(
+                                    'https://discord.gg/8qsMun6vVM',
+                                  );
+                                },
+                                icon: FaIcon(
+                                  FontAwesomeIcons.discord,
+                                  color: _accent.withValues(alpha: 0.6),
+                                  size: 22,
                                 ),
                               ),
                               const SizedBox(width: 16),
