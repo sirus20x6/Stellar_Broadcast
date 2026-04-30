@@ -206,7 +206,11 @@ class _ShipDamagePainter extends CustomPainter {
   // frame counter derived from animation (60s cycle * 60fps ≈ 3600 frames)
   int get _frame => (animationValue * 3600).round();
 
+  /// Visual-fill version: clamped to [0,1] so painters don't draw outside
+  /// their bar / arc geometry. Use [_vRaw] for the displayed percentage so
+  /// players can see legacy-upgrade headroom (e.g. 110% hull).
   double _v(String name) => ship.getSystem(name).clamp(0.0, 1.0);
+  double _vRaw(String name) => ship.getSystem(name);
 
   // ---------------------------------------------------------------------------
   // Scanner pods (reference coordinates, CX = 420)
@@ -902,8 +906,8 @@ class _ShipDamagePainter extends CustomPainter {
     _drawText(canvas, def.label, Offset(barX, barY - 26), 18,
         Color.fromRGBO(c[0], c[1], c[2], 0.6), TextAlign.left);
 
-    // Percentage.
-    _drawText(canvas, '${(val * 100).round()}%', Offset(barX + barW, barY - 26), 20,
+    // Percentage (uncapped — show 110%+ for legacy-upgraded systems).
+    _drawText(canvas, '${(_vRaw(def.systemName) * 100).round()}%', Offset(barX + barW, barY - 26), 20,
         Color.fromRGBO(c[0], c[1], c[2], 0.9), TextAlign.right);
   }
 
@@ -978,8 +982,8 @@ class _ShipDamagePainter extends CustomPainter {
     _drawText(canvas, sp.label, Offset(barX, barY - 26), 18,
         Color.fromRGBO(c[0], c[1], c[2], 0.6), TextAlign.left);
 
-    // Percentage.
-    _drawText(canvas, '${(val * 100).round()}%', Offset(barX + barW, barY - 26), 20,
+    // Percentage (uncapped — show 110%+ for legacy-upgraded scanners).
+    _drawText(canvas, '${(_vRaw(sp.systemName) * 100).round()}%', Offset(barX + barW, barY - 26), 20,
         Color.fromRGBO(c[0], c[1], c[2], 0.9), TextAlign.right);
   }
 

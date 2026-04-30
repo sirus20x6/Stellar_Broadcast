@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
-import 'package:stellar_broadcast/app.dart' show routeObserver;
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart'
+    show voyageRouteObserver;
 import 'package:stellar_broadcast/models/planet.dart';
 import 'package:stellar_broadcast/models/ship.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
@@ -19,6 +20,7 @@ import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/scanner_upgrade_dialog.dart';
@@ -179,15 +181,18 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => ScannerUpgradeDialog(
+      // Open in the shell's inner navigator (same one /scan lives on) so
+      // the inner-context pops below dismiss the dialog, not the scan route.
+      useRootNavigator: false,
+      builder: (dialogContext) => ScannerUpgradeDialog(
         scannerLevels: voyage.scannerLevels,
         onUpgrade: (scannerName) {
           ref.read(voyageProvider.notifier).upgradeScanner(scannerName);
-          Navigator.of(context).pop();
+          Navigator.of(dialogContext).pop();
         },
         onDismiss: () {
           ref.read(voyageProvider.notifier).dismissScannerUpgrade();
-          Navigator.of(context).pop();
+          Navigator.of(dialogContext).pop();
         },
       ),
     );
@@ -196,12 +201,12 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    voyageRouteObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    voyageRouteObserver.unsubscribe(this);
     _masterController.dispose();
     _starController.dispose();
     super.dispose();
@@ -391,7 +396,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
             ),
           ),
           IconButton(
-            onPressed: () => Navigator.pushNamed(context, '/codex'),
+            onPressed: () =>
+                Navigator.of(context, rootNavigator: true).pushNamed('/codex'),
             tooltip: context.l10n.ui_tooltip_codex,
             icon: Icon(
               Icons.menu_book_rounded,
@@ -695,7 +701,14 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
               .show(placement: _landPlacement);
         }
         if (mounted) {
-          Navigator.pushReplacementNamed(context, '/landing');
+          // Pop /scan off the shell's inner navigator first so the player
+          // returns to the voyage hub (not the rejected planet) when the
+          // landing cinematic pops. Then push /landing onto the root nav
+          // so it draws above the shell — landing/ending cinematics live
+          // on root by design.
+          final rootNav = Navigator.of(context, rootNavigator: true);
+          Navigator.of(context).pop();
+          rootNav.pushNamed('/landing');
         }
       },
     );
@@ -715,8 +728,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           // Halved to every 6th slot (≈ every 18 planets) when the user has
           // opted in to personalized ads — higher eCPM means we can afford
           // to nag less, and it rewards the choice.
-          final paywallEvery =
-              QaConsentManager.canShowPersonalizedAds ? 6 : 3;
+          final paywallEvery = QaConsentManager.canShowPersonalizedAds ? 6 : 3;
           if (insertion % paywallEvery == 0) {
             await showPremiumPaywall(context);
           } else {
@@ -726,7 +738,19 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
             if (!shown && mounted) await showPremiumPaywall(context);
           }
         }
-        if (mounted) Navigator.pop(context);
+        if (mounted) {
+          // pressOn can drop a system to 0 and set isGameOver. Voyage's
+          // /event and /puzzle pushes catch this via .then() but /scan is
+          // pushed without awaiting, so we have to check here.
+          if (ref.read(voyageProvider).isGameOver) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).pushReplacementNamed('/gameover');
+          } else {
+            Navigator.pop(context);
+          }
+        }
       },
     );
 
@@ -796,6 +820,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
           // when content is shorter than the column, otherwise scroll.
           if (constraints.maxHeight.isFinite) {
             return SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: ScrollPadding.bottom(context, extra: 48),
+              ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Column(
@@ -805,7 +832,12 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
               ),
             );
           }
-          return SingleChildScrollView(child: Column(children: items));
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: ScrollPadding.bottom(context, extra: 48),
+            ),
+            child: Column(children: items),
+          );
         },
       ),
     );
@@ -997,8 +1029,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                 ),
                               ),
                               IconButton(
-                                onPressed: () =>
-                                    Navigator.pushNamed(context, '/codex'),
+                                onPressed: () => Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pushNamed('/codex'),
                                 tooltip: context.l10n.ui_tooltip_codex,
                                 icon: Icon(
                                   Icons.menu_book_rounded,
@@ -1334,10 +1368,12 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                           .show(placement: _landPlacement);
                                     }
                                     if (mounted) {
-                                      Navigator.pushReplacementNamed(
+                                      final rootNav = Navigator.of(
                                         context,
-                                        '/landing',
+                                        rootNavigator: true,
                                       );
+                                      Navigator.of(context).pop();
+                                      rootNav.pushNamed('/landing');
                                     }
                                   },
                                 ),
@@ -1366,7 +1402,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                         !ref.read(isPremiumProvider)) {
                                       // Cycle position: 1-based insertion number.
                                       final insertion = scanned ~/ 3;
-                                      final paywallEvery = QaConsentManager
+                                      final paywallEvery =
+                                          QaConsentManager
                                               .canShowPersonalizedAds
                                           ? 6
                                           : 3;
@@ -1376,14 +1413,26 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
                                         final shown = await ref
                                             .read(interstitialAdProvider)
                                             .show(
-                                              placement: scanInterstitialPlacement,
+                                              placement:
+                                                  scanInterstitialPlacement,
                                             );
                                         if (!shown && mounted) {
                                           await showPremiumPaywall(context);
                                         }
                                       }
                                     }
-                                    if (mounted) Navigator.pop(context);
+                                    if (mounted) {
+                                      if (ref
+                                          .read(voyageProvider)
+                                          .isGameOver) {
+                                        Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pushReplacementNamed('/gameover');
+                                      } else {
+                                        Navigator.pop(context);
+                                      }
+                                    }
                                   },
                                 ),
                               ),
@@ -1411,9 +1460,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen>
             ),
           ),
         ),
-        PremiumAdGate(
-          child: AdaptiveBannerAd(key: const ValueKey('scan_banner_portrait')),
-        ),
+        // Bottom banner moved to VoyageShell so the refresh timer
+        // ticks across scan → voyage → scan transitions.
       ],
     );
   }

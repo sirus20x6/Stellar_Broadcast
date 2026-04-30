@@ -200,12 +200,16 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
     }
     _random = Random(seed);
 
-    // Apply legacy upgrade bonuses.
+    // Apply legacy upgrade bonuses. Each upgrade pushes both the starting
+    // value AND the per-voyage max ceiling above 1.0, so damage-then-repair
+    // cycles can restore the legacy headroom rather than capping at 1.0.
     var ship = const ShipSystems();
+    final maxOverrides = <String, double>{};
     int probes = 10;
 
     if (upgrades['reinforced_hull'] == true) {
       ship = ship.copyWith(hull: 1.1);
+      maxOverrides['hull'] = 1.1;
     }
     if (upgrades['advanced_scanner'] == true) {
       ship = ship.copyWith(
@@ -216,18 +220,28 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
         temperatureScanner: 1.1,
         waterScanner: 1.1,
       );
+      maxOverrides['atmosphericScanner'] = 1.1;
+      maxOverrides['gravimetricScanner'] = 1.1;
+      maxOverrides['mineralScanner'] = 1.1;
+      maxOverrides['lifeSignsScanner'] = 1.1;
+      maxOverrides['temperatureScanner'] = 1.1;
+      maxOverrides['waterScanner'] = 1.1;
     }
     if (upgrades['warp_nav'] == true) {
       ship = ship.copyWith(nav: ship.nav + 0.1);
+      maxOverrides['nav'] = (maxOverrides['nav'] ?? 1.0) + 0.1;
     }
     if (upgrades['cryo_shield'] == true) {
       ship = ship.copyWith(cryopods: 1.1);
+      maxOverrides['cryopods'] = 1.1;
     }
     if (upgrades['culture_archive'] == true) {
       ship = ship.copyWith(culture: ship.culture + 0.1);
+      // culture default ceiling is 1.5 — no override needed.
     }
     if (upgrades['tech_boost'] == true) {
       ship = ship.copyWith(tech: ship.tech + 0.1);
+      // tech default ceiling is 1.5 — no override needed.
     }
     if (upgrades['star_charts'] == true) {
       ship = ship.copyWith(
@@ -239,6 +253,20 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
         temperatureScanner: ship.temperatureScanner + 0.05,
         waterScanner: ship.waterScanner + 0.05,
       );
+      maxOverrides['nav'] = (maxOverrides['nav'] ?? 1.0) + 0.05;
+      for (final s in const [
+        'atmosphericScanner',
+        'gravimetricScanner',
+        'mineralScanner',
+        'lifeSignsScanner',
+        'temperatureScanner',
+        'waterScanner',
+      ]) {
+        maxOverrides[s] = (maxOverrides[s] ?? 1.0) + 0.05;
+      }
+    }
+    if (maxOverrides.isNotEmpty) {
+      ship = ship.copyWith(maxOverrides: maxOverrides);
     }
     if (upgrades['extra_probe'] == true) {
       probes = 12;
@@ -948,6 +976,14 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
               _random.nextInt(4) // 3-6 encounters gap
         : state.nextPlanetEncounter;
 
+    // clearPlanet:true is load-bearing for landing-screen exploit
+    // protection: it's the ONLY thing that prevents the player from
+    // pressing onward, returning to the voyage HUD, and re-tapping
+    // "Land Here" on the same planet (since /scan re-mounts against
+    // currentPlanet). VoyageState.copyWith gives clearPlanet priority
+    // over an explicit currentPlanet argument; locked in by
+    // test/models/landing_invariants_test.dart. Don't touch without
+    // understanding the re-landing implications.
     state = state.copyWith(
       clearPlanet: true,
       scannerReadings: const {},

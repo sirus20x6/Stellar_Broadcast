@@ -479,7 +479,13 @@ class _TraderScreenState extends ConsumerState<TraderScreen> {
     VoyageState voyage,
   ) {
     final value = ship.getSystem(systemName);
-    final canRepair = value < 1.0 && _canAfford(voyage, _selectedResource);
+    // Repair ceiling respects legacy upgrades — a reinforced_hull starts
+    // at 1.10 and should be repairable back to 1.10, not capped at 1.0.
+    // Tiny epsilon avoids showing "repair me" on a system already at its
+    // ceiling within float-rounding noise.
+    final ceiling = ship.maxFor(systemName);
+    final isFull = value >= ceiling - 1e-6;
+    final canRepair = !isFull && _canAfford(voyage, _selectedResource);
     final isFlashing = _flashSystem == systemName;
     final compact = ScreenInfo.of(context).isCompact;
 
@@ -489,15 +495,13 @@ class _TraderScreenState extends ConsumerState<TraderScreen> {
     // The row is wide enough that a short vertical span still gives a
     // comfortable tap area.
     return Semantics(
-      button: value < 1.0,
+      button: !isFull,
       label: 'Repair $label',
       enabled: canRepair,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (value < 1.0 && canRepair)
-              ? () => _onRepair(systemName)
-              : null,
+          onTap: (!isFull && canRepair) ? () => _onRepair(systemName) : null,
           borderRadius: BorderRadius.circular(4),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
@@ -524,11 +528,11 @@ class _TraderScreenState extends ConsumerState<TraderScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: Icon(
-                    value < 1.0
+                    !isFull
                         ? Icons.add_circle_outline
                         : Icons.check_circle_outline,
                     size: compact ? 16 : 22,
-                    color: value < 1.0
+                    color: !isFull
                         ? (canRepair
                             ? _accent
                             : Colors.white.withValues(alpha: 0.15))

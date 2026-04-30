@@ -3,7 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
-import 'package:stellar_broadcast/app.dart' show routeObserver;
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart'
+    show rootRouteObserver;
 
 import 'package:flutter/services.dart';
 import 'package:stellar_broadcast/data/codex_data.dart';
@@ -13,6 +14,7 @@ import 'package:stellar_broadcast/models/voyage_log_entry.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show legacyProvider, dailySeedCode, dailyPlayedProvider;
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
@@ -91,12 +93,12 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    rootRouteObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    rootRouteObserver.unsubscribe(this);
     super.dispose();
   }
 
@@ -169,7 +171,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
           // Left: high scores, upgrades, ad, achievements.
           Expanded(
             child: ListView(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                bottom: ScrollPadding.bottom(context, extra: 40),
+              ),
               children: [
                 const SizedBox(height: 16),
                 if (legacy.highScores.isNotEmpty) ...[
@@ -221,7 +225,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
           // Right: commander stats, daily, codex, leaderboards, voyage log.
           Expanded(
             child: ListView(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                bottom: ScrollPadding.bottom(context, extra: 40),
+              ),
               children: [
                 const SizedBox(height: 16),
                 _SectionTitle(title: context.l10n.ui_legacy_commanderStats),
@@ -249,7 +255,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
 
     // Portrait: original single-column layout.
     return ListView(
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.only(
+        bottom: ScrollPadding.bottom(context, extra: 96),
+      ),
       children: [
         const SizedBox(height: 16),
 
@@ -278,7 +286,9 @@ class _LegacyScreenState extends ConsumerState<LegacyScreen> with RouteAware {
         _UpgradesGrid(
           legacy: legacy,
           onPurchase: (id, cost) async {
-            final ok = await ref.read(legacyProvider.notifier).purchaseUpgrade(id, cost: cost);
+            final ok = await ref
+                .read(legacyProvider.notifier)
+                .purchaseUpgrade(id, cost: cost);
             if (!ok) return;
             AnalyticsService().logEvent(
               name: QaEvents.legacyUpgradePurchased,

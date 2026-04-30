@@ -8,7 +8,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_debug/quickapps_debug.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
-import 'package:stellar_broadcast/app.dart' show routeObserver;
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart'
+    show rootRouteObserver;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
@@ -18,6 +19,7 @@ import 'package:stellar_broadcast/models/puzzle.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/services/voyage_save_service.dart';
@@ -71,12 +73,12 @@ class _TitleProtoScreenState extends ConsumerState<TitleProtoScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    rootRouteObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    rootRouteObserver.unsubscribe(this);
     _bgMusicTimer?.cancel();
     GameSfx().stopIntroLogo();
     super.dispose();
@@ -597,216 +599,228 @@ class _TitleProtoScreenState extends ConsumerState<TitleProtoScreen>
           // — Foreground UI —
           SafeArea(
             bottom: false,
-            child: Padding(
-              // Reserve space for the banner ad positioned at the bottom of
-              // the Stack. Without this, buttons or the utility row can end up
-              // hidden behind the ad on short viewports.
-              padding: const EdgeInsets.only(bottom: 68),
-              child: Column(
-                children: [
-                  Spacer(flex: screen.isCompact ? 2 : 4),
-
-                  // Title.
-                  Text(
-                    context.l10n.ui_title_stellar,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: screen.scaledFontSize(42),
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 10,
-                      color: _accent,
-                      shadows: [
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.8),
-                          blurRadius: 20,
-                        ),
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.5),
-                          blurRadius: 40,
-                        ),
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.3),
-                          blurRadius: 60,
-                        ),
-                      ],
-                    ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: ScrollPadding.bottom(context, extra: 104),
                   ),
-                  Text(
-                    context.l10n.ui_title_broadcast,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: screen.scaledFontSize(42),
-                      fontWeight: FontWeight.w900,
-                      // Matches STELLAR (10). Was 18 — BROADCAST is 9 letters,
-                      // which at 18 wrapped to 2 lines on ~360dp-wide phones.
-                      letterSpacing: 10,
-                      color: _accent,
-                      shadows: [
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.8),
-                          blurRadius: 20,
-                        ),
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.5),
-                          blurRadius: 40,
-                        ),
-                        Shadow(
-                          color: _accent.withValues(alpha: 0.3),
-                          blurRadius: 60,
-                        ),
-                      ],
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
                     ),
-                  ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: screen.isCompact ? 40 : 96),
 
-                  const SizedBox(height: 12),
-
-                  // Subtitle.
-                  Text(
-                    "Humanity's Last Voyage",
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 16,
-                      letterSpacing: 3,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      shadows: [
-                        Shadow(
-                          color: Colors.white.withValues(alpha: 0.3),
-                          blurRadius: 8,
+                        // Title.
+                        Text(
+                          context.l10n.ui_title_stellar,
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: screen.scaledFontSize(42),
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 10,
+                            color: _accent,
+                            shadows: [
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.8),
+                                blurRadius: 20,
+                              ),
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.5),
+                                blurRadius: 40,
+                              ),
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.3),
+                                blurRadius: 60,
+                              ),
+                            ],
+                          ),
                         ),
-                        Shadow(
-                          color: Colors.white.withValues(alpha: 0.15),
-                          blurRadius: 20,
+                        Text(
+                          context.l10n.ui_title_broadcast,
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: screen.scaledFontSize(42),
+                            fontWeight: FontWeight.w900,
+                            // Matches STELLAR (10). Was 18 — BROADCAST is 9 letters,
+                            // which at 18 wrapped to 2 lines on ~360dp-wide phones.
+                            letterSpacing: 10,
+                            color: _accent,
+                            shadows: [
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.8),
+                                blurRadius: 20,
+                              ),
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.5),
+                                blurRadius: 40,
+                              ),
+                              Shadow(
+                                color: _accent.withValues(alpha: 0.3),
+                                blurRadius: 60,
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
 
-                  Spacer(flex: screen.isCompact ? 2 : 3),
+                        const SizedBox(height: 12),
 
-                  // Buttons — 3D MeshButton variant wrapped in a single
-                  // MeshButtonMenu so they share one time source for wobble,
-                  // stagger their fly-in, and don't fight each other.
-                  ResponsiveContent(
-                    extraPadding: 24,
-                    child: MeshButtonMenu(
-                      child: Column(
-                        children: [
-                          if (_hasSavedVoyage) ...[
-                            MeshButton(
-                              index: 0,
-                              label: 'RESUME VOYAGE',
-                              autofocus: true,
-                              onPressed: _resumeVoyage,
+                        // Subtitle.
+                        Text(
+                          "Humanity's Last Voyage",
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 16,
+                            letterSpacing: 3,
+                            color: Colors.white.withValues(alpha: 0.7),
+                            shadows: [
+                              Shadow(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                blurRadius: 8,
+                              ),
+                              Shadow(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                blurRadius: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: screen.isCompact ? 32 : 72),
+
+                        // Buttons — 3D MeshButton variant wrapped in a single
+                        // MeshButtonMenu so they share one time source for wobble,
+                        // stagger their fly-in, and don't fight each other.
+                        ResponsiveContent(
+                          extraPadding: 24,
+                          child: MeshButtonMenu(
+                            child: Column(
+                              children: [
+                                if (_hasSavedVoyage) ...[
+                                  MeshButton(
+                                    index: 0,
+                                    label: 'RESUME VOYAGE',
+                                    autofocus: true,
+                                    onPressed: _resumeVoyage,
+                                  ),
+                                  SizedBox(height: screen.isCompact ? 10 : 16),
+                                ],
+                                MeshButton(
+                                  index: _hasSavedVoyage ? 1 : 0,
+                                  label: context.l10n.ui_title_beginVoyage,
+                                  autofocus: !_hasSavedVoyage,
+                                  onPressed: () {
+                                    unawaited(VoyageSaveService.clear());
+                                    _beginVoyage();
+                                  },
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                MeshButton(
+                                  index: _hasSavedVoyage ? 2 : 1,
+                                  label: context.l10n.ui_title_dailyVoyage,
+                                  accentColor: _dailyAccent,
+                                  onPressed: () => _beginVoyage(isDaily: true),
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                MeshButton(
+                                  index: _hasSavedVoyage ? 3 : 2,
+                                  label: context.l10n.ui_title_customSeed,
+                                  onPressed: _showSeedDialog,
+                                ),
+                                SizedBox(height: screen.isCompact ? 10 : 16),
+                                MeshButton(
+                                  index: _hasSavedVoyage ? 4 : 3,
+                                  label: context.l10n.ui_title_legacyHub,
+                                  onPressed: () {
+                                    GameSfx().play(GameSfx.buttonClick);
+                                    Navigator.pushNamed(context, '/legacy');
+                                  },
+                                ),
+                              ],
                             ),
-                            SizedBox(height: screen.isCompact ? 10 : 16),
+                          ),
+                        ),
+                        SizedBox(height: screen.isCompact ? 6 : 12),
+                        // Utility row.
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              tooltip: context.l10n.ui_tooltip_leaderboards,
+                              onPressed: _leaderboardsInFlight
+                                  ? null
+                                  : () async {
+                                      setState(
+                                        () => _leaderboardsInFlight = true,
+                                      );
+                                      try {
+                                        final shown =
+                                            await PlayGamesService.showAllLeaderboards();
+                                        if (!mounted) return;
+                                        if (!shown && context.mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Play Games unavailable. View leaderboards at stellarbroadcast.org',
+                                              ),
+                                              duration: Duration(seconds: 4),
+                                            ),
+                                          );
+                                        }
+                                      } finally {
+                                        if (mounted) {
+                                          setState(
+                                            () => _leaderboardsInFlight = false,
+                                          );
+                                        }
+                                      }
+                                    },
+                              icon: Icon(
+                                Icons.leaderboard,
+                                color: _accent.withValues(alpha: 0.6),
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              tooltip: context.l10n.ui_tooltip_bugReport,
+                              onPressed: () {
+                                GameSfx().play(GameSfx.buttonClick);
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (_) => const BugReportDialog(),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.bug_report_outlined,
+                                color: _accent.withValues(alpha: 0.6),
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              tooltip: context.l10n.ui_tooltip_settings,
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, '/settings'),
+                              icon: Icon(
+                                Icons.settings,
+                                color: _accent.withValues(alpha: 0.6),
+                                size: 24,
+                              ),
+                            ),
                           ],
-                          MeshButton(
-                            index: _hasSavedVoyage ? 1 : 0,
-                            label: context.l10n.ui_title_beginVoyage,
-                            autofocus: !_hasSavedVoyage,
-                            onPressed: () {
-                              unawaited(VoyageSaveService.clear());
-                              _beginVoyage();
-                            },
-                          ),
-                          SizedBox(height: screen.isCompact ? 10 : 16),
-                          MeshButton(
-                            index: _hasSavedVoyage ? 2 : 1,
-                            label: context.l10n.ui_title_dailyVoyage,
-                            accentColor: _dailyAccent,
-                            onPressed: () => _beginVoyage(isDaily: true),
-                          ),
-                          SizedBox(height: screen.isCompact ? 10 : 16),
-                          MeshButton(
-                            index: _hasSavedVoyage ? 3 : 2,
-                            label: context.l10n.ui_title_customSeed,
-                            onPressed: _showSeedDialog,
-                          ),
-                          SizedBox(height: screen.isCompact ? 10 : 16),
-                          MeshButton(
-                            index: _hasSavedVoyage ? 4 : 3,
-                            label: context.l10n.ui_title_legacyHub,
-                            onPressed: () {
-                              GameSfx().play(GameSfx.buttonClick);
-                              Navigator.pushNamed(context, '/legacy');
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+
+                        SizedBox(height: screen.isCompact ? 16 : 48),
+                      ],
                     ),
                   ),
-                  SizedBox(height: screen.isCompact ? 6 : 12),
-                  // Utility row.
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        tooltip: context.l10n.ui_tooltip_leaderboards,
-                        onPressed: _leaderboardsInFlight
-                            ? null
-                            : () async {
-                                setState(() => _leaderboardsInFlight = true);
-                                try {
-                                  final shown =
-                                      await PlayGamesService.showAllLeaderboards();
-                                  if (!mounted) return;
-                                  if (!shown && context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Play Games unavailable. View leaderboards at stellarbroadcast.org',
-                                        ),
-                                        duration: Duration(seconds: 4),
-                                      ),
-                                    );
-                                  }
-                                } finally {
-                                  if (mounted) {
-                                    setState(
-                                      () => _leaderboardsInFlight = false,
-                                    );
-                                  }
-                                }
-                              },
-                        icon: Icon(
-                          Icons.leaderboard,
-                          color: _accent.withValues(alpha: 0.6),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      IconButton(
-                        tooltip: context.l10n.ui_tooltip_bugReport,
-                        onPressed: () {
-                          GameSfx().play(GameSfx.buttonClick);
-                          showDialog<void>(
-                            context: context,
-                            builder: (_) => const BugReportDialog(),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.bug_report_outlined,
-                          color: _accent.withValues(alpha: 0.6),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      IconButton(
-                        tooltip: context.l10n.ui_tooltip_settings,
-                        onPressed: () =>
-                            Navigator.pushNamed(context, '/settings'),
-                        icon: Icon(
-                          Icons.settings,
-                          color: _accent.withValues(alpha: 0.6),
-                          size: 24,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Spacer(flex: screen.isCompact ? 1 : 2),
-                ],
-              ),
+                );
+              },
             ),
           ),
 

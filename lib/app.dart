@@ -17,6 +17,7 @@ import 'package:quickapps_ui/quickapps_ui.dart';
 
 import 'package:stellar_broadcast/main.dart' show tryReinitializeIap;
 import 'package:stellar_broadcast/utils/platform_config.dart';
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart';
 import 'package:stellar_broadcast/data/events.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/logic/puzzle_generator.dart';
@@ -49,44 +50,12 @@ import 'package:stellar_broadcast/screens/title_proto_screen.dart';
 import 'package:stellar_broadcast/screens/title_screen.dart';
 import 'package:stellar_broadcast/screens/trader_screen.dart';
 import 'package:stellar_broadcast/screens/void_whale_screen.dart';
-import 'package:stellar_broadcast/screens/voyage_screen.dart';
 import 'package:stellar_broadcast/screens/world_engine_screen.dart';
+import 'package:stellar_broadcast/widgets/voyage_shell.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
-
-/// App-specific route labels for screen coverage tracking.
-const Map<String, String> _screenRouteLabels = {
-  '/': 'Title',
-  '/voyage': 'Voyage',
-  '/scan': 'Scan',
-  '/landing': 'Landing',
-  '/landing-sequence': 'Land Seq',
-  '/ending': 'Ending',
-  '/legacy': 'Legacy',
-  '/codex': 'Codex',
-  '/settings': 'Settings',
-  '/gameover': 'Game Over',
-  '/trader': 'Trader',
-  '/ship-status': 'Ship Status',
-  '/event': 'Event',
-  '/puzzle': 'Puzzle',
-  '/black-hole': 'Black Hole',
-  '/living-nebula': 'Nebula',
-  '/seed-vault': 'Seed Vault',
-  '/dyson-sphere': 'Dyson Sphere',
-  '/world-engine': 'World Engine',
-  '/mirror-array': 'Mirror Array',
-  '/chrono-vortex': 'Chrono Vortex',
-  '/void-whale': 'Void Whale',
-  '/phantom-ship': 'Phantom Ship',
-  '/singularity-engine': 'Singularity Engine',
-  '/pulsar-lighthouse': 'Pulsar Lighthouse',
-  '/earth-goodbye': 'Earth Goodbye',
-};
-
-final _coverageService = ScreenCoverageService.init(_screenRouteLabels);
 
 ThemeData _patchTheme(ThemeData base) {
   return base.copyWith(
@@ -105,10 +74,6 @@ class StellarBroadcastApp extends ConsumerStatefulWidget {
   ConsumerState<StellarBroadcastApp> createState() =>
       _StellarBroadcastAppState();
 }
-
-/// Global route observer for screens that need to detect when they come back
-/// into view (e.g., to refresh banner ads after a child screen pops).
-final routeObserver = RouteObserver<ModalRoute<void>>();
 
 class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     with WidgetsBindingObserver {
@@ -185,6 +150,17 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     final seed = uri.queryParameters['seed'];
     if (seed == null || seed.isEmpty) return;
 
+    // Canonical seed is exactly 6 base-36 characters (matches the share-
+    // code format produced by `seedToCode`). Reject anything else without
+    // logging the raw value — deep-link input is untrusted and could be
+    // crafted to spam logs / bug reports with attacker-controlled text.
+    if (!RegExp(r'^[0-9A-Za-z]{6}$').hasMatch(seed)) {
+      QaLogger.app.warning(
+        'Deep link rejected: seed format invalid (length=${seed.length})',
+      );
+      return;
+    }
+
     // Store and defer if not yet loaded or still onboarding.
     if (_showOnboarding || !_loaded) {
       _pendingDeepLink = uri;
@@ -203,15 +179,17 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     try {
       final parsed = codeToSeed(seed);
       if (parsed == null) {
-        QaLogger.app.warning('Deep link contained invalid seed: $seed');
+        QaLogger.app.warning('Deep link seed parse failed (length 6, base36)');
         return;
       }
       seedInt = parsed;
       upgrades = ref.read(legacyProvider).upgrades;
       final navContext = _navigatorKey.currentContext;
       if (navContext == null) return;
-      final resolved =
-          Localizations.of<AppLocalizations>(navContext, AppLocalizations);
+      final resolved = Localizations.of<AppLocalizations>(
+        navContext,
+        AppLocalizations,
+      );
       if (resolved == null) return;
       l10n = resolved;
     } catch (e, st) {
@@ -359,8 +337,13 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+    // Flutter 3.13+ split background lifecycle into inactive → hidden →
+    // paused. Android in particular often fires `hidden` on screen-off and
+    // sometimes never reaches `paused` before the OS suspends us — so if
+    // we only listened for `paused` the music would keep playing while
+    // the screen is locked. Pause on any state that means "user can't
+    // hear us anyway."
+    if (state != AppLifecycleState.resumed) {
       if (!kIsWeb) {
         FlameAudio.bgm.pause();
         GameMusic().pauseEngineHum();
@@ -375,11 +358,17 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
           QaLogger.app.warning('Save state failed on lifecycle pause', e, st);
         }),
       );
-    } else if (state == AppLifecycleState.resumed) {
+    } else {
+      // resumed
       if (!kIsWeb) {
-        FlameAudio.bgm.resume();
-        GameMusic().resumeEngineHum();
+        // Resume long audio first, then check whether BGM should come
+        // back. If encounter long audio is still active it intentionally
+        // owns the music slot — resuming BGM here would stack tracks.
         GameSfx().resumeLongAudio();
+        if (!GameSfx().hasActiveLongAudio) {
+          FlameAudio.bgm.resume();
+        }
+        GameMusic().resumeEngineHum();
       }
       // Re-check purchases in case a promo code was redeemed while backgrounded.
       QaIapService().restore().catchError((Object e, StackTrace st) {
@@ -463,11 +452,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       theme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       darkTheme: _patchTheme(QaTheme.dark(seedColor: SpaceColors.cyan)),
       themeMode: ThemeMode.dark,
-      navigatorObservers: [
-        routeObserver,
-        QaAnalyticsObserver(),
-        ScreenCoverageObserver(_coverageService),
-      ],
+      navigatorObservers: buildNavigatorObservers(rootRouteObserver),
       home: !_loaded
           ? const Scaffold(
               backgroundColor: SpaceColors.deepSpace,
@@ -533,7 +518,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
           case '/voyage':
             return MaterialPageRoute(
               settings: settings,
-              builder: (context) => const VoyageScreen(),
+              builder: (context) => const VoyageShell(),
             );
           case '/scan':
             return MaterialPageRoute(

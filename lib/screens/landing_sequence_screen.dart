@@ -8,6 +8,7 @@ import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 
@@ -77,9 +78,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
         'Orbital plane aligned with ${planet.name}. Descent window open.',
       ),
     );
-    _lines.add(
-      _NarrativeLine('Descent window open. Committing to entry.'),
-    );
+    _lines.add(_NarrativeLine('Descent window open. Committing to entry.'));
     if (lowFuel) {
       _lines.add(
         _NarrativeLine(
@@ -96,7 +95,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
         ),
       );
       _cryopodDamage += 0.12;
-      _colonistLoss += 40 + ref.read(voyageProvider.notifier).seededRandom.nextInt(60);
+      _colonistLoss +=
+          40 + ref.read(voyageProvider.notifier).seededRandom.nextInt(60);
     }
 
     // Phase 2: Atmosphere.
@@ -110,14 +110,15 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
       );
       _hullDamage += 0.15;
       _landingDamage += 0.12;
-      _colonistLoss += 30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(50);
+      _colonistLoss +=
+          30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(50);
     } else {
       _lines.add(
-        _NarrativeLine(
-          'Hull temperature rising. Plasma sheath established.',
-        ),
+        _NarrativeLine('Hull temperature rising. Plasma sheath established.'),
       );
-      _lines.add(_NarrativeLine('Hull temperature rising. Plasma sheath nominal.'));
+      _lines.add(
+        _NarrativeLine('Hull temperature rising. Plasma sheath nominal.'),
+      );
     }
     if (damagedLanding) {
       _lines.add(
@@ -128,7 +129,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
       );
       _hullDamage += 0.08;
       _cryopodDamage += 0.05;
-      _colonistLoss += 20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(30);
+      _colonistLoss +=
+          20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(30);
     }
     if (extremeTemp) {
       _lines.add(
@@ -139,7 +141,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
       );
       _hullDamage += 0.12;
       _cryopodDamage += 0.08;
-      _colonistLoss += 50 + ref.read(voyageProvider.notifier).seededRandom.nextInt(80);
+      _colonistLoss +=
+          50 + ref.read(voyageProvider.notifier).seededRandom.nextInt(80);
     }
     if (oceanWorld) {
       _lines.add(
@@ -164,7 +167,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
       _lines.add(_NarrativeLine(gravMsg, color: _kDanger));
       _hullDamage += 0.10;
       _landingDamage += 0.08;
-      _colonistLoss += 20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
+      _colonistLoss +=
+          20 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
     }
     if (dangerousTerrain) {
       _lines.add(
@@ -192,9 +196,12 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
         ),
       );
       _landingDamage += 0.1;
-      _colonistLoss += 10 + ref.read(voyageProvider.notifier).seededRandom.nextInt(20);
+      _colonistLoss +=
+          10 + ref.read(voyageProvider.notifier).seededRandom.nextInt(20);
     }
-    _lines.add(_NarrativeLine('Final approach locked. Committing to touchdown.'));
+    _lines.add(
+      _NarrativeLine('Final approach locked. Committing to touchdown.'),
+    );
 
     // Phase 4: Touchdown.
     _lines.add(_NarrativeLine('PHASE 4: TOUCHDOWN', isHeader: true));
@@ -215,7 +222,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
         ),
       );
       _hullDamage += 0.15;
-      _colonistLoss += 80 + ref.read(voyageProvider.notifier).seededRandom.nextInt(100);
+      _colonistLoss +=
+          80 + ref.read(voyageProvider.notifier).seededRandom.nextInt(100);
     } else if (damagedLanding && lowFuel) {
       _lines.add(
         _NarrativeLine(
@@ -223,7 +231,8 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
           color: _kDanger,
         ),
       );
-      _colonistLoss += 30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
+      _colonistLoss +=
+          30 + ref.read(voyageProvider.notifier).seededRandom.nextInt(40);
       _hullDamage += 0.05;
     } else if (damagedLanding || lowFuel || crushingGrav || thinAtmo) {
       _lines.add(
@@ -233,9 +242,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
         ),
       );
     } else {
-      _lines.add(
-        _NarrativeLine('Touchdown stable. Landing struts locked.'),
-      );
+      _lines.add(_NarrativeLine('Touchdown stable. Landing struts locked.'));
     }
     _lines.add(
       _NarrativeLine(
@@ -285,9 +292,7 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
     // `finalizeLanding` is idempotent so the Continue-tap path below is now
     // a no-op for the legacy save.
     try {
-      await ref
-          .read(voyageProvider.notifier)
-          .finalizeLanding(context.l10n);
+      await ref.read(voyageProvider.notifier).finalizeLanding(context.l10n);
     } catch (e, st) {
       QaLogger.app.warning('finalizeLanding failed after cinematic', e, st);
     }
@@ -324,137 +329,168 @@ class _LandingSequenceScreenState extends ConsumerState<LandingSequenceScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
+      // canPop: false is an EXPLOIT GUARD. The cinematic ends by calling
+      // landOnPlanet() and pushing /ending; if the player could back out
+      // mid-sequence, finalizeLanding() (idempotent) might have already
+      // recorded the score on a prior frame while landOnPlanet() hadn't
+      // fired yet — the player could then press onward, consume the
+      // planet, and skip the ending entirely while still keeping the
+      // legacy reward. Forcing the cinematic to play to the Continue
+      // button means the score and the navigation always agree.
       canPop: false,
       child: GestureDetector(
-      onTap: _sequenceComplete ? null : _skip,
-      child: Scaffold(
-      backgroundColor: _kBgColor,
-      body: Stack(
-        children: [
-          // Star field.
-          const EventStarField(),
+        onTap: _sequenceComplete ? null : _skip,
+        child: Scaffold(
+          backgroundColor: _kBgColor,
+          body: Stack(
+            children: [
+              // Star field.
+              const EventStarField(),
 
-          // Narrative content.
-          SafeArea(
-            child: ResponsiveContent(
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Text(
-                    'LANDING SEQUENCE',
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 4,
-                      color: _kAccent,
-                      shadows: [
-                        Shadow(
-                          color: _kAccent.withValues(alpha: 0.6),
-                          blurRadius: 12,
+              // Narrative content.
+              SafeArea(
+                child: ResponsiveContent(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      Text(
+                        'LANDING SEQUENCE',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 4,
+                          color: _kAccent,
+                          shadows: [
+                            Shadow(
+                              color: _kAccent.withValues(alpha: 0.6),
+                              blurRadius: 12,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 32),
+                      ),
+                      const SizedBox(height: 32),
 
-                  // Narrative lines.
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: _currentLine,
-                      itemBuilder: (context, i) {
-                        final line = _lines[i];
-                        return TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: 1),
-                          duration: const Duration(milliseconds: 600),
-                          builder: (context, value, child) {
-                            return Opacity(
-                              opacity: value,
-                              child: Transform.translate(
-                                offset: Offset(0, 10 * (1 - value)),
-                                child: child,
+                      // Narrative lines.
+                      Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.only(
+                            bottom: ScrollPadding.bottom(context, extra: 24),
+                          ),
+                          itemCount: _currentLine,
+                          itemBuilder: (context, i) {
+                            final line = _lines[i];
+                            return TweenAnimationBuilder<double>(
+                              tween: Tween(begin: 0, end: 1),
+                              duration: const Duration(milliseconds: 600),
+                              builder: (context, value, child) {
+                                return Opacity(
+                                  opacity: value,
+                                  child: Transform.translate(
+                                    offset: Offset(0, 10 * (1 - value)),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: line.isHeader ? 8 : 12,
+                                  top: line.isHeader ? 20 : 0,
+                                ),
+                                child: Text(
+                                  line.text,
+                                  style: TextStyle(
+                                    fontFamily: 'monospace',
+                                    fontSize: line.isHeader ? 14 : 13,
+                                    fontWeight: line.isHeader
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    letterSpacing: line.isHeader ? 3 : 0.5,
+                                    height: 1.5,
+                                    color:
+                                        line.color ??
+                                        (line.isHeader
+                                            ? _kAccent
+                                            : Colors.white.withValues(
+                                                alpha: 0.75,
+                                              )),
+                                  ),
+                                ),
                               ),
                             );
                           },
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              bottom: line.isHeader ? 8 : 12,
-                              top: line.isHeader ? 20 : 0,
-                            ),
-                            child: Text(
-                              line.text,
-                              style: TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: line.isHeader ? 14 : 13,
-                                fontWeight: line.isHeader
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                letterSpacing: line.isHeader ? 3 : 0.5,
-                                height: 1.5,
-                                color:
-                                    line.color ??
-                                    (line.isHeader
-                                        ? _kAccent
-                                        : Colors.white.withValues(alpha: 0.75)),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                        ),
+                      ),
 
-                  // Continue button.
-                  if (_sequenceComplete)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 32),
-                      child: GestureDetector(
-                        onTap: () {
-                          GameSfx().play(GameSfx.buttonClick);
-                          // Trigger landing and navigate to ending.
-                          try {
-                            ref.read(voyageProvider.notifier).landOnPlanet(context.l10n);
-                          } catch (e, st) {
-                            QaLogger.app.warning('landOnPlanet failed', e, st);
-                          }
-                          Navigator.of(context).pushReplacementNamed('/ending');
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: _kAccent, width: 2),
-                            color: _kAccent.withValues(alpha: 0.15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: _kAccent.withValues(alpha: 0.3),
-                                blurRadius: 20,
-                                spreadRadius: 2,
-                              ),
-                            ],
+                      // Continue button.
+                      if (_sequenceComplete)
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: ScrollPadding.bottom(context, extra: 24),
                           ),
-                          child: const Text(
-                            'VIEW COLONY REPORT',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 3,
+                          child: GestureDetector(
+                            onTap: () {
+                              GameSfx().play(GameSfx.buttonClick);
+                              // Trigger landing and navigate to ending.
+                              try {
+                                ref
+                                    .read(voyageProvider.notifier)
+                                    .landOnPlanet(context.l10n);
+                              } catch (e, st) {
+                                QaLogger.app.warning(
+                                  'landOnPlanet failed',
+                                  e,
+                                  st,
+                                );
+                              }
+                              // Tear down everything below /ending so a back
+                              // gesture from the ending can't expose a stale
+                              // voyage shell (with the completed planet
+                              // still in state, that would let the player
+                              // re-launch /landing on the same planet).
+                              Navigator.of(
+                                context,
+                              ).pushNamedAndRemoveUntil(
+                                '/ending',
+                                (r) => r.isFirst,
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: _kAccent, width: 2),
+                                color: _kAccent.withValues(alpha: 0.15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: _kAccent.withValues(alpha: 0.3),
+                                    blurRadius: 20,
+                                    spreadRadius: 2,
+                                  ),
+                                ],
+                              ),
+                              child: const Text(
+                                'VIEW COLONY REPORT',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 3,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
-    ),
-    ),
     );
   }
 }

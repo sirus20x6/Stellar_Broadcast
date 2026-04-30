@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/logic/alien_number_systems.dart';
 import 'package:stellar_broadcast/models/event.dart';
@@ -14,6 +13,7 @@ import 'package:stellar_broadcast/models/puzzle.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/utils/system_labels.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
@@ -449,9 +449,11 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
     );
   }
 
-  Widget _buildAdBanner() {
-    return PremiumAdGate(child: AdaptiveBannerAd());
-  }
+  // Banner moved to the persistent shell-level slot in VoyageShell —
+  // see lib/widgets/voyage_shell.dart. Each puzzle render no longer
+  // remounts a banner widget, so the AdMob 60-second refresh timer
+  // ticks across voyage → puzzle → voyage transitions instead of
+  // resetting on every screen.
 
   // ── Portrait layout ─────────────────────────────────────────────────────
 
@@ -462,7 +464,9 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
         Expanded(
           child: ResponsiveContent(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.only(
+                bottom: ScrollPadding.bottom(context, extra: 72),
+              ),
               child: Column(
                 children: [
                   const SizedBox(height: 32),
@@ -488,7 +492,6 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
             ),
           ),
         ),
-        _buildAdBanner(),
       ],
     );
   }
@@ -543,7 +546,6 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
           ),
         ),
         // Ad banner full width at bottom.
-        _buildAdBanner(),
       ],
     );
   }
@@ -745,81 +747,78 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
         const SizedBox(height: 16),
         // Gate option buttons — natural height Wrap.
         Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: gates.map((gate) {
-                final isSelected = _selectedAnswer == gate;
-                final isCorrectGate = gate == puzzle.correctAnswer;
+          spacing: 10,
+          runSpacing: 10,
+          alignment: WrapAlignment.center,
+          children: gates.map((gate) {
+            final isSelected = _selectedAnswer == gate;
+            final isCorrectGate = gate == puzzle.correctAnswer;
 
-                Color bg;
-                Color border;
-                if (_resolved && isSelected) {
-                  bg = (_isCorrect ? Colors.green : Colors.red).withValues(
-                    alpha: 0.2,
-                  );
-                  border = _isCorrect ? Colors.green : Colors.red;
-                } else if (_resolved && isCorrectGate) {
-                  bg = Colors.green.withValues(alpha: 0.1);
-                  border = Colors.green.withValues(alpha: 0.5);
-                } else {
-                  bg = _accent.withValues(alpha: 0.08);
-                  border = _accent.withValues(alpha: 0.3);
-                }
+            Color bg;
+            Color border;
+            if (_resolved && isSelected) {
+              bg = (_isCorrect ? Colors.green : Colors.red).withValues(
+                alpha: 0.2,
+              );
+              border = _isCorrect ? Colors.green : Colors.red;
+            } else if (_resolved && isCorrectGate) {
+              bg = Colors.green.withValues(alpha: 0.1);
+              border = Colors.green.withValues(alpha: 0.5);
+            } else {
+              bg = _accent.withValues(alpha: 0.08);
+              border = _accent.withValues(alpha: 0.3);
+            }
 
-                return GestureDetector(
-                  onTap: _resolved ? null : () => _onAnswerTapped(gate),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      color: bg,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: border,
-                        width: isSelected ? 2 : 1,
+            return GestureDetector(
+              onTap: _resolved ? null : () => _onAnswerTapped(gate),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: border, width: isSelected ? 2 : 1),
+                  boxShadow: isSelected && _resolved
+                      ? [
+                          BoxShadow(
+                            color: (_isCorrect ? Colors.green : Colors.red)
+                                .withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      gate,
+                      style: TextStyle(
+                        color: _resolved && !isSelected && !isCorrectGate
+                            ? Colors.white30
+                            : Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        letterSpacing: 1,
                       ),
-                      boxShadow: isSelected && _resolved
-                          ? [
-                              BoxShadow(
-                                color: (_isCorrect ? Colors.green : Colors.red)
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 12,
-                                spreadRadius: 2,
-                              ),
-                            ]
-                          : null,
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          gate,
-                          style: TextStyle(
-                            color: _resolved && !isSelected && !isCorrectGate
-                                ? Colors.white30
-                                : Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          gateSymbols[gate] ?? gate,
-                          style: TextStyle(
-                            color: _accent.withValues(alpha: 0.6),
-                            fontFamily: 'monospace',
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 2),
+                    Text(
+                      gateSymbols[gate] ?? gate,
+                      style: TextStyle(
+                        color: _accent.withValues(alpha: 0.6),
+                        fontFamily: 'monospace',
+                        fontSize: 13,
+                      ),
                     ),
-                  ),
-                );
+                  ],
+                ),
+              ),
+            );
           }).toList(),
         ),
       ],
@@ -861,41 +860,41 @@ class _PuzzleScreenState extends ConsumerState<PuzzleScreen>
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: GestureDetector(
-                onTap: _resolved ? null : () => _onAnswerTapped(key),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.black,
-                    border: Border.all(
-                      color: borderColor,
-                      width: (_resolved && (isSelected || isCorrectChoice))
-                          ? 2
-                          : 1,
-                    ),
-                    boxShadow: glowColor != null
-                        ? [
-                            BoxShadow(
-                              color: glowColor,
-                              blurRadius: 12,
-                              spreadRadius: 2,
-                            ),
-                          ]
-                        : null,
+              onTap: _resolved ? null : () => _onAnswerTapped(key),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.black,
+                  border: Border.all(
+                    color: borderColor,
+                    width: (_resolved && (isSelected || isCorrectChoice))
+                        ? 2
+                        : 1,
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(7),
-                    child: AnimatedBuilder(
-                      animation: _starController,
-                      builder: (_, _) => CustomPaint(
-                        size: Size.infinite,
-                        painter: _SpectralPainter(
-                          wavelengths: wls,
-                          animationValue: _starController.value,
-                        ),
+                  boxShadow: glowColor != null
+                      ? [
+                          BoxShadow(
+                            color: glowColor,
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: AnimatedBuilder(
+                    animation: _starController,
+                    builder: (_, _) => CustomPaint(
+                      size: Size.infinite,
+                      painter: _SpectralPainter(
+                        wavelengths: wls,
+                        animationValue: _starController.value,
                       ),
                     ),
                   ),
+                ),
               ),
             ),
           ),

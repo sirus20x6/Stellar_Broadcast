@@ -7,12 +7,14 @@ import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
 
 import 'package:stellar_broadcast/models/ship.dart';
-import 'package:stellar_broadcast/app.dart' show routeObserver;
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart'
+    show voyageRouteObserver;
 import 'package:stellar_broadcast/providers/game_providers.dart'
     show voyageProvider, seedToCode;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/screens/scan_screen.dart'
@@ -58,7 +60,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    voyageRouteObserver.subscribe(this, ModalRoute.of(context)!);
     final l10n = context.l10n;
     if (!identical(l10n, _cachedLabelsL10n)) {
       _cachedLabelsL10n = l10n;
@@ -85,7 +87,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    voyageRouteObserver.unsubscribe(this);
     _warningController.dispose();
     super.dispose();
   }
@@ -293,6 +295,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
         const SizedBox(height: 12),
         Expanded(
           child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: ScrollPadding.bottom(context, extra: 32),
+            ),
             child: Column(
               children: [
                 _buildSystemsPanelLandscape(ship, isCritical),
@@ -348,13 +353,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
     // ScreenClass.compact covers every iPhone in portrait (it keys off
     // the 600dp short-axis), so we must NOT rely on screenClass alone
     // for the phone split — iPhone SE and 17 Pro Max are both compact.
-    final QaNativeAdSize nativeSize;
+    // Below 700dp the inline native is dropped entirely; the persistent
+    // shell-level banner (see VoyageShell) is the only ad on those
+    // devices, otherwise the native + CTAs + system bars overflow.
+    final QaNativeAdSize? nativeSize;
     if (!screen.isCompact) {
       nativeSize = QaNativeAdSize.large;
     } else if (screen.height >= 800) {
       nativeSize = QaNativeAdSize.medium;
-    } else {
+    } else if (screen.height >= 700) {
       nativeSize = QaNativeAdSize.small;
+    } else {
+      nativeSize = null;
     }
 
     return Column(
@@ -381,16 +391,19 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
             ),
           ),
         ),
-        SizedBox(height: compact ? 10 : 16),
-        // Native ad above the primary CTA. Replaces the old bottom
-        // banner — higher eCPM, uses the vertical slack modern
-        // iPhones have. Size adapts to device height (see above).
-        PremiumAdGate(
-          child: AdaptiveNativeAd(
-            key: ValueKey('voyage_native_${nativeSize.name}'),
-            size: nativeSize,
+        if (nativeSize != null) ...[
+          SizedBox(height: compact ? 10 : 16),
+          // Native ad above the primary CTA — used the vertical slack
+          // modern iPhones have for higher-eCPM inventory than a banner.
+          // Size adapts to device height (see above). The shell banner
+          // sits below the CTAs as a second slot.
+          PremiumAdGate(
+            child: AdaptiveNativeAd(
+              key: ValueKey('voyage_native_${nativeSize.name}'),
+              size: nativeSize,
+            ),
           ),
-        ),
+        ],
         SizedBox(height: compact ? 10 : 16),
         _buildActions(canScan),
         SizedBox(height: compact ? 4 : 8),
@@ -783,7 +796,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen>
               if (mounted) {
                 final state = ref.read(voyageProvider);
                 if (state.isGameOver) {
-                  Navigator.of(context).pushReplacementNamed('/gameover');
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushReplacementNamed('/gameover');
                 }
               }
             });

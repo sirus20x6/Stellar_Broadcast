@@ -1024,7 +1024,16 @@ class EndingCalculator {
     // 1. None — presence < 0.1
     if (planet.nativePresence < 0.1) return 'None';
 
-    final disposition = planet.nativeDisposition;
+    // Ship culture nudges the disposition the natives perceive. Baseline
+    // (1.0) is neutral; a well-maintained cultural archive (up to 1.5)
+    // shifts up to +0.10, a depleted one down to −0.20. A maxed-culture
+    // ship can turn a neutral planet (~0.4) into an Alliance candidate;
+    // a destroyed culture system genuinely hurts.
+    final cultureBonus = (voyage.ship.culture - 1.0) * 0.20;
+    final disposition = (planet.nativeDisposition + cultureBonus).clamp(
+      0.0,
+      1.0,
+    );
 
     // 2. Integrated — disposition > 0.7 AND militaryAxis < 0.0
     if (disposition > 0.7 && voyage.militaryAxis < 0.0) return 'Integrated';

@@ -6,6 +6,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
     show legacyProvider;
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/star_field.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
@@ -170,7 +171,10 @@ class CodexScreen extends ConsumerWidget {
                   // Scrollable sections.
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: ScrollPadding.symmetricHorizontal(
+                        context,
+                        horizontal: 20,
+                      ),
                       children: [
                         const SizedBox(height: 16),
 
