@@ -12,6 +12,7 @@ import 'package:stellar_broadcast/utils/constants.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
@@ -32,7 +33,8 @@ class GameOverScreen extends ConsumerStatefulWidget {
 class _GameOverScreenState extends ConsumerState<GameOverScreen>
     with TickerProviderStateMixin {
   // Phase controllers — staggered reveal.
-  late final AnimationController _phase1Controller; // Warning icon + "MISSION FAILED"
+  late final AnimationController
+  _phase1Controller; // Warning icon + "MISSION FAILED"
   late final AnimationController _phase2Controller; // Game over reason
   late final AnimationController _phase3Controller; // Epilogue
   late final AnimationController _phase4Controller; // Voyage stats
@@ -98,27 +100,30 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
     final voyageKeyEvents = List<String>.from(voyage.seenEventIds);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(legacyProvider.notifier).addVoyageResult(
-        VoyageLogEntry(
-          isGameOver: true,
-          gameOverReason: reason,
-          seed: voyageSeed,
-          encounterCount: voyageEncounters,
-          colonistsLanded: voyageColonists,
-          planetsScanned: voyagePlanetsScanned,
-          planetsSkipped: voyagePlanetsSkipped,
-          fuelConsumed: voyageFuelConsumed,
-          energyConsumed: voyageEnergyConsumed,
-          totalDamageTaken: voyageDamageTaken,
-          keyEvents: voyageKeyEvents,
-          timestamp: DateTime.now().millisecondsSinceEpoch,
-          isDaily: voyageIsDaily,
-        ),
-        isDaily: voyageIsDaily,
-      );
+      ref
+          .read(legacyProvider.notifier)
+          .addVoyageResult(
+            VoyageLogEntry(
+              isGameOver: true,
+              gameOverReason: reason,
+              seed: voyageSeed,
+              encounterCount: voyageEncounters,
+              colonistsLanded: voyageColonists,
+              planetsScanned: voyagePlanetsScanned,
+              planetsSkipped: voyagePlanetsSkipped,
+              fuelConsumed: voyageFuelConsumed,
+              energyConsumed: voyageEnergyConsumed,
+              totalDamageTaken: voyageDamageTaken,
+              keyEvents: voyageKeyEvents,
+              timestamp: DateTime.now().millisecondsSinceEpoch,
+              isDaily: voyageIsDaily,
+            ),
+            isDaily: voyageIsDaily,
+          );
 
       // Encounters still count on game over.
-      PlayGamesService.submitScore(voyageEncounters,
+      PlayGamesService.submitScore(
+        voyageEncounters,
         androidId: AppConstants.kLeaderboardEncountersAndroid,
         iosId: AppConstants.kLeaderboardEncountersIos,
       );
@@ -126,7 +131,9 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
       // Submit to self-hosted leaderboard.
       final cmdName = PlayGamesService.playerName ?? 'Commander';
       LeaderboardApi.submitScore(
-        player: cmdName, score: voyageEncounters, board: 'encounters',
+        player: cmdName,
+        score: voyageEncounters,
+        board: 'encounters',
       );
 
       AnalyticsService().logEvent(
@@ -240,7 +247,11 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
     super.dispose();
   }
 
-  Widget _buildWarningAndReason(BuildContext context, ScreenInfo screen, String epilogue) {
+  Widget _buildWarningAndReason(
+    BuildContext context,
+    ScreenInfo screen,
+    String epilogue,
+  ) {
     return Column(
       children: [
         // Phase 1: Pulsing warning icon + "MISSION FAILED".
@@ -263,13 +274,10 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                         boxShadow: [
                           BoxShadow(
                             color: _kWarning.withValues(
-                                alpha: 0.4 *
-                                    _glowOpacity.value *
-                                    pulse),
-                            blurRadius:
-                                40 + _glowExpand.value * 40,
-                            spreadRadius:
-                                _glowExpand.value * 20 * pulse,
+                              alpha: 0.4 * _glowOpacity.value * pulse,
+                            ),
+                            blurRadius: 40 + _glowExpand.value * 40,
+                            spreadRadius: _glowExpand.value * 20 * pulse,
                           ),
                         ],
                       ),
@@ -277,7 +285,8 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                         Icons.warning_amber_rounded,
                         size: 80 + _glowExpand.value * 20,
                         color: _kWarning.withValues(
-                            alpha: _glowOpacity.value * pulse),
+                          alpha: _glowOpacity.value * pulse,
+                        ),
                       ),
                     );
                   },
@@ -289,19 +298,20 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                   style: TextStyle(
                     fontSize: screen.scaledFontSize(28),
                     fontWeight: FontWeight.bold,
-                    color: Colors.white
-                        .withValues(alpha: _glowOpacity.value),
+                    color: Colors.white.withValues(alpha: _glowOpacity.value),
                     letterSpacing: 4,
                     fontFamily: 'monospace',
                     shadows: [
                       Shadow(
                         color: _kWarning.withValues(
-                            alpha: _glowOpacity.value * 0.8),
+                          alpha: _glowOpacity.value * 0.8,
+                        ),
                         blurRadius: 30,
                       ),
                       Shadow(
                         color: _kWarning.withValues(
-                            alpha: _glowOpacity.value * 0.4),
+                          alpha: _glowOpacity.value * 0.4,
+                        ),
                         blurRadius: 60,
                       ),
                     ],
@@ -319,51 +329,50 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         // once via a QA screenshot.
         if (_reason.isNotEmpty)
           AnimatedBuilder(
-          animation: _phase2Controller,
-          builder: (_, _) {
-            final opacity =
-                _phase2Controller.value.clamp(0.0, 1.0);
-            final slide =
-                15.0 * (1.0 - _phase2Controller.value);
-            return Opacity(
-              opacity: opacity,
-              child: Transform.translate(
-                offset: Offset(0, slide),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 14),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                        color:
-                            _kWarning.withValues(alpha: 0.6)),
-                    color: _kWarning.withValues(alpha: 0.08),
-                    boxShadow: [
-                      BoxShadow(
-                        color:
-                            _kWarning.withValues(alpha: 0.15),
-                        blurRadius: 20,
+            animation: _phase2Controller,
+            builder: (_, _) {
+              final opacity = _phase2Controller.value.clamp(0.0, 1.0);
+              final slide = 15.0 * (1.0 - _phase2Controller.value);
+              return Opacity(
+                opacity: opacity,
+                child: Transform.translate(
+                  offset: Offset(0, slide),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: _kWarning.withValues(alpha: 0.6),
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    _reason,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: _kWarning,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'monospace',
-                      letterSpacing: 2,
-                      height: 1.4,
+                      color: _kWarning.withValues(alpha: 0.08),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _kWarning.withValues(alpha: 0.15),
+                          blurRadius: 20,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      _reason,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: _kWarning,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'monospace',
+                        letterSpacing: 2,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
 
         const SizedBox(height: 36),
 
@@ -371,10 +380,8 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         AnimatedBuilder(
           animation: _phase3Controller,
           builder: (_, _) {
-            final opacity =
-                _phase3Controller.value.clamp(0.0, 1.0);
-            final slide =
-                20.0 * (1.0 - _phase3Controller.value);
+            final opacity = _phase3Controller.value.clamp(0.0, 1.0);
+            final slide = 20.0 * (1.0 - _phase3Controller.value);
             return Opacity(
               opacity: opacity,
               child: Transform.translate(
@@ -385,8 +392,8 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color:
-                            _kWarning.withValues(alpha: 0.15)),
+                      color: _kWarning.withValues(alpha: 0.15),
+                    ),
                     color: _kBgColor.withValues(alpha: 0.85),
                   ),
                   child: Text(
@@ -415,10 +422,8 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         AnimatedBuilder(
           animation: _phase4Controller,
           builder: (_, _) {
-            final opacity =
-                _phase4Controller.value.clamp(0.0, 1.0);
-            final scale =
-                0.9 + 0.1 * _phase4Controller.value;
+            final opacity = _phase4Controller.value.clamp(0.0, 1.0);
+            final scale = 0.9 + 0.1 * _phase4Controller.value;
             return Opacity(
               opacity: opacity,
               child: Transform.scale(
@@ -428,9 +433,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color:
-                            _kAccent.withValues(alpha: 0.25)),
+                    border: Border.all(color: _kAccent.withValues(alpha: 0.25)),
                     color: _kBgColor.withValues(alpha: 0.9),
                   ),
                   child: Column(
@@ -438,8 +441,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                       Text(
                         context.l10n.ui_gameOver_voyageRecord,
                         style: TextStyle(
-                          color:
-                              _kAccent.withValues(alpha: 0.7),
+                          color: _kAccent.withValues(alpha: 0.7),
                           fontSize: 14,
                           letterSpacing: 3,
                           fontWeight: FontWeight.w600,
@@ -464,8 +466,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                       const SizedBox(height: 10),
                       _StatRow(
                         label: context.l10n.ui_gameOver_finalShipHealth,
-                        value:
-                            '${(_finalHealthAvg * 100).toStringAsFixed(1)}%',
+                        value: '${(_finalHealthAvg * 100).toStringAsFixed(1)}%',
                       ),
                       const SizedBox(height: 10),
                       _StatRow(
@@ -502,8 +503,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
         AnimatedBuilder(
           animation: _phase5Controller,
           builder: (_, _) {
-            final opacity =
-                _phase5Controller.value.clamp(0.0, 1.0);
+            final opacity = _phase5Controller.value.clamp(0.0, 1.0);
             return Opacity(
               opacity: opacity,
               child: Column(
@@ -513,7 +513,10 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                     isPrimary: false,
                     icon: Icons.share,
                     onTap: () {
-                      final text = context.l10n.ui_gameOver_shareText(_reason, _seedCode);
+                      final text = context.l10n.ui_gameOver_shareText(
+                        _reason,
+                        _seedCode,
+                      );
                       Share.share(text);
                     },
                   ),
@@ -521,8 +524,7 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                   _GameOverButton(
                     label: context.l10n.ui_gameOver_viewLegacy,
                     isPrimary: true,
-                    onTap: () => Navigator.of(context)
-                        .pushNamedAndRemoveUntil(
+                    onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
                       '/legacy',
                       (route) => route.isFirst,
                     ),
@@ -535,8 +537,12 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
                       ref
                           .read(voyageProvider.notifier)
                           .startVoyage(l10n: context.l10n);
+                      // Wipe the entire stack on the way back to title so
+                      // a stale /voyage shell can never linger underneath
+                      // (matters when /gameover was reached via the
+                      // landing-abort path that previously left it).
                       Navigator.of(context)
-                          .pushReplacementNamed('/');
+                          .pushNamedAndRemoveUntil('/', (r) => false);
                     },
                   ),
                 ],
@@ -548,8 +554,13 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
     );
   }
 
-  Widget _buildContent(BuildContext context, ScreenInfo screen, String epilogue) {
-    final isLandscape = screen.isLandscape && screen.screenClass != ScreenClass.compact;
+  Widget _buildContent(
+    BuildContext context,
+    ScreenInfo screen,
+    String epilogue,
+  ) {
+    final isLandscape =
+        screen.isLandscape && screen.screenClass != ScreenClass.compact;
 
     if (isLandscape) {
       return Padding(
@@ -606,6 +617,9 @@ class _GameOverScreenState extends ConsumerState<GameOverScreen>
           // Content.
           SafeArea(
             child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: ScrollPadding.bottom(context, extra: 96),
+              ),
               child: ResponsiveContent(
                 child: _buildContent(context, screen, epilogue),
               ),
@@ -682,9 +696,7 @@ class _GameOverButton extends StatelessWidget {
             color: isPrimary ? color : color.withValues(alpha: 0.4),
             width: isPrimary ? 2 : 1,
           ),
-          color: isPrimary
-              ? color.withValues(alpha: 0.15)
-              : Colors.transparent,
+          color: isPrimary ? color.withValues(alpha: 0.15) : Colors.transparent,
           boxShadow: isPrimary
               ? [
                   BoxShadow(

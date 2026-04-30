@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/utils/planet_l10n.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
@@ -21,11 +22,18 @@ const _kAccent = SpaceColors.cyan;
 
 /// Features visible from orbit (same as scan_screen).
 const _obviousFeatures = {
-  'caves', 'airtight_caves', 'insulated_caves',
-  'outstanding_beauty', 'outstanding_ugliness',
-  'plant_life', 'unicellular_life',
-  'floating_islands', 'orbital_wreckage', 'megastructural_fragments',
-  'bioluminescent_life', 'cryovolcanism',
+  'caves',
+  'airtight_caves',
+  'insulated_caves',
+  'outstanding_beauty',
+  'outstanding_ugliness',
+  'plant_life',
+  'unicellular_life',
+  'floating_islands',
+  'orbital_wreckage',
+  'megastructural_fragments',
+  'bioluminescent_life',
+  'cryovolcanism',
 };
 
 /// Landing decision screen -- "Accept this planet or press on?"
@@ -139,27 +147,39 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
     final shipCritical = lowestVal < 0.15;
 
     return PopScope(
-      canPop: false, // No going back once you're deciding to land.
+      // canPop: false is an EXPLOIT GUARD, not just UX polish. Both exits
+      // from this screen mutate voyage state in non-reversible ways:
+      //   • "Land" → finalizeLanding() / landOnPlanet() → records the
+      //     score, awards legacy points, locks voyage as complete.
+      //   • "Press Onward" → pressOn() → consumes currentPlanet, applies
+      //     trace damage, advances encounterCount.
+      // If a back gesture popped this screen instead, the player would
+      // return to the voyage HUD with currentPlanet still armed AND no
+      // damage taken — letting them rescan/rejudge planet attributes
+      // unlimited times for free, or repeatedly trigger landing scoring
+      // until the result was favourable. Forcing a button choice closes
+      // both holes. Don't relax this without re-thinking those exits.
+      canPop: false,
       child: Scaffold(
-      backgroundColor: _kBgColor,
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          // Star field background.
-          const EventStarField(),
+        backgroundColor: _kBgColor,
+        resizeToAvoidBottomInset: true,
+        body: Stack(
+          children: [
+            // Star field background.
+            const EventStarField(),
 
-          // Main content.
-          SafeArea(
-            child: AnimatedBuilder(
-              animation: _entryController,
-              builder: (_, child) => Opacity(
-                opacity: _entryFade.value,
-                child: Transform.translate(
-                  offset: Offset(0, _entrySlide.value),
-                  child: child,
+            // Main content.
+            SafeArea(
+              child: AnimatedBuilder(
+                animation: _entryController,
+                builder: (_, child) => Opacity(
+                  opacity: _entryFade.value,
+                  child: Transform.translate(
+                    offset: Offset(0, _entrySlide.value),
+                    child: child,
+                  ),
                 ),
-              ),
-              child: _buildLandingContent(
+                child: _buildLandingContent(
                   planet: planet,
                   voyage: voyage,
                   ship: ship,
@@ -167,11 +187,11 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                   remaining: remaining,
                   shipCritical: shipCritical,
                 ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -191,103 +211,114 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: screen.horizontalPadding),
         child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left column: planet info, visualization, planet stats, features.
-          Expanded(
-            flex: 1,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(right: 16),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
-                  _buildPlanetHeader(planet),
-                  const SizedBox(height: 24),
-                  _buildPlanetVisualization(planet),
-                  const SizedBox(height: 24),
-                  _buildPlanetStatsCard(planet),
-                  if (planet.surfaceFeatures.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _buildSurfaceFeatures(planet, voyage),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left column: planet info, visualization, planet stats, features.
+            Expanded(
+              flex: 1,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  right: 16,
+                  bottom: ScrollPadding.bottom(context, extra: 40),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    _buildPlanetHeader(planet),
+                    const SizedBox(height: 24),
+                    _buildPlanetVisualization(planet),
+                    const SizedBox(height: 24),
+                    _buildPlanetStatsCard(planet),
+                    if (planet.surfaceFeatures.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      _buildSurfaceFeatures(planet, voyage),
+                    ],
+                    if (planet.moons.isNotEmpty || planet.rings != null) ...[
+                      const SizedBox(height: 16),
+                      _buildMoonsAndRings(planet),
+                    ],
+                    const SizedBox(height: 24),
                   ],
-                  if (planet.moons.isNotEmpty || planet.rings != null) ...[
-                    const SizedBox(height: 16),
-                    _buildMoonsAndRings(planet),
-                  ],
-                  const SizedBox(height: 24),
-                ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 24),
-          // Right column: ship status, risk, colony name, actions.
-          Expanded(
-            flex: 1,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
-                  _buildShipStatsCard(ship, avgHealth),
-                  const SizedBox(height: 16),
-                  _buildFuelStatus(voyage),
-                  if (ship.landingSystem < 0.7) ...[
+            const SizedBox(width: 24),
+            // Right column: ship status, risk, colony name, actions.
+            Expanded(
+              flex: 1,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  bottom: ScrollPadding.bottom(context, extra: 40),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    _buildShipStatsCard(ship, avgHealth),
                     const SizedBox(height: 16),
-                    _buildLandingRisk(ship),
+                    _buildFuelStatus(voyage),
+                    if (ship.landingSystem < 0.7) ...[
+                      const SizedBox(height: 16),
+                      _buildLandingRisk(ship),
+                    ],
+                    const SizedBox(height: 16),
+                    _buildRiskAssessment(remaining, shipCritical),
+                    const SizedBox(height: 24),
+                    _buildColonyNameField(),
+                    const SizedBox(height: 24),
+                    _buildLandingAd(screen),
+                    _buildActionButtons(planet),
+                    const SizedBox(height: 40),
                   ],
-                  const SizedBox(height: 16),
-                  _buildRiskAssessment(remaining, shipCritical),
-                  const SizedBox(height: 24),
-                  _buildColonyNameField(),
-                  const SizedBox(height: 24),
-                  _buildLandingAd(screen),
-                  _buildActionButtons(planet),
-                  const SizedBox(height: 40),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       );
     }
 
     // Portrait layout (original).
-    return ResponsiveContent(child: SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 24),
-          _buildPlanetHeader(planet),
-          const SizedBox(height: 32),
-          _buildPlanetVisualization(planet),
-          const SizedBox(height: 32),
-          _buildPlanetStatsCard(planet),
-          const SizedBox(height: 16),
-          _buildShipStatsCard(ship, avgHealth),
-          const SizedBox(height: 16),
-          _buildFuelStatus(voyage),
-          if (ship.landingSystem < 0.7) ...[
+    return ResponsiveContent(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: ScrollPadding.bottom(context, extra: 96),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+            _buildPlanetHeader(planet),
+            const SizedBox(height: 32),
+            _buildPlanetVisualization(planet),
+            const SizedBox(height: 32),
+            _buildPlanetStatsCard(planet),
             const SizedBox(height: 16),
-            _buildLandingRisk(ship),
-          ],
-          const SizedBox(height: 16),
-          _buildRiskAssessment(remaining, shipCritical),
-          if (planet.surfaceFeatures.isNotEmpty) ...[
+            _buildShipStatsCard(ship, avgHealth),
             const SizedBox(height: 16),
-            _buildSurfaceFeatures(planet, voyage),
-          ],
-          if (planet.moons.isNotEmpty || planet.rings != null) ...[
+            _buildFuelStatus(voyage),
+            if (ship.landingSystem < 0.7) ...[
+              const SizedBox(height: 16),
+              _buildLandingRisk(ship),
+            ],
             const SizedBox(height: 16),
-            _buildMoonsAndRings(planet),
+            _buildRiskAssessment(remaining, shipCritical),
+            if (planet.surfaceFeatures.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _buildSurfaceFeatures(planet, voyage),
+            ],
+            if (planet.moons.isNotEmpty || planet.rings != null) ...[
+              const SizedBox(height: 16),
+              _buildMoonsAndRings(planet),
+            ],
+            const SizedBox(height: 24),
+            _buildColonyNameField(),
+            const SizedBox(height: 24),
+            _buildLandingAd(ScreenInfo.of(context)),
+            _buildActionButtons(planet),
+            const SizedBox(height: 40),
           ],
-          const SizedBox(height: 24),
-          _buildColonyNameField(),
-          const SizedBox(height: 24),
-          _buildLandingAd(ScreenInfo.of(context)),
-          _buildActionButtons(planet),
-          const SizedBox(height: 40),
-        ],
+        ),
       ),
-    ));
+    );
   }
 
   /// Native ad placed directly above the Land / Abort action buttons.
@@ -355,13 +386,12 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
 
   Widget _buildPlanetVisualization(Planet planet) {
     return Semantics(
-      label: 'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
+      label:
+          'Planet visualization showing ${planet.tier} world with ${planet.moons.length} moons${planet.rings != null ? " and a ${planet.rings!.type.name} ring system" : ""}',
       child: AnimatedBuilder(
         animation: _pulseController,
-        builder: (_, _) => _PlanetVisualization(
-          planet: planet,
-          pulse: _pulseController.value,
-        ),
+        builder: (_, _) =>
+            _PlanetVisualization(planet: planet, pulse: _pulseController.value),
       ),
     );
   }
@@ -375,7 +405,10 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
         _StatEntry(context.l10n.ui_landing_statWater, planet.water),
         _StatEntry(context.l10n.ui_landing_statResources, planet.resources),
         _StatEntry(context.l10n.ui_landing_statGravity, planet.gravity),
-        _StatEntry(context.l10n.ui_landing_statBiodiversity, planet.biodiversity),
+        _StatEntry(
+          context.l10n.ui_landing_statBiodiversity,
+          planet.biodiversity,
+        ),
       ],
     );
   }
@@ -533,10 +566,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
           Text(
             context.l10n.ui_landing_encountersRemaining(remaining),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 16),
           ),
           if (shipCritical) ...[
             const SizedBox(height: 12),
@@ -552,8 +582,11 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.warning_amber_rounded,
-                      color: Color(0xFFF44336), size: 20),
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    color: Color(0xFFF44336),
+                    size: 20,
+                  ),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
@@ -600,33 +633,36 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
             spacing: 8,
             runSpacing: 6,
             children: planet.surfaceFeatures.map((f) {
-              final isRevealed = _obviousFeatures.contains(f) ||
+              final isRevealed =
+                  _obviousFeatures.contains(f) ||
                   voyage.revealedFeatures.contains(f);
               final label = isRevealed
                   ? localizedSurfaceFeature(context.l10n, f)
                   : '??? Unknown';
-              final chipColor =
-                  isRevealed ? _kAccent : Colors.white.withValues(alpha: 0.4);
+              final chipColor = isRevealed
+                  ? _kAccent
+                  : Colors.white.withValues(alpha: 0.4);
               return Tooltip(
-                message:
-                    isRevealed ? label : 'Requires landing to identify',
+                message: isRevealed ? label : 'Requires landing to identify',
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: chipColor.withValues(alpha: 0.3),
-                    ),
+                    border: Border.all(color: chipColor.withValues(alpha: 0.3)),
                     color: chipColor.withValues(alpha: 0.08),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (!isRevealed) ...[
-                        Icon(Icons.lock_outline,
-                            size: 10,
-                            color: chipColor.withValues(alpha: 0.8)),
+                        Icon(
+                          Icons.lock_outline,
+                          size: 10,
+                          color: chipColor.withValues(alpha: 0.8),
+                        ),
                         const SizedBox(width: 4),
                       ],
                       Text(
@@ -676,8 +712,8 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
               final sizeLabel = moon.size > 0.7
                   ? 'Large'
                   : moon.size > 0.3
-                      ? 'Medium'
-                      : 'Small';
+                  ? 'Medium'
+                  : 'Small';
               return Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
@@ -824,17 +860,17 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
                 fontWeight: FontWeight.bold,
               ),
               isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide:
-                    BorderSide(color: _kAccent.withValues(alpha: 0.3)),
+                borderSide: BorderSide(color: _kAccent.withValues(alpha: 0.3)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide:
-                    BorderSide(color: _kAccent.withValues(alpha: 0.7)),
+                borderSide: BorderSide(color: _kAccent.withValues(alpha: 0.7)),
               ),
             ),
           ),
@@ -934,7 +970,25 @@ class _LandingScreenState extends ConsumerState<LandingScreen>
             GameMusic().returnToBgMusic();
             GameMusic().startEngineHum();
             ref.read(voyageProvider.notifier).pressOn();
-            Navigator.of(context).pop();
+            // pressOn can set isGameOver if the trace damage drops a core
+            // system to zero. /landing is on the root navigator and is
+            // pushed without awaiting, so the voyage HUD won't catch it
+            // on its own — replace into /gameover here.
+            if (ref.read(voyageProvider).isGameOver) {
+              // /landing is on root with /voyage shell underneath, so
+              // pushReplacementNamed would only replace /landing and
+              // leave the shell behind /gameover. Tear the whole stack
+              // down to title before /gameover.
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushNamedAndRemoveUntil(
+                '/gameover',
+                (r) => r.isFirst,
+              );
+            } else {
+              Navigator.of(context).pop();
+            }
           },
         ),
       ],
@@ -956,7 +1010,8 @@ class _PlanetVisualization extends StatelessWidget {
     final screen = ScreenInfo.of(context);
     // On tablets in landscape, use a fraction of half the screen (column width).
     // On phones, use 55% of screen width. Cap at 300px to leave room for moons/rings.
-    final maxDiameter = (screen.isLandscape && screen.screenClass != ScreenClass.compact)
+    final maxDiameter =
+        (screen.isLandscape && screen.screenClass != ScreenClass.compact)
         ? screenWidth * 0.25
         : screenWidth * 0.55;
     final diameter = maxDiameter.clamp(120.0, 300.0);
@@ -990,10 +1045,7 @@ class _PlanetVisualization extends StatelessWidget {
             ],
           ),
           child: CustomPaint(
-            painter: _PlanetDetailPainter(
-              planet: planet,
-              animValue: pulse,
-            ),
+            painter: _PlanetDetailPainter(planet: planet, animValue: pulse),
           ),
         ),
       ),
@@ -1006,12 +1058,18 @@ class _PlanetVisualization extends StatelessWidget {
     final red = planet.temperature * 0.6;
     final grey = (1.0 - planet.habitabilityScore) * 0.5;
 
-    final r =
-        ((red * 200 + grey * 120) / (red + grey + 0.01)).clamp(30.0, 255.0);
-    final g = ((green * 220 + grey * 100) / (green + grey + 0.01))
-        .clamp(30.0, 255.0);
-    final b =
-        ((blue * 255 + grey * 100) / (blue + grey + 0.01)).clamp(40.0, 255.0);
+    final r = ((red * 200 + grey * 120) / (red + grey + 0.01)).clamp(
+      30.0,
+      255.0,
+    );
+    final g = ((green * 220 + grey * 100) / (green + grey + 0.01)).clamp(
+      30.0,
+      255.0,
+    );
+    final b = ((blue * 255 + grey * 100) / (blue + grey + 0.01)).clamp(
+      40.0,
+      255.0,
+    );
 
     final coreColor = Color.fromRGBO(r.toInt(), g.toInt(), b.toInt(), 1.0);
     final midColor = Color.lerp(coreColor, const Color(0xFF1A2940), 0.3)!;
@@ -1055,8 +1113,7 @@ class _PlanetDetailPainter extends CustomPainter {
 
     for (int i = 1; i < 5; i++) {
       final y = center.dy - radius + (radius * 2 * i / 5);
-      final halfWidth =
-          sqrt(max(0, radius * radius - pow(y - center.dy, 2)));
+      final halfWidth = sqrt(max(0, radius * radius - pow(y - center.dy, 2)));
       canvas.drawArc(
         Rect.fromCenter(
           center: center,
@@ -1128,11 +1185,17 @@ class _StatBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final clamped = value.clamp(0.0, 1.0);
+    // Show real percentage (can exceed 100% from legacy upgrades / over-
+    // repair); cap the bar fill at 1.0 so the visual doesn't overflow.
+    final raw = value < 0 ? 0.0 : value;
+    final fill = raw.clamp(0.0, 1.0);
+    final percent = (raw * 100).toInt();
     Color barColor;
-    if (clamped > 0.6) {
+    if (raw > 1.0) {
+      barColor = const Color(0xFF7DF9FF); // electric blue for over-baseline
+    } else if (raw > 0.6) {
       barColor = _kAccent;
-    } else if (clamped > 0.3) {
+    } else if (raw > 0.3) {
       barColor = const Color(0xFFFF9800);
     } else {
       barColor = const Color(0xFFF44336);
@@ -1151,7 +1214,7 @@ class _StatBar extends StatelessWidget {
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               Text(
-                '${(clamped * 100).toInt()}%',
+                '$percent%',
                 style: TextStyle(
                   color: barColor,
                   fontSize: 13,
@@ -1166,7 +1229,7 @@ class _StatBar extends StatelessWidget {
             child: SizedBox(
               height: 6,
               child: LinearProgressIndicator(
-                value: clamped,
+                value: fill,
                 backgroundColor: Colors.white.withValues(alpha: 0.1),
                 valueColor: AlwaysStoppedAnimation(barColor),
               ),
@@ -1202,8 +1265,7 @@ class _GlowingActionButton extends StatelessWidget {
     return AnimatedBuilder(
       animation: pulseController,
       builder: (_, _) {
-        final glowAlpha =
-            isPrimary ? 0.2 + pulseController.value * 0.15 : 0.0;
+        final glowAlpha = isPrimary ? 0.2 + pulseController.value * 0.15 : 0.0;
 
         return GestureDetector(
           onTap: onTap,
@@ -1213,8 +1275,7 @@ class _GlowingActionButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color:
-                    isPrimary ? color : color.withValues(alpha: 0.4),
+                color: isPrimary ? color : color.withValues(alpha: 0.4),
                 width: isPrimary ? 2 : 1,
               ),
               color: isPrimary

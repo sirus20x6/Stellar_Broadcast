@@ -24,6 +24,7 @@ import 'package:stellar_broadcast/utils/constants.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
@@ -130,10 +131,13 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     final voyage = ref.read(voyageProvider);
     final planet = voyage.currentPlanet;
     if (planet == null) {
-      // Shouldn't happen — navigate home as fallback.
+      // Shouldn't happen — clear everything down to title.
       _initFallbackControllers();
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).pushReplacementNamed('/');
+        if (mounted) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/', (r) => false);
+        }
       });
       return;
     }
@@ -259,7 +263,11 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
           }
         })
         .onError((Object e, StackTrace st) {
-          QaLogger.app.warning('finalizeLanding failed on ending screen', e, st);
+          QaLogger.app.warning(
+            'finalizeLanding failed on ending screen',
+            e,
+            st,
+          );
         });
 
     // Submit to Play Games leaderboards.
@@ -470,6 +478,16 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
     final screen = ScreenInfo.of(context);
 
     return PopScope(
+      // canPop: false is an EXPLOIT GUARD on top of the stack-removal
+      // performed by /landing-sequence → pushNamedAndRemoveUntil('/ending',
+      // r.isFirst). Even though /voyage shouldn't be sitting under us
+      // anymore, blocking back is defence in depth: if a future change
+      // accidentally re-introduces a route below /ending, a back gesture
+      // here would expose voyage state with isComplete=true plus a still-
+      // populated currentPlanet, letting the player tap scan and re-
+      // launch /landing on the same already-scored planet. Players exit
+      // through "New Voyage" / "View Legacy" — both clear the stack via
+      // pushNamedAndRemoveUntil('/', (r) => false).
       canPop: false,
       child: Scaffold(
         backgroundColor: _kBgColor,
@@ -486,6 +504,9 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
             SafeArea(
               bottom: false,
               child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  bottom: ScrollPadding.bottom(context, extra: 96),
+                ),
                 child: ResponsiveContent(
                   child: _buildContent(context, screen, tierColor),
                 ),
@@ -846,24 +867,15 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                   ),
                 ),
                 const SizedBox(height: 12),
-                _ColonyDetailRow(
-                  label: 'Government',
-                  value: _governmentType,
-                ),
+                _ColonyDetailRow(label: 'Government', value: _governmentType),
                 _ColonyDetailRow(label: 'Culture', value: _cultureLevel),
-                _ColonyDetailRow(
-                  label: 'Technology',
-                  value: _technologyLevel,
-                ),
+                _ColonyDetailRow(label: 'Technology', value: _technologyLevel),
                 _ColonyDetailRow(
                   label: 'Construction',
                   value: _constructionLevel,
                 ),
                 if (_nativeRelations != 'None')
-                  _ColonyDetailRow(
-                    label: 'Natives',
-                    value: _nativeRelations,
-                  ),
+                  _ColonyDetailRow(label: 'Natives', value: _nativeRelations),
                 const SizedBox(height: 12),
                 Text(
                   _colonyDescription,
@@ -890,9 +902,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _kAccent.withValues(alpha: 0.2),
-                  ),
+                  border: Border.all(color: _kAccent.withValues(alpha: 0.2)),
                   color: _kBgColor.withValues(alpha: 0.85),
                 ),
                 child: Column(
@@ -1009,10 +1019,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
                             _ScoreRow(label: entry.key, score: entry.value),
                       ),
                   const SizedBox(height: 8),
-                  Container(
-                    height: 1,
-                    color: _kAccent.withValues(alpha: 0.2),
-                  ),
+                  Container(height: 1, color: _kAccent.withValues(alpha: 0.2)),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1088,8 +1095,9 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
   ) async {
     final shareText = _buildShareText(data);
     try {
-      final boundary = _shareCardKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
+      final boundary =
+          _shareCardKey.currentContext?.findRenderObject()
+              as RenderRepaintBoundary?;
       if (boundary == null) {
         throw StateError('share card boundary not laid out');
       }
@@ -1104,10 +1112,9 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
         '${tempDir.path}/stellar_broadcast_run_${DateTime.now().millisecondsSinceEpoch}.png',
       );
       await file.writeAsBytes(bytes);
-      await Share.shareXFiles(
-        [XFile(file.path, mimeType: 'image/png')],
-        text: shareText,
-      );
+      await Share.shareXFiles([
+        XFile(file.path, mimeType: 'image/png'),
+      ], text: shareText);
     } catch (_) {
       await Share.share(shareText);
     }
@@ -1161,9 +1168,7 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
             label: context.l10n.ui_ending_copySeed,
             isPrimary: false,
             onTap: () {
-              Clipboard.setData(
-                ClipboardData(text: seedToCode(_voyageSeed)),
-              );
+              Clipboard.setData(ClipboardData(text: seedToCode(_voyageSeed)));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Seed ${seedToCode(_voyageSeed)} copied!'),
@@ -1186,10 +1191,12 @@ class _EndingScreenState extends ConsumerState<EndingScreen>
             label: context.l10n.ui_ending_newVoyage,
             isPrimary: false,
             onTap: () {
-              ref
-                  .read(voyageProvider.notifier)
-                  .startVoyage(l10n: context.l10n);
-              Navigator.of(context).pushReplacementNamed('/');
+              ref.read(voyageProvider.notifier).startVoyage(l10n: context.l10n);
+              // Tear down /ending plus anything underneath (e.g. a stale
+              // /voyage left from before the cinematic transitions used
+              // pushNamedAndRemoveUntil). Title becomes the only entry.
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', (r) => false);
             },
           ),
         ],

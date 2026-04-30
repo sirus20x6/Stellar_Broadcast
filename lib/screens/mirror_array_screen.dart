@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
@@ -520,7 +519,6 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
             ),
           ),
         ),
-        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -588,7 +586,6 @@ class _MirrorArrayScreenState extends ConsumerState<MirrorArrayScreen>
           ),
         ),
         // Ad banner full width at bottom.
-        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }

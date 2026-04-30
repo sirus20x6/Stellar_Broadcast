@@ -15,6 +15,7 @@ import 'package:stellar_broadcast/screens/scan_screen.dart'
     show maybePreloadScanInterstitial;
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/utils/platform_config.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
@@ -470,9 +471,7 @@ class _EventScreenState extends ConsumerState<EventScreen>
     );
   }
 
-  Widget _buildAdBanner() {
-    return PremiumAdGate(child: AdaptiveBannerAd());
-  }
+  // Banner moved to the persistent shell-level slot — see VoyageShell.
 
   /// All action widgets: trader button, choice buttons, or continue button.
   List<Widget> _buildActions() {
@@ -536,28 +535,33 @@ class _EventScreenState extends ConsumerState<EventScreen>
         : QaNativeAdSize.medium;
 
     return ResponsiveContent(
-      child: Column(
-        children: [
-          // Push the title toward the very top on compact phones — with ads
-          // eating the bottom, every vertical dp saved here goes to the
-          // narrative text box which otherwise clips outcome text/rewards.
-          SizedBox(height: compact ? 4 : 32),
-          _buildTitle(),
-          SizedBox(height: compact ? 12 : 32),
-          _buildNarrativeCard(),
-          if (showColumnNative) ...[
-            const SizedBox(height: 24),
-            PremiumAdGate(
-              child: AdaptiveNativeAd(
-                key: ValueKey('event_portrait_${nativeSize.name}'),
-                size: nativeSize,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: ScrollPadding.bottom(context, extra: compact ? 72 : 96),
+        ),
+        child: Column(
+          children: [
+            // Push the title toward the very top on compact phones — with ads
+            // eating the bottom, every vertical dp saved here goes to the
+            // narrative text box which otherwise clips outcome text/rewards.
+            SizedBox(height: compact ? 4 : 32),
+            _buildTitle(),
+            SizedBox(height: compact ? 12 : 32),
+            _buildNarrativeCard(),
+            if (showColumnNative) ...[
+              const SizedBox(height: 24),
+              PremiumAdGate(
+                child: AdaptiveNativeAd(
+                  key: ValueKey('event_portrait_${nativeSize.name}'),
+                  size: nativeSize,
+                ),
               ),
-            ),
+            ],
+            SizedBox(height: compact ? 14 : 24),
+            ..._buildActions(),
+            SizedBox(height: compact ? 6 : 12),
           ],
-          SizedBox(height: compact ? 14 : 24),
-          ..._buildActions(),
-          SizedBox(height: compact ? 6 : 12),
-        ],
+        ),
       ),
     );
   }
@@ -675,13 +679,12 @@ class _EventScreenState extends ConsumerState<EventScreen>
                             ? _buildLandscape()
                             : _buildPortrait(),
                       ),
-                      // Bottom leaderboard banner is only shown on
-                      // compact phones (portrait). Tablet landscape
-                      // has two column-local natives; tablet portrait
-                      // has a single column-local native between
-                      // narrative and choices. Stacking a banner
-                      // below either would be double-dipping.
-                      if (screen.isCompact) _buildAdBanner(),
+                      // Bottom banner used to live here on compact
+                      // phones — moved to the shell-level slot in
+                      // VoyageShell so the refresh timer is continuous
+                      // across event → voyage → event transitions.
+                      // Tablet column-local natives stay where they
+                      // are; the shell banner sits below them.
                     ],
                   ),
                 ),

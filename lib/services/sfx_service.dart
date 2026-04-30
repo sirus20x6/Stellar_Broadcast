@@ -187,6 +187,12 @@ class GameSfx {
     }
   }
 
+  /// True while any long-audio player is in the active list. The lifecycle
+  /// resume handler reads this so it doesn't unduck BGM while encounter
+  /// audio still owns the music slot — otherwise locking/unlocking the
+  /// device during an event stacks BGM on top of the long track.
+  bool get hasActiveLongAudio => _longPlayers.isNotEmpty;
+
   AudioPlayer? _introPlayer;
 
   Future<void> playIntroLogo({double volume = 0.7}) async {

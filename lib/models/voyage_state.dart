@@ -210,6 +210,12 @@ class VoyageState {
   }) {
     return VoyageState(
       ship: ship ?? this.ship,
+      // clearPlanet wins over a competing currentPlanet argument by
+      // design — pressOn() may legitimately rebuild a state with both
+      // hands set. If the order ever flips, the landing-rerun exploit
+      // returns: pressOn() would clear+set, leaving currentPlanet alive
+      // for a back-to-/landing tap. Locked in by
+      // test/models/landing_invariants_test.dart.
       currentPlanet: clearPlanet ? null : (currentPlanet ?? this.currentPlanet),
       encounterCount: encounterCount ?? this.encounterCount,
       maxEncounters: maxEncounters ?? this.maxEncounters,

@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
 import 'package:stellar_broadcast/models/event.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
@@ -235,7 +234,6 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             ),
           ),
         ),
-        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }
@@ -283,7 +281,6 @@ class _BlackHoleScreenState extends ConsumerState<BlackHoleScreen>
             ],
           ),
         ),
-        PremiumAdGate(child: AdaptiveBannerAd()),
       ],
     );
   }

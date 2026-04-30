@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 /// Ship systems model for Stellar Broadcast.
 ///
 /// Tracks the health of ship systems, each ranging from 0.0 (destroyed)
@@ -41,7 +43,24 @@ class ShipSystems {
     this.lifeSignsScanner = 1.0,
     this.temperatureScanner = 1.0,
     this.waterScanner = 1.0,
+    this.maxOverrides = const {},
   });
+
+  /// Per-system maxima above the default 1.0 (or 1.5 for culture/tech). Set
+  /// at voyage start when legacy upgrades push a system's starting value
+  /// above 1.0 — e.g. `reinforced_hull` makes `maxOverrides['hull'] = 1.10`,
+  /// so a hull damaged to 0.5 can still repair back to 1.10 instead of
+  /// being capped at the default 1.0.
+  final Map<String, double> maxOverrides;
+
+  /// Maximum allowed value for [system]. Returns the legacy-upgrade
+  /// override if set, otherwise the per-system default.
+  double maxFor(String system) {
+    final override = maxOverrides[system];
+    if (override != null) return override;
+    if (system == 'culture' || system == 'tech') return 1.5;
+    return 1.0;
+  }
 
   /// All system names, matching the field names used in event effect maps.
   static const List<String> systemNames = [
@@ -138,50 +157,67 @@ class ShipSystems {
   }
 
   ShipSystems _applyDelta(String system, double delta) {
-    double clamp(double v) => (v + delta).clamp(0.0, 1.0);
-    // Culture and tech can be over-repaired up to 1.5 (alien databases etc.).
-    double clampOverRepair(double v) => (v + delta).clamp(0.0, 1.5);
+    // Apply delta to a single named system using its per-system ceiling.
+    // The ceiling is whichever is higher: the system's declared max
+    // (legacy-upgrade override or default 1.0 / 1.5) or its current value
+    // — so an event that briefly pushed a stat above its declared max
+    // won't be clipped mid-flight by a subsequent boost. After damage
+    // drops the stat below the legacy max, repairs can still bring it
+    // back up to the legacy ceiling.
+    double clampSingle(String name, double v) {
+      final ceiling = math.max(maxFor(name), getSystem(name));
+      return (v + delta).clamp(0.0, ceiling);
+    }
 
     switch (system) {
       case 'hull':
-        return copyWith(hull: clamp(hull));
+        return copyWith(hull: clampSingle('hull', hull));
       case 'nav':
-        return copyWith(nav: clamp(nav));
+        return copyWith(nav: clampSingle('nav', nav));
       case 'cryopods':
-        return copyWith(cryopods: clamp(cryopods));
+        return copyWith(cryopods: clampSingle('cryopods', cryopods));
       case 'culture':
-        return copyWith(culture: clampOverRepair(culture));
+        return copyWith(culture: clampSingle('culture', culture));
       case 'tech':
-        return copyWith(tech: clampOverRepair(tech));
+        return copyWith(tech: clampSingle('tech', tech));
       case 'constructors':
-        return copyWith(constructors: clamp(constructors));
+        return copyWith(constructors: clampSingle('constructors', constructors));
       case 'shields':
-        return copyWith(shields: clamp(shields));
+        return copyWith(shields: clampSingle('shields', shields));
       case 'landingSystem':
-        return copyWith(landingSystem: clamp(landingSystem));
+        return copyWith(landingSystem: clampSingle('landingSystem', landingSystem));
       case 'atmosphericScanner':
-        return copyWith(atmosphericScanner: clamp(atmosphericScanner));
+        return copyWith(
+            atmosphericScanner: clampSingle('atmosphericScanner', atmosphericScanner));
       case 'gravimetricScanner':
-        return copyWith(gravimetricScanner: clamp(gravimetricScanner));
+        return copyWith(
+            gravimetricScanner: clampSingle('gravimetricScanner', gravimetricScanner));
       case 'mineralScanner':
-        return copyWith(mineralScanner: clamp(mineralScanner));
+        return copyWith(
+            mineralScanner: clampSingle('mineralScanner', mineralScanner));
       case 'lifeSignsScanner':
-        return copyWith(lifeSignsScanner: clamp(lifeSignsScanner));
+        return copyWith(
+            lifeSignsScanner: clampSingle('lifeSignsScanner', lifeSignsScanner));
       case 'temperatureScanner':
-        return copyWith(temperatureScanner: clamp(temperatureScanner));
+        return copyWith(
+            temperatureScanner: clampSingle('temperatureScanner', temperatureScanner));
       case 'waterScanner':
-        return copyWith(waterScanner: clamp(waterScanner));
+        return copyWith(waterScanner: clampSingle('waterScanner', waterScanner));
       case 'scanners':
         // Alias meaning "every scanner" — event authors use this when a
         // choice damages or heals the whole scanner suite. Apply the delta
-        // uniformly to all six individual scanners.
+        // uniformly to all six individual scanners (each with its own
+        // ceiling, so legacy-upgraded scanners keep their headroom).
         return copyWith(
-          atmosphericScanner: clamp(atmosphericScanner),
-          gravimetricScanner: clamp(gravimetricScanner),
-          mineralScanner: clamp(mineralScanner),
-          lifeSignsScanner: clamp(lifeSignsScanner),
-          temperatureScanner: clamp(temperatureScanner),
-          waterScanner: clamp(waterScanner),
+          atmosphericScanner:
+              clampSingle('atmosphericScanner', atmosphericScanner),
+          gravimetricScanner:
+              clampSingle('gravimetricScanner', gravimetricScanner),
+          mineralScanner: clampSingle('mineralScanner', mineralScanner),
+          lifeSignsScanner: clampSingle('lifeSignsScanner', lifeSignsScanner),
+          temperatureScanner:
+              clampSingle('temperatureScanner', temperatureScanner),
+          waterScanner: clampSingle('waterScanner', waterScanner),
         );
       default:
         throw ArgumentError('Unknown ship system: $system');
@@ -220,6 +256,7 @@ class ShipSystems {
     double? lifeSignsScanner,
     double? temperatureScanner,
     double? waterScanner,
+    Map<String, double>? maxOverrides,
   }) {
     return ShipSystems(
       hull: hull ?? this.hull,
@@ -236,6 +273,7 @@ class ShipSystems {
       lifeSignsScanner: lifeSignsScanner ?? this.lifeSignsScanner,
       temperatureScanner: temperatureScanner ?? this.temperatureScanner,
       waterScanner: waterScanner ?? this.waterScanner,
+      maxOverrides: maxOverrides ?? this.maxOverrides,
     );
   }
 
@@ -254,33 +292,64 @@ class ShipSystems {
         'lifeSignsScanner': lifeSignsScanner,
         'temperatureScanner': temperatureScanner,
         'waterScanner': waterScanner,
+        if (maxOverrides.isNotEmpty) 'maxOverrides': maxOverrides,
       };
 
-  factory ShipSystems.fromJson(Map<String, dynamic> json) => ShipSystems(
-        hull: _readStat(json, 'hull'),
-        nav: _readStat(json, 'nav'),
-        cryopods: _readStat(json, 'cryopods'),
-        culture: _readStat(json, 'culture', max: 1.5),
-        tech: _readStat(json, 'tech', max: 1.5),
-        constructors: _readStat(json, 'constructors'),
-        shields: _readStat(json, 'shields'),
-        landingSystem: _readStat(json, 'landingSystem'),
-        atmosphericScanner: _readStat(json, 'atmosphericScanner'),
-        gravimetricScanner: _readStat(json, 'gravimetricScanner'),
-        mineralScanner: _readStat(json, 'mineralScanner'),
-        lifeSignsScanner: _readStat(json, 'lifeSignsScanner'),
-        temperatureScanner: _readStat(json, 'temperatureScanner'),
-        waterScanner: _readStat(json, 'waterScanner'),
-      );
+  /// Hard upper bound on any saved or in-memory ceiling. Above this we
+  /// assume the save was tampered with and reject the override. Current
+  /// legitimate legacy ceilings top out at 1.15 (warp_nav 1.10 +
+  /// star_charts 0.05; advanced_scanner 1.10 + star_charts 0.05); 1.25
+  /// gives a small cushion for future upgrades while still rejecting
+  /// runaway values like 1.99.
+  static const double _maxAbsoluteCeiling = 1.25;
 
-  /// Reads a ship stat from JSON, clamped to [0.0, max]. Missing or malformed
-  /// fields default to 1.0 (full health) so loading an older or corrupted save
-  /// degrades gracefully instead of crashing.
-  static double _readStat(Map<String, dynamic> json, String key,
-      {double max = 1.0}) {
-    final v = json[key];
-    if (v is num) return v.toDouble().clamp(0.0, max);
-    return 1.0;
+  factory ShipSystems.fromJson(Map<String, dynamic> json) {
+    final overrides = <String, double>{};
+    final raw = json['maxOverrides'];
+    if (raw is Map) {
+      for (final e in raw.entries) {
+        final key = e.key.toString();
+        final v = e.value;
+        // Defensive parsing: skip unknown system names, non-finite values,
+        // and ceilings outside [1.0, _maxAbsoluteCeiling]. A negative or
+        // NaN ceiling would make the per-system clamp throw or admit
+        // arbitrary values, neither of which we want from save input.
+        if (!systemNames.contains(key)) continue;
+        if (v is! num) continue;
+        final d = v.toDouble();
+        if (!d.isFinite) continue;
+        if (d < 1.0 || d > _maxAbsoluteCeiling) continue;
+        overrides[key] = d;
+      }
+    }
+    double readStat(String key) {
+      final v = json[key];
+      if (v is! num) return 1.0;
+      // Per-system ceiling: legacy override if present, otherwise 1.0
+      // (or 1.5 for culture/tech). Defends against corrupted saves
+      // claiming impossible values for systems with no over-baseline path.
+      final ceiling = overrides[key] ??
+          ((key == 'culture' || key == 'tech') ? 1.5 : 1.0);
+      return v.toDouble().clamp(0.0, ceiling);
+    }
+
+    return ShipSystems(
+      hull: readStat('hull'),
+      nav: readStat('nav'),
+      cryopods: readStat('cryopods'),
+      culture: readStat('culture'),
+      tech: readStat('tech'),
+      constructors: readStat('constructors'),
+      shields: readStat('shields'),
+      landingSystem: readStat('landingSystem'),
+      atmosphericScanner: readStat('atmosphericScanner'),
+      gravimetricScanner: readStat('gravimetricScanner'),
+      mineralScanner: readStat('mineralScanner'),
+      lifeSignsScanner: readStat('lifeSignsScanner'),
+      temperatureScanner: readStat('temperatureScanner'),
+      waterScanner: readStat('waterScanner'),
+      maxOverrides: overrides,
+    );
   }
 
   @override

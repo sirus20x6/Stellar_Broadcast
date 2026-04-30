@@ -67,6 +67,10 @@ app.*.symbols
 # Custom for this project
 .env
 untranslated_messages.json
+google-services.json
+tools/metrics-dashboard/data/*.db
+tools/metrics-dashboard/data/*.db-shm
+tools/metrics-dashboard/data/*.db-wal
 
 # iOS signing certificates — NEVER commit
 ios/certs/

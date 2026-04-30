@@ -10,7 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_debug/quickapps_debug.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
-import 'package:stellar_broadcast/app.dart' show routeObserver;
+import 'package:stellar_broadcast/navigation/app_navigator_observers.dart'
+    show rootRouteObserver;
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
 import 'package:stellar_broadcast/data/event_loader.dart';
@@ -20,6 +21,7 @@ import 'package:stellar_broadcast/models/puzzle.dart';
 import 'package:stellar_broadcast/models/voyage_state.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:stellar_broadcast/services/voyage_save_service.dart';
@@ -70,12 +72,12 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    rootRouteObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
   void dispose() {
-    routeObserver.unsubscribe(this);
+    rootRouteObserver.unsubscribe(this);
     _bgMusicTimer?.cancel();
     GameSfx().stopIntroLogo();
     super.dispose();
@@ -382,11 +384,7 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
                 .where((e) => e.id == 'earth_goodbye')
                 .firstOrNull;
             if (event != null) {
-              Navigator.pushNamed(
-                context,
-                '/earth-goodbye',
-                arguments: event,
-              );
+              Navigator.pushNamed(context, '/earth-goodbye', arguments: event);
             }
           }),
         ]),
@@ -634,242 +632,294 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
                     // — Foreground UI —
                     SafeArea(
                       bottom: false,
-                      child: Column(
-                        children: [
-                          Spacer(flex: screen.isCompact ? 2 : 4),
-
-                          // Title.
-                          Text(
-                            context.l10n.ui_title_stellar,
-                            style: TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: screen.scaledFontSize(42),
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 10,
-                              color: _accent,
-                              shadows: [
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.8),
-                                  blurRadius: 20,
-                                ),
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.5),
-                                  blurRadius: 40,
-                                ),
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.3),
-                                  blurRadius: 60,
-                                ),
-                              ],
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            padding: EdgeInsets.only(
+                              bottom: ScrollPadding.bottom(
+                                context,
+                                extra: screen.isCompact ? 104 : 96,
+                              ),
                             ),
-                          ),
-                          Text(
-                            context.l10n.ui_title_broadcast,
-                            style: TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: screen.scaledFontSize(42),
-                              fontWeight: FontWeight.w900,
-                              // Matches STELLAR (10). Was 18 — BROADCAST is 9 letters,
-                              // which at 18 wrapped to 2 lines on ~360dp-wide phones.
-                              letterSpacing: 10,
-                              color: _accent,
-                              shadows: [
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.8),
-                                  blurRadius: 20,
-                                ),
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.5),
-                                  blurRadius: 40,
-                                ),
-                                Shadow(
-                                  color: _accent.withValues(alpha: 0.3),
-                                  blurRadius: 60,
-                                ),
-                              ],
-                            ),
-                          ),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: screen.isCompact ? 40 : 96),
 
-                          const SizedBox(height: 12),
-
-                          // Subtitle.
-                          Text(
-                            "Humanity's Last Voyage",
-                            style: TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 16,
-                              letterSpacing: 3,
-                              color: Colors.white.withValues(alpha: 0.7),
-                              shadows: [
-                                Shadow(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  blurRadius: 8,
-                                ),
-                                Shadow(
-                                  color: Colors.white.withValues(alpha: 0.15),
-                                  blurRadius: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Spacer(flex: screen.isCompact ? 2 : 3),
-
-                          // Buttons.
-                          ResponsiveContent(
-                            extraPadding: 24,
-                            child: Column(
-                              children: [
-                                if (_hasSavedVoyage) ...[
-                                  HolographicButton(
-                                    label: 'RESUME VOYAGE',
-                                    autofocus: true,
-                                    compact: screen.isCompact,
-                                    onPressed: _resumeVoyage,
+                                  // Title.
+                                  Text(
+                                    context.l10n.ui_title_stellar,
+                                    style: TextStyle(
+                                      fontFamily: 'monospace',
+                                      fontSize: screen.scaledFontSize(42),
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 10,
+                                      color: _accent,
+                                      shadows: [
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.8),
+                                          blurRadius: 20,
+                                        ),
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.5),
+                                          blurRadius: 40,
+                                        ),
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.3),
+                                          blurRadius: 60,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: screen.isCompact ? 10 : 16),
-                                ],
-                                HolographicButton(
-                                  label: context.l10n.ui_title_beginVoyage,
-                                  autofocus: !_hasSavedVoyage,
-                                  compact: screen.isCompact,
-                                  onPressed: () {
-                                    // Clear any stale save when starting fresh.
-                                    unawaited(VoyageSaveService.clear());
-                                    _beginVoyage();
-                                  },
-                                ),
-                                SizedBox(height: screen.isCompact ? 10 : 16),
-                                _DailyVoyageButton(
-                                  compact: screen.isCompact,
-                                  onPressed: () => _beginVoyage(isDaily: true),
-                                ),
-                                SizedBox(height: screen.isCompact ? 10 : 16),
-                                HolographicButton(
-                                  label: context.l10n.ui_title_customSeed,
-                                  isPrimary: false,
-                                  compact: screen.isCompact,
-                                  onPressed: _showSeedDialog,
-                                ),
-                                SizedBox(height: screen.isCompact ? 10 : 16),
-                                HolographicButton(
-                                  label: context.l10n.ui_title_legacyHub,
-                                  isPrimary: false,
-                                  compact: screen.isCompact,
-                                  onPressed: () {
-                                    GameSfx().play(GameSfx.buttonClick);
-                                    Navigator.pushNamed(context, '/legacy');
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: screen.isCompact ? 6 : 12),
-                          // Utility row.
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                tooltip: context.l10n.ui_tooltip_leaderboards,
-                                onPressed: _leaderboardsInFlight
-                                    ? null
-                                    : () async {
-                                        setState(
-                                          () => _leaderboardsInFlight = true,
-                                        );
-                                        try {
-                                          final shown =
-                                              await PlayGamesService.showAllLeaderboards();
-                                          if (!mounted) return;
-                                          if (!shown && context.mounted) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  'Play Games unavailable. View leaderboards at stellarbroadcast.org',
-                                                ),
-                                                duration: Duration(seconds: 4),
-                                              ),
-                                            );
-                                          }
-                                        } finally {
-                                          if (mounted) {
-                                            setState(
-                                              () =>
-                                                  _leaderboardsInFlight = false,
-                                            );
-                                          }
-                                        }
-                                      },
-                                icon: Icon(
-                                  Icons.leaderboard,
-                                  color: _accent.withValues(alpha: 0.6),
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              IconButton(
-                                tooltip: context.l10n.ui_tooltip_bugReport,
-                                onPressed: () {
-                                  GameSfx().play(GameSfx.buttonClick);
-                                  showDialog<void>(
-                                    context: context,
-                                    builder: (_) => const BugReportDialog(),
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.bug_report_outlined,
-                                  color: _accent.withValues(alpha: 0.6),
-                                  size: 24,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              IconButton(
-                                tooltip: 'Reddit',
-                                onPressed: () {
-                                  GameSfx().play(GameSfx.buttonClick);
-                                  _openExternal(
-                                    'https://reddit.com/r/stellarbroadcast',
-                                  );
-                                },
-                                icon: FaIcon(
-                                  FontAwesomeIcons.redditAlien,
-                                  color: _accent.withValues(alpha: 0.6),
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              IconButton(
-                                tooltip: 'Discord',
-                                onPressed: () {
-                                  GameSfx().play(GameSfx.buttonClick);
-                                  _openExternal(
-                                    'https://discord.gg/8qsMun6vVM',
-                                  );
-                                },
-                                icon: FaIcon(
-                                  FontAwesomeIcons.discord,
-                                  color: _accent.withValues(alpha: 0.6),
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              IconButton(
-                                tooltip: context.l10n.ui_tooltip_settings,
-                                onPressed: () =>
-                                    Navigator.pushNamed(context, '/settings'),
-                                icon: Icon(
-                                  Icons.settings,
-                                  color: _accent.withValues(alpha: 0.6),
-                                  size: 24,
-                                ),
-                              ),
-                            ],
-                          ),
+                                  Text(
+                                    context.l10n.ui_title_broadcast,
+                                    style: TextStyle(
+                                      fontFamily: 'monospace',
+                                      fontSize: screen.scaledFontSize(42),
+                                      fontWeight: FontWeight.w900,
+                                      // Matches STELLAR (10). Was 18 — BROADCAST is 9 letters,
+                                      // which at 18 wrapped to 2 lines on ~360dp-wide phones.
+                                      letterSpacing: 10,
+                                      color: _accent,
+                                      shadows: [
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.8),
+                                          blurRadius: 20,
+                                        ),
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.5),
+                                          blurRadius: 40,
+                                        ),
+                                        Shadow(
+                                          color: _accent.withValues(alpha: 0.3),
+                                          blurRadius: 60,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
 
-                          Spacer(flex: screen.isCompact ? 1 : 2),
-                        ],
+                                  const SizedBox(height: 12),
+
+                                  // Subtitle.
+                                  Text(
+                                    "Humanity's Last Voyage",
+                                    style: TextStyle(
+                                      fontFamily: 'monospace',
+                                      fontSize: 16,
+                                      letterSpacing: 3,
+                                      color: Colors.white.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          blurRadius: 8,
+                                        ),
+                                        Shadow(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.15,
+                                          ),
+                                          blurRadius: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  SizedBox(height: screen.isCompact ? 32 : 72),
+
+                                  // Buttons.
+                                  ResponsiveContent(
+                                    extraPadding: 24,
+                                    child: Column(
+                                      children: [
+                                        if (_hasSavedVoyage) ...[
+                                          HolographicButton(
+                                            label: 'RESUME VOYAGE',
+                                            autofocus: true,
+                                            compact: screen.isCompact,
+                                            onPressed: _resumeVoyage,
+                                          ),
+                                          SizedBox(
+                                            height: screen.isCompact ? 10 : 16,
+                                          ),
+                                        ],
+                                        HolographicButton(
+                                          label:
+                                              context.l10n.ui_title_beginVoyage,
+                                          autofocus: !_hasSavedVoyage,
+                                          compact: screen.isCompact,
+                                          onPressed: () {
+                                            // Clear any stale save when starting fresh.
+                                            unawaited(
+                                              VoyageSaveService.clear(),
+                                            );
+                                            _beginVoyage();
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: screen.isCompact ? 10 : 16,
+                                        ),
+                                        _DailyVoyageButton(
+                                          compact: screen.isCompact,
+                                          onPressed: () =>
+                                              _beginVoyage(isDaily: true),
+                                        ),
+                                        SizedBox(
+                                          height: screen.isCompact ? 10 : 16,
+                                        ),
+                                        HolographicButton(
+                                          label:
+                                              context.l10n.ui_title_customSeed,
+                                          isPrimary: false,
+                                          compact: screen.isCompact,
+                                          onPressed: _showSeedDialog,
+                                        ),
+                                        SizedBox(
+                                          height: screen.isCompact ? 10 : 16,
+                                        ),
+                                        HolographicButton(
+                                          label:
+                                              context.l10n.ui_title_legacyHub,
+                                          isPrimary: false,
+                                          compact: screen.isCompact,
+                                          onPressed: () {
+                                            GameSfx().play(GameSfx.buttonClick);
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/legacy',
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: screen.isCompact ? 6 : 12),
+                                  // Utility row.
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                        tooltip: context
+                                            .l10n
+                                            .ui_tooltip_leaderboards,
+                                        onPressed: _leaderboardsInFlight
+                                            ? null
+                                            : () async {
+                                                setState(
+                                                  () => _leaderboardsInFlight =
+                                                      true,
+                                                );
+                                                try {
+                                                  final shown =
+                                                      await PlayGamesService.showAllLeaderboards();
+                                                  if (!mounted) return;
+                                                  if (!shown &&
+                                                      context.mounted) {
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                          'Play Games unavailable. View leaderboards at stellarbroadcast.org',
+                                                        ),
+                                                        duration: Duration(
+                                                          seconds: 4,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                } finally {
+                                                  if (mounted) {
+                                                    setState(
+                                                      () =>
+                                                          _leaderboardsInFlight =
+                                                              false,
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                        icon: Icon(
+                                          Icons.leaderboard,
+                                          color: _accent.withValues(alpha: 0.6),
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      IconButton(
+                                        tooltip:
+                                            context.l10n.ui_tooltip_bugReport,
+                                        onPressed: () {
+                                          GameSfx().play(GameSfx.buttonClick);
+                                          showDialog<void>(
+                                            context: context,
+                                            builder: (_) =>
+                                                const BugReportDialog(),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.bug_report_outlined,
+                                          color: _accent.withValues(alpha: 0.6),
+                                          size: 24,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      IconButton(
+                                        tooltip: 'Reddit',
+                                        onPressed: () {
+                                          GameSfx().play(GameSfx.buttonClick);
+                                          _openExternal(
+                                            'https://reddit.com/r/stellarbroadcast',
+                                          );
+                                        },
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.redditAlien,
+                                          color: _accent.withValues(alpha: 0.6),
+                                          size: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      IconButton(
+                                        tooltip: 'Discord',
+                                        onPressed: () {
+                                          GameSfx().play(GameSfx.buttonClick);
+                                          _openExternal(
+                                            'https://discord.gg/8qsMun6vVM',
+                                          );
+                                        },
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.discord,
+                                          color: _accent.withValues(alpha: 0.6),
+                                          size: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      IconButton(
+                                        tooltip:
+                                            context.l10n.ui_tooltip_settings,
+                                        onPressed: () => Navigator.pushNamed(
+                                          context,
+                                          '/settings',
+                                        ),
+                                        icon: Icon(
+                                          Icons.settings,
+                                          color: _accent.withValues(alpha: 0.6),
+                                          size: 24,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screen.isCompact ? 16 : 48),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

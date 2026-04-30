@@ -11,6 +11,7 @@ import 'package:stellar_broadcast/providers/game_providers.dart'
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
+import 'package:stellar_broadcast/utils/scroll_padding.dart';
 import 'package:stellar_broadcast/widgets/event_screen_common.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 
@@ -124,7 +125,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   // Settings sections.
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: ScrollPadding.symmetricHorizontal(
+                        context,
+                        horizontal: 20,
+                      ),
                       children: [
                         const SizedBox(height: 16),
                         _buildSectionTitle(context.l10n.ui_settings_music),
@@ -459,6 +463,9 @@ class _LanguageSection extends ConsumerWidget {
               const SizedBox(height: 16),
               Flexible(
                 child: ListView(
+                  padding: EdgeInsets.only(
+                    bottom: ScrollPadding.bottom(ctx, extra: 24),
+                  ),
                   shrinkWrap: true,
                   children: [
                     // System default option.
@@ -574,7 +581,9 @@ class _StatsPositionToggle extends ConsumerWidget {
           segments: [
             ButtonSegment(value: true, label: Text(l10n.ui_settings_statsLeft)),
             ButtonSegment(
-                value: false, label: Text(l10n.ui_settings_statsRight)),
+              value: false,
+              label: Text(l10n.ui_settings_statsRight),
+            ),
           ],
           selected: {statsOnLeft},
           onSelectionChanged: (v) =>
