@@ -108,6 +108,69 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
     GameMusic().playBgMusic();
   }
 
+  void _showStreakDialog(BuildContext context, int streakCount) {
+    final l10n = context.l10n;
+    final percent = (streakCount - 1).clamp(0, 5);
+    final body = streakCount == 0
+        ? l10n.ui_streak_dialog_body_inactive
+        : l10n.ui_streak_dialog_body(streakCount, percent);
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        // Explicit colors so the dialog reads cleanly against the dark
+        // space theme — Flutter's default surface/onSurface picks land in
+        // a dim grey that blends into the background.
+        backgroundColor: SpaceColors.deepSpace,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: _accent.withValues(alpha: 0.4)),
+        ),
+        icon: Icon(
+          streakCount > 0
+              ? Icons.local_fire_department
+              : Icons.local_fire_department_outlined,
+          color: _accent,
+          size: 32,
+        ),
+        title: Text(
+          l10n.ui_streak_dialog_title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: _accent,
+            letterSpacing: 3,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: Text(
+          body,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          Center(
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: _accent,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 2,
+                ),
+              ),
+              child: Text(l10n.ui_dialog_ok),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _handleVersionTap() {
     final upgrades = ref.read(legacyProvider).upgrades;
     ref
@@ -565,6 +628,11 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
     final screen = ScreenInfo.of(context);
+    // Selectively watch streak count so this screen only rebuilds when the
+    // streak number changes, not on every legacy save (e.g. legacyPoints).
+    final streakCount = ref.watch(
+      legacyProvider.select((l) => l.streakCount),
+    );
 
     return Scaffold(
       backgroundColor: _background,
@@ -895,6 +963,59 @@ class _TitleScreenState extends ConsumerState<TitleScreen> with RouteAware {
                                           FontAwesomeIcons.discord,
                                           color: _accent.withValues(alpha: 0.6),
                                           size: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      // Always rendered — even at 0, the pip
+                                      // advertises the feature so the player
+                                      // knows daily landings unlock a hull
+                                      // boost. Active state uses a filled
+                                      // flame + accent text; inactive uses an
+                                      // outlined flame + dimmed text.
+                                      InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () {
+                                          GameSfx().play(GameSfx.buttonClick);
+                                          _showStreakDialog(
+                                            context,
+                                            streakCount,
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 8,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                streakCount > 0
+                                                    ? Icons.local_fire_department
+                                                    : Icons
+                                                        .local_fire_department_outlined,
+                                                color: _accent.withValues(
+                                                  alpha: streakCount > 0
+                                                      ? 0.85
+                                                      : 0.55,
+                                                ),
+                                                size: 22,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                '$streakCount',
+                                                style: TextStyle(
+                                                  color: _accent.withValues(
+                                                    alpha: streakCount > 0
+                                                        ? 0.85
+                                                        : 0.55,
+                                                  ),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 16),

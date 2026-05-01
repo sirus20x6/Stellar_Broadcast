@@ -59,6 +59,21 @@ class LegacyData {
   /// Score version: 1 = old 0-130, 2 = new 0-100K. Used for migration.
   final int scoreVersion;
 
+  /// Consecutive days the player has landed on at least one planet. Reset to
+  /// 1 the first time a landing happens after a gap (or first ever); only
+  /// advances when [lastStreakDate] is exactly yesterday in device-local time.
+  /// Drives the per-voyage hull boost (capped at +5% on day 6+).
+  final int streakCount;
+
+  /// Date string (YYYY-MM-DD, device-local) of the last landing that
+  /// advanced the streak. Null until the first landing ever. Device-local —
+  /// distinct from the daily-challenge UTC marker by design.
+  final String? lastStreakDate;
+
+  /// Whether the daily 7 PM streak reminder is enabled. Default-on so the
+  /// retention hook works for new players without a settings safari.
+  final bool streakReminderEnabled;
+
   const LegacyData({
     this.totalVoyages = 0,
     this.bestScore = 0,
@@ -71,6 +86,9 @@ class LegacyData {
     this.discoveredFeatures = const {},
     this.legacyBestScore = 0,
     this.scoreVersion = 2,
+    this.streakCount = 0,
+    this.lastStreakDate,
+    this.streakReminderEnabled = true,
   });
 
   LegacyData copyWith({
@@ -85,6 +103,10 @@ class LegacyData {
     Set<String>? discoveredFeatures,
     int? legacyBestScore,
     int? scoreVersion,
+    int? streakCount,
+    String? lastStreakDate,
+    bool clearLastStreakDate = false,
+    bool? streakReminderEnabled,
   }) {
     return LegacyData(
       totalVoyages: totalVoyages ?? this.totalVoyages,
@@ -98,12 +120,22 @@ class LegacyData {
       discoveredFeatures: discoveredFeatures ?? this.discoveredFeatures,
       legacyBestScore: legacyBestScore ?? this.legacyBestScore,
       scoreVersion: scoreVersion ?? this.scoreVersion,
+      streakCount: streakCount ?? this.streakCount,
+      lastStreakDate:
+          clearLastStreakDate ? null : (lastStreakDate ?? this.lastStreakDate),
+      streakReminderEnabled:
+          streakReminderEnabled ?? this.streakReminderEnabled,
     );
   }
+
+  /// Boost applied to next voyage's hull from the current streak.
+  /// Day 1 = 0%, Day 2 = 1%, capped at 5% on Day 6+.
+  double get streakHullBoost =>
+      ((streakCount - 1).clamp(0, 5)) * 0.01;
 
   @override
   String toString() =>
       'LegacyData(voyages: $totalVoyages, best: $bestScore, '
       'points: $legacyPoints, achievements: ${achievements.length}, '
-      'scoreVersion: $scoreVersion)';
+      'scoreVersion: $scoreVersion, streak: $streakCount@$lastStreakDate)';
 }

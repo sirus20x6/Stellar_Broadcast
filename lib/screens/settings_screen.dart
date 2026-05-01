@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_audio/quickapps_audio.dart';
@@ -7,7 +8,8 @@ import 'package:quickapps_iap/quickapps_iap.dart';
 
 import 'package:stellar_broadcast/l10n/app_localizations.dart';
 import 'package:stellar_broadcast/providers/game_providers.dart'
-    show localeProvider, statsOnLeftProvider;
+    show legacyProvider, localeProvider, statsOnLeftProvider;
+import 'package:stellar_broadcast/services/streak_reminder_scheduler.dart';
 import 'package:quickapps_ui/quickapps_ui.dart';
 import 'package:stellar_broadcast/screens/premium_paywall.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
@@ -144,6 +146,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         _buildSectionTitle(context.l10n.ui_settings_haptics),
                         const SizedBox(height: 12),
                         _HapticsSection(),
+                        const SizedBox(height: 28),
+                        _buildSectionTitle(context.l10n.ui_settings_streak),
+                        const SizedBox(height: 12),
+                        _StreakSection(),
                         const SizedBox(height: 28),
                         _buildSectionTitle(context.l10n.ui_settings_language),
                         const SizedBox(height: 12),
@@ -370,17 +376,24 @@ class _HapticsSectionState extends State<_HapticsSection> {
                       ),
                     ),
                     alignment: Alignment.center,
+                    // Uniform typography across all four pills — the longest
+                    // label ("IMPORTANT") fits at this size on the narrowest
+                    // supported phone, so every label renders identically
+                    // (no per-label scaling).
                     child: Text(
                       _labels[i],
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.visible,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: selected
                             ? FontWeight.w700
                             : FontWeight.w500,
                         color: selected
                             ? _kAccent
                             : Colors.white.withValues(alpha: 0.4),
-                        letterSpacing: 1.2,
+                        letterSpacing: 0.6,
                       ),
                     ),
                   ),
@@ -388,6 +401,169 @@ class _HapticsSectionState extends State<_HapticsSection> {
               ),
             );
           }),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Streak section ───────────────────────────────────────────────────────────
+
+class _StreakSection extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_StreakSection> createState() => _StreakSectionState();
+}
+
+class _StreakSectionState extends ConsumerState<_StreakSection>
+    with WidgetsBindingObserver {
+  bool? _permissionGranted;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _refreshPermissionStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // User may have granted/revoked the notification permission in system
+    // settings while we were backgrounded — re-query on resume so the
+    // "tap to fix" subtitle stays accurate.
+    if (state == AppLifecycleState.resumed) {
+      _refreshPermissionStatus();
+    }
+  }
+
+  Future<void> _refreshPermissionStatus() async {
+    final status = await Permission.notification.status;
+    if (!mounted) return;
+    setState(() => _permissionGranted = status.isGranted);
+  }
+
+  Future<void> _handleToggle(bool enabled) async {
+    final notifier = ref.read(legacyProvider.notifier);
+    if (enabled) {
+      // Lazy permission request on toggle-on. If denied, we still flip
+      // the toggle in state so the UI shows "tap to fix" — the user's
+      // intent is captured; only the system-side block is missing.
+      final granted = await StreakReminderScheduler.requestPermissionLazy();
+      if (!mounted) return;
+      setState(() => _permissionGranted = granted);
+      await notifier.setStreakReminderEnabled(true);
+      if (granted && mounted) {
+        await StreakReminderScheduler.rescheduleIfEnabled(
+          ref.read(legacyProvider),
+          context.l10n,
+        );
+      }
+    } else {
+      await notifier.setStreakReminderEnabled(false);
+      await StreakReminderScheduler.cancel();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final legacy = ref.watch(legacyProvider);
+    final streakCount = legacy.streakCount;
+    final percent = (streakCount - 1).clamp(0, 5);
+    final showPermFix =
+        legacy.streakReminderEnabled && _permissionGranted == false;
+
+    return _SettingsCard(
+      children: [
+        // Status line
+        Row(
+          children: [
+            Icon(
+              streakCount > 0
+                  ? Icons.local_fire_department
+                  : Icons.local_fire_department_outlined,
+              color: streakCount > 0
+                  ? _kAccent
+                  : Colors.white.withValues(alpha: 0.4),
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                streakCount > 0
+                    ? l10n.ui_settings_streak_active(streakCount, percent)
+                    : l10n.ui_settings_streak_inactive,
+                style: TextStyle(
+                  color: streakCount > 0
+                      ? Colors.white
+                      : Colors.white.withValues(alpha: 0.6),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Divider(color: _kAccent.withValues(alpha: 0.15), height: 1),
+        const SizedBox(height: 16),
+        // Reminder toggle
+        _SettingsToggle(
+          label: l10n.ui_settings_streak_reminder,
+          value: legacy.streakReminderEnabled,
+          onChanged: _handleToggle,
+        ),
+        const SizedBox(height: 6),
+        if (showPermFix)
+          // Tap-to-fix affordance — opens system notification settings.
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => openAppSettings(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: Colors.amber.withValues(alpha: 0.85),
+                    size: 14,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l10n.ui_settings_streak_perm_needed,
+                      style: TextStyle(
+                        color: Colors.amber.withValues(alpha: 0.85),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          Text(
+            l10n.ui_settings_streak_reminder_subtitle,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.45),
+              fontSize: 12,
+            ),
+          ),
+        const SizedBox(height: 12),
+        Text(
+          l10n.ui_settings_streak_helper,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.4),
+            fontSize: 12,
+            fontStyle: FontStyle.italic,
+          ),
         ),
       ],
     );

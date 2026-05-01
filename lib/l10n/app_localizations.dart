@@ -9666,6 +9666,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Commerce bridges the gap between species. Native materials flow to your workshops; your technology improves their medicine. Friendship grows from mutual profit.'**
   String get event_nativeAlliance_outcome2;
+
+  /// No description provided for @streakNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stellar Broadcast'**
+  String get streakNotificationTitle;
+
+  /// No description provided for @streakNotificationBodyStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Land on a planet today to start a streak.'**
+  String get streakNotificationBodyStart;
+
+  /// No description provided for @streakNotificationBodyKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {count} streak — land on a planet today to keep it going.'**
+  String streakNotificationBodyKeep(int count);
+
+  /// No description provided for @ui_settings_streak.
+  ///
+  /// In en, this message translates to:
+  /// **'STREAK'**
+  String get ui_settings_streak;
+
+  /// No description provided for @ui_settings_streak_reminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder'**
+  String get ui_settings_streak_reminder;
+
+  /// No description provided for @ui_settings_streak_reminder_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifies you at 7 PM if you haven\'t landed yet today'**
+  String get ui_settings_streak_reminder_subtitle;
+
+  /// No description provided for @ui_settings_streak_perm_needed.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications disabled in system settings — tap to fix'**
+  String get ui_settings_streak_perm_needed;
+
+  /// No description provided for @ui_settings_streak_active.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {count} — +{percent}% hull next voyage'**
+  String ui_settings_streak_active(int count, int percent);
+
+  /// No description provided for @ui_settings_streak_inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'No active streak — land on a planet today to start one!'**
+  String get ui_settings_streak_inactive;
+
+  /// No description provided for @ui_settings_streak_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Land on a planet daily to grow your streak. +1% hull per consecutive day, max +5%.'**
+  String get ui_settings_streak_helper;
+
+  /// No description provided for @ui_dialog_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ui_dialog_ok;
+
+  /// No description provided for @ui_streak_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Streak'**
+  String get ui_streak_dialog_title;
+
+  /// No description provided for @ui_streak_dialog_body_inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Land on a planet today to start a streak. Each consecutive day adds +1% hull on your next voyage, up to +5% on Day 6.'**
+  String get ui_streak_dialog_body_inactive;
+
+  /// No description provided for @ui_streak_dialog_body.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {count} streak — +{percent}% hull on your next voyage. Land tomorrow to grow it (max +5%).'**
+  String ui_streak_dialog_body(int count, int percent);
 }
 
 class _AppLocalizationsDelegate

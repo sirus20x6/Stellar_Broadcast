@@ -5897,4 +5897,58 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get event_nativeAlliance_outcome2 =>
       'वाणिज्य प्रजातियों के बीच अंतर को पाटता है। आपकी कार्यशालाओं में मूल सामग्री प्रवाहित होती है; आपकी तकनीक उनकी दवा को बेहतर बनाती है। मित्रता पारस्परिक लाभ से बढ़ती है।';
+
+  @override
+  String get streakNotificationTitle => 'Stellar Broadcast';
+
+  @override
+  String get streakNotificationBodyStart =>
+      'Land on a planet today to start a streak.';
+
+  @override
+  String streakNotificationBodyKeep(int count) {
+    return 'Day $count streak — land on a planet today to keep it going.';
+  }
+
+  @override
+  String get ui_settings_streak => 'STREAK';
+
+  @override
+  String get ui_settings_streak_reminder => 'Daily reminder';
+
+  @override
+  String get ui_settings_streak_reminder_subtitle =>
+      'Notifies you at 7 PM if you haven\'t landed yet today';
+
+  @override
+  String get ui_settings_streak_perm_needed =>
+      'Notifications disabled in system settings — tap to fix';
+
+  @override
+  String ui_settings_streak_active(int count, int percent) {
+    return 'Day $count — +$percent% hull next voyage';
+  }
+
+  @override
+  String get ui_settings_streak_inactive =>
+      'No active streak — land on a planet today to start one!';
+
+  @override
+  String get ui_settings_streak_helper =>
+      'Land on a planet daily to grow your streak. +1% hull per consecutive day, max +5%.';
+
+  @override
+  String get ui_dialog_ok => 'OK';
+
+  @override
+  String get ui_streak_dialog_title => 'Daily Streak';
+
+  @override
+  String get ui_streak_dialog_body_inactive =>
+      'Land on a planet today to start a streak. Each consecutive day adds +1% hull on your next voyage, up to +5% on Day 6.';
+
+  @override
+  String ui_streak_dialog_body(int count, int percent) {
+    return 'Day $count streak — +$percent% hull on your next voyage. Land tomorrow to grow it (max +5%).';
+  }
 }

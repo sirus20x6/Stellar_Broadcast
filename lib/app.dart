@@ -10,6 +10,7 @@ import 'package:quickapps_ads/quickapps_ads.dart';
 import 'package:quickapps_analytics/quickapps_analytics.dart';
 import 'package:quickapps_iap/quickapps_iap.dart';
 import 'package:quickapps_logging/quickapps_logging.dart';
+import 'package:quickapps_notifications/quickapps_notifications.dart';
 import 'package:quickapps_onboarding/quickapps_onboarding.dart';
 import 'package:quickapps_play_games/quickapps_play_games.dart';
 import 'package:quickapps_storage/quickapps_storage.dart';
@@ -54,6 +55,7 @@ import 'package:stellar_broadcast/screens/world_engine_screen.dart';
 import 'package:stellar_broadcast/widgets/voyage_shell.dart';
 import 'package:stellar_broadcast/services/game_music.dart';
 import 'package:stellar_broadcast/services/sfx_service.dart';
+import 'package:stellar_broadcast/services/streak_reminder_scheduler.dart';
 import 'package:stellar_broadcast/theme/app_theme.dart';
 import 'package:stellar_broadcast/utils/l10n_extensions.dart';
 
@@ -91,7 +93,29 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _initDeepLinks();
+      _initStreakReminder();
     });
+  }
+
+  /// Initialises the local-notifications plugin and (re)schedules the daily
+  /// streak reminder. Runs once on app start. Permission is NOT requested
+  /// here — that's lazy, fired only when the user toggles the reminder ON
+  /// from Settings. Safe to call before legacy state has loaded; we await
+  /// the loaded future explicitly so the body string reflects the persisted
+  /// streak count.
+  Future<void> _initStreakReminder() async {
+    try {
+      await NotificationService().initialize();
+      await ref.read(legacyProvider.notifier).loaded;
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      await StreakReminderScheduler.rescheduleIfEnabled(
+        ref.read(legacyProvider),
+        l10n,
+      );
+    } catch (e, st) {
+      QaLogger.app.warning('Streak reminder bootstrap failed', e, st);
+    }
   }
 
   @override
@@ -337,13 +361,20 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Flutter 3.13+ split background lifecycle into inactive → hidden →
-    // paused. Android in particular often fires `hidden` on screen-off and
-    // sometimes never reaches `paused` before the OS suspends us — so if
-    // we only listened for `paused` the music would keep playing while
-    // the screen is locked. Pause on any state that means "user can't
-    // hear us anyway."
-    if (state != AppLifecycleState.resumed) {
+    // Flutter 3.13+ splits background lifecycle into inactive → hidden →
+    // paused. We pause on hidden/paused/detached (real "user can't hear
+    // us" states — screen off, app backgrounded, process detached) but
+    // NOT on inactive. `inactive` fires on every transient focus loss —
+    // notification-shade pulls, ad popups, system dialogs, sometimes even
+    // when focusing a TextField — and pausing/resuming on those choppy
+    // events caused playback to break entirely (the FlameAudio bgm player
+    // can't reliably ride a rapid pause→resume cycle while it's still
+    // negotiating the audio focus, so the resume silently fails and the
+    // track stays muted forever).
+    final isBackgrounded = state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached;
+    if (isBackgrounded) {
       if (!kIsWeb) {
         FlameAudio.bgm.pause();
         GameMusic().pauseEngineHum();
@@ -358,8 +389,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
           QaLogger.app.warning('Save state failed on lifecycle pause', e, st);
         }),
       );
-    } else {
-      // resumed
+    } else if (state == AppLifecycleState.resumed) {
       if (!kIsWeb) {
         // Resume long audio first, then check whether BGM should come
         // back. If encounter long audio is still active it intentionally
@@ -379,6 +409,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       // with presumably better network. No-op if already initialized.
       unawaited(tryReinitializeIap());
     }
+    // inactive: deliberately no-op. See comment above.
   }
 
   Future<void> _checkOnboarding() async {

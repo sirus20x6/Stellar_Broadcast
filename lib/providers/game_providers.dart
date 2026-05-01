@@ -96,6 +96,45 @@ String _todayUtc() {
   return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 }
 
+/// Today's device-local date string in YYYY-MM-DD format.
+///
+/// Deliberately distinct from [_todayUtc]: the daily challenge rolls at
+/// UTC midnight (so all players get the same seed simultaneously), but the
+/// streak rolls at the player's local midnight (matching mainstream streak
+/// UX — Duolingo, Snap, etc. — and the player's mental model of "today").
+/// Don't unify these without a deliberate decision.
+String localDateKey([DateTime? now]) {
+  final dt = (now ?? DateTime.now()).toLocal();
+  return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+}
+
+/// Returns the day before [today] (a YYYY-MM-DD string), via DateTime
+/// arithmetic so month/year rollover Just Works.
+String yesterdayDateKey(String today) {
+  final parts = today.split('-');
+  final dt = DateTime(
+    int.parse(parts[0]),
+    int.parse(parts[1]),
+    int.parse(parts[2]),
+  ).subtract(const Duration(days: 1));
+  return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+}
+
+/// Pure streak transition: given the current legacy state and today's
+/// device-local date key, returns the new state after a successful landing.
+/// Same-day landings are no-ops (idempotent), yesterday advances the count,
+/// older gaps reset to 1. Tested directly in `test/logic/streak_test.dart`.
+LegacyData applyLandingToStreak(LegacyData current, String today) {
+  if (current.lastStreakDate == today) return current;
+  final newCount = current.lastStreakDate == yesterdayDateKey(today)
+      ? current.streakCount + 1
+      : 1;
+  return current.copyWith(
+    streakCount: newCount,
+    lastStreakDate: today,
+  );
+}
+
 /// Deterministic seed for a UTC date string in YYYY-MM-DD format.
 ///
 /// Do not use [String.hashCode] here: Dart does not promise a stable
@@ -265,6 +304,17 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
         maxOverrides[s] = (maxOverrides[s] ?? 1.0) + 0.05;
       }
     }
+
+    // Daily-streak hull boost: stacks on top of legacy upgrades. Day 1 = 0%,
+    // Day 2 = +1%, capped at +5% on Day 6+. The 1.25 hard cap in
+    // ShipSystems._maxAbsoluteCeiling is the absolute backstop — at max
+    // streak + reinforced_hull (1.10), hull lands at 1.15 with headroom.
+    final streakBoost = _ref.read(legacyProvider).streakHullBoost;
+    if (streakBoost > 0) {
+      ship = ship.copyWith(hull: ship.hull + streakBoost);
+      maxOverrides['hull'] = (maxOverrides['hull'] ?? 1.0) + streakBoost;
+    }
+
     if (maxOverrides.isNotEmpty) {
       ship = ship.copyWith(maxOverrides: maxOverrides);
     }
@@ -939,6 +989,10 @@ class VoyageNotifier extends StateNotifier<VoyageState> {
       voyage: voyage,
       isDaily: voyage.isDaily,
     );
+    // Streak update runs AFTER finalizeVoyage so the legacy commit is
+    // already on disk if the streak save fails — we never end up with a
+    // half-updated streak that's inconsistent with the voyage log.
+    await legacyNotifier.recordLandingForStreak();
     _lastNewAchievements = newAch;
     return newAch;
   }
@@ -1282,6 +1336,10 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
   /// the player's saved legacyPoints with the post-race value.
   Future<void>? _loadFuture;
 
+  /// Public accessor for the initial load future — used by app bootstrap to
+  /// defer streak-reminder scheduling until persisted state has been read.
+  Future<void> get loaded => _loadFuture ?? Future.value();
+
   /// When > 0, [_saveToStorage] is a no-op so multiple state mutations can
   /// be batched and persisted as a single atomic write at the end of the
   /// batch. Decremented by [finalizeVoyage] which then performs one save.
@@ -1384,6 +1442,13 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
         discoveredFeatures: discoveredFeatures,
         legacyBestScore: legacyBestScore,
         scoreVersion: 2,
+        // Streak fields default cleanly when missing from older saves
+        // (no migration record needed — `streakCount=0`, `lastStreakDate=null`,
+        // and `streakReminderEnabled=true` are equivalent to a brand-new install).
+        streakCount: (map['streakCount'] as int?) ?? 0,
+        lastStreakDate: map['lastStreakDate'] as String?,
+        streakReminderEnabled:
+            (map['streakReminderEnabled'] as bool?) ?? true,
       );
 
       // Persist the migration immediately so it only runs once.
@@ -1422,6 +1487,10 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
         'discoveredFeatures': state.discoveredFeatures.toList(),
         'legacyBestScore': state.legacyBestScore,
         'scoreVersion': state.scoreVersion,
+        'streakCount': state.streakCount,
+        if (state.lastStreakDate != null)
+          'lastStreakDate': state.lastStreakDate,
+        'streakReminderEnabled': state.streakReminderEnabled,
       };
       await _settings.setString('legacy_data', jsonEncode(map));
     } catch (e, st) {
@@ -1623,6 +1692,50 @@ class LegacyNotifier extends StateNotifier<LegacyData> {
     state = state.copyWith(legacyPoints: state.legacyPoints - amount);
     _saveToStorage();
     return true;
+  }
+
+  /// Records a successful landing toward the daily streak. Called from
+  /// [VoyageNotifier.finalizeLanding] AFTER the voyage commit. Idempotent
+  /// within the same device-local day.
+  Future<void> recordLandingForStreak() async {
+    await _loadFuture;
+    final today = localDateKey();
+    final next = applyLandingToStreak(state, today);
+    if (identical(next, state)) return; // same-day no-op
+
+    final prevCount = state.streakCount;
+    state = next;
+    await _saveToStorage();
+
+    if (next.streakCount > prevCount) {
+      AnalyticsService().logEvent(
+        name: 'streak_advanced',
+        parameters: {
+          'count': next.streakCount,
+          'prev_count': prevCount,
+        },
+      );
+    } else if (prevCount > 1 && next.streakCount == 1) {
+      // We had a streak going, missed at least one day, now restarting.
+      AnalyticsService().logEvent(
+        name: 'streak_broken',
+        parameters: {'lost_count': prevCount},
+      );
+    }
+  }
+
+  /// Persists the daily-reminder toggle. Caller is responsible for
+  /// (re)scheduling or cancelling the OS notification afterward — the
+  /// scheduler reads `state.streakReminderEnabled` and acts accordingly.
+  Future<void> setStreakReminderEnabled(bool enabled) async {
+    await _loadFuture;
+    if (state.streakReminderEnabled == enabled) return;
+    state = state.copyWith(streakReminderEnabled: enabled);
+    await _saveToStorage();
+    AnalyticsService().logEvent(
+      name: 'streak_reminder_toggled',
+      parameters: {'enabled': enabled ? 1 : 0},
+    );
   }
 }
 

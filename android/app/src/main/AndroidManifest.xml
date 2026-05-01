@@ -1,6 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <!-- Required for the daily streak reminder on Android 13+. Notifications
+         are off by default until the user toggles the reminder ON in
+         Settings, at which point we lazily request POST_NOTIFICATIONS via
+         permission_handler. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Required for flutter_local_notifications zonedSchedule on Android
+         12+. Inexact alarms are sufficient for our 7 PM daily reminder, so
+         we don't request SCHEDULE_EXACT_ALARM. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Google Play Games for PC + Chromebook + tablet compatibility -->
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.hardware.gamepad" android:required="false" />

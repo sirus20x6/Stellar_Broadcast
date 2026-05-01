@@ -1983,5 +1983,47 @@
   "event_nativeAlliance_choice1": "Negotiate from a position of colonial dominance",
   "event_nativeAlliance_outcome1": "You leverage your advanced technology to secure favorable terms. The natives cede territory and resources. They sign with trembling hands. History has seen this before, and it rarely ends well.",
   "event_nativeAlliance_choice2": "Establish a trade partnership focused on mutual benefit",
-  "event_nativeAlliance_outcome2": "Commerce bridges the gap between species. Native materials flow to your workshops; your technology improves their medicine. Friendship grows from mutual profit."
+  "event_nativeAlliance_outcome2": "Commerce bridges the gap between species. Native materials flow to your workshops; your technology improves their medicine. Friendship grows from mutual profit.",
+
+  "streakNotificationTitle": "Stellar Broadcast",
+  "streakNotificationBodyStart": "Land on a planet today to start a streak.",
+  "streakNotificationBodyKeep": "Day {count} streak — land on a planet today to keep it going.",
+  "@streakNotificationBodyKeep": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ui_settings_streak": "STREAK",
+  "ui_settings_streak_reminder": "Daily reminder",
+  "ui_settings_streak_reminder_subtitle": "Notifies you at 7 PM if you haven't landed yet today",
+  "ui_settings_streak_perm_needed": "Notifications disabled in system settings — tap to fix",
+  "ui_settings_streak_active": "Day {count} — +{percent}% hull next voyage",
+  "@ui_settings_streak_active": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "ui_settings_streak_inactive": "No active streak — land on a planet today to start one!",
+  "ui_settings_streak_helper": "Land on a planet daily to grow your streak. +1% hull per consecutive day, max +5%.",
+  "ui_dialog_ok": "OK",
+  "ui_streak_dialog_title": "Daily Streak",
+  "ui_streak_dialog_body_inactive": "Land on a planet today to start a streak. Each consecutive day adds +1% hull on your next voyage, up to +5% on Day 6.",
+  "ui_streak_dialog_body": "Day {count} streak — +{percent}% hull on your next voyage. Land tomorrow to grow it (max +5%).",
+  "@ui_streak_dialog_body": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
+  }
 }

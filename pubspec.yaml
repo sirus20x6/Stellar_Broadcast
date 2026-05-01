@@ -1,7 +1,7 @@
 name: stellar_broadcast
 description: "Humanity's last colony ship searches for a new home among the stars."
 publish_to: 'none'
-version: 2.2.14+126
+version: 2.2.17+129
 
 environment:
   sdk: ^3.8.0
@@ -64,6 +64,11 @@ dependencies:
     path: ../../packages/quickapps_iap
   quickapps_debug:
     path: ../../packages/quickapps_debug
+  quickapps_notifications:
+    path: ../../packages/quickapps_notifications
+  # Direct dep so we can call `Permission.notification.status` from the
+  # streak settings UI without the linter flagging it as a transitive use.
+  permission_handler: ^11.4.0
   window_manager: ^0.4.0
   url_launcher: ^6.3.0
   font_awesome_flutter: ^10.7.0
