@@ -467,6 +467,13 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       SettingsRepository().setBool('onboarding_completed', true);
       completed = true;
     }
+    // QA builds bypass onboarding so deep-link-driven screenshot
+    // workflows can route directly to gameplay screens.
+    const qaMode = bool.fromEnvironment('QA_MODE', defaultValue: false);
+    if (!completed && qaMode) {
+      SettingsRepository().setBool('onboarding_completed', true);
+      completed = true;
+    }
     if (!completed) {
       AnalyticsService().logEvent(name: QaEvents.onboardingStarted);
     }
