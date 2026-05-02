@@ -167,7 +167,7 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
         _pendingDeepLink = uri;
         return;
       }
-      _navigateToDebugScreen(screenParam);
+      _navigateToDebugScreen(screenParam, uri.queryParameters);
       return;
     }
 
@@ -243,14 +243,20 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
   }
 
   /// Debug: navigate directly to a named screen for QA screenshot automation.
-  /// Deferred to ensure widget tree is ready.
-  void _navigateToDebugScreen(String screen) {
+  /// Deferred to ensure widget tree is ready. [params] are the URI query
+  /// parameters — used by some screens (`puzzle`, `scan`) to deterministically
+  /// pick a variant so iPad screenshot CI doesn't have to re-roll randomly
+  /// generated content until the right type appears.
+  void _navigateToDebugScreen(String screen, Map<String, String> params) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _doNavigateDebugScreen(screen);
+      _doNavigateDebugScreen(screen, params);
     });
   }
 
-  Future<void> _doNavigateDebugScreen(String screen) async {
+  Future<void> _doNavigateDebugScreen(
+    String screen,
+    Map<String, String> params,
+  ) async {
     final nav = _navigatorKey.currentState;
     if (nav == null) return;
 
@@ -283,12 +289,38 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
     final upgrades = ref.read(legacyProvider).upgrades;
     notifier.startVoyage(upgrades: upgrades, l10n: l10n);
 
-    // Screens that need a planet — scan and wait for ONNX.
+    // Screens that need a planet — scan and wait for ONNX. /scan additionally
+    // accepts `?moons=N&rings=true|<type>` to deterministically pick a planet
+    // matching those traits (capped retry budget). The CI screenshot job uses
+    // this to capture a "ringed planet with 3 moons" without externally
+    // re-rolling 60 times.
     const needsPlanet = {'scan', 'landing', 'landing-sequence', 'ending'};
-    if (needsPlanet.contains(screen) &&
-        ref.read(voyageProvider).currentPlanet == null) {
-      await notifier.scanPlanet();
-      if (!mounted) return;
+    if (needsPlanet.contains(screen)) {
+      final wantMoons = int.tryParse(params['moons'] ?? '');
+      final wantRings = params['rings'];
+      final hasFilter = wantMoons != null || (wantRings != null && wantRings.isNotEmpty);
+      if (hasFilter) {
+        for (var i = 0; i < 200; i++) {
+          notifier.reset();
+          notifier.startVoyage(upgrades: upgrades, l10n: l10n);
+          await notifier.scanPlanet();
+          if (!mounted) return;
+          final p = ref.read(voyageProvider).currentPlanet;
+          if (p == null) continue;
+          if (wantMoons != null && p.moons.length != wantMoons) continue;
+          if (wantRings != null && wantRings.isNotEmpty) {
+            final wantTrue = wantRings == 'true';
+            if (wantTrue && p.rings == null) continue;
+            if (!wantTrue && wantRings != 'true' && p.rings?.type.name != wantRings) {
+              continue;
+            }
+          }
+          break;
+        }
+      } else if (ref.read(voyageProvider).currentPlanet == null) {
+        await notifier.scanPlanet();
+        if (!mounted) return;
+      }
     }
 
     // Visual event screens — need a GameEvent argument.
@@ -327,12 +359,28 @@ class _StellarBroadcastAppState extends ConsumerState<StellarBroadcastApp>
       return;
     }
 
-    // Puzzle screen — generate one.
+    // Puzzle screen — generate one. Accepts `?species=geometric` and/or
+    // `?sequenceType=chirality` to deterministically pick a matching variant
+    // (capped retry budget). CI screenshot automation relies on these to
+    // capture the geometric and chirality puzzles in one shot each instead
+    // of re-rolling 60+ times externally.
     if (screen == 'puzzle') {
-      final puzzle = PuzzleGenerator.generate(
-        Random(),
-        ref.read(voyageProvider),
-      );
+      final wantSpecies = params['species'];
+      final wantSeq = params['sequenceType'];
+      final voyage = ref.read(voyageProvider);
+      AlienPuzzle puzzle = PuzzleGenerator.generate(Random(), voyage);
+      if (wantSpecies != null || wantSeq != null) {
+        for (var i = 0; i < 200; i++) {
+          puzzle = PuzzleGenerator.generate(Random(), voyage);
+          if (wantSpecies != null && puzzle.species.name != wantSpecies) {
+            continue;
+          }
+          if (wantSeq != null && puzzle.sequenceType.name != wantSeq) {
+            continue;
+          }
+          break;
+        }
+      }
       nav.pushNamed('/puzzle', arguments: puzzle);
       return;
     }
