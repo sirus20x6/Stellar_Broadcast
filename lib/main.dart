@@ -264,7 +264,11 @@ Future<void> _bootstrap() async {
   // ATT status is still "not determined". The system prompt only shows
   // once per install, so calling this on every launch is safe: subsequent
   // calls are a no-op and return the cached decision.
-  if (Platform.isIOS) {
+  // QA builds bypass the ATT prompt — it blocks deep-link-driven
+  // screenshot automation (see .github/workflows/ipad-screenshots.yml).
+  // Production builds still prompt normally.
+  const qaMode = bool.fromEnvironment('QA_MODE', defaultValue: false);
+  if (Platform.isIOS && !qaMode) {
     try {
       await AppTrackingTransparency.requestTrackingAuthorization();
     } catch (e, st) {
